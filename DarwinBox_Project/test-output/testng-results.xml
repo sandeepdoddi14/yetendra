@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results total="1" passed="1" failed="0" skipped="0">
+  <reporter-output>
+    <line>
+      <![CDATA[Login to Application successfully]]>
+    </line>
+    <line>
+      <![CDATA[Text inserted successfully in User Name textbox]]>
+    </line>
+    <line>
+      <![CDATA[Text inserted successfully in Password textbox]]>
+    </line>
+    <line>
+      <![CDATA[SignIn button is clicked successfully]]>
+    </line>
+  </reporter-output>
+  <suite started-at="2017-10-28T12:12:29Z" name="Default suite" finished-at="2017-10-28T12:12:49Z" duration-ms="19665">
+    <groups>
+      <group name="Login">
+        <method signature="LoginPage.Login_To_Application()[pri:0, instance:com.darwinbox.loginPage.LoginPage@b62d79]" name="Login_To_Application" class="com.darwinbox.loginPage.LoginPage"/>
+      </group> <!-- Login -->
+    </groups>
+    <test started-at="2017-10-28T12:12:29Z" name="Default test" finished-at="2017-10-28T12:12:49Z" duration-ms="19665">
+      <class name="com.darwinbox.loginPage.LoginPage">
+        <test-method is-config="true" signature="getWebDriver()[pri:0, instance:com.darwinbox.loginPage.LoginPage@b62d79]" started-at="2017-10-28T17:42:29Z" name="getWebDriver" finished-at="2017-10-28T17:42:35Z" duration-ms="5390" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- getWebDriver -->
+        <test-method signature="Login_To_Application()[pri:0, instance:com.darwinbox.loginPage.LoginPage@b62d79]" started-at="2017-10-28T17:42:35Z" name="Login_To_Application" finished-at="2017-10-28T17:42:49Z" duration-ms="14262" status="PASS">
+          <reporter-output>
+            <line>
+              <![CDATA[Login to Application successfully]]>
+            </line>
+            <line>
+              <![CDATA[Text inserted successfully in User Name textbox]]>
+            </line>
+            <line>
+              <![CDATA[Text inserted successfully in Password textbox]]>
+            </line>
+            <line>
+              <![CDATA[SignIn button is clicked successfully]]>
+            </line>
+          </reporter-output>
+        </test-method> <!-- Login_To_Application -->
+        <test-method is-config="true" signature="takeScreenShotOnFailure(org.testng.ITestResult)[pri:0, instance:com.darwinbox.loginPage.LoginPage@b62d79]" started-at="2017-10-28T17:42:49Z" name="takeScreenShotOnFailure" finished-at="2017-10-28T17:42:49Z" duration-ms="0" status="PASS">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[[TestResult name=Login_To_Application status=SUCCESS method=LoginPage.Login_To_Application()[pri:0, instance:com.darwinbox.loginPage.LoginPage@b62d79] output=Login to Application successfully]]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- takeScreenShotOnFailure -->
+        <test-method is-config="true" signature="closeAll()[pri:0, instance:com.darwinbox.loginPage.LoginPage@b62d79]" started-at="2017-10-28T17:42:50Z" name="closeAll" finished-at="2017-10-28T17:42:50Z" duration-ms="725" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- closeAll -->
+      </class> <!-- com.darwinbox.loginPage.LoginPage -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>
