@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+  <test name="Test">
+    <classes>
+      <class name="com.darwinbox.LoginFunctionality.TC_02_LoginPage_Invalid"/>
+      <class name="com.darwinbox.Settings.TC_04_Verify_Mandatory_fields_in_Shift_Creation_NEG"/>
+      <class name="com.darwinbox.Settings.TC_01_Verify_Admin_is_able_to_create_New_Shifts_Positive"/>
+      <class name="com.darwinbox.Settings.TC_05_Verify_Admin_is_able_to_edit_Shift_Positive"/>
+      <class name="com.darwinbox.Settings.TC_03_Verify_Admin_is_able_to_create_New_Over_Night_Shift_Positive"/>
+      <class name="com.darwinbox.Settings.TC_02_Verify_New_Shifts_with_begin_time_greater_than_end_time_can_not_be_created_NEG"/>
+<!--       <class name="com.darwinbox.Settings.TC_06_Perform_Mandatory_Checks_in_Policy_Creation"/> -->
+      <class name="com.darwinbox.LoginFunctionality.TC_01_LoginPage_Positive"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
