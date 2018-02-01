@@ -1,3 +1,4 @@
+asdas
 2017-11-30 21:23:23 INFO  HomePage:139 - Chrome
 2017-11-30 21:23:23 INFO  HomePage:166 - Chrome
 2017-11-30 21:23:28 INFO  HomePage:142 - Chrome
@@ -10205,3 +10206,293 @@ Session ID: 6de5dea0ea1c8a940640f69448e8d532
 2018-01-30 11:22:02 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
 2018-01-30 11:22:02 INFO  TestBase:171 - browser closed
 2018-01-30 11:22:02 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 17:25:39 INFO  TestBase:178 - Chrome
+2018-02-01 17:25:39 INFO  TestBase:202 - Chrome
+2018-02-01 17:25:47 INFO  TestBase:180 - Chrome
+2018-02-01 17:25:47 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:25:47 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:25:47 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:25:50 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:25:50 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 17:25:50 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:25:50 ERROR GenericHelper:407 - Exception while inserting text in Password textbox
+2018-02-01 17:25:50 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:25:51 INFO  TestBase:171 - browser closed
+2018-02-01 17:25:51 INFO  TestBase:178 - Chrome
+2018-02-01 17:25:51 INFO  TestBase:202 - Chrome
+2018-02-01 17:25:51 INFO  TestBase:180 - Chrome
+2018-02-01 17:25:51 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:25:51 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:25:51 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:25:59 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:25:59 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:25:59 ERROR GenericHelper:407 - Exception while inserting text in User ID textbox
+2018-02-01 17:25:59 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:26:00 INFO  TestBase:171 - browser closed
+2018-02-01 17:26:00 INFO  TestBase:178 - Chrome
+2018-02-01 17:26:00 INFO  TestBase:202 - Chrome
+2018-02-01 17:26:01 INFO  TestBase:180 - Chrome
+2018-02-01 17:26:01 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:26:01 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:26:01 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:26:07 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:26:07 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 17:26:07 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 17:26:07 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 17:26:08 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 17:26:08 INFO  TestBase:171 - browser closed
+2018-02-01 17:26:08 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 17:46:48 INFO  TestBase:178 - Chrome
+2018-02-01 17:46:48 INFO  TestBase:202 - Chrome
+2018-02-01 17:46:49 INFO  TestBase:180 - Chrome
+2018-02-01 17:46:49 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:46:49 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:46:49 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:46:53 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:46:53 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 17:46:53 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:46:53 ERROR GenericHelper:407 - Exception while inserting text in Password textbox
+2018-02-01 17:46:53 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:46:54 INFO  TestBase:171 - browser closed
+2018-02-01 17:46:54 INFO  TestBase:178 - Chrome
+2018-02-01 17:46:54 INFO  TestBase:202 - Chrome
+2018-02-01 17:46:55 INFO  TestBase:180 - Chrome
+2018-02-01 17:46:55 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:46:55 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:46:55 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:46:58 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:46:58 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:46:58 ERROR GenericHelper:407 - Exception while inserting text in User ID textbox
+2018-02-01 17:46:59 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:46:59 INFO  TestBase:171 - browser closed
+2018-02-01 17:46:59 INFO  TestBase:178 - Chrome
+2018-02-01 17:46:59 INFO  TestBase:202 - Chrome
+2018-02-01 17:46:59 INFO  TestBase:180 - Chrome
+2018-02-01 17:46:59 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:46:59 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:46:59 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:47:04 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:47:04 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 17:47:04 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 17:47:05 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 17:47:05 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 17:47:07 INFO  TestBase:171 - browser closed
+2018-02-01 17:47:07 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 17:48:44 INFO  TestBase:178 - Chrome
+2018-02-01 17:48:44 INFO  TestBase:202 - Chrome
+2018-02-01 17:48:46 INFO  TestBase:180 - Chrome
+2018-02-01 17:48:46 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:48:46 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:48:46 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:48:50 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:48:50 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 17:48:50 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:48:50 ERROR GenericHelper:407 - Exception while inserting text in Password textbox
+2018-02-01 17:48:50 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:48:51 INFO  TestBase:171 - browser closed
+2018-02-01 17:48:51 INFO  TestBase:178 - Chrome
+2018-02-01 17:48:51 INFO  TestBase:202 - Chrome
+2018-02-01 17:48:51 INFO  TestBase:180 - Chrome
+2018-02-01 17:48:51 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:48:51 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:48:51 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:48:56 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:48:56 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:48:56 ERROR GenericHelper:407 - Exception while inserting text in User ID textbox
+2018-02-01 17:48:56 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:48:57 INFO  TestBase:171 - browser closed
+2018-02-01 17:48:57 INFO  TestBase:178 - Chrome
+2018-02-01 17:48:57 INFO  TestBase:202 - Chrome
+2018-02-01 17:48:57 INFO  TestBase:180 - Chrome
+2018-02-01 17:48:57 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:48:57 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:48:57 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:49:02 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:49:02 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 17:49:02 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 17:49:02 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 17:49:02 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 17:49:03 INFO  TestBase:171 - browser closed
+2018-02-01 17:49:03 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 17:57:59 INFO  TestBase:178 - Chrome
+2018-02-01 17:57:59 INFO  TestBase:202 - Chrome
+2018-02-01 17:58:00 INFO  TestBase:180 - Chrome
+2018-02-01 17:58:00 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:58:00 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:58:00 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:58:10 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:58:10 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 17:58:10 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:58:10 ERROR GenericHelper:407 - Exception while inserting text in Password textbox
+2018-02-01 17:58:10 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:58:11 INFO  TestBase:171 - browser closed
+2018-02-01 17:58:11 INFO  TestBase:178 - Chrome
+2018-02-01 17:58:11 INFO  TestBase:202 - Chrome
+2018-02-01 17:58:11 INFO  TestBase:180 - Chrome
+2018-02-01 17:58:11 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:58:11 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:58:11 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:58:17 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:58:17 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 17:58:17 ERROR GenericHelper:407 - Exception while inserting text in User ID textbox
+2018-02-01 17:58:17 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 17:58:17 INFO  TestBase:171 - browser closed
+2018-02-01 17:58:17 INFO  TestBase:178 - Chrome
+2018-02-01 17:58:17 INFO  TestBase:202 - Chrome
+2018-02-01 17:58:18 INFO  TestBase:180 - Chrome
+2018-02-01 17:58:18 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 17:58:18 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 17:58:18 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 17:58:22 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 17:58:22 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 17:58:22 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 17:58:23 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 17:58:23 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 17:58:23 INFO  TestBase:171 - browser closed
+2018-02-01 17:58:23 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 18:00:26 INFO  TestBase:178 - Chrome
+2018-02-01 18:00:26 INFO  TestBase:202 - Chrome
+2018-02-01 18:00:27 INFO  TestBase:180 - Chrome
+2018-02-01 18:00:28 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:00:28 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:00:28 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:00:31 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:00:31 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 18:00:31 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 18:00:31 ERROR GenericHelper:407 - Exception while inserting text in Password textbox
+2018-02-01 18:00:31 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 18:00:31 INFO  TestBase:171 - browser closed
+2018-02-01 18:00:31 INFO  TestBase:178 - Chrome
+2018-02-01 18:00:31 INFO  TestBase:202 - Chrome
+2018-02-01 18:00:32 INFO  TestBase:180 - Chrome
+2018-02-01 18:00:32 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:00:32 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:00:32 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:00:36 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:00:36 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 18:00:36 ERROR GenericHelper:407 - Exception while inserting text in User ID textbox
+2018-02-01 18:00:36 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 18:00:37 INFO  TestBase:171 - browser closed
+2018-02-01 18:00:37 INFO  TestBase:178 - Chrome
+2018-02-01 18:00:37 INFO  TestBase:202 - Chrome
+2018-02-01 18:00:37 INFO  TestBase:180 - Chrome
+2018-02-01 18:00:37 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:00:37 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:00:37 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:00:41 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:00:41 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 18:00:41 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 18:00:42 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:00:42 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 18:00:42 INFO  TestBase:171 - browser closed
+2018-02-01 18:00:42 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 18:03:59 INFO  TestBase:178 - Chrome
+2018-02-01 18:03:59 INFO  TestBase:202 - Chrome
+2018-02-01 18:04:00 INFO  TestBase:180 - Chrome
+2018-02-01 18:04:00 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:04:00 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:04:00 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:04:03 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:04:03 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 18:04:03 INFO  GenericHelper:404 - In Password textbox parameter inserted is: ' '
+2018-02-01 18:04:03 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:04:04 INFO  TestBase:390 - Actual error message: 'Password cannot be blank.' is equal to expected error message
+2018-02-01 18:04:04 INFO  TestBase:171 - browser closed
+2018-02-01 18:04:04 INFO  TestBase:178 - Chrome
+2018-02-01 18:04:04 INFO  TestBase:202 - Chrome
+2018-02-01 18:04:05 INFO  TestBase:180 - Chrome
+2018-02-01 18:04:05 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:04:05 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:04:05 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:04:09 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:04:09 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: ' '
+2018-02-01 18:04:10 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 18:04:10 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:04:10 INFO  TestBase:390 - Actual error message: 'Email cannot be blank.' is equal to expected error message
+2018-02-01 18:04:10 INFO  TestBase:171 - browser closed
+2018-02-01 18:04:10 INFO  TestBase:178 - Chrome
+2018-02-01 18:04:10 INFO  TestBase:202 - Chrome
+2018-02-01 18:04:11 INFO  TestBase:180 - Chrome
+2018-02-01 18:04:11 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:04:11 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:04:11 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:04:16 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:04:16 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 18:04:16 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 18:04:16 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:04:17 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 18:04:17 INFO  TestBase:171 - browser closed
+2018-02-01 18:04:17 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 18:08:03 INFO  TestBase:178 - Chrome
+2018-02-01 18:08:03 INFO  TestBase:202 - Chrome
+2018-02-01 18:08:04 INFO  TestBase:180 - Chrome
+2018-02-01 18:08:04 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:08:04 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:08:04 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:08:07 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:08:08 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 18:08:08 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 18:08:08 ERROR GenericHelper:407 - Exception while inserting text in Password textbox
+2018-02-01 18:08:08 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 18:08:08 INFO  TestBase:171 - browser closed
+2018-02-01 18:08:08 INFO  TestBase:178 - Chrome
+2018-02-01 18:08:08 INFO  TestBase:202 - Chrome
+2018-02-01 18:08:09 INFO  TestBase:180 - Chrome
+2018-02-01 18:08:09 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:08:09 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:08:09 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:08:13 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:08:13 ERROR TestBase:393 - Exception while getting the Excel cell data: null
+2018-02-01 18:08:13 ERROR GenericHelper:407 - Exception while inserting text in User ID textbox
+2018-02-01 18:08:13 ERROR TestBase:278 - Verify_Invalid_Login_To_Application test is failedjava.lang.RuntimeException: Test Case Failed
+2018-02-01 18:08:13 INFO  TestBase:171 - browser closed
+2018-02-01 18:08:13 INFO  TestBase:178 - Chrome
+2018-02-01 18:08:13 INFO  TestBase:202 - Chrome
+2018-02-01 18:08:14 INFO  TestBase:180 - Chrome
+2018-02-01 18:08:14 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:08:14 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:08:14 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:08:18 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:08:18 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 18:08:18 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 18:08:19 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:08:19 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 18:08:20 INFO  TestBase:171 - browser closed
+2018-02-01 18:08:20 INFO  TestBase:390 - All browser sessions are closed
+2018-02-01 18:10:33 INFO  TestBase:178 - Chrome
+2018-02-01 18:10:33 INFO  TestBase:202 - Chrome
+2018-02-01 18:10:34 INFO  TestBase:180 - Chrome
+2018-02-01 18:10:34 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:10:34 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:10:34 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:10:37 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:10:37 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser1'
+2018-02-01 18:10:37 INFO  GenericHelper:404 - In Password textbox parameter inserted is: ''
+2018-02-01 18:10:38 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:10:38 INFO  TestBase:390 - Actual error message: 'Password cannot be blank.' is equal to expected error message
+2018-02-01 18:10:38 INFO  TestBase:171 - browser closed
+2018-02-01 18:10:38 INFO  TestBase:178 - Chrome
+2018-02-01 18:10:38 INFO  TestBase:202 - Chrome
+2018-02-01 18:10:39 INFO  TestBase:180 - Chrome
+2018-02-01 18:10:39 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:10:39 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:10:39 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:10:42 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:10:42 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: ''
+2018-02-01 18:10:42 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 18:10:43 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:10:43 INFO  TestBase:390 - Actual error message: 'Email cannot be blank.' is equal to expected error message
+2018-02-01 18:10:43 INFO  TestBase:171 - browser closed
+2018-02-01 18:10:43 INFO  TestBase:178 - Chrome
+2018-02-01 18:10:43 INFO  TestBase:202 - Chrome
+2018-02-01 18:10:44 INFO  TestBase:180 - Chrome
+2018-02-01 18:10:44 INFO  TestBase:127 - ******************************************************************************
+2018-02-01 18:10:44 INFO  TestBase:128 - *********** LoginTests::TC_02_InvalidLoginTest ******
+2018-02-01 18:10:44 INFO  TestBase:231 - navigating to :https://automation.darwinbox.in/
+2018-02-01 18:10:47 INFO  TestBase:390 - Launched Application successfully
+2018-02-01 18:10:47 INFO  GenericHelper:404 - In User ID textbox parameter inserted is: 'TestUser3'
+2018-02-01 18:10:47 INFO  GenericHelper:404 - In Password textbox parameter inserted is: '123456'
+2018-02-01 18:10:48 INFO  GenericHelper:404 - SignIn button is clicked successfully
+2018-02-01 18:10:48 INFO  TestBase:390 - Actual error message: 'Invalid Login credentials.' is equal to expected error message
+2018-02-01 18:10:48 INFO  TestBase:171 - browser closed
+2018-02-01 18:10:48 INFO  TestBase:390 - All browser sessions are closed

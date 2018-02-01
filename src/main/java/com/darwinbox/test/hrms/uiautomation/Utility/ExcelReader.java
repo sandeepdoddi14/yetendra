@@ -19,25 +19,25 @@ import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 
 /**
  * @author balaji
- * @Creation_Date:  20 Nov 2017 
+ * @Creation_Date: 20 Nov 2017
  * @ClassName: ExcelReader.java
- * @LastModified_Date:  20 Nov 2017 
+ * @LastModified_Date: 20 Nov 2017
  */
-public class ExcelReader extends TestBase{
+public class ExcelReader extends TestBase {
 
 	public FileOutputStream fileOut = null;
 	public String path;
 	public FileInputStream fis;
-	private static  Workbook ExlWorkbook;
+	private static Workbook ExlWorkbook;
 	private static Sheet ExlSheet;
 	private static Row ExlRow;
 	private static Cell ExlCell;
-	
+
 	private static int totalNoOfRows;
 	public static String FileName;
 	public static String SheetName;
 	public static String FilePath;
-	
+
 	public static void setExcelFileObject() {
 		try {
 			FileInputStream inputStream = new FileInputStream(FilePath);
@@ -51,14 +51,14 @@ public class ExcelReader extends TestBase{
 			e.printStackTrace();
 		}
 	}
-	
-	public static void setFilenameAndSheetName(String fileName, String sheetName){
-    	FileName = fileName;
-    	SheetName = sheetName;
-    	FilePath = ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData//" + FileName ;
-    	setExcelFileObject();
-    }
-	
+
+	public static void setFilenameAndSheetName(String fileName, String sheetName) {
+		FileName = fileName;
+		SheetName = sheetName;
+		FilePath = ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData//" + FileName;
+		setExcelFileObject();
+	}
+
 	/**
 	 * This Method will return 2D object Data for each record in excel sheet.
 	 * 
@@ -69,45 +69,44 @@ public class ExcelReader extends TestBase{
 	@SuppressWarnings({ "deprecation" })
 	public String[][] getDataFromSheet(String sheetName, String ExcelName) {
 		String dataSets[][] = null;
-			try {
-				// get sheet from excel workbook
-				Sheet sheet = ExlWorkbook.getSheet(sheetName);
-				// count number of active tows
-				int totalRow = sheet.getLastRowNum() + 1;
-				// count number of active columns in row
-				int totalColumn = sheet.getRow(0).getLastCellNum();
-				// Create array of rows and column
-				dataSets = new String[totalRow - 1][totalColumn];
-				// Run for loop and store data in 2D array
-				// This for loop will run on rows
-				for (int i = 1; i < totalRow; i++) {
-					Row rows = sheet.getRow(i);
-					// This for loop will run on columns of that row
-					for (int j = 0; j < totalColumn; j++) {
-						// get Cell method will get cell
+		try {
+			// get sheet from excel workbook
+			Sheet sheet = ExlWorkbook.getSheet(sheetName);
+			// count number of active tows
+			int totalRow = sheet.getLastRowNum() + 1;
+			// count number of active columns in row
+			int totalColumn = sheet.getRow(0).getLastCellNum();
+			// Create array of rows and column
+			dataSets = new String[totalRow - 1][totalColumn];
+			// Run for loop and store data in 2D array
+			// This for loop will run on rows
+			for (int i = 1; i < totalRow; i++) {
+				Row rows = sheet.getRow(i);
+				// This for loop will run on columns of that row
+				for (int j = 0; j < totalColumn; j++) {
+					// get Cell method will get cell
 					Cell cell = rows.getCell(j);
-					
-						// If cell of type String , then this if condition will work
-						if (cell.getCellType() == ExlCell.CELL_TYPE_STRING)
-							dataSets[i - 1][j] = cell.getStringCellValue();
-						// If cell of type Number , then this if condition will work
-						else if (cell.getCellType() == ExlCell.CELL_TYPE_NUMERIC) {
-							String cellText = String.valueOf(cell.getNumericCellValue());
-							dataSets[i - 1][j] = cellText;
-						} else
-							// If cell of type boolean , then this if condition will work
-							dataSets[i - 1][j] = String.valueOf(cell.getBooleanCellValue());
-					}
 
+					// If cell of type String , then this if condition will work
+					if (cell.getCellType() == ExlCell.CELL_TYPE_STRING)
+						dataSets[i - 1][j] = cell.getStringCellValue();
+					// If cell of type Number , then this if condition will work
+					else if (cell.getCellType() == ExlCell.CELL_TYPE_NUMERIC) {
+						String cellText = String.valueOf(cell.getNumericCellValue());
+						dataSets[i - 1][j] = cellText;
+					} else
+						// If cell of type boolean , then this if condition will work
+						dataSets[i - 1][j] = String.valueOf(cell.getBooleanCellValue());
 				}
-				return dataSets;
-			} catch (Exception e) {
-				System.out.println("Exception in reading Xlsx file" + e.getMessage());
-				e.printStackTrace();
+
 			}
 			return dataSets;
+		} catch (Exception e) {
+			System.out.println("Exception in reading Xlsx file" + e.getMessage());
+			e.printStackTrace();
 		}
-
+		return dataSets;
+	}
 
 	@SuppressWarnings("deprecation")
 	public String getCellData(String sheetName, String colName, int rowNum) {
@@ -123,7 +122,7 @@ public class ExcelReader extends TestBase{
 				}
 			}
 			row = ExlSheet.getRow(rowNum - 1);
-			
+
 			Cell cell = row.getCell(col_Num);
 			if (cell.getCellType() == ExlCell.CELL_TYPE_STRING) {
 				return cell.getStringCellValue();
@@ -137,30 +136,29 @@ public class ExcelReader extends TestBase{
 
 		return null;
 	}
-	
-//	public void setExcelFileObject() {
-//		try {
-//			FileInputStream inputStream = new FileInputStream(FilePath);
-//			String fileExtensionName = FilePath.substring(FilePath.indexOf("."));
-//			if (fileExtensionName.equals(".xlsx")) {
-//				Workbook = new XSSFWorkbook(inputStream);
-//			} else if (fileExtensionName.equals(".xls")) {
-//				Workbook = new HSSFWorkbook(inputStream);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-   
-	
+
+	// public void setExcelFileObject() {
+	// try {
+	// FileInputStream inputStream = new FileInputStream(FilePath);
+	// String fileExtensionName = FilePath.substring(FilePath.indexOf("."));
+	// if (fileExtensionName.equals(".xlsx")) {
+	// Workbook = new XSSFWorkbook(inputStream);
+	// } else if (fileExtensionName.equals(".xls")) {
+	// Workbook = new HSSFWorkbook(inputStream);
+	// }
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+
 	public String getTestInput(String columnName) throws Exception {
 		try {
 			// Access the required test data sheet
-			ExlSheet = ExlWorkbook.getSheet(SheetName);	
+			ExlSheet = ExlWorkbook.getSheet(SheetName);
 			int colNum = getColumnNo(columnName);
 			String testDataValue = getCellData(colNum, testDataRowNo);
 			if (testDataValue.isEmpty()) {
-				return null;
+				return "";
 			} else {
 				return testDataValue;
 			}
@@ -178,7 +176,7 @@ public class ExcelReader extends TestBase{
 
 	public String getTestInput(String columnName, int rowNumber) throws Exception {
 		String testDataValue = " ";
-		try {			
+		try {
 			ExlSheet = ExlWorkbook.getSheet(SheetName);
 			int colNum = getColumnNo(columnName);
 			testDataValue = getCellData(colNum, rowNumber);
@@ -221,28 +219,38 @@ public class ExcelReader extends TestBase{
 		try {
 			ExlRow = ExlSheet.getRow(rowNumber);
 			ExlCell = ExlRow.getCell(ColNum);
-//			int dataType = Cell.getCellType();
-//			if (dataType == 3) {
-//				return "";
-//			} else {
-//				String CellData = Cell.getStringCellValue();
-//				return CellData;
-//			}
-			if (ExlCell.getCellType() == ExlCell.CELL_TYPE_STRING)
-				return ExlCell.getStringCellValue();
+			// int dataType = Cell.getCellType();
+			// if (dataType == 3) {
+			// return "";
+			// } else {
+			// String CellData = Cell.getStringCellValue();
+			// return CellData;
+			// }
+
 			// If cell of type Number , then this if condition will work
+			if (ExlCell.getCellType() == ExlCell.CELL_TYPE_STRING) {
+				String cellText = "";
+				try {
+					cellText = ExlCell.getStringCellValue();
+				} catch (NullPointerException e) {
+					return " ";
+				}
+				return cellText;
+			}
 			else if (ExlCell.getCellType() == ExlCell.CELL_TYPE_NUMERIC) {
 				String cellText = String.valueOf(ExlCell.getNumericCellValue());
 				return cellText;
 			} else if (ExlCell.getCellType() == ExlCell.CELL_TYPE_BLANK) {
 				String cellText = "";
-				return cellText;
+				return cellText; 
 			} else {
 				// If cell of type boolean , then this if condition will work
 				String cellText = String.valueOf(ExlCell.getBooleanCellValue());
 				return cellText;
 			}
-		} catch (Exception e) {
+		}catch (NullPointerException e) {
+			return "";
+		}catch (Exception e) {
 			Reporter("Exception while getting the Excel cell data: " + e.getMessage(), "Fail");
 			throw (e);
 		}
@@ -263,7 +271,8 @@ public class ExcelReader extends TestBase{
 				ExlCell.setCellValue(Result);
 			}
 			// Constant variables Test Data path and Test Data file name
-			FileOutputStream fileOut = new FileOutputStream(ResourceHelper.getBaseResourcePath() + "//src//main//resources//testData//TestData.xlsx");
+			FileOutputStream fileOut = new FileOutputStream(
+					ResourceHelper.getBaseResourcePath() + "//src//main//resources//testData//TestData.xlsx");
 			ExlWorkbook.write(fileOut);
 			fileOut.flush();
 			fileOut.close();
@@ -276,7 +285,7 @@ public class ExcelReader extends TestBase{
 
 	public String[][] getExcelData() {
 		String[][] arrayExcelData = null;
-		try {	
+		try {
 			ExlSheet = ExlWorkbook.getSheet(SheetName);
 			int totalNoOfCols = 2;
 			totalNoOfRows = ExlSheet.getLastRowNum() + 1;
@@ -289,10 +298,10 @@ public class ExcelReader extends TestBase{
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 		return arrayExcelData;
 	}
-	
+
 	public int getTotalNoOfRows() {
 		return totalNoOfRows;
 	}
