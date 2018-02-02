@@ -19,6 +19,7 @@ import com.darwinbox.test.hrms.uiautomation.Utility.ResourceHelper;
  * @LastModified_Date:  20 Nov 2017 
  */
 public class ChromeBrowser {
+
 	public Capabilities getChromeCapabilities() {
 		ChromeOptions option = new ChromeOptions();
 		option.addArguments("start-maximized");

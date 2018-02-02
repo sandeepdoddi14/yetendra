@@ -13,4 +13,5 @@ package com.darwinbox.test.hrms.uiautomation.configreader;
 public class ObjectRepo {
 
 	public static ConfigReader reader;
+
 }

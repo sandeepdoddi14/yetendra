@@ -23,7 +23,7 @@ public class LeavesSettingsPage extends TestBase {
 	AlertHelper objAlertHelper;
 	WebDriver driver;
 
-	public static final Logger log = Logger.getLogger(AttendanceSettingsShiftPage.class);
+	public static final Logger log = Logger.getLogger(LeavesSettingsPage.class);
 	
 
 	public LeavesSettingsPage(WebDriver driver) {

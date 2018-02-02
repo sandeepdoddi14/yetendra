@@ -2,12 +2,20 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite 
 	name="DarwinBox_HRMS_UIAutomation_TestSuite">
-	<test name="DarwinBox_HRMS_Login_Automation_Tests">
+
+    <test name="DarwinBox_HRMS_Login_Automation_Tests">
 		<classes>
 			<class
 				name="com.darwinbox.test.hrms.uiautomation.LoginTests.TC_01_ValidLoginTest" />
 			<class
 				name="com.darwinbox.test.hrms.uiautomation.LoginTests.TC_02_InvalidLoginTest" />
+		</classes>
+	</test>
+
+	<test name="DarwinBox_HRMS_Reimbursement_AutomationTests"
+		  preserve-order="true">
+		<classes>
+			<class name="com.darwinbox.test.hrms.uiautomation.reimbursement.ReimbTest" />
 		</classes>
 	</test>
 
@@ -29,10 +37,10 @@
 			<class
 				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_06_Perform_Mandatory_Checks_in_Policy_Creation" />
 
-			<class
+            <class
 				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_07_Verify_Admin_is_able_to_create_policy" />
 			<class
 				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_08_Verify_Admin_is_able_to_edit_policy" />
 		</classes>
-	</test> <!-- Test -->
-</suite> <!-- Suite -->
+	</test>
+</suite>

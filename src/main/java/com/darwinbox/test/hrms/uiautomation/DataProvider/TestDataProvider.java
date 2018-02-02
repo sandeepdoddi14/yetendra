@@ -1,67 +1,45 @@
-/**
- * 
- */
+
 package com.darwinbox.test.hrms.uiautomation.DataProvider;
 
-import org.testng.annotations.DataProvider;
-
-import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
+import org.testng.annotations.DataProvider;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
+
+import java.util.*;
 
 /**
  * @author balaji
- * @Creation_Date:  20 Nov 2017 
+ * @Creation_Date: 20 Nov 2017
  * @ClassName: TestDataProvider.java
- * @LastModified_Date:  20 Nov 2017 
+ * @LastModified_Date: 20 Nov 2017
  */
-public class TestDataProvider  {
-	
-	 ExcelReader excel = new ExcelReader();
-	@DataProvider(name = "TestRuns")
-	public  Object[][] DataProviderClass() throws Exception {
-		Object[][] testObjArray = excel.getExcelData();		
-		return (testObjArray);
-	}
+public class TestDataProvider {
 
-	@DataProvider(name="getvalidlogintestdata")
-	public Object[][] getValidLoginTestData(){
-		String[][] testRecords = excel.getExcelData();
-		return testRecords;
-	}
-	
-	@DataProvider(name="getinvaliddata")
-	public Object[][] getInValidData(){
-		String[][] testRecords = excel.getExcelData();
-		return testRecords;
-	}
-	
-	//get only column value with yes
-	/*
-	 * implement it later
-	 */
-	@DataProvider(name = "SheetName") 
-    public Object[][] getSpecificColumSet() 
-    { 
-        Object[][] data = excel.getExcelData();
-        int intColCount = 2; //getColumnCount("Order"); write a generic method to get col count
+    ExcelReader excel = new ExcelReader();
 
-        int j = 0; 
-        int arrRowCount=0; 
-        for (int i = 0; i < data.length; i++) { 
-            if((data[i][intColCount-1]).equals("Y"))
-            { 
-                arrRowCount++; 
+    @DataProvider(name = "TestRuns")
+    public Iterator<Object[]> getEntireSheetData() throws Exception {
 
-                } 
-            } 
-               j=0;
+        List<Map<String, String>> testRecords = excel.getExcelData();
+        Collection<Object[]> collection = new ArrayList<Object[]>();
 
-               Object[][] retData = new Object[arrRowCount][intColCount]; 
-               for (int i = 0; i < data.length; i++) 
-               { 
-                   if ((data[i][intColCount-1]).equals("Y")) {
-                       retData[j] = data[i]; j++; }
-               } 
-               return retData; 
+        for (Map<String, String> testRecord : testRecords)
+            collection.add(new Map[]{testRecord});
+
+        TestBase.setDataItem(testRecords);
+
+        return collection.iterator();
+    }
+
+    @DataProvider(name = "specifcRow")
+    public Iterator<Object[]> getSpecificRowdata() {
+
+        List<Map<String, String>> testRecords = excel.getExcelData();
+        Collection<Object[]> collection = new ArrayList<Object[]>();
+
+        for (Map<String, String> testRecord : testRecords)
+            collection.add(new Map[]{testRecord});
+
+        return collection.iterator();
     }
 }
