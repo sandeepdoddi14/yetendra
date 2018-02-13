@@ -1,0 +1,308 @@
+2018-02-13 12:15:59 INFO  TestBase:175 - Chrome
+2018-02-13 12:15:59 INFO  TestBase:199 - Chrome
+2018-02-13 12:16:00 INFO  TestBase:177 - Chrome
+2018-02-13 12:16:04 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 12:16:04 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 12:16:07 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 12:16:07 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 12:16:07 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 12:16:09 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 12:16:09 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 12:16:10 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 12:16:11 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 12:16:11 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 12:16:12 INFO  WaitHelper:51 - element found...
+2018-02-13 12:16:12 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 12:16:12 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 12:16:12 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 12:16:13 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 13:06:14 INFO  TestBase:175 - Chrome
+2018-02-13 13:06:14 INFO  TestBase:199 - Chrome
+2018-02-13 13:06:15 INFO  TestBase:177 - Chrome
+2018-02-13 13:06:19 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 13:06:19 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 13:06:22 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 13:06:22 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 13:06:22 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 13:06:24 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 13:06:25 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 13:06:25 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 13:06:26 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 13:06:34 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 13:06:34 INFO  WaitHelper:51 - element found...
+2018-02-13 13:06:34 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 13:06:34 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 13:06:34 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 13:10:23 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 13:11:10 INFO  TestBase:175 - Chrome
+2018-02-13 13:11:10 INFO  TestBase:199 - Chrome
+2018-02-13 13:11:12 INFO  TestBase:177 - Chrome
+2018-02-13 13:11:15 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 13:11:15 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 13:11:17 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 13:11:17 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 13:11:17 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 13:11:19 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 13:11:19 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 13:11:20 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 13:11:20 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 13:11:23 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 13:11:23 INFO  WaitHelper:51 - element found...
+2018-02-13 13:11:23 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 13:11:24 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 13:11:24 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 14:29:11 ERROR GenericHelper:385 - Exception while inserting text in All Roles textbox
+2018-02-13 14:29:12 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 14:29:19 INFO  TestBase:175 - Chrome
+2018-02-13 14:29:19 INFO  TestBase:199 - Chrome
+2018-02-13 14:29:21 INFO  TestBase:177 - Chrome
+2018-02-13 14:29:24 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 14:29:24 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 14:29:26 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 14:29:27 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 14:29:27 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 14:29:28 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 14:29:29 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 14:29:29 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 14:29:31 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 14:29:44 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 14:29:55 INFO  WaitHelper:51 - element found...
+2018-02-13 14:30:20 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 14:30:30 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 14:31:01 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 14:35:13 ERROR GenericHelper:385 - Exception while inserting text in All Roles textbox
+2018-02-13 14:35:13 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 14:38:16 INFO  TestBase:175 - Chrome
+2018-02-13 14:38:16 INFO  TestBase:199 - Chrome
+2018-02-13 14:38:17 INFO  TestBase:177 - Chrome
+2018-02-13 14:38:21 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 14:38:21 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 14:38:23 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 14:38:23 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 14:38:23 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 14:38:25 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 14:38:25 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 14:38:26 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 14:38:26 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 14:38:31 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 14:38:31 INFO  WaitHelper:51 - element found...
+2018-02-13 14:38:31 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 14:38:31 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 14:38:31 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 14:50:34 INFO  GenericHelper:382 - In All Roles textbox parameter inserted is: 'Role Limit'
+2018-02-13 14:51:53 INFO  RetryExec:97 - I/O exception (org.apache.http.NoHttpResponseException) caught when processing request to {}->http://localhost:8063: The target server failed to respond
+2018-02-13 14:51:53 INFO  RetryExec:113 - Retrying request to {}->http://localhost:8063
+2018-02-13 14:56:51 INFO  TestBase:175 - Chrome
+2018-02-13 14:56:51 INFO  TestBase:199 - Chrome
+2018-02-13 14:56:53 INFO  TestBase:177 - Chrome
+2018-02-13 14:56:56 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 14:56:56 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 14:56:58 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 14:56:58 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 14:56:59 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 14:57:00 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 14:57:00 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 14:57:01 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 14:57:01 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 14:57:12 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 14:57:12 INFO  WaitHelper:51 - element found...
+2018-02-13 14:57:12 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 14:57:12 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 14:57:12 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 14:57:24 INFO  GenericHelper:382 - In All Roles textbox parameter inserted is: 'Role Limit'
+2018-02-13 14:57:34 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 14:58:38 INFO  TestBase:175 - Chrome
+2018-02-13 14:58:38 INFO  TestBase:199 - Chrome
+2018-02-13 14:58:39 INFO  TestBase:177 - Chrome
+2018-02-13 14:58:42 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 14:58:43 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 14:58:45 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 14:58:45 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 14:58:46 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 14:58:47 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 14:58:47 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 14:58:48 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 14:58:48 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 14:58:53 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 14:58:53 INFO  WaitHelper:51 - element found...
+2018-02-13 14:58:53 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 14:58:53 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 14:58:53 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 14:59:15 INFO  GenericHelper:382 - In All Roles textbox parameter inserted is: 'Role Limit'
+2018-02-13 14:59:15 INFO  GenericHelper:382 - In All locations textbox parameter inserted is: 'Location Limit'
+2018-02-13 14:59:16 INFO  GenericHelper:382 - In 1000 textbox parameter inserted is: 'Per Unit Limit'
+2018-02-13 14:59:16 INFO  GenericHelper:382 - In 1000 textbox parameter inserted is: 'Max Unit Limit'
+2018-02-13 14:59:16 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 15:03:43 INFO  TestBase:175 - Chrome
+2018-02-13 15:03:43 INFO  TestBase:199 - Chrome
+2018-02-13 15:03:44 INFO  TestBase:177 - Chrome
+2018-02-13 15:03:48 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 15:03:48 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 15:03:50 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 15:03:50 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 15:03:50 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 15:03:51 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 15:03:52 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 15:03:52 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 15:03:53 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 15:03:54 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 15:03:54 INFO  WaitHelper:51 - element found...
+2018-02-13 15:03:54 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 15:03:54 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 15:03:54 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 15:04:06 INFO  GenericHelper:382 - In All Roles textbox parameter inserted is: 'Role Limit'
+2018-02-13 15:04:06 INFO  GenericHelper:382 - In All locations textbox parameter inserted is: 'Location Limit'
+2018-02-13 15:04:07 INFO  GenericHelper:382 - In 1000 textbox parameter inserted is: 'Per Unit Limit'
+2018-02-13 15:04:07 INFO  GenericHelper:382 - In 1000 textbox parameter inserted is: 'Max Unit Limit'
+2018-02-13 15:04:12 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 15:46:52 INFO  TestBase:175 - Chrome
+2018-02-13 15:46:52 INFO  TestBase:199 - Chrome
+2018-02-13 15:46:53 INFO  TestBase:177 - Chrome
+2018-02-13 15:46:56 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 15:46:57 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 15:46:59 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 15:46:59 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 15:46:59 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 15:47:01 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 15:47:01 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 15:47:02 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 15:47:02 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 15:47:04 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 15:47:04 INFO  WaitHelper:51 - element found...
+2018-02-13 15:47:04 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 15:47:04 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 15:47:04 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 15:47:05 INFO  GenericHelper:382 - In Role Limit textbox parameter inserted is: 'All Roles'
+2018-02-13 15:47:05 INFO  GenericHelper:382 - In Location Limit textbox parameter inserted is: 'All locations'
+2018-02-13 15:47:05 INFO  GenericHelper:382 - In Per Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 15:47:06 INFO  GenericHelper:382 - In Max Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 15:47:11 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 15:49:15 INFO  TestBase:175 - Chrome
+2018-02-13 15:49:15 INFO  TestBase:199 - Chrome
+2018-02-13 15:49:16 INFO  TestBase:177 - Chrome
+2018-02-13 15:49:20 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 15:49:20 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 15:49:22 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 15:49:22 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 15:49:23 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 15:49:24 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 15:49:24 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 15:49:25 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 15:49:25 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 15:49:26 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 15:49:26 INFO  WaitHelper:51 - element found...
+2018-02-13 15:49:27 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 15:49:27 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 15:49:27 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 15:49:28 INFO  GenericHelper:382 - In Role Limit textbox parameter inserted is: 'All Roles'
+2018-02-13 15:49:28 INFO  GenericHelper:382 - In Location Limit textbox parameter inserted is: 'All locations'
+2018-02-13 15:49:28 INFO  GenericHelper:382 - In Per Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 15:49:29 INFO  GenericHelper:382 - In Max Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 15:56:30 INFO  TestBase:175 - Chrome
+2018-02-13 15:56:30 INFO  TestBase:199 - Chrome
+2018-02-13 15:56:31 INFO  TestBase:177 - Chrome
+2018-02-13 15:56:39 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 15:56:39 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 15:56:41 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 15:56:41 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 15:56:42 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 15:56:43 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 15:56:43 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 15:56:44 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 15:56:44 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 15:56:46 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 15:56:46 INFO  WaitHelper:51 - element found...
+2018-02-13 15:56:46 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 15:56:46 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 15:56:46 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 15:56:47 INFO  GenericHelper:382 - In Role Limit textbox parameter inserted is: 'All Roles'
+2018-02-13 15:56:48 INFO  GenericHelper:382 - In Location Limit textbox parameter inserted is: 'All locations'
+2018-02-13 15:56:48 INFO  GenericHelper:382 - In Per Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 15:56:48 INFO  GenericHelper:382 - In Max Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 15:56:48 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 15:57:34 INFO  TestBase:175 - Chrome
+2018-02-13 15:57:34 INFO  TestBase:199 - Chrome
+2018-02-13 15:57:35 INFO  TestBase:177 - Chrome
+2018-02-13 15:57:39 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 15:57:39 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 15:57:42 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 15:57:42 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 15:57:42 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 15:57:43 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 15:57:44 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 15:57:44 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 15:57:45 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 15:57:46 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 15:57:46 INFO  WaitHelper:51 - element found...
+2018-02-13 15:57:46 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 15:57:46 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 15:57:46 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 15:57:47 INFO  GenericHelper:382 - In Role Limit textbox parameter inserted is: 'All Roles'
+2018-02-13 15:57:48 INFO  GenericHelper:382 - In Location Limit textbox parameter inserted is: 'All locations'
+2018-02-13 15:57:48 INFO  GenericHelper:382 - In Per Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 15:57:48 INFO  GenericHelper:382 - In Max Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 16:13:33 INFO  TestBase:175 - Chrome
+2018-02-13 16:13:33 INFO  TestBase:199 - Chrome
+2018-02-13 16:13:34 INFO  TestBase:177 - Chrome
+2018-02-13 16:13:37 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 16:13:37 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 16:13:40 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 16:13:40 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 16:13:40 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 16:13:42 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 16:13:42 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 16:13:43 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 16:13:43 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 16:13:45 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 16:13:45 INFO  WaitHelper:51 - element found...
+2018-02-13 16:13:45 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 16:13:45 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 16:13:45 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 16:13:46 INFO  GenericHelper:382 - In Role Limit textbox parameter inserted is: ' All Roles'
+2018-02-13 16:13:47 INFO  GenericHelper:382 - In Location Limit textbox parameter inserted is: ' All Office Locations'
+2018-02-13 16:13:47 INFO  GenericHelper:382 - In Per Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 16:13:47 INFO  GenericHelper:382 - In Max Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 16:18:11 INFO  TestBase:175 - Chrome
+2018-02-13 16:18:11 INFO  TestBase:199 - Chrome
+2018-02-13 16:18:12 INFO  TestBase:177 - Chrome
+2018-02-13 16:18:16 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 16:18:16 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 16:18:18 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 16:18:18 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 16:18:19 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 16:18:20 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 16:18:20 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 16:18:21 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 16:18:21 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 16:18:22 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 16:18:23 INFO  WaitHelper:51 - element found...
+2018-02-13 16:18:23 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 16:18:23 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 16:18:23 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 16:18:24 INFO  GenericHelper:382 - In Role Limit textbox parameter inserted is: ' All Roles'
+2018-02-13 16:18:25 INFO  GenericHelper:382 - In Location Limit textbox parameter inserted is: ' All Office Locations'
+2018-02-13 16:18:25 INFO  GenericHelper:382 - In Per Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 16:18:25 INFO  GenericHelper:382 - In Max Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 16:18:25 ERROR TestBase:371 - Exception while clicking Save reimb button
+2018-02-13 16:18:25 ERROR TestBase:259 - testCreateReimbursements test is failedjava.lang.AssertionError: expected [true] but found [false]
+2018-02-13 16:19:56 INFO  TestBase:175 - Chrome
+2018-02-13 16:19:56 INFO  TestBase:199 - Chrome
+2018-02-13 16:19:57 INFO  TestBase:177 - Chrome
+2018-02-13 16:20:01 INFO  GenericHelper:382 - In User ID textbox parameter inserted is: 'keshav.n@darwinbox.io'
+2018-02-13 16:20:01 INFO  GenericHelper:382 - In Password textbox parameter inserted is: '123456'
+2018-02-13 16:20:03 INFO  GenericHelper:382 - SignIn button is clicked successfully
+2018-02-13 16:20:03 INFO  TestBase:368 - Clicked on the element: User Profile icon
+2018-02-13 16:20:04 INFO  TestBase:368 - Clicked on the element: Switch To Admin
+2018-02-13 16:20:06 INFO  WaitHelper:57 - element disapear ..
+2018-02-13 16:20:06 INFO  GenericHelper:382 - User Profile icon is clicked successfully
+2018-02-13 16:20:07 INFO  GenericHelper:382 - Settings is clicked successfully
+2018-02-13 16:20:07 INFO  GenericHelper:382 - REIMB is clicked successfully
+2018-02-13 16:20:08 INFO  GenericHelper:382 - Create Reimb Types is clicked successfully
+2018-02-13 16:20:08 INFO  WaitHelper:51 - element found...
+2018-02-13 16:20:09 INFO  GenericHelper:382 - In Reimb1-1 textbox parameter inserted is: 'Reimbursement Name'
+2018-02-13 16:20:09 INFO  GenericHelper:382 - In Applicable to All textbox parameter inserted is: 'Reimbursement Desc'
+2018-02-13 16:20:09 INFO  TestBase:368 - From 'Unit' drop down 'Rupee' is selected
+2018-02-13 16:20:10 INFO  GenericHelper:382 - In Role Limit textbox parameter inserted is: ' All Roles'
+2018-02-13 16:20:11 INFO  GenericHelper:382 - In Location Limit textbox parameter inserted is: ' All Office Locations'
+2018-02-13 16:20:11 INFO  GenericHelper:382 - In Per Unit Limit textbox parameter inserted is: '1000'
+2018-02-13 16:20:11 INFO  GenericHelper:382 - In Max Unit Limit textbox parameter inserted is: '1000'

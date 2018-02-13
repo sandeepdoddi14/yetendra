@@ -69,6 +69,13 @@ public class ExcelReader extends TestBase{
 
         List<Map<String,String>> excelData = new ArrayList<>();
 
+		if(SheetName.contains(":")) {
+			String temp [] = SheetName.split(":");
+			SheetName = temp[0];
+			rowNo = Integer.parseInt(temp[1]);
+			return getExcelDataByRow();
+		}
+
 		try {
 
 			ExlSheet = ExlWorkbook.getSheet(SheetName);
@@ -139,11 +146,9 @@ public class ExcelReader extends TestBase{
 		try {
 
 			ExlSheet = ExlWorkbook.getSheet(SheetName);
-			int rows = ExlSheet.getLastRowNum();
 
 			String [] header = getColumnHeaders(SheetName);
 			int cols = header.length;
-
 
 			Row row = ExlSheet.getRow(rowNo);
 

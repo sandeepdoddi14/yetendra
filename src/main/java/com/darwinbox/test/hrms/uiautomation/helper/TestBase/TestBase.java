@@ -57,11 +57,10 @@ public class TestBase {
 	public static List<Map<String,String>> dataItem = null;
 	public static int dataCounter = 0;
 	private static int currentData = 0;
-	private static Map<String,String> data;
+	public static Map<String,String> data;
 	ExtentTest parentLog = null;
 
 	public static String resultsDIR = "Results/Results"+ UtilityHelper.getCurrentDateTime();
-
 
 	public static void setDataItem(List<Map<String,String>> dataItem) {
 		TestBase.dataItem = dataItem;
@@ -103,13 +102,13 @@ public class TestBase {
 	}
 
 	@BeforeMethod()
-	public void beforeMethod(Method method) throws Exception {
+	public void beforeMethod(Method method) {
 		try {
 			gotoHomePage();
 			Reporter.log("*****" + method.getName() + "****", true);
-
+			data = dataItem.get(currentData++);
 			if (dataCounter >= 2)
-				xtReportLog = parentLog.createNode(dataItem.get(currentData++).get("Test_Description"))
+				xtReportLog = parentLog.createNode(data.get("Test_Description"))
 						.assignCategory(this.getClass().getPackage().toString()
 								.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
 			else
@@ -130,7 +129,6 @@ public class TestBase {
 		getresult(result);
 		extent.flush();
 
-
 	}catch(Exception e){
 		Reporter("Exception in @AfterMethod: "+ e, "Fail", log);
 	}
@@ -142,14 +140,32 @@ public class TestBase {
 	}
 
 	public void gotoHomePage() {
-		driver.manage().deleteAllCookies();
-		driver.get(ObjectRepo.reader.getApplication());
-		driver.manage().deleteAllCookies();
+		try {
+			driver.manage().deleteAllCookies();
+			driver.get(ObjectRepo.reader.getApplication());
+			driver.manage().deleteAllCookies();
+		}catch(Exception e){
+			System.out.println(" Driver object exception. Creating new session and closing existing one");
+			reinit();
+			gotoHomePage();
+		}
 	}
 
+	public void reinit(){
+
+		try{
+			driver.quit();
+		} catch(Exception e){
+
+		}
+		init();
+
+	}
 
 	@AfterSuite
 	public void closeBrowser() {
+		driver.close();
+		driver.quit();
 
 	}
 
@@ -375,115 +391,6 @@ public class TestBase {
 			log.info(text);
 		}
 		Reporter.log(text);
-	}
-	
-	/*
-	 * @SuppressWarnings("unused") private Function<WebDriver, Boolean>
-	 * elementLocated(final WebElement element) { return new Function<WebDriver,
-	 * Boolean>() {
-	 * 
-	 * public Boolean apply(WebDriver driver) { log.debug("Waiting for Element : " +
-	 * element); return element.isDisplayed(); } }; }
-	 *//**
-		 * Check for element is present based on locator If the element is present
-		 * return the web element otherwise null
-		 * 
-		 * @param locator
-		 * @return WebElement or null
-		 */
-	/*
-	 * 
-	 * public WebElement getElementWithNull(By locator) { log.info(locator); try {
-	 * return driver.findElement(locator); } catch (NoSuchElementException e) { //
-	 * Ignore } return null; }
-	 */
-
-	/**
-	 * this methos is usefull if we use Selenium Grid
-	 * 
-	 * @param browser
-	 * @throws IOException
-	 * @author balaji 20 Nov 201713:05:45
-	 */
-	// @Parameters("browser")
-	// @BeforeTest
-	public void launchapp(String browser) throws IOException {
-
-		if (System.getProperty("os.name").contains("Mac")) {
-			if (browser.equals("chrome")) {
-				// System.setProperty("webdriver.chrome.driver",
-				// System.getProperty("user.dir") + "/drivers/chromedriver");
-				System.out.println(" Executing on CHROME");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("chrome");
-				String Node = "http://localhost:5001/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equals("firefox")) {
-				// System.setProperty("webdriver.gecko.driver",
-				// System.getProperty("user.dir") + "/drivers/geckodriver.exe");
-				System.out.println(" Executing on FireFox");
-				String Node = "http://111.11.11.11:5000/wd/hub";
-				DesiredCapabilities cap = DesiredCapabilities.firefox();
-				cap.setBrowserName("firefox");
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equalsIgnoreCase("ie")) {
-				System.out.println(" Executing on IE");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("ie");
-				String Node = "http://110.100.100.10:5555/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else {
-				throw new IllegalArgumentException("The Browser Type is Undefined");
-			}
-		}
-		if (System.getProperty("os.name").contains("Window")) {
-			if (browser.equals("chrome")) {
-				System.out.println(System.getProperty("user.dir"));
-				System.setProperty("webdriver.chrome.driver",
-						System.getProperty("user.dir") + "/drivers/chromedriver.exe");
-				System.out.println(" Executing on CHROME");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("chrome");
-				String Node = "http://localhost:5555/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equals("firefox")) {
-				System.out.println(System.getProperty("user.dir"));
-				System.setProperty("webdriver.gecko.driver",
-						System.getProperty("user.dir") + "/drivers/geckodriver.exe");
-				System.out.println(" Executing on FireFox");
-				String Node = "http://localhost:5554/wd/hub";
-				DesiredCapabilities cap = DesiredCapabilities.firefox();
-				cap.setBrowserName("firefox");
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equalsIgnoreCase("ie")) {
-				System.out.println(" Executing on IE");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("ie");
-				String Node = "http://localhost:5555/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// getUrl(OR.getProperty("url"));
-			} else {
-				throw new IllegalArgumentException("The Browser Type is Undefined");
-			}
-		}
 	}
 
 	public String getData(String key){

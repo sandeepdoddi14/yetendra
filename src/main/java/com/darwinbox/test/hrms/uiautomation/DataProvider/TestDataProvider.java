@@ -18,7 +18,7 @@ public class TestDataProvider {
     ExcelReader excel = new ExcelReader();
 
     @DataProvider(name = "TestRuns")
-    public Iterator<Object[]> getEntireSheetData() throws Exception {
+    public Iterator<Object[]> getEntireSheetData() {
 
         List<Map<String, String>> testRecords = excel.getExcelData();
         Collection<Object[]> collection = new ArrayList<Object[]>();
@@ -33,6 +33,9 @@ public class TestDataProvider {
 
     @DataProvider(name = "specifcRow")
     public Iterator<Object[]> getSpecificRowdata() {
+
+        String sheetName = excel.SheetName;
+
 
         List<Map<String, String>> testRecords = excel.getExcelData();
         Collection<Object[]> collection = new ArrayList<Object[]>();
