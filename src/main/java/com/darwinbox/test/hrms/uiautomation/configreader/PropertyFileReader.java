@@ -58,5 +58,4 @@ public class PropertyFileReader implements ConfigReader{
 		return prop.getProperty("Logger.Level");
 	}
 
-	
 }

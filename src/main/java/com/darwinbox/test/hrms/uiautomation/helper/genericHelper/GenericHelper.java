@@ -27,8 +27,8 @@ public class GenericHelper extends TestBase {
 
 	private static final Logger log = Logger.getLogger(GenericHelper.class);
 	private WebDriver driver;
-	WaitHelper objWait ;
-	
+	WaitHelper objWait;
+
 	public GenericHelper(WebDriver driver) {
 		this.driver = driver;
 		log.debug("DropDownHelper : " + this.driver.hashCode());
@@ -71,11 +71,11 @@ public class GenericHelper extends TestBase {
 		try {
 			element.isDisplayed();
 			log.info("element is displayed.." + element);
-			Reporter(label + " : is Displayed on page ", "Pass",log);
+			Reporter(label + " : is Displayed on page ", "Pass", log);
 			return true;
 		} catch (Exception e) {
 			log.info(e);
-			Reporter("Exception while loadind element " + label, "Fail",log);
+			Reporter("Exception while loadind element " + label, "Fail", log);
 			throw new RuntimeException(e.getLocalizedMessage());
 
 		}
@@ -95,18 +95,47 @@ public class GenericHelper extends TestBase {
 		return elementText;
 	}
 
+	/**
+	 * This method is used to insert value in text box
+	 * 
+	 * @param element
+	 * @param label
+	 * @param value
+	 * @return
+	 */
 	public boolean setElementText(WebElement element, String label, String value) {
 
 		try {
 			element.clear();
 			element.sendKeys(value);
-			Reporter("In " + label + " textbox parameter inserted is: '"
-					+ value + "'", "Pass",log);
+			Reporter("In " + label + " textbox parameter inserted is: '" + value + "'", "Pass", log);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while inserting text in " + label + " textbox",
-					"Fail",log);
+			Reporter("Exception while inserting text in " + label + " textbox", "Fail", log);
+			throw new RuntimeException();			
+		}
+	}
+
+	/**
+	 * This method is used to insert value in text box
+	 * 
+	 * @param element
+	 * @param label
+	 * @param value
+	 * @return
+	 */
+	public boolean setElementText(WebElement element, String label, Integer num) {
+
+		try {
+			String value = num.toString();
+			element.clear();
+			element.sendKeys(value);
+			Reporter("In " + label + " textbox parameter inserted is: '" + value + "'", "Pass", log);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Reporter("Exception while inserting text in " + label + " textbox", "Fail", log);
 			throw new RuntimeException(e.getLocalizedMessage());
 		}
 	}
@@ -114,13 +143,12 @@ public class GenericHelper extends TestBase {
 	public boolean elementClick(WebElement element, String label) {
 		try {
 			element.click();
-			Reporter(label + " is clicked successfully", "Pass",log);
+			Reporter(label + " is clicked successfully", "Pass", log);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
 			Reporter("Exception while clicking " + label, "Fail");
-			throw new RuntimeException("Exception while clicking " + label
-					+ ": " + e.getMessage());
+			throw new RuntimeException("Exception while clicking " + label + ": " + e.getMessage());
 		}
 	}
 
@@ -132,30 +160,31 @@ public class GenericHelper extends TestBase {
 	 * @param text
 	 * @return
 	 */
-	public boolean toggleElementStatus(WebElement element, String toggleStatus,
-			String label) {
+	public boolean toggleElementStatus(WebElement element, String toggleStatus, String label) {
 		try {
-			if (element.isDisplayed()) {
-				if (toggleStatus.equalsIgnoreCase("Enable")) {
-					if (element.isEnabled() == false) {
-						element.click();
-						return true;
-					}
-				} else if (toggleStatus.equalsIgnoreCase("Disable")) {
-					if (element.isEnabled() == true) {
-						element.click();
-						return true;
-					}
+			if (toggleStatus.equalsIgnoreCase("Enable")) {
+				if (element.isEnabled() == false) {
+					element.click();
+					Reporter(label + "checkbox is "+ toggleStatus + " successfully", "Pass");
+					return true;
+				}else {
+					return true;
+				}
+			} else if (toggleStatus.equalsIgnoreCase("Disable")) {
+				if (element.isEnabled() == true) {
+					element.click();
+					Reporter(label + "checkbox is "+ toggleStatus + " successfully", "Pass");
+					return true;
 				}
 			} else {
-				Reporter(label + " checkbox not displayed", "Fail");
-				return false;
-			}
+				Reporter(label + "checkbox is "+ toggleStatus + " successfully", "Pass");
+				return true;
+			}	
+			Reporter(label + " checkbox is not displayed", "Fail");
 			return false;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while " + toggleStatus + "ing " + label
-					+ " checkbox", "Fail");
+			Reporter("Exception while " + toggleStatus + "ing " + label + " checkbox", "Fail");
 			throw new RuntimeException(e.getMessage());
 		}
 	}
@@ -165,7 +194,6 @@ public class GenericHelper extends TestBase {
 		int randomInt = randomGenerator.nextInt(100);
 		return String.valueOf(randomInt);
 	}
-	
 
 	/**
 	 * This method checks visibility of element on page
@@ -215,16 +243,17 @@ public class GenericHelper extends TestBase {
 
 	/**
 	 * This method create a directory if it does not exists
+	 * 
 	 * @param DirectoryName
 	 */
 	public void CreateADirectory(String DirectoryName) {
-		
+
 		String workingDirectory = ResourceHelper.getBaseResourcePath();
 		String dir = workingDirectory + File.separator + DirectoryName;
 		File file = new File(dir);
 		if (!file.exists()) {
 			file.mkdir();
-		} 
+		}
 	}
 
 }

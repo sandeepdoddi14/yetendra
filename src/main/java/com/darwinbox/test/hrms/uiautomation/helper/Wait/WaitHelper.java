@@ -109,10 +109,10 @@ public class WaitHelper extends TestBase{
 	 */
 	public void waitElementToBeClickable(WebElement element) {
 		try {
-			WebDriverWait wait = getWait(30, 5);
+			WebDriverWait wait = getWait(20, 5);
 			wait.until(ExpectedConditions.elementToBeClickable(element));
 		} catch (Exception e) {
-			Reporter("Exception while applying wait to the element to become clickable:" + e.getMessage(), "Debug");
+			//Reporter("Exception while applying wait to the element to become clickable:" + e.getMessage(), "Debug");
 		}
 	}
 

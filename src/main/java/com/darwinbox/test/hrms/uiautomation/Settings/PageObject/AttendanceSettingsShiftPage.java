@@ -133,7 +133,7 @@ public class AttendanceSettingsShiftPage extends TestBase {
 
 	@FindBy(xpath = "//*[@id='policy_table_filter']/label/input")
 	private WebElement policySearchFilterTextBox;
-
+	
 	/**
 	 * This method objGenHelper.elementClick on Shifts link
 	 * 

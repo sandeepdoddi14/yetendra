@@ -23,12 +23,16 @@ public class LeavesSettingsPage extends TestBase {
 	AlertHelper objAlertHelper;
 	WebDriver driver;
 
-	public static final Logger log = Logger.getLogger(AttendanceSettingsShiftPage.class);
+	public static final Logger log = Logger.getLogger(LeavesSettingsPage.class);
 	
 
 	public LeavesSettingsPage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
+		objWait = PageFactory.initElements(driver, WaitHelper.class);
+		objGenHelper = PageFactory.initElements(driver, GenericHelper.class);
+		objDropDownHelper = PageFactory.initElements(driver, DropDownHelper.class);
+		objAlertHelper = PageFactory.initElements(driver, AlertHelper.class);	
 	}
 
 	/*
@@ -68,7 +72,13 @@ public class LeavesSettingsPage extends TestBase {
 	 * @return
 	 */
 	public boolean clickCreateLeavePolicies() {
+		try {
+			objWait.waitForPageToLoad();
 		return objGenHelper.elementClick(leavesMenuCreateLeavePolicies, "Create Leave Policies link");
+	}catch(Exception e) {
+		e.printStackTrace();
+		return false;
+	}
 	}
 
 	/**

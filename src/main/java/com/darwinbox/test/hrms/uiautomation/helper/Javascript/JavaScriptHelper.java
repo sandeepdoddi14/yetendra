@@ -7,8 +7,10 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
 
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
+import com.darwinbox.test.hrms.uiautomation.helper.genericHelper.GenericHelper;
 
 
 
@@ -20,12 +22,14 @@ import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
  */
 public class JavaScriptHelper extends TestBase{
 	private WebDriver driver;
+	GenericHelper objGenHelper;
 	private static final Logger Log = Logger.getLogger(JavaScriptHelper.class);
 
 	
 	public JavaScriptHelper(WebDriver driver) {
 		this.driver = driver;
 		Log.debug("JavaScriptHelper : " + this.driver.hashCode());
+		objGenHelper = PageFactory.initElements(driver, GenericHelper.class);
 	}
 
 	
@@ -79,7 +83,7 @@ public class JavaScriptHelper extends TestBase{
 		}
 	}
 
-	public boolean scrollToElemet(WebDriver driver, WebElement element, String text) {
+	public boolean scrollToElement(WebDriver driver, WebElement element, String text) {
 		try {
 			executeScript("window.scrollTo(arguments[0],arguments[1])", element.getLocation().x,
 					element.getLocation().y);
@@ -91,8 +95,8 @@ public class JavaScriptHelper extends TestBase{
 	}
 
 	public void scrollToElemetAndClick(WebElement element, String text) {
-		scrollToElemet(driver, element, text);
-		element.click();
+		scrollToElement(driver, element, text);
+		objGenHelper.elementClick(element,text);
 	}
 	
 
