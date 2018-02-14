@@ -205,17 +205,17 @@ public class AttendanceSettingsShiftPage extends TestBase {
 	 */
 	public boolean insertAddShiftsDetails() throws Exception {
 		try {
-			ShiftName = excel.getTestInput("Shift Name");
+			ShiftName = getData("Shift Name");
 			objGenHelper.setElementText(shiftNameTextBox, "Shift Name", ShiftName);
-			objGenHelper.setElementText(shiftDescriptionTextBox, "Shift Description", excel.getTestInput("Shift Description"));
+			objGenHelper.setElementText(shiftDescriptionTextBox, "Shift Description", getData("Shift Description"));
 			objDropDownHelper.selectUsingIndex(groupCompanyDropBox, 1, "Group Company");
-			objDropDownHelper.selectUsingVisibleValue( beginTimeHourDropBox, excel.getTestInput("Start Time hr"),
+			objDropDownHelper.selectUsingVisibleValue( beginTimeHourDropBox, getData("Start Time hr"),
 					"Start Time hr");
-			objDropDownHelper.selectUsingVisibleValue( beginTimeMinDropBox, excel.getTestInput("Start Time min"),
+			objDropDownHelper.selectUsingVisibleValue( beginTimeMinDropBox, getData("Start Time min"),
 					"Start Time min");
-			objDropDownHelper.selectUsingVisibleValue( endTimeHourDropBox, excel.getTestInput("End Time hr"),
+			objDropDownHelper.selectUsingVisibleValue( endTimeHourDropBox, getData("End Time hr"),
 					"End Time hr");
-			objDropDownHelper.selectUsingVisibleValue( endTimeMinDropBox, excel.getTestInput("End Time min"),
+			objDropDownHelper.selectUsingVisibleValue( endTimeMinDropBox, getData("End Time min"),
 					"End Time min");
 			return true;
 		} catch (Exception e) {
@@ -257,7 +257,7 @@ public class AttendanceSettingsShiftPage extends TestBase {
 			if (objGenHelper.checkVisbilityOfElement(shiftErrorMsg, "Error msg ") == true) {
 				if (shiftErrorMsg.getText().contains(ShiftName)) {
 					Reporter(shiftErrorMsg.getText(), "Pass");
-					ShiftName = excel.getTestInput("Shift Name") + objGenHelper.getRandomNumber();
+					ShiftName = getData("Shift Name") + objGenHelper.getRandomNumber();
 					objGenHelper.setElementText(shiftNameTextBox, "Shift Name", ShiftName);
 					objGenHelper.elementClick(saveShiftButton, "Save button");
 					return true;
@@ -284,13 +284,13 @@ public class AttendanceSettingsShiftPage extends TestBase {
 			if (objGenHelper.checkVisbilityOfElement(shiftErrorMsg, "Error msg") == true) {
 				WebDriverWait wait = new WebDriverWait(driver, 20);
 				wait.until(ExpectedConditions.textToBePresentInElement(shiftErrorMsg,
-						excel.getTestInput("ErrorMsgBeginTimeGreaterThanEndTime").trim()));
+						getData("ErrorMsgBeginTimeGreaterThanEndTime").trim()));
 				String errorMsg = shiftErrorMsg.getText().trim();
-				if (errorMsg.contains(excel.getTestInput("ErrorMsgBeginTimeGreaterThanEndTime").trim()) == true) {
+				if (errorMsg.contains(getData("ErrorMsgBeginTimeGreaterThanEndTime").trim()) == true) {
 					Reporter(shiftErrorMsg.getText() + " is displayed correctly", "Pass");
 					return true;
 				} else {
-					System.out.println(excel.getTestInput("ErrorMsgBeginTimeGreaterThanEndTime"));
+					System.out.println(getData("ErrorMsgBeginTimeGreaterThanEndTime"));
 					Reporter("Unexpected error " + shiftErrorMsg.getText() + " is displayed", "Fail", log);
 					return false;
 				}
@@ -367,15 +367,15 @@ public class AttendanceSettingsShiftPage extends TestBase {
 			objWait.waitElementToBeClickable(shiftNameTextBox);
 			objGenHelper.setElementText(shiftNameTextBox, "Shift Name", ShiftName + objGenHelper.getRandomNumber());
 			objGenHelper.setElementText(shiftDescriptionTextBox, "Shift Description",
-					excel.getTestInput("Shift Description") + objGenHelper.getRandomNumber());
+					getData("Shift Description") + objGenHelper.getRandomNumber());
 			objDropDownHelper.selectUsingIndex(groupCompanyDropBox, 0, "Group Company");
-			objDropDownHelper.selectUsingVisibleValue( beginTimeHourDropBox, excel.getTestInput("Start Time hr"),
+			objDropDownHelper.selectUsingVisibleValue( beginTimeHourDropBox, getData("Start Time hr"),
 					"Start Time hr");
-			objDropDownHelper.selectUsingVisibleValue( beginTimeMinDropBox, excel.getTestInput("Start Time min"),
+			objDropDownHelper.selectUsingVisibleValue( beginTimeMinDropBox, getData("Start Time min"),
 					"Start Time min");
-			objDropDownHelper.selectUsingVisibleValue( endTimeHourDropBox, excel.getTestInput("End Time hr"),
+			objDropDownHelper.selectUsingVisibleValue( endTimeHourDropBox, getData("End Time hr"),
 					"End Time hr");
-			objDropDownHelper.selectUsingVisibleValue( endTimeMinDropBox, excel.getTestInput("End Time min"),
+			objDropDownHelper.selectUsingVisibleValue( endTimeMinDropBox, getData("End Time min"),
 					"End Time min");
 			checkIfDuplicateShiftName();
 			Reporter("Record edited successfully", "Pass", log);

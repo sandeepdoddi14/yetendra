@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.darwinbox.test.hrms.uiautomation.helper.TestBase;
 
 import java.io.File;
@@ -9,30 +7,25 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestResult;
 import org.testng.Reporter;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.*;
 
 import com.darwinbox.test.hrms.uiautomation.Utility.DateTimeHelper;
-import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.Utility.ResourceHelper;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
@@ -42,10 +35,6 @@ import com.darwinbox.test.hrms.uiautomation.configuration.browser.ChromeBrowser;
 import com.darwinbox.test.hrms.uiautomation.configuration.browser.FirefoxBrowser;
 import com.darwinbox.test.hrms.uiautomation.configuration.browser.HtmlUnitBrowser;
 import com.darwinbox.test.hrms.uiautomation.configuration.browser.IExploreBrowser;
-import com.darwinbox.test.hrms.uiautomation.helper.genericHelper.GenericHelper;
-//import com.relevantcodes.extentreports.ExtentReports;
-//import com.relevantcodes.extentreports.ExtentTest;
-//import com.relevantcodes.extentreports.LogStatus;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
@@ -61,34 +50,40 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 public class TestBase {
 
 	private static Logger log ;
-	GenericHelper objHelper;
-	public WebDriver driver;
-	public static ExtentReports extent = null;
+	public static WebDriver driver;
+	public static ExtentReports extent = new ExtentReports();;
 	public static ExtentTest xtReportLog = null;
 	public static ExtentHtmlReporter htmlReporter = null;
+	public static List<Map<String,String>> dataItem = null;
+	public static int dataCounter = 0;
+	private static int currentData = 0;
+	public static Map<String,String> data;
 	ExtentTest parentLog = null;
-	public static int testDataRowNo = 0;
-	public ITestResult result;
 
-	public static ExcelReader excel;
-	
+	public static String resultsDIR = "Results/Results"+ UtilityHelper.getCurrentDateTime();
+
+	public static void setDataItem(List<Map<String,String>> dataItem) {
+		TestBase.dataItem = dataItem;
+		dataCounter = dataItem.size();
+		currentData = 0;
+	}
 
 	@BeforeSuite
 	public void startReport() {
-		excel = new ExcelReader();
+
 		ObjectRepo.reader = new PropertyFileReader();
 		String log4jConfPath = ResourceHelper.getResourcePath("/src/main/resources/configfile/log4j.properties");
 		PropertyConfigurator.configure(log4jConfPath);
 		log = Logger.getLogger(TestBase.class);
-		UtilityHelper.CreateADirectory("//target//TestExecution_Report");
-		htmlReporter = new ExtentHtmlReporter(System.getProperty("user.dir")
-				+ "//target//TestExecution_Report//STMExtentReport" + UtilityHelper.getCurrentDateTime() + ".html");
-		extent = new ExtentReports();
-		extent.attachReporter(htmlReporter);
+		UtilityHelper.CreateADirectory(resultsDIR);
+		htmlReporter = new ExtentHtmlReporter(ResourceHelper.getBaseResourcePath()+File.separator +  resultsDIR +File.separator + "TestReport.html");
 		htmlReporter.setAppendExisting(true);
 		htmlReporter.config().setChartVisibilityOnOpen(true);
-		htmlReporter.loadXMLConfig(
-				new File(System.getProperty("user.dir") + "//src//main//resources//configfile//extent-config.xml"));
+		htmlReporter.loadXMLConfig(new File(ResourceHelper.getBaseResourcePath()+"/src/main/resources/configfile/extent-config.xml"));
+
+		init();
+
+		extent.attachReporter(htmlReporter);
 		extent.setSystemInfo("User Name", System.getProperty("user.name"));
 		extent.setSystemInfo("OS", System.getProperty("os.name"));
 		extent.setSystemInfo("Environment", ObjectRepo.reader.getApplication());
@@ -100,7 +95,6 @@ public class TestBase {
 	@BeforeClass
 	public void beforeClass() {
 		try {
-			testDataRowNo = 0;
 			parentLog = extent.createTest((this.getClass().getSimpleName()));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -108,42 +102,33 @@ public class TestBase {
 	}
 
 	@BeforeMethod()
-	public void beforeMethod(Method method) throws Exception {
-		try {		
-			testDataRowNo++;
-			Reporter.log("*****" + method.getName() + excel.getTestInput("Test_Description") + "****", true);
-			if (excel.getTestInput("RunMode").equalsIgnoreCase("Yes")) {
-				init();
-				Reporter.log("*****" + method.getName() + "****", true);
-
-				if (excel.getTotalNoOfRows() > 2) {
-					xtReportLog = parentLog.createNode(excel.getTestInput("Test_Description"))
-							.assignCategory(this.getClass().getPackage().toString()
-									.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
-				} else {
-					xtReportLog = parentLog.assignCategory(this.getClass().getPackage().toString()
-							.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
-				}
-				log.info("******************************************************************************");
-				log.info("*********** " + (this.getClass().getPackage().toString()
-						.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1) + "::"
-						+ this.getClass().getSimpleName() + " ******"));
-
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Exception in Before Method" + e.getMessage());
+	public void beforeMethod(Method method) {
+		try {
+			gotoHomePage();
+			Reporter.log("*****" + method.getName() + "****", true);
+			data = dataItem.get(currentData++);
+			if (dataCounter >= 2)
+				xtReportLog = parentLog.createNode(data.get("Test_Description"))
+						.assignCategory(this.getClass().getPackage().toString()
+								.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
+			else
+				xtReportLog = parentLog.assignCategory(this.getClass().getPackage().toString()
+						.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
 		}
+			 catch(Exception e){
+				e.printStackTrace();
+				throw new RuntimeException("Exception in Before Method" + e.getMessage());
+			}
+
 	}
 
 	@AfterMethod()
 	public void afterMethod(ITestResult result) {
 		try{
-		if (excel.getTestInput("RunMode").equalsIgnoreCase("Yes")) {
+
 		getresult(result);
 		extent.flush();
-		closeBrowser();
-		}
+
 	}catch(Exception e){
 		Reporter("Exception in @AfterMethod: "+ e, "Fail", log);
 	}
@@ -151,24 +136,36 @@ public class TestBase {
 	
 	@AfterClass(alwaysRun = true)
 	public void endTest() {
-//	closeBrowser();
+		gotoHomePage();
 	}
 
-	@AfterSuite
-	public void closeAll() {
+	public void gotoHomePage() {
 		try {
-			driver.close();
-			driver.quit();
-			Reporter("All browser sessions are closed", "Pass");
-		} catch (NoSuchSessionException e) {
-			Reporter("All browser sessions are closed", "Pass");
+			driver.manage().deleteAllCookies();
+			driver.get(ObjectRepo.reader.getApplication());
+			driver.manage().deleteAllCookies();
+		}catch(Exception e){
+			System.out.println(" Driver object exception. Creating new session and closing existing one");
+			reinit();
+			gotoHomePage();
 		}
 	}
 
+	public void reinit(){
+
+		try{
+			driver.quit();
+		} catch(Exception e){
+
+		}
+		init();
+
+	}
+
+	@AfterSuite
 	public void closeBrowser() {
 		driver.close();
 		driver.quit();
-		log.info("browser closed");
 
 	}
 
@@ -227,19 +224,6 @@ public class TestBase {
 		}
 	}
 
-	public boolean launchApplication() {
-		log.info("navigating to :" + ObjectRepo.reader.getApplication());
-		try {
-			driver.get(ObjectRepo.reader.getApplication());
-			driver.manage().timeouts().pageLoadTimeout(ObjectRepo.reader.getPageLoadTimeOut(), TimeUnit.SECONDS);
-			Reporter("Launched Application successfully", "Pass");
-			return true;
-		} catch (Exception e) {
-			Reporter("Exception while launching Application ", "Fail");
-			return false;
-		}
-	}
-
 	/**
 	 * 
 	 * @param result
@@ -247,38 +231,32 @@ public class TestBase {
 	public void getresult(ITestResult result) {
 		try {
 			File screenShotName;
+			String tempPath = ResourceHelper.getBaseResourcePath()
+					+File.separator + resultsDIR + File.separator + "Screenshots"+File.separator + dataItem.get(currentData-1).get("TestCaseName");
 			if (result.getStatus() == ITestResult.SUCCESS) {
 				xtReportLog.log(Status.PASS, result.getName() + " test is pass");
-				File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-				String scrPath = ResourceHelper.getBaseResourcePath()
-						+ "//src//main//java//com.darwinbox.test.hrms.uiautomation.Screenshots//" + result.getName()
-						+ "-" + "PASS" + "-"
-						+ /* Arrays.toString(testResult.getParameters()) + */ DateTimeHelper.getCurrentDateTime()
-						+ ".png";
-				screenShotName = new File(scrPath);
-				FileUtils.copyFile(scrFile, screenShotName);
-				String filePath = screenShotName.toString();
-				xtReportLog.pass("Pass Screenshot", MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
-			} else if (result.getStatus() == ITestResult.SKIP) {
-				log.debug(result.getName() + " test is skipped and skip reason is:-" + result.getThrowable());
+				/*	File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+					String scrPath = tempPath + "-" + "PASS" + "-" + DateTimeHelper.getCurrentDateTime() + ".png";
+					screenShotName = new File(scrPath);
+					FileUtils.copyFile(scrFile, screenShotName);
+					String filePath = screenShotName.toString();
+					xtReportLog.pass("Pass Screenshot", MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
+				*/
+			}
+			 else if (result.getStatus() == ITestResult.SKIP) {
+					log.debug(result.getName() + " test is skipped and skip reason is:-" + result.getThrowable());
 			} else if (result.getStatus() == ITestResult.FAILURE) {
-				//Reporter(" " + result.getThrowable(), "Fail");
+
 				xtReportLog.log(Status.FAIL, result.getName() + " test is failed");
 				File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-				String scrPath = ResourceHelper.getBaseResourcePath()
-						+ "//src//main//java//com.darwinbox.test.hrms.uiautomation.Screenshots//" + result.getName()
-						+ "-" + "FAIL" + "-"
-						+ /* Arrays.toString(testResult.getParameters()) + */ DateTimeHelper.getCurrentDateTime()
-						+ ".png";
+				String scrPath = tempPath + "-" + "FAIL" + "-" + DateTimeHelper.getCurrentDateTime() + ".png";
 				screenShotName = new File(scrPath);
 				FileUtils.copyFile(scrFile, screenShotName);
+
 				String filePath = screenShotName.toString();
 				xtReportLog.fail("Failure Screenshot",
 						MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
 				log.error(result.getName() + " test is failed" + result.getThrowable());
-//			} else if (result.getStatus() == ITestResult.STARTED) {
-//				xtReportLog.log(Status.INFO, result.getName() + " test is started");
-//				log.info(result.getName() + " test is started");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -414,114 +392,9 @@ public class TestBase {
 		}
 		Reporter.log(text);
 	}
-	
-	/*
-	 * @SuppressWarnings("unused") private Function<WebDriver, Boolean>
-	 * elementLocated(final WebElement element) { return new Function<WebDriver,
-	 * Boolean>() {
-	 * 
-	 * public Boolean apply(WebDriver driver) { log.debug("Waiting for Element : " +
-	 * element); return element.isDisplayed(); } }; }
-	 *//**
-		 * Check for element is present based on locator If the element is present
-		 * return the web element otherwise null
-		 * 
-		 * @param locator
-		 * @return WebElement or null
-		 */
-	/*
-	 * 
-	 * public WebElement getElementWithNull(By locator) { log.info(locator); try {
-	 * return driver.findElement(locator); } catch (NoSuchElementException e) { //
-	 * Ignore } return null; }
-	 */
 
-	/**
-	 * this methos is usefull if we use Selenium Grid
-	 * 
-	 * @param browser
-	 * @throws IOException
-	 * @author balaji 20 Nov 201713:05:45
-	 */
-	// @Parameters("browser")
-	// @BeforeTest
-	public void launchapp(String browser) throws IOException {
-
-		if (System.getProperty("os.name").contains("Mac")) {
-			if (browser.equals("chrome")) {
-				// System.setProperty("webdriver.chrome.driver",
-				// System.getProperty("user.dir") + "/drivers/chromedriver");
-				System.out.println(" Executing on CHROME");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("chrome");
-				String Node = "http://localhost:5001/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equals("firefox")) {
-				// System.setProperty("webdriver.gecko.driver",
-				// System.getProperty("user.dir") + "/drivers/geckodriver.exe");
-				System.out.println(" Executing on FireFox");
-				String Node = "http://111.11.11.11:5000/wd/hub";
-				DesiredCapabilities cap = DesiredCapabilities.firefox();
-				cap.setBrowserName("firefox");
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equalsIgnoreCase("ie")) {
-				System.out.println(" Executing on IE");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("ie");
-				String Node = "http://110.100.100.10:5555/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else {
-				throw new IllegalArgumentException("The Browser Type is Undefined");
-			}
-		}
-		if (System.getProperty("os.name").contains("Window")) {
-			if (browser.equals("chrome")) {
-				System.out.println(System.getProperty("user.dir"));
-				System.setProperty("webdriver.chrome.driver",
-						System.getProperty("user.dir") + "/drivers/chromedriver.exe");
-				System.out.println(" Executing on CHROME");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("chrome");
-				String Node = "http://localhost:5555/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equals("firefox")) {
-				System.out.println(System.getProperty("user.dir"));
-				System.setProperty("webdriver.gecko.driver",
-						System.getProperty("user.dir") + "/drivers/geckodriver.exe");
-				System.out.println(" Executing on FireFox");
-				String Node = "http://localhost:5554/wd/hub";
-				DesiredCapabilities cap = DesiredCapabilities.firefox();
-				cap.setBrowserName("firefox");
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				// loadData();
-				// getUrl(OR.getProperty("url"));
-			} else if (browser.equalsIgnoreCase("ie")) {
-				System.out.println(" Executing on IE");
-				DesiredCapabilities cap = DesiredCapabilities.chrome();
-				cap.setBrowserName("ie");
-				String Node = "http://localhost:5555/wd/hub";
-				driver = new RemoteWebDriver(new URL(Node), cap);
-				driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-				// Launch website
-				// getUrl(OR.getProperty("url"));
-			} else {
-				throw new IllegalArgumentException("The Browser Type is Undefined");
-			}
-		}
+	public String getData(String key){
+		return data.get(key);
 	}
 
 }

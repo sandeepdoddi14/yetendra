@@ -10,7 +10,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import com.darwinbox.test.hrms.uiautomation.Pages.HomePage;
-import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.helper.Alert.AlertHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.Browser.BrowserHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.Dropdown.DropDownHelper;
@@ -255,7 +254,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 
 	public boolean checkMandatoryFields() {
 		try {
-			if (excel.getTestInput("Policy Name").isEmpty()) {
+			if (getData("Policy Name").isEmpty()) {
 
 			}
 
@@ -342,7 +341,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 	public boolean enableOrDisableLeaveDeductionPolicy_DeductLeaveAfterApprovalCheckBox(String enableOrDisable) {
 		try {
 			return objGenHelper.toggleElementStatus(policyDeductLeavesAfterApprovalCheckBox,
-					excel.getTestInput("WorkDuration_Deduct Leave after Approval?_CheckBox"),
+					getData("WorkDuration_Deduct Leave after Approval?_CheckBox"),
 					"Leave Deduction Policy Deduct: Leave After Approval");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -360,7 +359,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 	public boolean enableOrDisableLeaveDeductionPolicy_LeaveDeductionOnHolidayCheckBox(String enableOrDisable) {
 		try {
 			return objGenHelper.toggleElementStatus(policyLeaveDeductionOnHolidayCheckBox,
-					excel.getTestInput("Leave Deduction On Holiday_CheckBox"),
+					getData("Leave Deduction On Holiday_CheckBox"),
 					"Leave Deduction Policy Deduct: Leave Deduction On Holiday");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -377,7 +376,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 	public boolean enableOrDisableLeaveDeductionPolicy_LeaveDeductionOnWeeklyOffCheckBox(String enableOrDisable) {
 		try {
 			return objGenHelper.toggleElementStatus(policyLeaveDeductionOnWeeklyOffCheckBox,
-					excel.getTestInput("Leave Deduction On Weeklyoff_CheckBox"),
+					getData("Leave Deduction On Weeklyoff_CheckBox"),
 					"Leave Deduction Policy Deduct: Leave Deduction On Weeklyoff");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -394,7 +393,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 	public boolean enableOrDisableLeaveDeductionPolicyLeaveDeductionOnWeeklyOffCheckBox(String enableOrDisable) {
 		try {
 			return objGenHelper.toggleElementStatus(policyLeaveDeductionOnWeeklyOffCheckBox,
-					excel.getTestInput("Leave Deduction On Weeklyoff_CheckBox"),
+					getData("Leave Deduction On Weeklyoff_CheckBox"),
 					"Leave Deduction Policy Deduct: Leave Deduction On Weeklyoff");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -443,7 +442,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 	public boolean insertNumberOfLateMarkLeaveDeductedTextBox(String text) {
 		try {
 			return objGenHelper.setElementText(policyNumberOfLateMarkTextBox, "Number of Late mark on which leave should be deducted",
-					excel.getTestInput("Number of Late mark on which leave should be deducted_TextBox"));
+					getData("Number of Late mark on which leave should be deducted_TextBox"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -510,13 +509,13 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 			if (text.equalsIgnoreCase("Enable")) {
 				selectFromLeaveDeductionPolicyDropdown("Enable");
 				selectFromLeaveDeductionPolicy_DeductLeavesDropdown(
-						excel.getTestInput("Deduct Leaves From_Dropdown"));
+						getData("Deduct Leaves From_Dropdown"));
 				enableOrDisableLeaveDeductionPolicy_DeductLeaveAfterApprovalCheckBox(
-						excel.getTestInput("LeaveDeductionPolicy_Deduct Leave after Approval?_CheckBox"));
+						getData("LeaveDeductionPolicy_Deduct Leave after Approval?_CheckBox"));
 				enableOrDisableLeaveDeductionPolicy_LeaveDeductionOnHolidayCheckBox(
-						excel.getTestInput("Leave Deduction On Holiday_CheckBox"));
+						getData("Leave Deduction On Holiday_CheckBox"));
 				enableOrDisableLeaveDeductionPolicy_LeaveDeductionOnWeeklyOffCheckBox(
-						excel.getTestInput("Leave Deduction On Weeklyoff_CheckBox"));
+						getData("Leave Deduction On Weeklyoff_CheckBox"));
 				return true;
 			} else if (text.equalsIgnoreCase("Disable")) {
 				selectFromLeaveDeductionPolicyDropdown("Disable");
@@ -540,16 +539,16 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 		try {
 			if (text.equalsIgnoreCase("Enable")) {
 				enableOrDisableFromLateMarkPolicyDropdown("Enable");
-				selectFromLateMarkLeaveDeductionDropdown(excel.getTestInput("Late Mark Leave Deduction_Dropdown"));
-				selectFromLateMarkLeaveTypeDropDown(excel.getTestInput("Late Mark Leave Type_Dropdown"));
+				selectFromLateMarkLeaveDeductionDropdown(getData("Late Mark Leave Deduction_Dropdown"));
+				selectFromLateMarkLeaveTypeDropDown(getData("Late Mark Leave Type_Dropdown"));
 				insertNumberOfLateMarkLeaveDeductedTextBox(
-						excel.getTestInput("Number of Late mark on which leave should be deducted_TextBox"));
+						getData("Number of Late mark on which leave should be deducted_TextBox"));
 				enableOrDisableLateMarkPolicyDeductLeaveAfterApprovalCheckBox(
-						excel.getTestInput("LateMark_Deduct Leave after Approval?_CheckBox"));
+						getData("LateMark_Deduct Leave after Approval?_CheckBox"));
 				enableOrDisableLateMarkDeductionOnHolidayCheckBox(
-						excel.getTestInput("Latemark Deduction On Holiday_CheckBox"));
+						getData("Latemark Deduction On Holiday_CheckBox"));
 				enableOrDisableLateMarkDeductionOnWeekOffCheckBox(
-						excel.getTestInput("Latemark Deduction On Weeklyoff_CheckBox"));
+						getData("Latemark Deduction On Weeklyoff_CheckBox"));
 
 				return true;
 			} else if (text.equalsIgnoreCase("Disable")) {
@@ -677,18 +676,18 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 			if (text.equalsIgnoreCase("Enable")) {
 				enableOrDisableFromWorkDurationPolicyDropdown("Enable");
 				selectFromMinimumDurationToCountHalfDayDropdown(
-						excel.getTestInput("Minimum duration to count half day_Hr_Dropdown"),
-						excel.getTestInput("Minimum duration to count half day_Min_Dropdown"));
-				selectFromWorkDurationLeaveTypeDropDown(excel.getTestInput("Work Duration Leave Type_Dropdown"));
+						getData("Minimum duration to count half day_Hr_Dropdown"),
+						getData("Minimum duration to count half day_Min_Dropdown"));
+				selectFromWorkDurationLeaveTypeDropDown(getData("Work Duration Leave Type_Dropdown"));
 				selectFromMinimumDurationToCountFullDayDropdown(
-						excel.getTestInput("Minimum duration to count Full day_Hr_Dropdown"),
-						excel.getTestInput("Minimum duration to count Full day_Min_Dropdown"));
+						getData("Minimum duration to count Full day_Hr_Dropdown"),
+						getData("Minimum duration to count Full day_Min_Dropdown"));
 				enableOrDisableWorkDurationPolicyDeductLeaveAfterApprovalCheckBox(
-						excel.getTestInput("WorkDuration_Deduct Leave after Approval?_CheckBox"));
+						getData("WorkDuration_Deduct Leave after Approval?_CheckBox"));
 				enableOrDisableWorkDurationDeductionOnHolidayCheckBox(
-						excel.getTestInput("Work Duration Deduction On Holiday_CheckBox"));
+						getData("Work Duration Deduction On Holiday_CheckBox"));
 				enableOrDisableWorkDurationDeductionOnWeekOffCheckBox(
-						excel.getTestInput("Work Duration Deduction On Weeklyoff_CheckBox"));
+						getData("Work Duration Deduction On Weeklyoff_CheckBox"));
 				return true;
 			} else if (text.equalsIgnoreCase("Disable")) {
 				enableOrDisableFromWorkDurationPolicyDropdown("Disable");
@@ -743,7 +742,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 	public boolean insertNumberOfEarlyMarkLeaveDeductedTextBox(String text) {
 		try {
 			return objGenHelper.setElementText(policyNumberOfEarlyMarkTextBox, "Number of Early mark on which leave should be deducted",
-					excel.getTestInput("Number of Early mark on which leave should be deducted_TextBox"));
+					getData("Number of Early mark on which leave should be deducted_TextBox"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -809,16 +808,16 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 		try {
 			if (text.equalsIgnoreCase("Enable")) {
 				enableOrDisableFromEarlyMarkPolicyDropdown("Enable");
-				selectFromEarlyMarkLeaveDeductionDropdown(excel.getTestInput("Early Mark Leave Deduction_Dropdown"));
-				selectFromEarlyMarkLeaveTypeDropDown(excel.getTestInput("Early Mark Leave Type_Dropdown"));
+				selectFromEarlyMarkLeaveDeductionDropdown(getData("Early Mark Leave Deduction_Dropdown"));
+				selectFromEarlyMarkLeaveTypeDropDown(getData("Early Mark Leave Type_Dropdown"));
 				insertNumberOfEarlyMarkLeaveDeductedTextBox(
-						excel.getTestInput("Number of Early mark on which leave should be deducted_TextBox"));
+						getData("Number of Early mark on which leave should be deducted_TextBox"));
 				enableOrDisableEarlyMarkPolicyDeductLeaveAfterApprovalCheckBox(
-						excel.getTestInput("EarlyMark_Deduct Leave after Approval?_CheckBox"));
+						getData("EarlyMark_Deduct Leave after Approval?_CheckBox"));
 				enableOrDisableEarlyMarkDeductionOnHolidayCheckBox(
-						excel.getTestInput("Earlymark Deduction On Holiday_CheckBox"));
+						getData("Earlymark Deduction On Holiday_CheckBox"));
 				enableOrDisableEarlyMarkDeductionOnWeekOffCheckBox(
-						excel.getTestInput("Earlymark Deduction On Weeklyoff_CheckBox"));
+						getData("Earlymark Deduction On Weeklyoff_CheckBox"));
 				return true;
 			} else if (text.equalsIgnoreCase("Disable")) {
 				enableOrDisableFromEarlyMarkPolicyDropdown("Disable");

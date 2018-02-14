@@ -7,15 +7,16 @@ import java.io.File;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 
 import com.darwinbox.test.hrms.uiautomation.Utility.ResourceHelper;
-import com.darwinbox.test.hrms.uiautomation.helper.Dropdown.DropDownHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
+import org.openqa.selenium.support.ui.Select;
 
 /**
  * @author balaji
@@ -140,6 +141,20 @@ public class GenericHelper extends TestBase {
 		}
 	}
 
+	public boolean setElementTextinSelection(WebElement element, String label, String value,boolean clear) {
+		try {
+			if (clear)
+				element.clear();
+			element.sendKeys(value);
+			Reporter("In " + label + " textbox parameter inserted is: '" + value + "'", "Pass",log);
+			return true;
+		} catch (Exception e) {
+	 		e.printStackTrace();
+			Reporter("Exception while inserting text in " + label + " textbox", "Fail",log);
+			throw new RuntimeException(e.getLocalizedMessage());
+		}
+	}
+
 	public boolean elementClick(WebElement element, String label) {
 		try {
 			element.click();
@@ -239,6 +254,7 @@ public class GenericHelper extends TestBase {
 			Reporter("Correctly" + text + " is not visible on page", "Pass");
 			return true;
 		}
+
 	}
 
 	/**
@@ -256,4 +272,30 @@ public class GenericHelper extends TestBase {
 		}
 	}
 
+	public boolean selectDropdown(WebElement element, String dropdownText, String msg) {
+
+		try {
+			Select drpElement = new Select(element);
+			drpElement.selectByVisibleText(dropdownText);
+			Reporter("From '" + msg + "' drop down '" + dropdownText+ "' is selected", "Pass");
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Reporter("Exception while selecting text from " + msg + " dropdown", "Fail");
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	public boolean toggleElement(WebElement element,boolean expected,String label){
+
+		try{
+			boolean actual = element.isSelected();
+			if( actual != expected) {
+				element.click();
+			}return  true;
+		}catch (Exception e){
+return false;
+		}
+
+	}
 }

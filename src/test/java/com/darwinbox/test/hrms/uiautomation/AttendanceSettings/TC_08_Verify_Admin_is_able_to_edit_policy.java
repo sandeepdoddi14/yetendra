@@ -18,6 +18,8 @@ import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 
+import java.util.Map;
+
 public class TC_08_Verify_Admin_is_able_to_edit_policy extends TestBase {
 
 	HomePage homepage;
@@ -47,12 +49,8 @@ public class TC_08_Verify_Admin_is_able_to_edit_policy extends TestBase {
 	
 
 	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Attendance_Settings")
-	public void Verify_Admin_is_able_to_edit_policy(String input,String output) throws Exception {
-		if (excel.getTestInput("RunMode").equalsIgnoreCase("No")) {
-			throw new SkipException("user marked this record as no run");
-		}
-		
-		Assert.assertTrue(launchApplication(), "Launch Application");
+	public void Verify_Admin_is_able_to_edit_policy(Map<String,String> data) throws Exception {
+
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(homepage.clickUserProfileIcon(), "Click User Profile Icon");
 		Assert.assertTrue(rightMenuOption.clickSidebarSwitchToAdmin(), "Click on Switch to Admin");
@@ -61,16 +59,16 @@ public class TC_08_Verify_Admin_is_able_to_edit_policy extends TestBase {
 		Assert.assertTrue(commonSettings.clickAttendance(), "Click on Attendance link");
 		Assert.assertTrue(attPolicySettings.clickPoliciesLink(), "Click on Policy link");
 			Assert.assertTrue(attPolicySettings.clickCreatePolicyButton(),"Click on Create Policy button");
-			Assert.assertTrue(attPolicySettings.insertPolicyName(excel.getTestInput("Policy Name_TextBox")),"Insert Policy Name.");
-			Assert.assertTrue(attPolicySettings.selectLeaveDeductionPolicy(excel.getTestInput("Leave Deduction Policy_Dropdown")),"Select Leave deduction policy");
-			Assert.assertTrue(attPolicySettings.enableOrDisableLateMarkPolicy(excel.getTestInput("Late Mark Policy_Dropdown")),"Select Late Mark policy");
-			Assert.assertTrue(attPolicySettings.enableOrDisableWorkDurationPolicy(excel.getTestInput("Work Duration Policy_Dropdown")),"Select Work Duration policy");
-			Assert.assertTrue(attPolicySettings.enableOrDisableEarlyMarkPolicy(excel.getTestInput("Early Mark Policy_Dropdown")),"Select Early Mark Duration policy");
+			Assert.assertTrue(attPolicySettings.insertPolicyName(data.get("Policy Name_TextBox")),"Insert Policy Name.");
+			Assert.assertTrue(attPolicySettings.selectLeaveDeductionPolicy(data.get("Leave Deduction Policy_Dropdown")),"Select Leave deduction policy");
+			Assert.assertTrue(attPolicySettings.enableOrDisableLateMarkPolicy(data.get("Late Mark Policy_Dropdown")),"Select Late Mark policy");
+			Assert.assertTrue(attPolicySettings.enableOrDisableWorkDurationPolicy(data.get("Work Duration Policy_Dropdown")),"Select Work Duration policy");
+			Assert.assertTrue(attPolicySettings.enableOrDisableEarlyMarkPolicy(data.get("Early Mark Policy_Dropdown")),"Select Early Mark Duration policy");
 			Assert.assertTrue(attPolicySettings.clickSaveButton(),"Save button clicked successfully");
 			Assert.assertTrue(attPolicySettings.searchPolicyName(),"Search for Policy Name created");
 			Assert.assertTrue(attPolicySettings.checkPolicyDetails(),"Policy details created successfully");
 			Assert.assertTrue(attPolicySettings.clickEditPolicyButton(),"Edit policy button clicked successfully");			
-			Assert.assertTrue(attPolicySettings.insertPolicyName(excel.getTestInput("Policy Name_TextBox")+ "_Check_Edit"),"Insert Policy Name.");
+			Assert.assertTrue(attPolicySettings.insertPolicyName(data.get("Policy Name_TextBox")+ "_Check_Edit"),"Insert Policy Name.");
 			Assert.assertTrue(attPolicySettings.clickSaveButton(),"Save button clicked successfully");
 			Assert.assertTrue(attPolicySettings.searchPolicyName(),"Search for Policy Name updated");
 			Assert.assertTrue(attPolicySettings.deletePolicy(),"Policy details deleted successfully");
