@@ -18,6 +18,8 @@ import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 
+import java.util.Map;
+
 
 public class TC_06_Perform_Mandatory_Checks_in_Policy_Creation extends TestBase {
 
@@ -47,12 +49,8 @@ public class TC_06_Perform_Mandatory_Checks_in_Policy_Creation extends TestBase 
 	}
 
 	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Attendance_Settings")
-	public void Perform_Mandatory_Checks_in_Policy_Creation(String input,String output) throws Exception {
-		if (excel.getTestInput("RunMode").equalsIgnoreCase("No")) {
-			throw new SkipException("user marked this record as no run");
-		}
-		
-		Assert.assertTrue(launchApplication(), "Launch Application");
+	public void Perform_Mandatory_Checks_in_Policy_Creation(Map<String,String> data) throws Exception {
+
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(homepage.clickUserProfileIcon(), "Click User Profile Icon");
 		Assert.assertTrue(rightMenuOption.clickSidebarSwitchToAdmin(), "Click on Switch to Admin");

@@ -12,13 +12,12 @@ import com.darwinbox.test.hrms.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.test.hrms.uiautomation.Pages.HomePage;
 import com.darwinbox.test.hrms.uiautomation.Pages.LoginPage;
 import com.darwinbox.test.hrms.uiautomation.Pages.RightMenuOptionsPage;
-import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.AttendanceSettingsShiftPage;
-import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CommonSettingsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
-import com.darwinbox.test.hrms.uiautomation.helper.Browser.BrowserHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
+
+import java.util.Map;
 
 public class TC_01_ValidLoginTest extends TestBase {
 
@@ -42,13 +41,9 @@ public class TC_01_ValidLoginTest extends TestBase {
 	}
 	
 	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Login_Tests")
-	public void Login_To_Application(String input, String output) throws Exception {
+	public void Login_To_Application(Map<String,String> data) throws Exception {
 		
-		if(excel.getTestInput("RunMode").equalsIgnoreCase("No")) {
-			throw new SkipException("user marked this record as no run");
-		}		
-		try {			
-			Assert.assertTrue(launchApplication(), "Exception while launching Application");
+		try {
 			Assert.assertTrue(loginpage.EnterUsername(ObjectRepo.reader.getAdminUserName()),
 					" Enter Username Successfully.");
 			Assert.assertTrue(loginpage.EnterPassword(ObjectRepo.reader.getAdminPassword()),

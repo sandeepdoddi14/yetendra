@@ -3,6 +3,7 @@
  */
 package com.darwinbox.test.hrms.uiautomation.Pages;
 
+import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -10,7 +11,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.genericHelper.GenericHelper;
@@ -73,22 +73,13 @@ public class LoginPage extends TestBase{
 			}
 		}
 	}
-//	public void loginToApplication(String emailAddress,String loginPassword){
-//		
-//		log("cliked on sign in and object is: "+signIn.toString());
-//		username.sendKeys(emailAddress);
-//		log("entered email address: "+emailAddress+" and object is "+username.toString());
-//		password.sendKeys(loginPassword);
-//		log("entered password:"+password+" and object is "+loginPassword.toString());
-//		signIn.click();
-//		log("clicked on sublit butto and object is: "+signIn.toString());
-//	}
+
 	
 	/**
 	 * This method for login to Application
 	 * 
 	 * @author shikhar
-	 * @param susername
+	 * @param sUserName
 	 * @return boolean
 	 */
 	public boolean loginToApplication(String sUserName, String sPassword) throws Exception {
@@ -108,10 +99,10 @@ public class LoginPage extends TestBase{
 	 * This method for login to Application
 	 * 
 	 * @author shikhar
-	 * @param susername
+
 	 * @return boolean
 	 */
-	public boolean loginToApplication() throws Exception {
+	public boolean loginToApplication() {
 		try {
 			EnterUsername(ObjectRepo.reader.getAdminUserName());
 			EnterPassword(ObjectRepo.reader.getAdminPassword());
@@ -129,7 +120,7 @@ public class LoginPage extends TestBase{
 	 * This method used to verify invalid Sign in
 	 * 
 	 * @author shikhar
-	 * @param susername
+	 * @param errorMsg
 	 * @return boolean
 	 */
 	public boolean checkInvalidSignIn(String errorMsg) throws NoSuchElementException {

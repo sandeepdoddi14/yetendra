@@ -29,7 +29,7 @@ public class ActionHelper extends TestBase{
 		try {
 			Actions action = new Actions(driver);
 			action.moveToElement(element).build().perform();
-			//action.click(element).build().perform();
+			action.click(element).build().perform();
 			Reporter("Clicked on " + text + " successfully", "Pass");
 			return true;
 		} catch (Exception e) {
@@ -38,4 +38,23 @@ public class ActionHelper extends TestBase{
 		}
 	}
 
+	/**
+	 * This method clicks using action class
+	 * 
+	 * @param element
+	 * @param text
+	 * @return
+	 */
+	public boolean moveToElement(WebDriver driver,WebElement element, String text) {
+		try {
+			Actions action = new Actions(driver);
+			action.moveToElement(element).build().perform();
+			Reporter("Moved to " + text + " successfully", "Pass");
+			return true;
+		} catch (Exception e) {
+			Reporter("Exception while clicking on " + text, "Fail");
+			throw new RuntimeException("Exception while clicking on " + text + ":" + e.getMessage());
+		}
+	}
+	
 }

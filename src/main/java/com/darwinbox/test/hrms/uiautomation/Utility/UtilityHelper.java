@@ -4,9 +4,12 @@
 package com.darwinbox.test.hrms.uiautomation.Utility;
 
 import java.io.File;
+import java.math.RoundingMode;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Properties;
 
 /**
  * @author balaji
@@ -40,6 +43,53 @@ public class UtilityHelper {
 
 	public static String getCurrentDate() {
 		return getCurrentDateTime().substring(0, 11);
+	}
+	
+	/**
+	 * This file returns value from Property file
+	 * @param filename
+	 * @param key
+	 * @return String
+	 */
+	public String getProperty(String filename, String key) {
+		Properties prop = new Properties();
+		try {
+			prop.load(ResourceHelper.getResourcePathInputStream("/src/main/resources/configfile/"+ filename +".properties"));
+			return prop.getProperty(key);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	/**
+	 * This method round a number to HalfUp
+	 * @param num
+	 * @return double
+	 */
+	public double roundHalfUp(double num) {
+		NumberFormat roundUp = NumberFormat.getNumberInstance();
+		roundUp.setMaximumFractionDigits(0);
+		roundUp.setRoundingMode(RoundingMode.HALF_UP);
+
+		String numRoundUpString = roundUp.format(num);
+		double doubleNum = Double.parseDouble(numRoundUpString);
+		return doubleNum;
+	}
+
+	/**
+	 * This method rounds up a number to half down
+	 * @param num
+	 * @return double
+	 */
+	public double roundHalfDown(double num) {
+		NumberFormat roundUp = NumberFormat.getNumberInstance();
+		roundUp.setMaximumFractionDigits(0);
+		roundUp.setRoundingMode(RoundingMode.FLOOR);
+
+		String numRoundUpString = roundUp.format(num);
+		double doubleNum = Double.parseDouble(numRoundUpString);
+		return doubleNum;
 	}
 
 }
