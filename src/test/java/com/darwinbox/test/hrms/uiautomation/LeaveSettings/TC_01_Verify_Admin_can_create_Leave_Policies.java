@@ -1,5 +1,7 @@
 package com.darwinbox.test.hrms.uiautomation.LeaveSettings;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
@@ -49,12 +51,8 @@ public void initializeObjects() {
 }
 
 @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Attendance_Settings")
-public void Verify_Admin_is_able_to_create_New_Shifts(String input, String output) throws Exception {
+public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 	
-	if(excel.getTestInput("RunMode").equalsIgnoreCase("No")) {
-		throw new SkipException("user marked this record as no run");
-	}				
-		Assert.assertTrue(launchApplication(), "Launch Application");
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");
 		Assert.assertTrue(homepage.clickUserProfileIcon(), "Click User Profile Icon");
 		Assert.assertTrue(rightMenuOption.clickSidebarSwitchToAdmin(), "Click on Switch to Admin");

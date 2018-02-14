@@ -60,7 +60,7 @@ public class TestBase {
 	public static Map<String,String> data;
 	ExtentTest parentLog = null;
 
-	public static String resultsDIR = "Results/Results"+ UtilityHelper.getCurrentDateTime();
+	public static String resultsDIR = "Test_Exceution_Results/Results"+ UtilityHelper.getCurrentDateTime();
 
 	public static void setDataItem(List<Map<String,String>> dataItem) {
 		TestBase.dataItem = dataItem;
@@ -76,7 +76,7 @@ public class TestBase {
 		PropertyConfigurator.configure(log4jConfPath);
 		log = Logger.getLogger(TestBase.class);
 		UtilityHelper.CreateADirectory(resultsDIR);
-		htmlReporter = new ExtentHtmlReporter(ResourceHelper.getBaseResourcePath()+File.separator +  resultsDIR +File.separator + "TestReport.html");
+		htmlReporter = new ExtentHtmlReporter(ResourceHelper.getBaseResourcePath()+File.separator +  resultsDIR +File.separator + "Response_Report" + UtilityHelper.getCurrentDateTime()+ ".html");
 		htmlReporter.setAppendExisting(true);
 		htmlReporter.config().setChartVisibilityOnOpen(true);
 		htmlReporter.loadXMLConfig(new File(ResourceHelper.getBaseResourcePath()+"/src/main/resources/configfile/extent-config.xml"));
@@ -105,17 +105,23 @@ public class TestBase {
 	public void beforeMethod(Method method) {
 		try {
 			gotoHomePage();
-			Reporter.log("*****" + method.getName() + "****", true);
+			Reporter.log("*****" + method.getName() + ":" + data.get("Test_Description") +  "****", true);
 			data = dataItem.get(currentData++);
 			if (dataCounter >= 2)
 				xtReportLog = parentLog.createNode(data.get("Test_Description"))
 						.assignCategory(this.getClass().getPackage().toString()
 								.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
-			else
+			else {
 				xtReportLog = parentLog.assignCategory(this.getClass().getPackage().toString()
 						.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
 		}
-			 catch(Exception e){
+		
+		log.info("******************************************************************************");
+		log.info("*********** " + (this.getClass().getPackage().toString()
+				.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1) + "::"
+				+ this.getClass().getSimpleName() + " ******"));
+	
+		}catch(Exception e){
 				e.printStackTrace();
 				throw new RuntimeException("Exception in Before Method" + e.getMessage());
 			}
@@ -166,7 +172,7 @@ public class TestBase {
 	public void closeBrowser() {
 		driver.close();
 		driver.quit();
-
+		log.info("browser closed");
 	}
 
 	public void init() {

@@ -1,5 +1,7 @@
 package com.darwinbox.test.hrms.uiautomation.LeaveSettings;
 
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
@@ -37,7 +39,7 @@ public class TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 
 	@BeforeClass
 	public void setup() throws Exception {
-		ExcelReader.setFilenameAndSheetName("Leave_Settings_TestData.xlsx", "TC_02");
+		ExcelReader.setFilenameAndSheetName("Leave_Settings_TestData.xlsx", "TC_01");
 	}
 
 	@BeforeMethod
@@ -53,13 +55,9 @@ public class TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		objUtil = PageFactory.initElements(driver, UtilityHelper.class);
 	}
 
-	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Attendance_Settings")
-	public void Verify_Leave_Balance_is_calculated_correctly(String input, String output) throws Exception {
+	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leaves_Balance")
+	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
-		if (excel.getTestInput("RunMode").equalsIgnoreCase("No")) {
-			throw new SkipException("user marked this record as no run");
-		}
-		Assert.assertTrue(launchApplication(), "Launch Application");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(homepage.clickUserProfileIcon(), "Click User Profile Icon");
 		Assert.assertTrue(rightMenuOption.clickSidebarSwitchToAdmin(), "Click on Switch to Admin");
