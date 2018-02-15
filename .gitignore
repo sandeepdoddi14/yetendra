@@ -1,7 +1,9 @@
-automation.out
-/automation.out
-/target/
 target/
-src/main/java/com.darwinbox.test.hrms.uiautomation.Screenshots
-
-/bin/
+bin/
+Test_Execution_Results/*
+.classpath
+.project
+.idea/
+.settings/
+*.iml
+.gitignore

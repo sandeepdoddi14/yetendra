@@ -60,7 +60,7 @@ public class TestBase {
 	public static Map<String,String> data;
 	ExtentTest parentLog = null;
 
-	public static String resultsDIR = "Test_Exceution_Results/Results"+ UtilityHelper.getCurrentDateTime();
+	public static String resultsDIR = "Test_Execution_Results/Results"+ UtilityHelper.getCurrentDateTime();
 
 	public static void setDataItem(List<Map<String,String>> dataItem) {
 		TestBase.dataItem = dataItem;
@@ -105,8 +105,8 @@ public class TestBase {
 	public void beforeMethod(Method method) {
 		try {
 			gotoHomePage();
-			Reporter.log("*****" + method.getName() + ":" + data.get("Test_Description") +  "****", true);
 			data = dataItem.get(currentData++);
+			Reporter.log("*****" + method.getName() + ":" + data.get("Test_Description") +  "****", true);
 			if (dataCounter >= 2)
 				xtReportLog = parentLog.createNode(data.get("Test_Description"))
 						.assignCategory(this.getClass().getPackage().toString()

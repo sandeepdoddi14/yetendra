@@ -6,10 +6,8 @@ import com.darwinbox.test.hrms.uiautomation.Pages.LoginPage;
 import com.darwinbox.test.hrms.uiautomation.Pages.RightMenuOptionsPage;
 import com.darwinbox.test.hrms.uiautomation.Pages.reimb.ReimbUnitSettings;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CommonSettingsPage;
-import com.darwinbox.test.hrms.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
-import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
@@ -18,7 +16,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.Map;
 
 public class ReimbUnitSettingsTest extends TestBase {
@@ -63,7 +60,10 @@ public class ReimbUnitSettingsTest extends TestBase {
         Assert.assertTrue(reimbUnitSettings.createReimbTypes(unit, label, desc), "Create Reimbursement");
         Assert.assertTrue(reimbUnitSettings.searchReimbursement(unit),"Created reimbursement found");
         Assert.assertTrue(reimbUnitSettings.deleteReimbursement(),"Deleted reimbursement");
+        try{ // Timing added to sync with system
+            Thread.sleep(1*1000); }catch(Exception e){ }
         Assert.assertFalse(reimbUnitSettings.searchReimbursement(unit),"Deleted reimbursement found");
+
 
     }
 }
