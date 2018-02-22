@@ -55,7 +55,7 @@ public void initializeObjects() {
 	commonAction = PageFactory.initElements(driver, CommonActionClass.class);
 }
 
-@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Attendance_Settings")
+@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Leave_Settings")
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");			

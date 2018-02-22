@@ -58,11 +58,11 @@ public class TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		commonAction = PageFactory.initElements(driver, CommonActionClass.class);
 	}
 
-	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leaves_Balance")
+	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
-		Assert.assertTrue(leavesAction.setEmployeeID("001"), "Employee ID is set successfully to test");
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromPropertyFile(), "Leave scenario is set successfully");
+		Assert.assertTrue(leavesAction.setEmployeeID("001"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");

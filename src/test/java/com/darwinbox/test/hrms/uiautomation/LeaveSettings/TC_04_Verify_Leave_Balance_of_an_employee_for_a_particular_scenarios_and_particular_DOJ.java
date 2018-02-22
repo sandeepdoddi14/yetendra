@@ -58,7 +58,7 @@ public class TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		commonAction = PageFactory.initElements(driver, CommonActionClass.class);		
 	}
 
-	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Attendance_Settings")
+	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromPropertyFile(), "Leave scenario is set successfully");		

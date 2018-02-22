@@ -50,7 +50,7 @@ public void initializeObjects() {
 	rightMenuOption = PageFactory.initElements(driver, RightMenuOptionsPage.class);
 }
 
-@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Attendance_Settings")
+@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Leave_Settings")
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 	
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");
