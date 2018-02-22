@@ -74,6 +74,7 @@ public class LeavesSettingsPage extends TestBase {
 	public boolean clickCreateLeavePolicies() {
 		try {
 			objWait.waitForPageToLoad();
+			objWait.waitAndClickElement(leavesMenuCreateLeavePolicies, "Create Leave Policies link");
 		return objGenHelper.elementClick(leavesMenuCreateLeavePolicies, "Create Leave Policies link");
 	}catch(Exception e) {
 		e.printStackTrace();

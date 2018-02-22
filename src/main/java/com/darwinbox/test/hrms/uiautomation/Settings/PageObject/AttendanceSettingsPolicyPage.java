@@ -233,7 +233,7 @@ public class AttendanceSettingsPolicyPage extends TestBase{
 	 */
 	public boolean clickSaveButton() {
 		try {
-			objJavaScrHelper.scrollUpVertically("Save button");
+			objJavaScrHelper.scrollUpVertically();
 			objGenHelper.elementClick(policySaveButton, "Save button");
 			checkIfDuplicatePolicyName();
 			return true;

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -39,6 +41,9 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 
 /**
@@ -49,24 +54,26 @@ import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
  */
 public class TestBase {
 
-	private static Logger log ;
+	private static Logger log;
 	public static WebDriver driver;
-	public static ExtentReports extent = new ExtentReports();;
+	public static ExtentReports extent = new ExtentReports();
 	public static ExtentTest xtReportLog = null;
 	public static ExtentHtmlReporter htmlReporter = null;
-	public static List<Map<String,String>> dataItem = null;
+	public static List<Map<String, String>> dataItem = null;
 	public static int dataCounter = 0;
 	private static int currentData = 0;
-	public static Map<String,String> data;
+	public static Map<String, String> data;
 	ExtentTest parentLog = null;
+	public static Markup strcode = MarkupHelper.createCodeBlock("text");
+	
+	public static String resultsDIR = "Test_Execution_Results/Results" + UtilityHelper.getCurrentDateTime();
 
-	public static String resultsDIR = "Test_Execution_Results/Results"+ UtilityHelper.getCurrentDateTime();
-
-	public static void setDataItem(List<Map<String,String>> dataItem) {
+	public static void setDataItem(List<Map<String, String>> dataItem) {
 		TestBase.dataItem = dataItem;
 		dataCounter = dataItem.size();
 		currentData = 0;
 	}
+
 
 	@BeforeSuite
 	public void startReport() {
@@ -76,10 +83,13 @@ public class TestBase {
 		PropertyConfigurator.configure(log4jConfPath);
 		log = Logger.getLogger(TestBase.class);
 		UtilityHelper.CreateADirectory(resultsDIR);
-		htmlReporter = new ExtentHtmlReporter(ResourceHelper.getBaseResourcePath()+File.separator +  resultsDIR +File.separator + "Response_Report" + UtilityHelper.getCurrentDateTime()+ ".html");
+		htmlReporter = new ExtentHtmlReporter(ResourceHelper.getBaseResourcePath() + File.separator + resultsDIR
+				+ File.separator + "Response_Report" + UtilityHelper.getCurrentDateTime() + ".html");
 		htmlReporter.setAppendExisting(true);
 		htmlReporter.config().setChartVisibilityOnOpen(true);
-		htmlReporter.loadXMLConfig(new File(ResourceHelper.getBaseResourcePath()+"/src/main/resources/configfile/extent-config.xml"));
+		
+		htmlReporter.loadXMLConfig(
+				new File(ResourceHelper.getBaseResourcePath() + "/src/main/resources/configfile/extent-config.xml"));
 
 		init();
 
@@ -101,12 +111,13 @@ public class TestBase {
 		}
 	}
 
+	
 	@BeforeMethod()
 	public void beforeMethod(Method method) {
 		try {
 			gotoHomePage();
 			data = dataItem.get(currentData++);
-			Reporter.log("*****" + method.getName() + ":" + data.get("Test_Description") +  "****", true);
+			Reporter.log("*****" + method.getName() + ":" + data.get("Test_Description") + "****", true);
 			if (dataCounter >= 2)
 				xtReportLog = parentLog.createNode(data.get("Test_Description"))
 						.assignCategory(this.getClass().getPackage().toString()
@@ -114,35 +125,34 @@ public class TestBase {
 			else {
 				xtReportLog = parentLog.assignCategory(this.getClass().getPackage().toString()
 						.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1));
-		}
-		
-		log.info("******************************************************************************");
-		log.info("*********** " + (this.getClass().getPackage().toString()
-				.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1) + "::"
-				+ this.getClass().getSimpleName() + " ******"));
-	
-		}catch(Exception e){
-				e.printStackTrace();
-				throw new RuntimeException("Exception in Before Method" + e.getMessage());
 			}
+
+			log.info("******************************************************************************");
+			log.info("*********** " + (this.getClass().getPackage().toString()
+					.substring(this.getClass().getPackage().toString().lastIndexOf(".") + 1) + "::"
+					+ this.getClass().getSimpleName() + " ******"));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Exception in Before Method" + e.getMessage());
+		}
 
 	}
 
 	@AfterMethod()
 	public void afterMethod(ITestResult result) {
-		try{
-
-		getresult(result);
-		extent.flush();
-
-	}catch(Exception e){
-		Reporter("Exception in @AfterMethod: "+ e, "Fail", log);
+		try {
+			getresult(result);
+			extent.flush();
+			closeBrowser();
+		} catch (Exception e) {
+			Reporter("Exception in @AfterMethod: " + e, "Fail", log);
+		}
 	}
-	}
-	
+
 	@AfterClass(alwaysRun = true)
 	public void endTest() {
 		gotoHomePage();
+		closeBrowser();
 	}
 
 	public void gotoHomePage() {
@@ -150,18 +160,18 @@ public class TestBase {
 			driver.manage().deleteAllCookies();
 			driver.get(ObjectRepo.reader.getApplication());
 			driver.manage().deleteAllCookies();
-		}catch(Exception e){
+		} catch (Exception e) {
 			System.out.println(" Driver object exception. Creating new session and closing existing one");
 			reinit();
 			gotoHomePage();
 		}
 	}
 
-	public void reinit(){
+	public void reinit() {
 
-		try{
+		try {
 			driver.quit();
-		} catch(Exception e){
+		} catch (Exception e) {
 
 		}
 		init();
@@ -170,9 +180,12 @@ public class TestBase {
 
 	@AfterSuite
 	public void closeBrowser() {
+		try {
 		driver.close();
 		driver.quit();
-		log.info("browser closed");
+		}catch(NoSuchSessionException e) {
+			log.info("browser closed");
+		}
 	}
 
 	public void init() {
@@ -193,11 +206,8 @@ public class TestBase {
 		try {
 			driver = getBrowserObject(bType);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// log.debug("InitializeWebDrive : " + driver.hashCode());
-
 	}
 
 	public WebDriver getBrowserObject(BrowserType bType) throws Exception {
@@ -237,20 +247,20 @@ public class TestBase {
 	public void getresult(ITestResult result) {
 		try {
 			File screenShotName;
-			String tempPath = ResourceHelper.getBaseResourcePath()
-					+File.separator + resultsDIR + File.separator + "Screenshots"+File.separator + dataItem.get(currentData-1).get("TestCaseName");
+			String tempPath = ResourceHelper.getBaseResourcePath() + File.separator + resultsDIR + File.separator
+					+ "Screenshots" + File.separator + dataItem.get(currentData - 1).get("TestCaseName");
 			if (result.getStatus() == ITestResult.SUCCESS) {
 				xtReportLog.log(Status.PASS, result.getName() + " test is pass");
-				/*	File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-					String scrPath = tempPath + "-" + "PASS" + "-" + DateTimeHelper.getCurrentDateTime() + ".png";
-					screenShotName = new File(scrPath);
-					FileUtils.copyFile(scrFile, screenShotName);
-					String filePath = screenShotName.toString();
-					xtReportLog.pass("Pass Screenshot", MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
-				*/
-			}
-			 else if (result.getStatus() == ITestResult.SKIP) {
-					log.debug(result.getName() + " test is skipped and skip reason is:-" + result.getThrowable());
+				/*
+				 * File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+				 * String scrPath = tempPath + "-" + "PASS" + "-" +
+				 * DateTimeHelper.getCurrentDateTime() + ".png"; screenShotName = new
+				 * File(scrPath); FileUtils.copyFile(scrFile, screenShotName); String filePath =
+				 * screenShotName.toString(); xtReportLog.pass("Pass Screenshot",
+				 * MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
+				 */
+			} else if (result.getStatus() == ITestResult.SKIP) {
+				log.debug(result.getName() + " test is skipped and skip reason is:-" + result.getThrowable());
 			} else if (result.getStatus() == ITestResult.FAILURE) {
 
 				xtReportLog.log(Status.FAIL, result.getName() + " test is failed");
@@ -263,6 +273,7 @@ public class TestBase {
 				xtReportLog.fail("Failure Screenshot",
 						MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
 				log.error(result.getName() + " test is failed" + result.getThrowable());
+				xtReportLog.fail(result.getThrowable());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -293,6 +304,7 @@ public class TestBase {
 
 	/**
 	 * This method used to take Screenshot
+	 * 
 	 * @param driver
 	 * @param result
 	 * @param folderName
@@ -368,6 +380,11 @@ public class TestBase {
 		return destFile.toString();
 	}
 
+	/**
+	 * This method is used for reporting in extent report
+	 * @param text
+	 * @param status
+	 */
 	public void Reporter(String text, String status) {
 		if (status.equalsIgnoreCase("Pass")) {
 			xtReportLog.log(Status.PASS, text);
@@ -389,17 +406,56 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Fail")) {
 			xtReportLog.log(Status.FAIL, text);
 			log.error(text);
-		}else if (status.equalsIgnoreCase("Skip")) {
+		} else if (status.equalsIgnoreCase("Skip")) {
 			xtReportLog.log(Status.SKIP, text);
 			log.debug(text);
-		}  else {
+		} else {
 			xtReportLog.log(Status.INFO, text);
 			log.info(text);
 		}
 		Reporter.log(text);
 	}
 
-	public String getData(String key){
+	
+	public void ReporterForCodeBlock(String text, String status) {
+		
+		Markup code = MarkupHelper.createCodeBlock(text);
+		if (status.equalsIgnoreCase("Pass")) {
+			xtReportLog.log(Status.PASS, code);
+			log.info(text);
+		} else if (status.equalsIgnoreCase("Fail")) {
+			xtReportLog.log(Status.FAIL, code);
+			log.error(text);
+		} else {
+			xtReportLog.log(Status.INFO, code);
+			log.info(text);
+		}
+		Reporter.log(text,true);
+	}
+
+	
+	public void ReporterForLabel(String text, String status) {
+
+		Markup code = MarkupHelper.createLabel(text, ExtentColor.BLUE);
+		if (status.equalsIgnoreCase("Pass")) {
+			xtReportLog.log(Status.PASS, code);
+			log.info(code);
+		} else if (status.equalsIgnoreCase("Fail")) {
+			xtReportLog.log(Status.FAIL, code);
+			log.error(code);
+		} else {
+			xtReportLog.log(Status.INFO, code);
+			log.info(code);
+		}
+		Reporter.log(text);
+	}
+	
+	/**
+	 * This method gets data specified in excel 
+	 * @param key
+	 * @return String
+	 */
+	public String getData(String key) {
 		return data.get(key);
 	}
 

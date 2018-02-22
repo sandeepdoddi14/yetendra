@@ -27,6 +27,7 @@ public class ExcelReader extends TestBase{
 	public static String FilePath;
 	public static int rowNo = -1;
 
+	@SuppressWarnings("resource")
 	public static void setExcelFileObject() {
 		try {
 
