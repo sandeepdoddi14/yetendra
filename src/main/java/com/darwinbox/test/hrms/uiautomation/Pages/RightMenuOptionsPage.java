@@ -13,33 +13,32 @@ import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.genericHelper.GenericHelper;
 
-
 /**
  * @author balaji
- * @Creation_Date:  29 Nov 2017 
+ * @Creation_Date: 29 Nov 2017
  * @ClassName: RightMenuOptionsPage.java
- * @LastModified_Date:  29 Nov 2017 
+ * @LastModified_Date: 29 Nov 2017
  */
-public class RightMenuOptionsPage extends TestBase{
+public class RightMenuOptionsPage extends TestBase {
 
 	WebDriver driver;
 	private static final Logger log = Logger.getLogger(RightMenuOptionsPage.class);
 	GenericHelper objGenHelper;
 	WaitHelper objWaitHelper;
-	
-	public RightMenuOptionsPage(WebDriver driver){
+
+	public RightMenuOptionsPage(WebDriver driver) {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
 		objGenHelper = PageFactory.initElements(driver, GenericHelper.class);
 		objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);
 	}
-	
+
 	@FindBy(id = "main-sidebar")
 	protected WebElement mainSideBar;
-	
+
 	@FindBy(xpath = "//*[@class = 'directory-avatar']")
 	protected WebElement userProfileIcon;
-	
+
 	@FindBy(xpath = "//*[@id='main-sidebar']//li[@class = 'close-sb']/a[contains(text() , 'Logout')]")
 	protected WebElement userProfileLogout;
 
@@ -75,7 +74,7 @@ public class RightMenuOptionsPage extends TestBase{
 
 	@FindBy(xpath = "//*[@id='main-sidebar']/ul//a[text() = 'Switch To Admin']")
 	protected WebElement sidebarSwitchToAdmin;
-	
+
 	/**
 	 * This method used to objGenHelper.elementClick My Profile in side bar
 	 */
@@ -145,9 +144,12 @@ public class RightMenuOptionsPage extends TestBase{
 	 * This method used to objGenHelper.elementClick 'Switch To Admin' in side bar
 	 */
 	public boolean clickSidebarSwitchToAdmin() {
-//		objWaitHelper.waitElementToBeClickable(sidebarSwitchToAdmin);
-//		return objGenHelper.elementClick(sidebarSwitchToAdmin, "Switch To Admin");
-		return objWaitHelper.waitAndClickElement(sidebarSwitchToAdmin, "Switch To Admin");
+		objWaitHelper.waitElementToBeClickable(sidebarSwitchToAdmin);
+		return objGenHelper.elementClick(sidebarSwitchToAdmin, "Switch To Admin");
 	}
 
+	public WebElement getWebElementSidebarSwitchToAdmin() {
+		objWaitHelper.waitElementToBeClickable(sidebarSwitchToAdmin);
+		return sidebarSwitchToAdmin;
+	}
 }

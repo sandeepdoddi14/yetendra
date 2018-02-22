@@ -31,10 +31,12 @@ public class TestDataProvider {
         return collection.iterator();
     }
 
-    @DataProvider(name = "specifcRow")
+    @SuppressWarnings("unused")
+	@DataProvider(name = "specifcRow")
     public Iterator<Object[]> getSpecificRowdata() {
 
-        String sheetName = excel.SheetName;
+        @SuppressWarnings("static-access")
+		String sheetName = excel.SheetName;
 
 
         List<Map<String, String>> testRecords = excel.getExcelData();

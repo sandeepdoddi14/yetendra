@@ -5,13 +5,13 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
-import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.darwinbox.test.hrms.uiautomation.Common.Action.CommonActionClass;
 import com.darwinbox.test.hrms.uiautomation.DataProvider.TestDataProvider;
-import com.darwinbox.test.hrms.uiautomation.Leaves.Action.LeavesAllActions;
+import com.darwinbox.test.hrms.uiautomation.Leaves.Action.LeavesActionClass;
 import com.darwinbox.test.hrms.uiautomation.Pages.HomePage;
 import com.darwinbox.test.hrms.uiautomation.Pages.LoginPage;
 import com.darwinbox.test.hrms.uiautomation.Pages.RightMenuOptionsPage;
@@ -32,14 +32,15 @@ public class TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 	LeavesSettingsPage leaveSettings;
 	CreateAndManageLeavePoliciesPage createManageLeaves;
 	RightMenuOptionsPage rightMenuOption;
-	LeavesAllActions leavesAllaction;
+	LeavesActionClass leavesAction;
 	UtilityHelper objUtil;
-
+	CommonActionClass commonAction;
+	
 	private static final Logger log = Logger.getLogger(TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios.class);
 
 	@BeforeClass
 	public void setup() throws Exception {
-		ExcelReader.setFilenameAndSheetName("Leave_Settings_TestData.xlsx", "TC_01");
+		ExcelReader.setFilenameAndSheetName("Leave_Settings_TestData.xlsx", "TC_03");
 	}
 
 	@BeforeMethod
@@ -51,28 +52,26 @@ public class TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		leaveSettings = PageFactory.initElements(driver, LeavesSettingsPage.class);
 		createManageLeaves = PageFactory.initElements(driver, CreateAndManageLeavePoliciesPage.class);
 		rightMenuOption = PageFactory.initElements(driver, RightMenuOptionsPage.class);
-		leavesAllaction = PageFactory.initElements(driver, LeavesAllActions.class);
+		leavesAction = PageFactory.initElements(driver, LeavesActionClass.class);
 		objUtil = PageFactory.initElements(driver, UtilityHelper.class);
+		commonAction = PageFactory.initElements(driver, CommonActionClass.class);
 	}
 
-	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leaves_Balance")
+	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
+		Assert.assertTrue(leavesAction.setLeaveScenarioFromPropertyFile(), "Leave scenario is set successfully");
+		Assert.assertTrue(leavesAction.setEmployeeID("001"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
-		Assert.assertTrue(homepage.clickUserProfileIcon(), "Click User Profile Icon");
-		Assert.assertTrue(rightMenuOption.clickSidebarSwitchToAdmin(), "Click on Switch to Admin");
-		leavesAllaction.setEmployeeID("Job ID1");
-		
-		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click User Profile Icon");
+		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
 		Assert.assertTrue(commonSettings.clickLeaves(), "Click on Leaves link");		
+		Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
 		Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
-		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(0), "Select Group Company");
-		leavesAllaction.setLeaveScenarioFromPropertyFile();
-		
-		Assert.assertTrue(leavesAllaction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
+		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(0), "Select Group Company");				
+		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-		leavesAllaction.verifyEmployeeLeaveBalanceForWholeLeaveCycle();
+		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForWholeLeaveCycle(), "Leave Balance for whole leave cycle calculated successfully") ;
 
 	}
 }

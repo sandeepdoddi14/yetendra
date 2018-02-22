@@ -161,7 +161,6 @@ public class GenericHelper extends TestBase {
 			Reporter(label + " is clicked successfully", "Pass", log);
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
 			Reporter("Exception while clicking " + label, "Fail");
 			throw new RuntimeException("Exception while clicking " + label + ": " + e.getMessage());
 		}
