@@ -143,7 +143,6 @@ public class TestBase {
 		try {
 			getresult(result);
 			extent.flush();
-			closeBrowser();
 		} catch (Exception e) {
 			Reporter("Exception in @AfterMethod: " + e, "Fail", log);
 		}
@@ -152,7 +151,6 @@ public class TestBase {
 	@AfterClass(alwaysRun = true)
 	public void endTest() {
 		gotoHomePage();
-		closeBrowser();
 	}
 
 	public void gotoHomePage() {

@@ -53,16 +53,16 @@ public class CommonActionClass extends TestBase {
 		homepage = PageFactory.initElements(driver, HomePage.class);
 	}
 
+	/**
+	 * This method will switch the mode to Admin
+	 * @return
+	 */
 	public boolean switchToAdminMode() {
 		try {
 			homepage.clickUserProfileIcon();
 			if (rightMenuOption.getWebElementSidebarSwitchToAdmin().getText().contains("Switch To Admin")) {
 				rightMenuOption.clickSidebarSwitchToAdmin();
 				homepage.clickUserProfileIconAdmin();
-//					if(rightMenuOption.getWebElementSidebarSwitchToAdmin().getText().contains("Switch To Admin")) {
-//						rightMenuOption.clickSidebarSwitchToAdmin();
-//						homepage.clickUserProfileIconAdmin();							
-//					}
 				return true;
 			} else {
 				return true;
