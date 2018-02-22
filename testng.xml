@@ -12,6 +12,16 @@
 		</classes>
 	</test>
 
+<test name="DarwinBox_HRMS_Leaves_AutomationTests"
+		  preserve-order="true">
+		<classes>
+		<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_01_Verify_Admin_can_create_Leave_Policies" />
+			<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02_Verify_Leave_Balance_of_an_employee_for_all_scenarios" />
+				<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios" />
+					<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios_and_particular_DOJ" />
+		</classes>
+	</test>
+	
 	<test name="DarwinBox_HRMS_Reimbursement_AutomationTests"
 		  preserve-order="true">
 		<classes>

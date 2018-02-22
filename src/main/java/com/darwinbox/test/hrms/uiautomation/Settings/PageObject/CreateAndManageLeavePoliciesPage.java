@@ -154,7 +154,7 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accrual_is_monthly_quaterly'][@title = 'Leave will be credited proportionately, Quarterly basis.'][@value =1]")
 	private WebElement AccrualTimeFrameQuarterRadioButton;
 	
-	@FindBy(xpath = "//*[@id='LeavePolicy_Accrual_is_monthly_quaterly'][@value =2]")
+	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_is_monthly_quaterly'][@value =2]")
 	private WebElement AccrualTimeFrameBiannualRadioButton;
 	
 	@FindBy(xpath = "//*[@title='Leave will be credited proportionately, on the 1st of every month']")
@@ -517,6 +517,7 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * 
 	 */
 	public boolean clickAccrualTimeFrameBiannualRadioButton() {
+		objAction.moveToElement(driver, AccrualTimeFrameBiannualRadioButton, "Accrual time frame 'Biannual' Radio Button");
 		return objGenHelper.elementClick(AccrualTimeFrameBiannualRadioButton, "Accrual time frame 'Biannual' Radio Button");
 	}
 	
