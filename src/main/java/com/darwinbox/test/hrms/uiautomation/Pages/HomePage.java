@@ -10,6 +10,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
 import com.darwinbox.test.hrms.uiautomation.helper.Action.ActionHelper;
+import com.darwinbox.test.hrms.uiautomation.helper.Browser.BrowserHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.genericHelper.GenericHelper;
@@ -26,6 +27,9 @@ public class HomePage extends TestBase{
 	GenericHelper objGenHelper;
 	WebDriver driver;
 	ActionHelper actionHelper;
+	BrowserHelper objBrowserHelper;
+	
+	
 	public static final Logger log = Logger.getLogger(HomePage.class);
 
 	public HomePage(WebDriver driver){
@@ -34,6 +38,7 @@ public class HomePage extends TestBase{
 		objWait = PageFactory.initElements(driver, WaitHelper.class);
 		objGenHelper = PageFactory.initElements(driver, GenericHelper.class);
 		actionHelper = PageFactory.initElements(driver, ActionHelper.class);
+		objBrowserHelper = PageFactory.initElements(driver, BrowserHelper.class);
 	}
 	
 	@FindBy(xpath = "//*[@id = 'main-sidebar']")
@@ -86,13 +91,9 @@ public class HomePage extends TestBase{
 	 */
 	public boolean logout() {
 		try {
-			//driver.switchTo().defaultContent();
-			//objWait.waitForPageToLoad();
-			//clickUserProfileIcon();
 			objWait.waitAndClickElement(userProfileIcon, "User Profile icon");
 			objGenHelper.elementClick(userProfileIcon, "User Profile icon");
 			objWait.waitForElement(mainSideBar, 20);
-			//clickUserProfileIconAdmin();
 			clickLogout();
 			return true;
 		} catch (Exception e) {
@@ -105,13 +106,8 @@ public class HomePage extends TestBase{
 	 * s This method used to click UserProfileIcon
 	 */
 	public boolean clickUserProfileIconAdmin() {
-		//objWait.waitForPageToLoad();
 		objWait.waitForElementDisapear(mainSideBar, 10);
 		WebElement ele = objWait.waitForElement(2000, userProfileIconAdmin);
 		return objGenHelper.elementClick(ele, "User Profile icon");
-//		 objWait.waitElementToBeClickable(userProfileIconAdmin);
-//		return actionHelper.actionClick(driver, userProfileIconAdmin, "User Profile icon");
-	    //return	objWait.waitAndClickElement(userProfileIconAdmin, "User Profile icon");
-		//return click(userProfileIcon, "User Profile icon");
-	}
+}
 }

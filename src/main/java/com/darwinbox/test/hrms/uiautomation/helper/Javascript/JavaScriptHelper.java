@@ -57,13 +57,13 @@ public class JavaScriptHelper extends TestBase{
 	 * @param text
 	 * @return
 	 */
-	public boolean scrollUpVertically(String text) {
+	public boolean scrollUpVertically() {
 		try {
 			executeScript("window.scrollTo(0, -document.body.scrollHeight);");
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while scrooling to the element " + text, "Fail");
-			throw new RuntimeException("Exception while clicking on " + text + ":" + e.getMessage());
+			Reporter("Exception while scrooling to top of the page","Fail");
+			throw new RuntimeException("Exception while scrooling to top of the page: " + e.getMessage());
 		}
 	}
 

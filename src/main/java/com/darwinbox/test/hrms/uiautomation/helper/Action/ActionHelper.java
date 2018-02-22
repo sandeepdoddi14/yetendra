@@ -1,6 +1,7 @@
 package com.darwinbox.test.hrms.uiautomation.helper.Action;
 
 import org.apache.log4j.Logger;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -56,5 +57,46 @@ public class ActionHelper extends TestBase{
 			throw new RuntimeException("Exception while clicking on " + text + ":" + e.getMessage());
 		}
 	}
+
+	/**
+	 * Move to top of page by pressing CNTRL+HOME button
+	 * @param driver
+	 * @param element
+	 * @param text
+	 * @return boolean
+	 */
+	public boolean moveToTop(WebDriver driver,WebElement element, String text) {
+		try {
+			Actions action = new Actions(driver);
+			action.keyDown(Keys.CONTROL).sendKeys(Keys.HOME).build().perform();
+			action.keyDown(Keys.CONTROL).release().perform();
+			Reporter("Moved to top successfully", "Pass");
+			return true;
+		} catch (Exception e) {
+			Reporter("Exception while clicking on " + text, "Fail");
+			throw new RuntimeException("Exception while clicking on " + text + ":" + e.getMessage());
+		}
+	}
+	
+	/**
+	 * Move to top of page by pressing CNTRL+HOME button
+	 * @param driver
+	 * @param element
+	 * @param text
+	 * @return boolean
+	 */
+	public boolean pressEnterKey(WebDriver driver) {
+		try {
+			Actions action = new Actions(driver);
+			action.keyDown(Keys.CONTROL).sendKeys(Keys.ENTER).build().perform();
+			action.keyDown(Keys.CONTROL).release().perform();
+			return true;
+		} catch (Exception e) {
+			Reporter("Exception while clicking on Enter key", "Fail");
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+	
 	
 }

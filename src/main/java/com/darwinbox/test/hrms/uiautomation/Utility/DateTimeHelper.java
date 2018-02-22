@@ -7,16 +7,20 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.util.Calendar;
+
+import javax.swing.text.DateFormatter;
+
 import static java.time.temporal.TemporalAdjusters.*;
 
 /**
  * @author balaji
  * @Creation_Date: 20 Nov 2017
  * @ClassName: DateTimeHelper.java
- * @LastModified_Date: 20 Nov 2017
+ * @LastModified_Date: 20 Feb 2018
  */
 public class DateTimeHelper {
 
@@ -32,8 +36,15 @@ public class DateTimeHelper {
 		return getCurrentDateTime().substring(0, 11);
 	}
 
-	public Year getCurrentYear() {
-		return Year.now();
+	/**
+	 * This method returns current Local Date
+	 * 
+	 * @return
+	 */
+	public String getCurrentLocalDate() {
+		LocalDate today = LocalDate.now();
+		String todaysDateInString = today.toString();
+		return todaysDateInString;
 	}
 
 	/**
@@ -50,15 +61,96 @@ public class DateTimeHelper {
 			int year = Integer.parseInt(arr[0]);
 			int month = Integer.parseInt(arr[1]);
 			int day = Integer.parseInt(arr[2]);
- 
+
 			LocalDate startDate = LocalDate.of(year, month, day).with(firstDayOfMonth());
 			LocalDate endDate = LocalDate.now().with(firstDayOfMonth());
 			double monthsDiff = ChronoUnit.MONTHS.between(startDate, endDate);
 			return monthsDiff;
-			
+
 		} catch (Exception e) {
-			// Reporter("Exception while getting month difference from current date",
-			// "Fail");
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * This month will calculate months difference between first day of month of two
+	 * dates
+	 * 
+	 * @param Year
+	 * @param Month
+	 * @param Date
+	 * @return
+	 */
+	public double getMonthDifferenceBetweenTwoDates(String Date1, String Date2) {
+		try {
+
+			LocalDate startDate = LocalDate.parse(Date1).with(firstDayOfMonth());
+			LocalDate endDate = LocalDate.parse(Date2).with(firstDayOfMonth());
+			double monthsDiff = ChronoUnit.MONTHS.between(startDate, endDate);
+			return monthsDiff;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * This month will calculate exact month difference between two dates
+	 * 
+	 * @param Year
+	 * @param Month
+	 * @param Date
+	 * @return
+	 */
+	public double getExactMonthDifferenceBetweenTwoDates(String Date1, String Date2) {
+		try {
+			LocalDate startDate = LocalDate.parse(Date1);
+			LocalDate endDate = LocalDate.parse(Date2);
+			double monthsDiff = ChronoUnit.MONTHS.between(startDate, endDate);
+			return monthsDiff;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * This month will calculate days difference between two dates
+	 * 
+	 * @param Year
+	 * @param Month
+	 * @param Date
+	 * @return
+	 */
+	public double getDaysDifferenceBetweenTwoDates(String Date1, String Date2) {
+		try {
+			LocalDate startDate = LocalDate.parse(Date1).with(firstDayOfMonth());
+			LocalDate endDate = LocalDate.parse(Date2).with(firstDayOfMonth());
+			double daysDiff = ChronoUnit.DAYS.between(startDate, endDate);
+			return daysDiff;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * This month will calculate difference between two dates
+	 * 
+	 * @param Year
+	 * @param Month
+	 * @param Date
+	 * @return
+	 */
+	public double getDaysDifferenceBetweenDOJAndCurrentDate(String DOJ) {
+		try {
+			LocalDate startDate = LocalDate.parse(DOJ);
+			LocalDate endDate = LocalDate.now();
+			double daysDiff = ChronoUnit.DAYS.between(startDate, endDate);
+			return daysDiff;
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -83,11 +175,14 @@ public class DateTimeHelper {
 		return midJoining;
 	}
 
+	/**
+	 * This method returns Quarter difference from Current Date
+	 * 
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return
+	 */
 	public double getQuarterDiffFromCurrentDate(String DATEIN_YYYY_MM_DD_format) {
 		try {
-			// double monthDiff =
-			// getMonthDifferenceFromCurrentDate(DATEIN_YYYY_MM_DD_format);
-			// double quarterDiff = (monthDiff / 3);
 			LocalDate DOJQuarterStartDate = getFirstDayOfQuarter(DATEIN_YYYY_MM_DD_format);
 			LocalDate currentQuarterStartDate = getFirstDayOfQuarter(LocalDate.now().toString());
 			double quarterDiff = (ChronoUnit.MONTHS.between(DOJQuarterStartDate, currentQuarterStartDate) / 3);
@@ -98,7 +193,12 @@ public class DateTimeHelper {
 		}
 	}
 
-
+	/**
+	 * This method returns Month difference from first day of Quarter
+	 * 
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return
+	 */
 	public double getMonthDiffFromFirstDayOfQuarter(String DATEIN_YYYY_MM_DD_format) {
 		try {
 			String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
@@ -116,6 +216,12 @@ public class DateTimeHelper {
 		}
 	}
 
+	/**
+	 * This method will return First Day of Quarter in Local Date format
+	 * 
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return Local Date
+	 */
 	public LocalDate getFirstDayOfQuarter(String DATEIN_YYYY_MM_DD_format) {
 
 		String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
@@ -140,14 +246,4 @@ public class DateTimeHelper {
 		return startDate;
 	}
 
-	public void getMonthDiff(String DATEIN_YYYY_MM_DD_format) {
-		
-		String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
-		int year = Integer.parseInt(arr[0]);
-		int month = Integer.parseInt(arr[1]);
-		int day = Integer.parseInt(arr[2]);
-	
-	
-	}
-	
 }
