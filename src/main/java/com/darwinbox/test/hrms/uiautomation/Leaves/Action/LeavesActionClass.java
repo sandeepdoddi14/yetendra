@@ -1,5 +1,6 @@
 package com.darwinbox.test.hrms.uiautomation.Leaves.Action;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -87,6 +88,8 @@ public class LeavesActionClass extends TestBase {
 	public static String Employee_probation_period;
 	public static String Leave_Probation_End_Date;
 	public static String LeaveCalBeginningDate;
+	public static StringBuffer LeaveScenario;
+	public static String WriteResultToExcel = "No";
 
 	/**
 	 * This method set Leave Scenario parameters from property file
@@ -119,6 +122,7 @@ public class LeavesActionClass extends TestBase {
 			Biannually = objUtil.getProperty("leavesCalculation", "Biannually");
 			Begin_of_monthORQuarter = objUtil.getProperty("leavesCalculation", "Begin.of.monthORQuarter");
 			End_of_monthORQuarter = objUtil.getProperty("leavesCalculation", "End.of.monthORQuarter");
+			WriteResultToExcel = objUtil.getProperty("leavesCalculation", "Write.Result.to.excel");
 
 			displayLeaveScenarioToReport();
 			return true;
@@ -134,81 +138,81 @@ public class LeavesActionClass extends TestBase {
 	 */
 	public void displayLeaveScenarioToReport() {
 		try {
-			StringBuffer str = new StringBuffer("Leave Scenario is--\nLeave Cycle: " + Leave_Cycle);
+			LeaveScenario = new StringBuffer("Leave Scenario is--\nLeave Cycle: " + Leave_Cycle);
 
 			if (Leave_Probation_period_Custom_Months.equalsIgnoreCase("Yes")
 					&& Leave_Probation_period_employee_probation_period.equalsIgnoreCase("No")) {
-				str.append(
+				LeaveScenario.append(
 						",\nLeave Probation Period: Custom Months->" + Probation_period_before_leave_validity_months);
 			} else if (Leave_Probation_period_Custom_Months.equalsIgnoreCase("No")
 					&& Leave_Probation_period_employee_probation_period.equalsIgnoreCase("Yes")) {
-				str.append(",\nLeave Probation Period: According to Employee Probation period which is "
+				LeaveScenario.append(",\nLeave Probation Period: According to Employee Probation period which is "
 						+ Employee_probation_period + " days");
 			} else {
-				str.append(
+				LeaveScenario.append(
 						",\nLeave Probation Period: Custom Months->" + Probation_period_before_leave_validity_months);
 			}
 
-			str.append(",\nPro Rata: " + Pro_rata);
+			LeaveScenario.append(",\nPro Rata: " + Pro_rata);
 			if (Pro_rata.equalsIgnoreCase("Yes")) {
-				str.append(",\nProbation Status: ");
+				LeaveScenario.append(",\nProbation Status: ");
 				if (Calculate_from_joining_date.equalsIgnoreCase("Yes")
 						&& Calculate_after_probation_period.equalsIgnoreCase("No")) {
-					str.append("Start calculating leaves from joining date");
+					LeaveScenario.append("Start calculating leaves from joining date");
 				} else if (Calculate_from_joining_date.equalsIgnoreCase("No")
 						&& Calculate_after_probation_period.equalsIgnoreCase("Yes")) {
-					str.append("Start calculating leaves after probation period");
+					LeaveScenario.append("Start calculating leaves after probation period");
 				}
 
 				if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
-					str.append(", Mid Joining Leaves: Half");
+					LeaveScenario.append(", Mid Joining Leaves: Half");
 				} else if (Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 						&& Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-					str.append(", Mid Joining Leaves: Full");
+					LeaveScenario.append(", Mid Joining Leaves: Full");
 				} else if (Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 						&& Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
-					str.append(", Mid Joining Leaves: Half and Full both selected");
+					LeaveScenario.append(", Mid Joining Leaves: Half and Full both selected");
 				} else {
-					str.append(", Mid Joining Leaves: Not allowed");
+					LeaveScenario.append(", Mid Joining Leaves: Not allowed");
 				}
 			}
 
-			str.append(",\nAccrual: " + Accrual);
+			LeaveScenario.append(",\nAccrual: " + Accrual);
 			if (Accrual.equalsIgnoreCase("Yes")) {
-				str.append(",\nAccrual time frame: ");
+				LeaveScenario.append(",\nAccrual time frame: ");
 				if (Monthly.equalsIgnoreCase("Yes") && Quarterly.equalsIgnoreCase("No")
 						&& Biannually.equalsIgnoreCase("No")) {
-					str.append("Month");
+					LeaveScenario.append("Month");
 					if (Begin_of_monthORQuarter.equalsIgnoreCase("Yes")
 							&& End_of_monthORQuarter.equalsIgnoreCase("No")) {
-						str.append(",\n Accrual point: Begin of month");
+						LeaveScenario.append(",\n Accrual point: Begin of month");
 					} else if (Begin_of_monthORQuarter.equalsIgnoreCase("No")
 							&& End_of_monthORQuarter.equalsIgnoreCase("Yes")) {
-						str.append(", Accrual point: End of month");
+						LeaveScenario.append(", Accrual point: End of month");
 					} else {
-						str.append(", Accrual point: Begin of month");
+						LeaveScenario.append(", Accrual point: Begin of month");
 					}
 				} else if (Monthly.equalsIgnoreCase("No") && Quarterly.equalsIgnoreCase("Yes")
 						&& Biannually.equalsIgnoreCase("No")) {
-					str.append("Quarter");
+					LeaveScenario.append("Quarter");
 					if (Begin_of_monthORQuarter.equalsIgnoreCase("Yes")
 							&& End_of_monthORQuarter.equalsIgnoreCase("No")) {
-						str.append(", Accrual point: Begin of Quarter");
+						LeaveScenario.append(", Accrual point: Begin of Quarter");
 					} else if (Begin_of_monthORQuarter.equalsIgnoreCase("No")
 							&& End_of_monthORQuarter.equalsIgnoreCase("Yes")) {
-						str.append(", Accrual point: End of Quarter");
+						LeaveScenario.append(", Accrual point: End of Quarter");
 					} else {
-						str.append(", Accrual point: Begin of Quarter");
+						LeaveScenario.append(", Accrual point: Begin of Quarter");
 					}
 				} else if (Monthly.equalsIgnoreCase("No") && Quarterly.equalsIgnoreCase("No")
 						&& Biannually.equalsIgnoreCase("Yes")) {
-					str.append("Biannual");
+					LeaveScenario.append("Biannual");
 				} else {
 					Reporter("Accuarl Time frame selected is not proper.", "Fail");
 					throw new RuntimeException();
 				}
 			}
-			ReporterForCodeBlock(str.toString(), "Info");
+			ReporterForCodeBlock(LeaveScenario.toString(), "Info");
 
 			// ExcelWriter.writeToExcel(str.toString());
 		} catch (Exception e) {
@@ -243,6 +247,7 @@ public class LeavesActionClass extends TestBase {
 			Biannually = getData("Biannually");
 			Begin_of_monthORQuarter = getData("Begin of month/Quarter");
 			End_of_monthORQuarter = getData("End of month/Quarter");
+			WriteResultToExcel = objUtil.getProperty("leavesCalculation", "Write.Result.to.excel");
 
 			displayLeaveScenarioToReport();
 			return true;
@@ -307,7 +312,7 @@ public class LeavesActionClass extends TestBase {
 						"By default 'Probation period before leave validity' is selected as 'Custom Months' with Probation period as '0'",
 						"Pass");
 			}
-			
+
 			createManageLeaves.selectLeaveCycleDropdown(Leave_Cycle);
 
 			objJavaScrHelper.scrollToElement(driver,
@@ -325,15 +330,15 @@ public class LeavesActionClass extends TestBase {
 					createManageLeaves.clickCalculateAfterProbationPeriodRadioButton();
 				}
 
-				if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
-					createManageLeaves.clickHalfMidJoiningLeavesCheckBox();
+				if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
+						&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
+					createManageLeaves.clickHalfMidJoiningLeavesRadioButton();
 				} else if (Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 						&& Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-					createManageLeaves.clickFullMidJoiningLeavesCheckBox();
+					createManageLeaves.clickFullMidJoiningLeavesRadioButton();
 				} else if (Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 						&& Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
-					createManageLeaves.clickHalfMidJoiningLeavesCheckBox();
-					createManageLeaves.clickFullMidJoiningLeavesCheckBox();
+					throw new RuntimeException("Set Mid Joining correctly");
 				}
 			} else {
 				Reporter("Pro Rata condition is set to No", "Paas");
@@ -356,7 +361,7 @@ public class LeavesActionClass extends TestBase {
 					}
 				} else if (Monthly.equalsIgnoreCase("No") && Quarterly.equalsIgnoreCase("Yes")
 						&& Biannually.equalsIgnoreCase("No")) {
-			
+
 					createManageLeaves.clickAccrualTimeFrameQuarterRadioButton();
 					if (Begin_of_monthORQuarter.equalsIgnoreCase("Yes")
 							&& End_of_monthORQuarter.equalsIgnoreCase("No")) {
@@ -388,9 +393,10 @@ public class LeavesActionClass extends TestBase {
 
 	/**
 	 * This method gets employees leave balance shown in front end
+	 * 
 	 * @param employee_Id
 	 * @author shikhar
-	 * @return Leave Balance 
+	 * @return Leave Balance
 	 */
 	public double getEmployeesFrontEndLeaveBalance(String leaveType) {
 		try {
@@ -485,6 +491,7 @@ public class LeavesActionClass extends TestBase {
 	 */
 	public boolean verifyEmployeeLeaveBalanceForWholeLeaveCycle() {
 		try {
+			String result = "";
 			int flag = 0;
 			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
 			Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
@@ -502,12 +509,17 @@ public class LeavesActionClass extends TestBase {
 				if (expectedBalance != actualBalance) {
 					Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
 							+ "||Actual Leave Balance=" + actualBalance, "Fail");
+					result = "Fail";
 					flag++;
 				} else {
 					Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
 							+ "||Actual Leave Balance=" + actualBalance, "Pass");
+					result = "Pass";
 				}
 				i++;
+				if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
+					writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result);
+				}
 			}
 
 			if (flag > 0) {
@@ -515,9 +527,28 @@ public class LeavesActionClass extends TestBase {
 			} else {
 				return true;
 			}
+
 		} catch (Exception e) {
 			Reporter("Exception while comparing leave balance", "Fail");
 			return false;
+		}
+	}
+
+	public void writeResultToExcel(String DateOfJoining, double expectedBalance, double actualBalance, String result) {
+
+		String[] dataToWrite = new String[5];
+		dataToWrite[0] = LeaveScenario.toString();
+		dataToWrite[1] = DateOfJoining;
+		dataToWrite[2] = String.valueOf(expectedBalance);
+		dataToWrite[3] = String.valueOf(actualBalance);
+		dataToWrite[4] = result;
+
+		try {
+			ExcelWriter.writeToExcel(dataToWrite);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			Reporter("Exception while sending data to Excel", "Fail");
 		}
 	}
 
@@ -558,7 +589,6 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
-	
 	/**
 	 * This method is used to set employee id to calculate leave balance
 	 * 
@@ -666,7 +696,8 @@ public class LeavesActionClass extends TestBase {
 					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
 						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
-							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 12);
+							// midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 12);
+							midJoinigYesLeaves = 0;
 						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
@@ -702,7 +733,7 @@ public class LeavesActionClass extends TestBase {
 						String DOJBiannualHalf = checkBiannualHalfOfDate(LeaveCalBeginningDate);
 						String currentDateBiannualHalf = checkBiannualHalfOfDate(LocalDate.now().toString());
 
-						midYearEndDate = LocalDate.parse(leaveCycleEndDate).minusMonths(7).toString();
+						midYearEndDate = LocalDate.parse(leaveCycleEndDate).minusMonths(6).toString();
 						String biannualEndDate = "";
 
 						if (DOJBiannualHalf.equalsIgnoreCase("First")) {
@@ -718,7 +749,7 @@ public class LeavesActionClass extends TestBase {
 							biannualLeave = 0;
 						} else if (DOJBiannualHalf.equalsIgnoreCase("First")
 								&& currentDateBiannualHalf.equalsIgnoreCase("Second")) {
-							biannualLeave = perMonthLeaves / 2;
+							biannualLeave = Leaves_Allowed_Per_Year / 2;
 						} else if (DOJBiannualHalf.equalsIgnoreCase("Second")
 								&& currentDateBiannualHalf.equalsIgnoreCase("Second")) {
 							biannualLeave = 0;

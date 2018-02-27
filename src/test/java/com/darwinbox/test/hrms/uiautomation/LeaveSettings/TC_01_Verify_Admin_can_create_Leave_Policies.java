@@ -68,8 +68,8 @@ public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) t
 		Assert.assertTrue(createManageLeaves.clickCreditOnProRataBasisAccordian(), "Clicked on Credit On Prorata Basis Accordian");
 		Assert.assertTrue(createManageLeaves.clickCreditOnProRataBasisYesRadioButton(), "Click on Yes Button");
 		Assert.assertTrue(createManageLeaves.clickCalculateFromJoiningDateRadioButton(), "Click on Calculate from joining date button");
-		Assert.assertTrue(createManageLeaves.toggleHalfMidJoiningLeavesCheckBox("Enable"), "Disable Credit half month's leaves, if employee joins after 15th day of the month checkbox");
-		Assert.assertTrue(createManageLeaves.toggleFullMidJoiningLeavesCheckBox("Disable"), "Enable Credit full month's leaves, if employee joins after 15th day of the month checkbox");		
+		Assert.assertTrue(createManageLeaves.clickHalfMidJoiningLeavesRadioButton(), "Disable Credit half month's leaves, if employee joins after 15th day of the month checkbox");
+//		Assert.assertTrue(createManageLeaves.toggleFullMidJoiningLeavesCheckBox("Disable"), "Enable Credit full month's leaves, if employee joins after 15th day of the month checkbox");		
 		Assert.assertTrue(createManageLeaves.clickCreditOnAccrualBasisAccordian(), "Click on Credit On Prorata Basis");
 		Assert.assertTrue(createManageLeaves.clickCreditOnAccrualBasisYesRadioButton(), "Click on Credit On Accrual Yes radio button");
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
