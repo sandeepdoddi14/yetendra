@@ -1,56 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite 
-	name="DarwinBox_HRMS_UIAutomation_TestSuite">
+<suite
 
+        name="DarwinBox_HRMS_UIAutomation_TestSuite">
     <test name="DarwinBox_HRMS_Login_Automation_Tests">
-		<classes>
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.LoginTests.TC_01_ValidLoginTest" />
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.LoginTests.TC_02_InvalidLoginTest" />
-		</classes>
-	</test>
+        <packages>
+            <package
+                    name="com.darwinbox.test.hrms.uiautomation.LeaveSettings" />
+             </packages>
+    </test>
 
-<test name="DarwinBox_HRMS_Leaves_AutomationTests"
-		  preserve-order="true">
-		<classes>
-		<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_01_Verify_Admin_can_create_Leave_Policies" />
-			<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02_Verify_Leave_Balance_of_an_employee_for_all_scenarios" />
-				<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios" />
-					<class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios_and_particular_DOJ" />
-		</classes>
-	</test>
-	
-	<test name="DarwinBox_HRMS_Reimbursement_AutomationTests"
-		  preserve-order="true">
-		<classes>
-			<class name="com.darwinbox.test.hrms.uiautomation.reimbursement.ReimbUnitSettingsTest" />
-		</classes>
-	</test>
 
-	<test name="DarwinBox_HRMS_Attendance_AutomationTests"
-		preserve-order="true">
-		<classes>
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_01_Verify_Admin_is_able_to_create_New_Shifts_Positive" />
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_02_Verify_New_Shifts_with_begin_time_greater_than_end_time_can_not_be_created_NEG" />
+    <!--
+        <test name="DarwinBox_HRMS_Login_Automation_Tests">
+            <classes>
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.LoginTests.TC_01_ValidLoginTest" />
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.LoginTests.TC_02_InvalidLoginTest" />
+            </classes>
+        </test>
 
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_03_Verify_Admin_is_able_to_create_New_Over_Night_Shift_Positive" />
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_04_Verify_Mandatory_fields_in_Shift_Creation_NEG" />
+    <test name="DarwinBox_HRMS_Leaves_AutomationTests"
+              preserve-order="true">
+            <classes>
+            <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_01_Verify_Admin_can_create_Leave_Policies" />
+                <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02_Verify_Leave_Balance_of_an_employee_for_all_scenarios" />
+                    <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios" />
+                        <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios_and_particular_DOJ" />
+            </classes>
+        </test>
 
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_05_Verify_Admin_is_able_to_edit_Shift_Positive" />
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_06_Perform_Mandatory_Checks_in_Policy_Creation" />
+        <test name="DarwinBox_HRMS_Reimbursement_AutomationTests"
+              preserve-order="true">
+            <classes>
+                <class name="com.darwinbox.test.hrms.uiautomation.reimbursement.ReimbUnitSettingsTest" />
+            </classes>
+        </test>
 
-            <class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_07_Verify_Admin_is_able_to_create_policy" />
-			<class
-				name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_08_Verify_Admin_is_able_to_edit_policy" />
-		</classes>
-	</test>
+        <test name="DarwinBox_HRMS_Attendance_AutomationTests"
+            preserve-order="true">
+            <classes>
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_01_Verify_Admin_is_able_to_create_New_Shifts_Positive" />
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_02_Verify_New_Shifts_with_begin_time_greater_than_end_time_can_not_be_created_NEG" />
+
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_03_Verify_Admin_is_able_to_create_New_Over_Night_Shift_Positive" />
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_04_Verify_Mandatory_fields_in_Shift_Creation_NEG" />
+
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_05_Verify_Admin_is_able_to_edit_Shift_Positive" />
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_06_Perform_Mandatory_Checks_in_Policy_Creation" />
+
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_07_Verify_Admin_is_able_to_create_policy" />
+                <class
+                    name="com.darwinbox.test.hrms.uiautomation.AttendanceSettings.TC_08_Verify_Admin_is_able_to_edit_policy" />
+            </classes>
+        </test>-->
 </suite>

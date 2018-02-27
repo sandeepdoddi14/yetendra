@@ -428,7 +428,7 @@ public class TestBase {
 			xtReportLog.log(Status.INFO, code);
 			log.info(text);
 		}
-		Reporter.log(text,true);
+		Reporter.log(text);
 	}
 
 	

@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
-import org.testng.SkipException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,7 +58,7 @@ public void initializeObjects() {
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");			
-		Assert.assertTrue(leavesAction.setEmployeeID("001"), "Employee ID is set successfully to test");
+		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");

@@ -133,11 +133,11 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_probation_status'][@value = 1]")
 	private WebElement calculateAfterProbationPerioRadioButton;
 	
-	@FindBy(xpath = "//*[@name='LeavePolicy_Prorated[mid_joining_leaves_full]']")
-	private WebElement midJoiningLeavesFullCheckBox;
+	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_mid_joining_leaves'][@value = 0]")
+	private WebElement midJoiningLeavesFullRadioButton;
 	
-	@FindBy(xpath = "//*[@name='LeavePolicy_Prorated[mid_joining_leaves]']")
-	private WebElement midJoiningLeavesHalfCheckBox;
+	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_mid_joining_leaves'][@value = 1]")
+	private WebElement midJoiningLeavesHalfRadioButton;
 	
 	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Credit on accrual basis')]/..")
 	private WebElement creditOnAccrualBasisAccordian;
@@ -151,7 +151,7 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_is_monthly_quaterly'][@value =0]")
 	private WebElement AccrualTimeFrameMonthRadioButton;
 	
-	@FindBy(xpath = "//*[@id='LeavePolicy_Accrual_is_monthly_quaterly'][@title = 'Leave will be credited proportionately, Quarterly basis.'][@value =1]")
+	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_is_monthly_quaterly'][@value =1]")
 	private WebElement AccrualTimeFrameQuarterRadioButton;
 	
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_is_monthly_quaterly'][@value =2]")
@@ -441,34 +441,34 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * This method enables Credit half month's leaves, if employee joins after 15th day of the month checkbox
 	 * 
 	 */
-	public boolean clickHalfMidJoiningLeavesCheckBox() {
-		return objAction.actionClick(driver, midJoiningLeavesHalfCheckBox, "Credit half month's leaves, if employee joins after 15th day of the month");
+	public boolean clickHalfMidJoiningLeavesRadioButton() {
+		return objGenHelper.elementClick(midJoiningLeavesHalfRadioButton, "Credit half month's leaves, if employee joins after 15th day of the month");
 	}
 	
-	/**
-	 * This method enables Credit half month's leaves, if employee joins after 15th day of the month checkbox
-	 * 
-	 */
-	public boolean toggleHalfMidJoiningLeavesCheckBox(String status) {
-		return objGenHelper.toggleElementStatus(midJoiningLeavesHalfCheckBox, status, "Credit half month's leaves, if employee joins after 15th day of the month");
-	}
+//	/**
+//	 * This method enables Credit half month's leaves, if employee joins after 15th day of the month checkbox
+//	 * 
+//	 */
+//	public boolean toggleHalfMidJoiningLeavesCheckBox(String status) {
+//		return objGenHelper.toggleElementStatus(midJoiningLeavesHalfCheckBox, status, "Credit half month's leaves, if employee joins after 15th day of the month");
+//	}
 	
 	/**
 	 * This method enables Credit full month's leaves, if employee joins after 15th day of the month checkbox
 	 * 
 	 */
-	public boolean clickFullMidJoiningLeavesCheckBox() {
-		return objAction.actionClick(driver, midJoiningLeavesFullCheckBox, "Credit full month's leaves, if employee joins after 15th day of the month");
+	public boolean clickFullMidJoiningLeavesRadioButton() {
+		return objGenHelper.elementClick(midJoiningLeavesFullRadioButton, "Credit full month's leaves, if employee joins after 15th day of the month");
 //		return objGenHelper.toggleElementStatus(midJoiningLeavesFullCheckBox, status, "Credit full month's leaves, if employee joins after 15th day of the month");
 	}
 	
-	/**
-	 * This method enables Credit full month's leaves, if employee joins after 15th day of the month checkbox
-	 * 
-	 */
-	public boolean toggleFullMidJoiningLeavesCheckBox(String status) {
-		return objGenHelper.toggleElementStatus(midJoiningLeavesFullCheckBox, status, "Credit full month's leaves, if employee joins after 15th day of the month");
-	}
+//	/**
+//	 * This method enables Credit full month's leaves, if employee joins after 15th day of the month checkbox
+//	 * 
+//	 */
+//	public boolean toggleFullMidJoiningLeavesCheckBox(String status) {
+//		return objGenHelper.toggleElementStatus(midJoiningLeavesFullCheckBox, status, "Credit full month's leaves, if employee joins after 15th day of the month");
+//	}
 	
 	/**
 	 * This method collapse/uncollapse Credit on accrual basis accordian
@@ -509,6 +509,8 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * 
 	 */
 	public boolean clickAccrualTimeFrameQuarterRadioButton() {
+	//	objWait.waitElementToBeClickable(AccrualTimeFrameQuarterRadioButton);
+		objAction.moveToElement(driver, AccrualTimeFrameQuarterRadioButton, "Accrual time frame 'Quarter' Radio Button");
 		return objGenHelper.elementClick(AccrualTimeFrameQuarterRadioButton, "Accrual time frame 'Quarter' Radio Button");
 	}
 	

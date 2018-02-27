@@ -5,10 +5,9 @@ Test_Execution_Results/*
 .project
 .idea/
 .settings/
-src/main/resources/TestData/ExportExcel.xlsx
 src/test/java/com/darwinbox/test/hrms/uiautomation/LeaveSettings/JustTest.java
 src/test/java/com/darwinbox/test/hrms/uiautomation/LeaveSettings/Temp_Set_Leave_Scenarios_In_Excel_File.java
-src/main/java/com/darwinbox/test/hrms/uiautomation/Utility/ExcelWriter.java
+
 
 *.iml
 .gitignore

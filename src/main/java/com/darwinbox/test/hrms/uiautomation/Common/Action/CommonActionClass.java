@@ -7,7 +7,6 @@ import org.openqa.selenium.support.PageFactory;
 import com.darwinbox.test.hrms.uiautomation.Pages.HomePage;
 import com.darwinbox.test.hrms.uiautomation.Pages.RightMenuOptionsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.DateTimeHelper;
-import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.Action.ActionHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.Alert.AlertHelper;
@@ -30,7 +29,7 @@ public class CommonActionClass extends TestBase {
 	UtilityHelper objUtil;
 	ActionHelper objActionHelper;
 	BrowserHelper objBrowserHelper;
-	ExcelWriter excelWriter;
+
 	RightMenuOptionsPage rightMenuOption;
 	HomePage homepage;
 
@@ -48,7 +47,7 @@ public class CommonActionClass extends TestBase {
 		objJavaScrHelper = PageFactory.initElements(driver, JavaScriptHelper.class);
 		objActionHelper = PageFactory.initElements(driver, ActionHelper.class);
 		objBrowserHelper = PageFactory.initElements(driver, BrowserHelper.class);
-		excelWriter = PageFactory.initElements(driver, ExcelWriter.class);
+		//excelWriter = PageFactory.initElements(driver, ExcelWriter.class);
 		rightMenuOption = PageFactory.initElements(driver, RightMenuOptionsPage.class);
 		homepage = PageFactory.initElements(driver, HomePage.class);
 	}
