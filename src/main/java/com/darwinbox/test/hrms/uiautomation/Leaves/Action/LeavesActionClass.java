@@ -14,7 +14,7 @@ import org.openqa.selenium.support.PageFactory;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CreateAndManageLeavePoliciesPage;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.LeavesSettingsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.DateTimeHelper;
-import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
+
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
 import com.darwinbox.test.hrms.uiautomation.helper.Action.ActionHelper;
@@ -40,7 +40,7 @@ public class LeavesActionClass extends TestBase {
 	LeavesSettingsPage leaveSettings;
 	ActionHelper objActionHelper;
 	BrowserHelper objBrowserHelper;
-	ExcelWriter excelWriter;
+
 
 	public static final Logger log = Logger.getLogger(LeavesActionClass.class);
 
@@ -58,7 +58,7 @@ public class LeavesActionClass extends TestBase {
 		leaveSettings = PageFactory.initElements(driver, LeavesSettingsPage.class);
 		objActionHelper = PageFactory.initElements(driver, ActionHelper.class);
 		objBrowserHelper = PageFactory.initElements(driver, BrowserHelper.class);
-		excelWriter = PageFactory.initElements(driver, ExcelWriter.class);
+
 	}
 
 	public static String EMPID;
