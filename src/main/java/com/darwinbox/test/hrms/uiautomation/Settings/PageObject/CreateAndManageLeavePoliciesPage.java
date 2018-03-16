@@ -34,7 +34,6 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	ActionHelper objAction;
 
 	public static final Logger log = Logger.getLogger(AttendanceSettingsShiftPage.class);
-	
 
 	public CreateAndManageLeavePoliciesPage(WebDriver driver) {
 		this.driver = driver;
@@ -90,13 +89,13 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 
 	@FindBy(xpath = "//input[@id='Leaves_p1_waiting_after_doj_status'][@value = 1]")
 	private WebElement customMonthsRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='Leaves_p1_waiting_after_doj_status'][@value = 0]")
 	private WebElement accordingToEmployeeProbationPeriodRadioButton;
 
 	@FindBy(xpath = "//*[@id='Leaves_p1_waiting_after_doj'][@value = 0][@type = 'text']")
 	private WebElement probationPeriodBeforeLeaveValidityMonthsTextBox;
-	
+
 	@FindBy(xpath = "//*[@id='Leaves_p2_max_per_month']")
 	private WebElement maximumLeavesAllowedPerMonthTextBox;
 
@@ -111,81 +110,120 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 
 	@FindBy(xpath = "//*[@id='Leaves_is_special_leave']")
 	private WebElement specialLeaveCheckBox;
-	
 
-	
 	/*
 	 * Leaves Additional Configuration Object Repository
 	 */
+
+	/*
+	 * Pro Rata Settings
+	 */
 	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Credit on Pro-Rata basis')]/..")
-	private WebElement creditOnProRataBasisAccordian;
-	
-//	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_status'][@value = 1]")
+	private WebElement creditOnProRataBasisAccordion;
+
+	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//*[@class = 'accordion-toggle']/span[contains(text(),'Credit on Pro-Rata basis')]/..")
+	private WebElement creditOnProRataBasisAccordionUncollapse;
+
+	// @FindBy(xpath = "//*[@id='LeavePolicy_Prorated_status'][@value = 1]")
 	@FindBy(xpath = "//*[@title = 'Leave balance will be credited depending on when the employee has joined during the annual leave cycle.']")
 	private WebElement creditOnProRataBasisYesRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_status'][@value = 0]")
 	private WebElement creditOnProRataBasisNoRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_probation_status'][@value = 0]")
 	private WebElement calculateFromJoiningDateRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_probation_status'][@value = 1]")
 	private WebElement calculateAfterProbationPerioRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_mid_joining_leaves'][@value = 0]")
 	private WebElement midJoiningLeavesFullRadioButton;
-	
+
+	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_mid_joining_leaves_full'][@value = 1]")
+	private WebElement midJoiningLeavesFullCheckBox;
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_mid_joining_leaves'][@value = 1]")
 	private WebElement midJoiningLeavesHalfRadioButton;
-	
-	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Credit on accrual basis')]/..")
-	private WebElement creditOnAccrualBasisAccordian;
-	
+
+	@FindBy(xpath = "//*[@id='LeavePolicy_Prorated_mid_joining_leaves'][@value = 1]")
+	private WebElement midJoiningLeavesHalfCheckBox;
+
+	/**
+	 * Accrual Settings
+	 */
+	// @FindBy(xpath =
+	// "//*[@id='leavePolicyAccordion']//span[contains(text(),'Credit on accrual
+	// basis')]/..")
+	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//*[@class='accordion-toggle']/span[contains(text(),'Credit on accrual basis')]/..")
+	private WebElement creditOnAccrualBasisAccordion;
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_status'][@value=1]")
 	private WebElement creditOnAccrualBasisYesRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accrual_status'][@value=0]")
 	private WebElement creditOnAccrualBasisNoRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_is_monthly_quaterly'][@value =0]")
 	private WebElement AccrualTimeFrameMonthRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_is_monthly_quaterly'][@value =1]")
 	private WebElement AccrualTimeFrameQuarterRadioButton;
-	
+
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_is_monthly_quaterly'][@value =2]")
 	private WebElement AccrualTimeFrameBiannualRadioButton;
-	
+
 	@FindBy(xpath = "//*[@title='Leave will be credited proportionately, on the 1st of every month']")
 	private WebElement AccrualPointBeginOfMonthRadioButton;
-	
+
 	@FindBy(xpath = "//*[@title='Leave will be credited proportionately, after the end of every month, at the start of next month.']")
 	private WebElement AccrualPointEndOfMonthRadioButton;
-	
+
 	@FindBy(xpath = "//*[@title='Leave will be credited proportionately, on the start of Quarter']")
 	private WebElement AccrualPointBeginOfQuarterRadioButton;
-	
+
 	@FindBy(xpath = "//*[@title='Leave will be credited proportionately, after the end of every Quarter']")
-	private WebElement AccrualPointEndOfQuarterRadioButton;	
-	
+	private WebElement AccrualPointEndOfQuarterRadioButton;
+
+	/**
+	 * Credit on tenure Basis settings
+	 */
+	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Credit on Tenure basis')]/..")
+	private WebElement creditOnTenureBasisAccordion;
+
+	@FindBy(xpath = "//*[@id='LeavePolicyTenure_status'][@value=1]")
+	private WebElement creditOnTenureBasisYesRadioButton;
+
+	@FindBy(xpath = "//*[@id='LeavePolicyTenure_status'][@value=0]")
+	private WebElement creditOnTenureBasisNoRadioButton;
+
+	@FindBy(xpath = "//*[@id='LeavePolicyTenure_leaves_per_year_0_from_year']")
+	private WebElement creditOnTenureBasisFromYearDropdown;
+
+	@FindBy(xpath = "//*[@id='LeavePolicyTenure_leaves_per_year_0_to_year']")
+	private WebElement creditOnTenureBasisToYearDropdown;
+
+	@FindBy(xpath = "//*[@id='LeavePolicyTenure_leaves_per_year_0_leaves']")
+	private WebElement creditOnTenureBasisNoOfLeavesYearTextBox;
+
+	@FindBy(xpath = "//div[@id = 'tenure_content']//*[@id='add_more_fields']")
+	private WebElement creditOnTenureBasisAddNewIcon;
+
 	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Allow half-day')]/..")
-	private WebElement allowHalfDayAccordian;
-	
+	private WebElement allowHalfDayAccordion;
+
 	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Carry forward unused leaves')]/..")
-	private WebElement carryForwardUnusedLeavesAccordian;
-	
+	private WebElement carryForwardUnusedLeavesAccordion;
+
 	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Allow Past dated leave applications')]/..")
-	private WebElement allowPastDatedLeaveApplicationsAccordian;
-	
+	private WebElement allowPastDatedLeaveApplicationsAccordion;
+
 	@FindBy(xpath = "//*[@id='leavePolicyAccordion']")
-	public WebElement leavePolicyAccordian;
-	
+	public WebElement leavePolicyAccordion;
+
 	@FindBy(xpath = "//*[@id='Leaves_dont_show_in_probation_period']")
 	private WebElement dontShowApplyInProbationPeriodCheckbox;
 
-
-	
 	/**
 	 * This method select Restriction Condition Leaves Or And
 	 * 
@@ -204,8 +242,9 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 */
 	public boolean clickCreateLeavePolicySaveButton() {
 		objJavaScrHelper.scrollUpVertically();
-		objAction.moveToTop(driver,createLeavePolicySaveButton, "Create Leave Policy Save button");
-	return	objGenHelper.elementClick(createLeavePolicySaveButton, "Create Leave Policy Save button");
+		// objAction.moveToTop(driver,createLeavePolicySaveButton, "Create Leave Policy
+		// Save button");
+		return objGenHelper.elementClick(createLeavePolicySaveButton, "Create Leave Policy Save button");
 	}
 
 	/**
@@ -216,7 +255,6 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	public boolean selectGroupCompanyDropdown(String text) {
 		return objDropDownHelper.selectUsingVisibleValue(groupCompanyDropdown, text, "Group Company");
 	}
-	
 
 	/**
 	 * This method selects text from Group Company Drop down
@@ -226,7 +264,7 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	public boolean selectGroupCompanyDropdown(int index) {
 		return objDropDownHelper.selectUsingIndex(groupCompanyDropdown, index, "Group Company");
 	}
-	
+
 	/**
 	 * This method insert text in Description text box
 	 * 
@@ -239,37 +277,42 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 
 	/**
 	 * This method insert text in Maximum Leaves Allowed Per Year text box
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean insertMaximumLeavesAllowedPerYear(String text) {
-		return objGenHelper.setElementText(maximumLeavesAllowedPerYearTextBox, "Maximum leaves allowed per year", text );
-	}
-	
-	/**
-	 * This method insert text in Maximum Leaves Allowed Per Year text box
-	 * @param text
-	 * @return
-	 */
-	public boolean insertMaximumLeavesAllowedPerYear(Integer num) {
-		return objGenHelper.setElementText(maximumLeavesAllowedPerYearTextBox,"Maximum leaves allowed per year", num);
+		return objGenHelper.setElementText(maximumLeavesAllowedPerYearTextBox, "Maximum leaves allowed per year", text);
 	}
 
 	/**
 	 * This method insert text in Maximum Leaves Allowed Per Year text box
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public boolean insertMaximumLeavesAllowedPerYear(Integer num) {
+		return objGenHelper.setElementText(maximumLeavesAllowedPerYearTextBox, "Maximum leaves allowed per year", num);
+	}
+
+	/**
+	 * This method insert text in Maximum Leaves Allowed Per Year text box
+	 * 
 	 * @param text
 	 * @return
 	 */
 
 	public boolean insertConsecutiveLeavesAllowedPerMonthTextBox(String text) {
-		
+
 		driver.switchTo().defaultContent();
 		objGenHelper.elementClick(consecutiveLeavesAllowedPerMonthTextBox, "Maximum leaves allowed per year");
-		return objGenHelper.setElementText(consecutiveLeavesAllowedPerMonthTextBox, text, "Maximum leaves allowed per year");
+		return objGenHelper.setElementText(consecutiveLeavesAllowedPerMonthTextBox, text,
+				"Maximum leaves allowed per year");
 	}
 
 	/**
 	 * This method select text from Leave Cycle Drop down
+	 * 
 	 * @param text
 	 * @return
 	 */
@@ -279,15 +322,18 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 
 	/**
 	 * This method enables or disable Push Leave Request To Admin Checkbox
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean pushLeaveRequestToAdminCheckbox(String text) {
-		return objGenHelper.toggleElementStatus(pushLeaveRequestToAdminCheckbox, text, "Push all these leave requests to admin");
+		return objGenHelper.toggleElementStatus(pushLeaveRequestToAdminCheckbox, text,
+				"Push all these leave requests to admin");
 	}
 
 	/**
 	 * This method insert text in Maximum Leaves Allowed Per Year text box
+	 * 
 	 * @param text
 	 * @return
 	 */
@@ -297,33 +343,37 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 
 	/**
 	 * This method insert text in Leave Type text box
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean insertLeaveType(String text) {
-		return objGenHelper.setElementText(leaveTypeTextBox,"Leave Type", text);
+		return objGenHelper.setElementText(leaveTypeTextBox, "Leave Type", text);
 	}
-	
+
 	/**
 	 * This method select text from Gender applicability Drop down
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean selectGenderApplicabilityDropdown(String text) {
 		return objDropDownHelper.selectUsingVisibleValue(genderApplicabilityDropdown, text, "Gender applicability");
 	}
-	
+
 	/**
 	 * This method insert text in Minimum Notice Period (days)text box
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean insertMinimumNoticePeriodDays(String text) {
 		return objGenHelper.setElementText(minimumNoticePeriodTextBox, text, "Minimum Notice Period (days)");
 	}
-	
+
 	/**
 	 * This method clicks on Custom Months Radio button
+	 * 
 	 * @param text
 	 * @return
 	 */
@@ -332,63 +382,78 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 		objWait.waitElementToBeClickable(customMonthsRadioButton);
 		return objGenHelper.elementClick(customMonthsRadioButton, "Custom Months Radio button");
 	}
-	
+
 	/**
 	 * This method clicks on According to employee probation period Radio button
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean clickAccordingToEmployeeProbationPeriodRadioButton() {
-		return objGenHelper.elementClick(accordingToEmployeeProbationPeriodRadioButton, "According to employee probation period Radio button");
+		return objGenHelper.elementClick(accordingToEmployeeProbationPeriodRadioButton,
+				"According to employee probation period Radio button");
 	}
-	
+
 	/**
-	 * This method insert text in Probation period before leave validity (months) text box
+	 * This method insert text in Probation period before leave validity (months)
+	 * text box
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean insertProbationPeriodBeforeLeaveValidityMonths(String value) {
-		return objGenHelper.setElementText(probationPeriodBeforeLeaveValidityMonthsTextBox, "Probation period before leave validity (months)", value );
+		return objGenHelper.setElementText(probationPeriodBeforeLeaveValidityMonthsTextBox,
+				"Probation period before leave validity (months)", value);
 	}
-	
+
 	/**
 	 * This method insert text in Maximum leaves allowed per month text box
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean insertMaximumLeavesAllowedPerMonth(String value) {
-		return objGenHelper.setElementText(maximumLeavesAllowedPerMonthTextBox, "Maximum leaves allowed per month", value);
+		return objGenHelper.setElementText(maximumLeavesAllowedPerMonthTextBox, "Maximum leaves allowed per month",
+				value);
 	}
-	
+
 	/**
-	 * This method enables or disable Don't Allow these leaves in notice period Checkbox
+	 * This method enables or disable Don't Allow these leaves in notice period
+	 * Checkbox
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean dontAllowLeavesInNoticePeriodCheckbox(String text) {
-		return objGenHelper.toggleElementStatus(dontAllowLeavesInNoticePeriodCheckBox, text, "Don't Allow these leaves in notice period");
+		return objGenHelper.toggleElementStatus(dontAllowLeavesInNoticePeriodCheckBox, text,
+				"Don't Allow these leaves in notice period");
 	}
-	
+
 	/**
-	 * This method insert text in Maximum Number of Leaves which can be accrued text box
+	 * This method insert text in Maximum Number of Leaves which can be accrued text
+	 * box
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean insertMaximumNumberOfLeavesWhichCanBeAccrued(String text) {
-		return objGenHelper.setElementText(maximumNumberofLeavesAccruedTextBox, text, "Maximum Number of Leaves which can be accrued");
+		return objGenHelper.setElementText(maximumNumberofLeavesAccruedTextBox, text,
+				"Maximum Number of Leaves which can be accrued");
 	}
-	
+
 	/**
 	 * This method insert text in Minimum Consecutive leaves text box
+	 * 
 	 * @param text
 	 * @return
 	 */
 	public boolean insertMinimumConsecutiveLeaves(String text) {
 		return objGenHelper.setElementText(minimumConsecutiveLeavesTextBox, text, "Minimum Consecutive leaves");
 	}
-	
+
 	/**
 	 * This method enables or disable Push Is this a Special Leave Checkbox
+	 * 
 	 * @param text
 	 * @return
 	 */
@@ -397,22 +462,31 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	}
 
 	/**
-	 * This method collapse/uncollapse Credit on Pro-Rata basis accordian
+	 * This method collapse/uncollapse Credit on Pro-Rata basis Accordion
 	 * 
 	 */
-	public boolean clickCreditOnProRataBasisAccordian() {
-		return objGenHelper.elementClick(creditOnProRataBasisAccordian, "Credit on Pro-Rata basis accordian");
+	public boolean clickCreditOnProRataBasisAccordion() {
+		return objGenHelper.elementClick(creditOnProRataBasisAccordion, "Credit on Pro-Rata basis Accordion");
 	}
-	
+
+	/**
+	 * This method collapse/uncollapse Credit on Pro-Rata basis Accordion
+	 * 
+	 */
+	public boolean clickCreditOnProRataBasisAccordionUncollapse() {
+		return objGenHelper.elementClick(creditOnProRataBasisAccordion, "Credit on Pro-Rata basis Accordion");
+	}
+
 	/**
 	 * This method clicks on Credit On ProRata Basis Yes Radio Button
 	 * 
 	 */
 	public boolean clickCreditOnProRataBasisYesRadioButton() {
-	objWait.waitElementToBeClickable(creditOnProRataBasisYesRadioButton);
-	return objGenHelper.elementClick(creditOnProRataBasisYesRadioButton, "Credit On ProRata Basis Yes Radio Button");
+		objWait.waitElementToBeClickable(creditOnProRataBasisYesRadioButton);
+		return objGenHelper.elementClick(creditOnProRataBasisYesRadioButton,
+				"Credit On ProRata Basis Yes Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Credit On ProRata Basis Yes Radio Button
 	 * 
@@ -420,74 +494,107 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	public boolean clickCreditOnProRataBasisNoRadioButton() {
 		return objGenHelper.elementClick(creditOnProRataBasisNoRadioButton, "Credit On ProRata Basis No Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Calculate from joining date Radio Button
 	 * 
 	 */
 	public boolean clickCalculateFromJoiningDateRadioButton() {
-		return objGenHelper.elementClick(calculateFromJoiningDateRadioButton, "Calculate from joining date Radio Button");
+		return objGenHelper.elementClick(calculateFromJoiningDateRadioButton,
+				"Calculate from joining date Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Calculate after probation period Radio Button
 	 * 
 	 */
 	public boolean clickCalculateAfterProbationPeriodRadioButton() {
-		return objGenHelper.elementClick(calculateAfterProbationPerioRadioButton, "Calculate after probation period Radio Button");
+		return objGenHelper.elementClick(calculateAfterProbationPerioRadioButton,
+				"Calculate after probation period Radio Button");
 	}
-	
+
 	/**
-	 * This method enables Credit half month's leaves, if employee joins after 15th day of the month checkbox
+	 * This method enables Credit half month's leaves, if employee joins after 15th
+	 * day of the month checkbox
 	 * 
 	 */
 	public boolean clickHalfMidJoiningLeavesRadioButton() {
-		return objGenHelper.elementClick(midJoiningLeavesHalfRadioButton, "Credit half month's leaves, if employee joins after 15th day of the month");
+		return objGenHelper.elementClick(midJoiningLeavesHalfRadioButton,
+				"Credit half month's leaves, if employee joins after 15th day of the month");
 	}
-	
-//	/**
-//	 * This method enables Credit half month's leaves, if employee joins after 15th day of the month checkbox
-//	 * 
-//	 */
-//	public boolean toggleHalfMidJoiningLeavesCheckBox(String status) {
-//		return objGenHelper.toggleElementStatus(midJoiningLeavesHalfCheckBox, status, "Credit half month's leaves, if employee joins after 15th day of the month");
-//	}
-	
+
 	/**
-	 * This method enables Credit full month's leaves, if employee joins after 15th day of the month checkbox
+	 * This method enables Credit half month's leaves, if employee joins after 15th
+	 * day of the month checkbox
+	 * 
+	 */
+	public boolean clickHalfMidJoiningLeavesCheckBox() {
+		return objGenHelper.elementClick(midJoiningLeavesHalfCheckBox,
+				"Credit half month's leaves, if employee joins after 15th day of the month");
+	}
+
+	// /**
+	// * This method enables Credit half month's leaves, if employee joins after
+	// 15th day of the month checkbox
+	// *
+	// */
+	// public boolean toggleHalfMidJoiningLeavesCheckBox(String status) {
+	// return objGenHelper.toggleElementStatus(midJoiningLeavesHalfCheckBox, status,
+	// "Credit half month's leaves, if employee joins after 15th day of the month");
+	// }
+
+	/**
+	 * This method enables Credit full month's leaves, if employee joins after 15th
+	 * day of the month checkbox
 	 * 
 	 */
 	public boolean clickFullMidJoiningLeavesRadioButton() {
-		return objGenHelper.elementClick(midJoiningLeavesFullRadioButton, "Credit full month's leaves, if employee joins after 15th day of the month");
-//		return objGenHelper.toggleElementStatus(midJoiningLeavesFullCheckBox, status, "Credit full month's leaves, if employee joins after 15th day of the month");
+		return objGenHelper.elementClick(midJoiningLeavesFullRadioButton,
+				"Credit full month's leaves, if employee joins after 15th day of the month");
+		// return objGenHelper.toggleElementStatus(midJoiningLeavesFullCheckBox, status,
+		// "Credit full month's leaves, if employee joins after 15th day of the month");
 	}
-	
-//	/**
-//	 * This method enables Credit full month's leaves, if employee joins after 15th day of the month checkbox
-//	 * 
-//	 */
-//	public boolean toggleFullMidJoiningLeavesCheckBox(String status) {
-//		return objGenHelper.toggleElementStatus(midJoiningLeavesFullCheckBox, status, "Credit full month's leaves, if employee joins after 15th day of the month");
-//	}
-	
+
 	/**
-	 * This method collapse/uncollapse Credit on accrual basis accordian
+	 * This method enables Credit full month's leaves, if employee joins after 15th
+	 * day of the month checkbox
+	 * 
+	 */
+	public boolean clickFullMidJoiningLeavesCheckBox() {
+		return objGenHelper.elementClick(midJoiningLeavesFullCheckBox,
+				"Credit full month's leaves, if employee joins after 15th day of the month");
+	}
+
+	// /**
+	// * This method enables Credit full month's leaves, if employee joins after
+	// 15th day of the month checkbox
+	// *
+	// */
+	// public boolean toggleFullMidJoiningLeavesCheckBox(String status) {
+	// return objGenHelper.toggleElementStatus(midJoiningLeavesFullCheckBox, status,
+	// "Credit full month's leaves, if employee joins after 15th day of the month");
+	// }
+
+	/**
+	 * This method collapse/uncollapse Credit on accrual basis Accordion
 	 * 
 	 * @return
 	 */
-	public boolean clickCreditOnAccrualBasisAccordian() {
-		return objGenHelper.elementClick(creditOnAccrualBasisAccordian, "Credit on accrual basis accordian");
+	public boolean clickCreditOnAccrualBasisAccordion() {
+		objWait.waitElementToBeClickable(creditOnAccrualBasisAccordion);
+		return objGenHelper.elementClick(creditOnAccrualBasisAccordion, "Credit on accrual basis Accordion");
 	}
-	
+
 	/**
 	 * This method clicks on Credit on accrual basis Yes Radio Button
 	 * 
 	 */
 	public boolean clickCreditOnAccrualBasisYesRadioButton() {
 		objWait.waitElementToBeClickable(creditOnAccrualBasisYesRadioButton);
-		return objGenHelper.elementClick(creditOnAccrualBasisYesRadioButton, "Credit on accrual basis Yes Radio Button");
+		return objGenHelper.elementClick(creditOnAccrualBasisYesRadioButton,
+				"Credit on accrual basis Yes Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Credit on Accrual basis No Radio Button
 	 * 
@@ -495,7 +602,7 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	public boolean clickCreditOnAccrualBasisNoRadioButton() {
 		return objGenHelper.elementClick(creditOnAccrualBasisNoRadioButton, "Credit on accrual basis No Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Accrual time frame Radio Button
 	 * 
@@ -503,55 +610,62 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	public boolean clickAccrualTimeFrameMonthRadioButton() {
 		return objGenHelper.elementClick(AccrualTimeFrameMonthRadioButton, "Accrual time frame 'Month' Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Accrual time frame Quarter Radio Button
 	 * 
 	 */
 	public boolean clickAccrualTimeFrameQuarterRadioButton() {
-	//	objWait.waitElementToBeClickable(AccrualTimeFrameQuarterRadioButton);
-		objAction.moveToElement(driver, AccrualTimeFrameQuarterRadioButton, "Accrual time frame 'Quarter' Radio Button");
-		return objGenHelper.elementClick(AccrualTimeFrameQuarterRadioButton, "Accrual time frame 'Quarter' Radio Button");
+		// objWait.waitElementToBeClickable(AccrualTimeFrameQuarterRadioButton);
+		objAction.moveToElement(driver, AccrualTimeFrameQuarterRadioButton,
+				"Accrual time frame 'Quarter' Radio Button");
+		return objGenHelper.elementClick(AccrualTimeFrameQuarterRadioButton,
+				"Accrual time frame 'Quarter' Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Accrual time frame Biannual Radio Button
 	 * 
 	 */
 	public boolean clickAccrualTimeFrameBiannualRadioButton() {
-		objAction.moveToElement(driver, AccrualTimeFrameBiannualRadioButton, "Accrual time frame 'Biannual' Radio Button");
-		return objGenHelper.elementClick(AccrualTimeFrameBiannualRadioButton, "Accrual time frame 'Biannual' Radio Button");
+		objAction.moveToElement(driver, AccrualTimeFrameBiannualRadioButton,
+				"Accrual time frame 'Biannual' Radio Button");
+		return objGenHelper.elementClick(AccrualTimeFrameBiannualRadioButton,
+				"Accrual time frame 'Biannual' Radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Accrual point 'Begin of month' Radio Button
 	 * 
 	 */
 	public boolean clickAccrualPointBeginOfMonthRadioButton() {
-		return objGenHelper.elementClick(AccrualPointBeginOfMonthRadioButton, "Accrual point 'Begin of month' radio Button");
+		return objGenHelper.elementClick(AccrualPointBeginOfMonthRadioButton,
+				"Accrual point 'Begin of month' radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Accrual point 'End of month' Radio Button
 	 * 
 	 */
 	public boolean clickAccrualPointEndOfMonthRadioButton() {
-		return objGenHelper.elementClick(AccrualPointEndOfMonthRadioButton, "Accrual point 'End of month' radio Button");
+		return objGenHelper.elementClick(AccrualPointEndOfMonthRadioButton,
+				"Accrual point 'End of month' radio Button");
 	}
-	
+
 	/**
 	 * This method clicks on Accrual point 'Begin of Quarter' Radio Button
 	 * 
 	 */
 	public boolean clickAccrualPointBeginOfQuarterRadioButton() {
-		objGenHelper.elementClick(AccrualPointBeginOfQuarterRadioButton, "Accrual point 'Begin of Quarter' radio Button");
-	   if (AccrualPointBeginOfQuarterRadioButton.isSelected()) {
-		   return true;
-	   }else {
-		   throw new RuntimeException();
-	   }	
+		objGenHelper.elementClick(AccrualPointBeginOfQuarterRadioButton,
+				"Accrual point 'Begin of Quarter' radio Button");
+		if (AccrualPointBeginOfQuarterRadioButton.isSelected()) {
+			return true;
+		} else {
+			throw new RuntimeException();
+		}
 	}
-	
+
 	/**
 	 * This method clicks on Accrual point 'Begin of Quarter' Radio Button
 	 * 
@@ -559,58 +673,130 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	public WebElement getWebElementAccrualPointBeginOfQuarterRadioButton() {
 		return AccrualPointBeginOfQuarterRadioButton;
 	}
-	
+
 	/**
 	 * This method clicks on Accrual point 'End of Quarter' Radio Button
 	 * 
 	 */
 	public boolean clickAccrualPointEndOfQuarterRadioButton() {
-		return objGenHelper.elementClick(AccrualPointEndOfQuarterRadioButton, "Accrual point 'End Of Quarter' radio Button");
+		return objGenHelper.elementClick(AccrualPointEndOfQuarterRadioButton,
+				"Accrual point 'End Of Quarter' radio Button");
 	}
-	
+
 	/**
-	 * This method collapse/uncollapse Allow half-day accordian
+	 * This method collapse/uncollapse Credit on Tenure Basis accordion
 	 * 
 	 * @return
 	 */
-	public boolean clickAllowHalfDayAccordian() {
-		return objGenHelper.elementClick(allowHalfDayAccordian, "Allow half-day accordian");
+	public boolean clickCreditOnTenureBasisAccordion() {
+		objAction.moveToElement(driver, creditOnTenureBasisAccordion, "Credit on Tenure Basis Accordion");
+		return objGenHelper.elementClick(creditOnTenureBasisAccordion, "Credit on Tenure Basis Accordion");
 	}
-	
+
 	/**
-	 * This method collapse/uncollapse Carry forward unused leaves accordian
+	 * This method clicks on Credit on tenure basis Yes Radio Button
+	 * 
+	 */
+	public boolean clickCreditOnTenureBasisYesRadioButton() {
+		objWait.waitElementToBeClickable(creditOnTenureBasisYesRadioButton);
+		objAction.moveToElement(driver, creditOnTenureBasisYesRadioButton, "Credit on Tenure basis Yes Radio Button");
+		return objGenHelper.elementClick(creditOnTenureBasisYesRadioButton, "Credit on Tenure basis Yes Radio Button");
+	}
+
+	/**
+	 * This method clicks on Credit on Accrual basis No Radio Button
+	 * 
+	 */
+	public boolean clickCreditOnTenureBasisNoRadioButton() {
+		return objGenHelper.elementClick(creditOnTenureBasisNoRadioButton, "Credit on Tenure basis No Radio Button");
+	}
+
+	/**
+	 * This method selects from year from drop down
+	 * 
+	 * @param value
+	 * @return boolean
+	 */
+	public boolean selectCreditOnTenureBasisFromYearFromDropdown(String value) {
+		return objDropDownHelper.selectUsingVisibleValue(creditOnTenureBasisFromYearDropdown, value, "From Year");
+	}
+
+	/**
+	 * This method selects to year from drop down
+	 * 
+	 * @param value
+	 * @return boolean
+	 */
+	public boolean selectCreditOnTenureBasisToYearFromDropdown(String value) {
+		objWait.waitElementToBeClickable(creditOnTenureBasisToYearDropdown);
+		return objDropDownHelper.selectUsingVisibleValue(creditOnTenureBasisToYearDropdown, value, "To Year");
+	}
+
+	/**
+	 * This method insert text in Number of Leaves text box
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public boolean insertCreditOnTenureBasisNumberOfLeavesTextBox(String value) {
+		return objGenHelper.setElementText(creditOnTenureBasisNoOfLeavesYearTextBox, "Number of Leaves", value);
+	}
+
+	/**
+	 * This method clicks on Add New Icon
 	 * 
 	 * @return
 	 */
-	public boolean clickCarryForwardUnusedLeavesAccordian() {
-		return objGenHelper.elementClick(carryForwardUnusedLeavesAccordian, "Carry forward unused leaves accordian");
+	public boolean clickCreditOnTenureBasisAddNewIcon() {
+		return objGenHelper.elementClick(creditOnTenureBasisAddNewIcon, "Add New Icon");
 	}
-	
+
+	/**
+	 * This method collapse/uncollapse Allow half-day accordion
+	 * 
+	 * @return
+	 */
+	public boolean clickAllowHalfDayAccordion() {
+		return objGenHelper.elementClick(allowHalfDayAccordion, "Allow half-day Accordion");
+	}
+
+	/**
+	 * This method collapse/uncollapse Carry forward unused leaves accordion
+	 * 
+	 * @return
+	 */
+	public boolean clickCarryForwardUnusedLeavesAccordion() {
+		return objGenHelper.elementClick(carryForwardUnusedLeavesAccordion, "Carry forward unused leaves Accordion");
+	}
+
 	/**
 	 * This method will get don't show apply in Probation Period Check box
+	 * 
 	 * @return
 	 */
 	public WebElement getWebElementDontShowApplyInProbationPeriodCheckbox() {
 		return dontShowApplyInProbationPeriodCheckbox;
 	}
-	
+
 	/**
 	 * This method will get don't show apply in Probation Period Check box
+	 * 
 	 * @return
 	 */
-	public WebElement getWebElementallowPastDatedLeaveApplicationsAccordian() {
-		return allowPastDatedLeaveApplicationsAccordian;
+	public WebElement getWebElementallowPastDatedLeaveApplicationsAccordion() {
+		return allowPastDatedLeaveApplicationsAccordion;
 	}
-	
+
 	/**
 	 * This method will get Leave Type Delete Button WebElement
+	 * 
 	 * @param leaveType
 	 * @return WebElement
 	 */
 	public WebElement getWebElementLeaveTypeDeleteButton(String leaveType) throws NoSuchElementException {
-		String leaveTypeNameXpath = "//*[contains(@id,'leaveContainerModal')][text()='"+ leaveType +"']";
+		String leaveTypeNameXpath = "//*[contains(@id,'leaveContainerModal')][text()='" + leaveType + "']";
 		WebElement leaveTypeDeleteButton = driver.findElement(By.xpath(leaveTypeNameXpath));
 		return leaveTypeDeleteButton;
 	}
-		
+
 }

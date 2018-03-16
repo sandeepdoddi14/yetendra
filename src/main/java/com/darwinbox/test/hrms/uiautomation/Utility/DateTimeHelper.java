@@ -194,6 +194,24 @@ public class DateTimeHelper {
 	}
 
 	/**
+	 * This method returns Quarter difference from Current Date
+	 * 
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return
+	 */
+	public double getQuarterDiffBetweenTwoDates(String DATEIN_YYYY_MM_DD_format, String endDate) {
+		try {
+			LocalDate DOJQuarterStartDate = getFirstDayOfQuarter(DATEIN_YYYY_MM_DD_format);
+			LocalDate currentQuarterStartDate = getFirstDayOfQuarter(endDate);
+			double quarterDiff = (ChronoUnit.MONTHS.between(DOJQuarterStartDate, currentQuarterStartDate) / 3);
+			return quarterDiff;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	/**
 	 * This method returns Month difference from first day of Quarter
 	 * 
 	 * @param DATEIN_YYYY_MM_DD_format

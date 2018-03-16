@@ -40,7 +40,7 @@ public class FirefoxBrowser {
 			return new FirefoxDriver(cap);
 		}
 		else if(System.getProperty("os.name").contains("Linux")){
-			System.setProperty("webdriver.firefox.marionette", ResourceHelper.getResourcePath("/src/main/resources/drivers/linux/geckodriver"));
+			System.setProperty("webdriver.gecko.driver", ResourceHelper.getResourcePath("/src/main/resources/drivers/linux/geckodriver"));
 			return new FirefoxDriver(cap);
 		}
 		return null;

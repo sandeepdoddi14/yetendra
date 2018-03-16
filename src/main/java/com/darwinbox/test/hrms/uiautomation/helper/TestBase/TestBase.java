@@ -65,7 +65,7 @@ public class TestBase {
 	public static Map<String, String> data;
 	ExtentTest parentLog = null;
 	public static Markup strcode = MarkupHelper.createCodeBlock("text");
-	
+
 	public static String resultsDIR = "Test_Execution_Results/Results" + UtilityHelper.getCurrentDateTime();
 
 	public static void setDataItem(List<Map<String, String>> dataItem) {
@@ -73,7 +73,6 @@ public class TestBase {
 		dataCounter = dataItem.size();
 		currentData = 0;
 	}
-
 
 	@BeforeSuite
 	public void startReport() {
@@ -87,7 +86,7 @@ public class TestBase {
 				+ File.separator + "Response_Report" + UtilityHelper.getCurrentDateTime() + ".html");
 		htmlReporter.setAppendExisting(true);
 		htmlReporter.config().setChartVisibilityOnOpen(true);
-		
+
 		htmlReporter.loadXMLConfig(
 				new File(ResourceHelper.getBaseResourcePath() + "/src/main/resources/configfile/extent-config.xml"));
 
@@ -111,7 +110,6 @@ public class TestBase {
 		}
 	}
 
-	
 	@BeforeMethod()
 	public void beforeMethod(Method method) {
 		try {
@@ -179,9 +177,9 @@ public class TestBase {
 	@AfterSuite
 	public void closeBrowser() {
 		try {
-		driver.close();
-		driver.quit();
-		}catch(NoSuchSessionException e) {
+			driver.close();
+			driver.quit();
+		} catch (NoSuchSessionException e) {
 			log.info("browser closed");
 		}
 	}
@@ -193,7 +191,7 @@ public class TestBase {
 			setUpDriver(ObjectRepo.reader.getBrowser());
 			log.info(ObjectRepo.reader.getBrowser());
 			driver.manage().window().maximize();
-			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			// driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		} catch (Exception e) {
 			Reporter("Exception while initlization :" + e.getMessage(), "Fail");
 		}
@@ -271,7 +269,7 @@ public class TestBase {
 				xtReportLog.fail("Failure Screenshot",
 						MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
 				log.error(result.getName() + " test is failed" + result.getThrowable());
-				xtReportLog.fail(result.getThrowable());
+				// xtReportLog.fail(result.getThrowable());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -380,6 +378,7 @@ public class TestBase {
 
 	/**
 	 * This method is used for reporting in extent report
+	 * 
 	 * @param text
 	 * @param status
 	 */
@@ -414,9 +413,8 @@ public class TestBase {
 		Reporter.log(text);
 	}
 
-	
 	public void ReporterForCodeBlock(String text, String status) {
-		
+
 		Markup code = MarkupHelper.createCodeBlock(text);
 		if (status.equalsIgnoreCase("Pass")) {
 			xtReportLog.log(Status.PASS, code);
@@ -431,7 +429,6 @@ public class TestBase {
 		Reporter.log(text);
 	}
 
-	
 	public void ReporterForLabel(String text, String status) {
 
 		Markup code = MarkupHelper.createLabel(text, ExtentColor.BLUE);
@@ -447,9 +444,10 @@ public class TestBase {
 		}
 		Reporter.log(text);
 	}
-	
+
 	/**
-	 * This method gets data specified in excel 
+	 * This method gets data specified in excel
+	 * 
 	 * @param key
 	 * @return String
 	 */

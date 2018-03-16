@@ -22,7 +22,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelWriter {
 
-	public void writeExcel(String filePath, String fileName, String sheetName, String[] dataToWrite) throws IOException {
+	public void writeExcel(String filePath, String fileName, String sheetName, String[] dataToWrite)
+			throws IOException {
 
 		File file = new File(filePath + "//" + fileName);
 		FileInputStream inputStream = new FileInputStream(file);
@@ -38,7 +39,7 @@ public class ExcelWriter {
 		int rowCount = sheet.getLastRowNum() - sheet.getFirstRowNum();
 		Row row = sheet.getRow(0);
 		Row newRow = sheet.createRow(rowCount + 1);
-		
+
 		for (int j = 0; j < row.getLastCellNum(); j++) {
 
 			Cell cell = newRow.createCell(j);
@@ -51,8 +52,7 @@ public class ExcelWriter {
 		outputStream.close();
 	}
 
-	
-	public static void writeToExcel(String[] valueToWrite) throws IOException {
+	public static void writeToExcel(String[] valueToWrite, String sheetName) throws IOException {
 
 		ExcelWriter objExcelFile = new ExcelWriter();
 		objExcelFile.writeExcel(ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData",

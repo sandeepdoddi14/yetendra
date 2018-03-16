@@ -63,7 +63,9 @@ public class TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromPropertyFile(), "Leave scenario is set successfully");
 		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
-		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
+		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
+//		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
+		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
 		Assert.assertTrue(commonSettings.clickLeaves(), "Click on Leaves link");		
 		Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
