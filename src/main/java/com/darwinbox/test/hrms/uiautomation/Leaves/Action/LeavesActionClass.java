@@ -830,16 +830,16 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
-	public static int iterator = 0;
-	public LocalDate iterationDateFourTimesPerMonth(LocalDate iterationDate) {
-		LocalDate todaysDate = LocalDate.now();
-		LocalDate lastDayOfIterationMonth = iterationDate.withDayOfMonth(iterationDate.lengthOfMonth());
-		LocalDate firstDayOfIterationMonth = iterationDate.with(firstDayOfMonth());
-		LocalDate fifteenThOfIterationMonth = iterationDate.withDayOfMonth(15);
-		LocalDate sixteenThOfIterationMonth = iterationDate.withDayOfMonth(16);
-		if(iterationDate.isAfter(sixteenThOfIterationMonth) 
-				&& (iterationDate.isBefore(lastDayOfIterationMonth) || iterationDate.isEqual(lastDayOfIterationMonth)
-	}
+//	public static int iterator = 0;
+//	public LocalDate iterationDateFourTimesPerMonth(LocalDate iterationDate) {
+//		LocalDate todaysDate = LocalDate.now();
+//		LocalDate lastDayOfIterationMonth = iterationDate.withDayOfMonth(iterationDate.lengthOfMonth());
+//		LocalDate firstDayOfIterationMonth = iterationDate.with(firstDayOfMonth());
+//		LocalDate fifteenThOfIterationMonth = iterationDate.withDayOfMonth(15);
+//		LocalDate sixteenThOfIterationMonth = iterationDate.withDayOfMonth(16);
+//		if(iterationDate.isAfter(sixteenThOfIterationMonth) 
+//				&& (iterationDate.isBefore(lastDayOfIterationMonth) || iterationDate.isEqual(lastDayOfIterationMonth)
+//	}
 	/**
 	 * This method writes Leave calculation results to Excel
 	 * 
@@ -1059,7 +1059,7 @@ public class LeavesActionClass extends TestBase {
 							biannualEndDate = leaveCycleEndDate;
 						}
 						MonthOrQuarterDifference = objDateTimeHelper
-								.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, biannualEndDate) + 1;
+								.getMonthDifferenceBetweenTwoDates(leavesCalculationStartDate, biannualEndDate) + 1;
 
 						if (DOJBiannualHalf.equalsIgnoreCase("First")
 								&& currentDateBiannualHalf.equalsIgnoreCase("First")) {
@@ -1528,7 +1528,7 @@ public class LeavesActionClass extends TestBase {
 							biannualEndDate = leaveCycleEndDate;
 						}
 						MonthOrQuarterDifference = objDateTimeHelper
-								.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, biannualEndDate) + 1;
+								.getMonthDifferenceBetweenTwoDates(leavesCalculationStartDate, biannualEndDate) + 1;
 
 						if (DOJBiannualHalf.equalsIgnoreCase("First")
 								&& currentDateBiannualHalf.equalsIgnoreCase("First")) {

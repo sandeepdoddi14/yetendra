@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Suite">
+  <test name="Test">
+    <classes>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02_Verify_Leave_Balance_of_an_employee_for_all_scenarios"/>
+    </classes>
+  </test> <!-- Test -->
+</suite> <!-- Suite -->
