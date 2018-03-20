@@ -6,6 +6,7 @@ package com.darwinbox.test.hrms.uiautomation.Utility;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -43,6 +44,17 @@ public class DateTimeHelper {
 	 */
 	public String getCurrentLocalDate() {
 		LocalDate today = LocalDate.now();
+		String todaysDateInString = today.toString();
+		return todaysDateInString;
+	}
+	
+	/**
+	 * This method returns current Local Date
+	 * 
+	 * @return
+	 */
+	public String getCurrentLocalDateTime() {
+		LocalDateTime today = LocalDateTime.now();
 		String todaysDateInString = today.toString();
 		return todaysDateInString;
 	}

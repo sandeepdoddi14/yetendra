@@ -52,11 +52,30 @@ public class ExcelWriter {
 		outputStream.close();
 	}
 
-	public static void writeToExcel(String[] valueToWrite, String sheetName) throws IOException {
-
+	/**
+	 * This method used to write to Excel
+	 * @param valueToWrite
+	 * @param sheetName
+	 * @throws IOException
+	 */
+	public static void writeToExcel(String[] valueToWrite) throws IOException {
 		ExcelWriter objExcelFile = new ExcelWriter();
 		objExcelFile.writeExcel(ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData",
 				"ExportExcel.xlsx", "Leave_Balance", valueToWrite);
+	}
+	
+	/**
+	 * This method used to write in Excel
+	 * @param valueToWrite
+	 * @param fileName
+	 * @param sheetName
+	 * @throws IOException
+	 */
+	public static void writeToExcel(String fileName, String sheetName, String[] valueToWrite ) throws IOException {
+
+		ExcelWriter objExcelFile = new ExcelWriter();
+		objExcelFile.writeExcel(ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData",
+				fileName, sheetName, valueToWrite);
 	}
 
 }

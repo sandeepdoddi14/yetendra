@@ -1,5 +1,7 @@
 package com.darwinbox.test.hrms.uiautomation.Settings.PageObject;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -111,6 +113,12 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	@FindBy(xpath = "//*[@id='Leaves_is_special_leave']")
 	private WebElement specialLeaveCheckBox;
 
+	@FindBy(xpath = "//*[@id='parent_dept_load_chosen']/ul/li/input")
+	private WebElement restrictionDepartmentEmployeeTypeLocationElasticSearch;
+
+	@FindBy(xpath = "//*[@id='parent_dept_load_chosen']/div[@class = 'chosen-drop']//em[contains(text(), 'Full Time')]")
+	private WebElement restrictionDepartmentEmployeeTypeLocationElasticSearchResult;
+
 	/*
 	 * Leaves Additional Configuration Object Repository
 	 */
@@ -152,10 +160,8 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	/**
 	 * Accrual Settings
 	 */
-	// @FindBy(xpath =
-	// "//*[@id='leavePolicyAccordion']//span[contains(text(),'Credit on accrual
-	// basis')]/..")
-	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//*[@class='accordion-toggle']/span[contains(text(),'Credit on accrual basis')]/..")
+	 @FindBy(xpath = "//*[@id='leavePolicyAccordion']//span[contains(text(),'Credit on accrual basis')]/..")
+//	@FindBy(xpath = "//*[@id='leavePolicyAccordion']//*[@class='accordion-toggle']/span[contains(text(),'Credit on accrual basis')]/..")
 	private WebElement creditOnAccrualBasisAccordion;
 
 	@FindBy(xpath = "//*[@id='LeavePolicy_Accural_status'][@value=1]")
@@ -417,6 +423,13 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 				value);
 	}
 
+	public boolean insertRestrictionDepartmentEmployeeTypeLocationElasticSearch(String value) {
+		objGenHelper.setElementTextinSelection(restrictionDepartmentEmployeeTypeLocationElasticSearch, "Restriction (Department, Employee Type or Location)", value, true);
+		String result = "//*[@id='parent_dept_load_chosen']/div[@class = 'chosen-drop']//em[contains(text(), '"+ value+ "')]";
+		driver.findElement(By.xpath(result)).click();
+		return true;
+	}
+	
 	/**
 	 * This method enables or disable Don't Allow these leaves in notice period
 	 * Checkbox
