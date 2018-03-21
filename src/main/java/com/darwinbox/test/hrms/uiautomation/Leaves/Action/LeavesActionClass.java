@@ -351,8 +351,8 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
-	public void writeInLeaveTypeRepository(String sheetName, String LeaveDescription, String LeaveTypeName, String LeaveTypeID,
-			String CurrentDateTime) {
+	public void writeInLeaveTypeRepository(String sheetName, String LeaveDescription, String LeaveTypeName,
+			String LeaveTypeID, String CurrentDateTime) {
 
 		String[] dataToWrite = new String[6];
 		dataToWrite[0] = LeaveDescription;
@@ -474,6 +474,7 @@ public class LeavesActionClass extends TestBase {
 
 	/**
 	 * This method set Credit on ProRata Basis Scenario
+	 * 
 	 * @return
 	 */
 	public boolean setCreditOnAccrualBasis() {
@@ -830,16 +831,73 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
-//	public static int iterator = 0;
-//	public LocalDate iterationDateFourTimesPerMonth(LocalDate iterationDate) {
-//		LocalDate todaysDate = LocalDate.now();
-//		LocalDate lastDayOfIterationMonth = iterationDate.withDayOfMonth(iterationDate.lengthOfMonth());
-//		LocalDate firstDayOfIterationMonth = iterationDate.with(firstDayOfMonth());
-//		LocalDate fifteenThOfIterationMonth = iterationDate.withDayOfMonth(15);
-//		LocalDate sixteenThOfIterationMonth = iterationDate.withDayOfMonth(16);
-//		if(iterationDate.isAfter(sixteenThOfIterationMonth) 
-//				&& (iterationDate.isBefore(lastDayOfIterationMonth) || iterationDate.isEqual(lastDayOfIterationMonth)
-//	}
+	/**
+	 * This method verifies leaves balance for whole leave cycle of the employee
+	 * 
+	 * @return boolean
+	 */
+	public boolean verifyEmployeeLeaveBalanceForWholeLeaveCycleForFourEdgeDays() {
+		try {
+			String result = "";
+			int flag = 0;
+			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
+			Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
+					+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
+					+ "' till current date", "Info");
+			LocalDate leaveCycleStartDateInDateFormat = LocalDate.parse(leaveCycleStartDate);
+			int i = 0;
+			LocalDate iterationDate = LocalDate.now();
+			while (iterationDate.isAfter(leaveCycleStartDateInDateFormat)) {
+				iterationDate = LocalDate.now().minusDays(i);
+				if (iterationDateFourTimesPerMonth(iterationDate) == true) {
+					DateOfJoining = changeEmployeeDOJ(iterationDate);
+					double expectedBalance = calculateLeaveBalance(DateOfJoining);
+					double actualBalance = getEmployeesFrontEndLeaveBalance(Leave_Type);
+					if (expectedBalance != actualBalance) {
+						Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance="
+								+ expectedBalance + "||Actual Leave Balance=" + actualBalance, "Fail");
+						result = "Fail";
+						flag++;
+					} else {
+						Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance="
+								+ expectedBalance + "||Actual Leave Balance=" + actualBalance, "Pass");
+						result = "Pass";
+					}
+					
+					if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
+						writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+								LocalDateTime.now().toString());
+					}
+				}i++;
+			}
+			if (flag > 0) {
+				return false;
+			} else {
+				return true;
+			}
+
+		} catch (Exception e) {
+			Reporter("Exception while comparing leave balance", "Fail");
+			return false;
+		}
+	}
+
+
+	public boolean iterationDateFourTimesPerMonth(LocalDate iterationDate) {
+		LocalDate todaysDate = LocalDate.now();
+		LocalDate lastDayOfIterationMonth = iterationDate.withDayOfMonth(iterationDate.lengthOfMonth());
+		LocalDate firstDayOfIterationMonth = iterationDate.with(firstDayOfMonth());
+		LocalDate fifteenThOfIterationMonth = iterationDate.withDayOfMonth(15);
+		LocalDate sixteenThOfIterationMonth = iterationDate.withDayOfMonth(16);
+		if (iterationDate.equals(todaysDate) || iterationDate.equals(lastDayOfIterationMonth)
+				|| iterationDate.equals(firstDayOfIterationMonth) || iterationDate.equals(fifteenThOfIterationMonth)
+				|| iterationDate.equals(sixteenThOfIterationMonth)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * This method writes Leave calculation results to Excel
 	 * 
@@ -861,7 +919,7 @@ public class LeavesActionClass extends TestBase {
 		dataToWrite[5] = dateTime;
 
 		try {
-			ExcelWriter.writeToExcel("ExportExcel.xlsx", "Leave_Balance",dataToWrite );
+			ExcelWriter.writeToExcel("ExportExcel.xlsx", "Leave_Balance", dataToWrite);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
