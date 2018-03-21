@@ -61,7 +61,7 @@ public class TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromPropertyFile(), "Leave scenario is set successfully");
-		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
+		Assert.assertTrue(leavesAction.setEmployeeID("EMP005"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		

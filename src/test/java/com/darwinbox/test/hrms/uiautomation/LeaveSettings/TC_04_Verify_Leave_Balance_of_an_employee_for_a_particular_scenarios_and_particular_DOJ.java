@@ -62,7 +62,7 @@ public class TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromPropertyFile(), "Leave scenario is set successfully");		
-		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
+		Assert.assertTrue(leavesAction.setEmployeeID("EMP005"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 //		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
@@ -74,7 +74,7 @@ public class TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(0), "Select Group Company");				
 		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForParticularDOJ(LocalDate.now().toString()), "Verified Employee Leave Balance successfully");
+		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForParticularDOJ("2018-03-16"), "Verified Employee Leave Balance successfully");
 				
 	}
 }
