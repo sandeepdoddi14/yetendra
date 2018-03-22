@@ -699,7 +699,7 @@ public class LeavesActionClass extends TestBase {
 			driver.navigate().to(URL);
 			String frontEndLeaveBalance = driver.findElement(By.xpath("//body")).getText();
 			if (frontEndLeaveBalance.isEmpty()) {
-				throw new RuntimeException("Front End Leave balance is empty");
+				throw new RuntimeException("Front End Leave balance is empty/ May be Leave Type is deleted");
 			}
 			double actualLeaveBalance = Double.valueOf(frontEndLeaveBalance);
 			return actualLeaveBalance;
@@ -831,6 +831,12 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
+	public static String LastDayOfCalculation = "LocalDate";
+	
+	public void setLastDateOfCalculation() {
+		
+	}
+	
 	/**
 	 * This method verifies leaves balance for whole leave cycle of the employee
 	 * 
@@ -1283,23 +1289,14 @@ public class LeavesActionClass extends TestBase {
 						LocalDate anniversaryDateInDateFormat = iterationDate.minusYears(-CreditFromYearVarLong);
 
 						String anniversaryDate = anniversaryDateInDateFormat.toString();
-						// if(anniversaryDateInDateFormat.isAfter(leaveCycleStartDateInDateFormat))
-						// double leaveBalanceFromYearStartTillCurrentDate =
-						// calculateLeaveBalance(leaveCycleStartDate);
-						// double leaveBalanceFromAnniversaryDateTillCurrentDate =
-						// calculateLeaveBalance(anniversaryDate);
 
-						// double expectedLeaveBalanceBeforeAnniversary =
-						// leaveBalanceFromYearStartTillCurrentDate
-						// - leaveBalanceFromAnniversaryDateTillCurrentDate;
-
-						double expectedLeaveBalanceBeforeAnniversary = calculateTenureLeaveBalance(leaveCycleStartDate,
+						double expectedLeaveBalanceBeforeAnniversary = calculateLeaveBalance(leaveCycleStartDate,
 								anniversaryDate);
 
 						double temLeaveVar = Leaves_Allowed_Per_Year;
 						Leaves_Allowed_Per_Year = CreditNoOfLeavesVarLong;
 						if (anniversaryDateInDateFormat.isBefore(LocalDate.now())) {
-							expectedLeaveBalanceAfterAnniversary = calculateTenureLeaveBalance(anniversaryDate,
+							expectedLeaveBalanceAfterAnniversary = calculateLeaveBalance(anniversaryDate,
 									objDateTimeHelper.getCurrentLocalDate());
 						} else {
 							expectedLeaveBalanceAfterAnniversary = 0;
@@ -1402,13 +1399,13 @@ public class LeavesActionClass extends TestBase {
 						// leaveBalanceFromYearStartTillCurrentDate
 						// - leaveBalanceFromAnniversaryDateTillCurrentDate;
 
-						double expectedLeaveBalanceBeforeAnniversary = calculateTenureLeaveBalance(leaveCycleStartDate,
+						double expectedLeaveBalanceBeforeAnniversary = calculateLeaveBalance(leaveCycleStartDate,
 								anniversaryDate);
 
 						double temLeaveVar = Leaves_Allowed_Per_Year;
 						Leaves_Allowed_Per_Year = CreditNoOfLeavesVarLong;
 						if (anniversaryDateInDateFormat.isBefore(LocalDate.now())) {
-							expectedLeaveBalanceAfterAnniversary = calculateTenureLeaveBalance(anniversaryDate,
+							expectedLeaveBalanceAfterAnniversary = calculateLeaveBalance(anniversaryDate,
 									objDateTimeHelper.getCurrentLocalDate());
 						} else {
 							expectedLeaveBalanceAfterAnniversary = 0;
@@ -1478,7 +1475,7 @@ public class LeavesActionClass extends TestBase {
 	 * @param leaveType
 	 * @return double
 	 */
-	public double calculateTenureLeaveBalance(String DOJ, String LastDayOfCalculation) {
+	public double calculateLeaveBalance(String DOJ, String LastDayOfCalculation) {
 		try {
 			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
 			String leaveCycleEndDate = getLastDayofLeaveCycle(Leave_Cycle);
@@ -1528,9 +1525,9 @@ public class LeavesActionClass extends TestBase {
 				if (Pro_rata.equalsIgnoreCase("Yes")) {
 					if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
-						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
@@ -1539,18 +1536,18 @@ public class LeavesActionClass extends TestBase {
 						midJoinigYesLeaves = 0;
 					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 12);
 							// midJoinigYesLeaves = 0;
-						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
 					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
-						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
@@ -1627,11 +1624,18 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
-	public void calculateTenureBasedLeaveBalance(String DOJ) {
-		try {
 
-		} catch (Exception e) {
-
-		}
-	}
+//	public void getAllEmployeeTypes() {
+//		try {
+//			String applicationURL = ObjectRepo.reader.getApplication();
+//			String URL = applicationURL + "emailtemplate/GetAllEmployeeTypes";
+//			driver.navigate().to(URL);
+//			String text
+//			String frontEndLeaveBalance = objUtil.getHTMLTextFromAPI(driver, text)
+//		} catch (Exception e) {
+//			Reporter("Exception while getting front end leave balance for the employee", "Fail");
+//			e.printStackTrace();
+//			throw new RuntimeException(e);
+//		}
+//	}
 }

@@ -66,12 +66,7 @@ public class TC_10_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
-		Assert.assertTrue(commonSettings.clickLeaves(), "Click on Leaves link");		
-		Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
-		Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
-		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(0), "Select Group Company");				
-		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
 		Assert.assertTrue(leavesAction.verifyEmployeeTenureBasedLeaveBalanceForWholeYear(), "Leave Balance for whole leave cycle calculated successfully") ;			
+		
 	}
 }
