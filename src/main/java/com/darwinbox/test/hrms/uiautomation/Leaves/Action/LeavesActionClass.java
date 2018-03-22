@@ -834,7 +834,7 @@ public class LeavesActionClass extends TestBase {
 	public static String LastDayOfCalculation = "LocalDate";
 	
 	public void setLastDateOfCalculation() {
-		
+			
 	}
 	
 	/**
