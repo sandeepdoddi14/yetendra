@@ -74,7 +74,7 @@ public class TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(0), "Select Group Company");				
 		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForParticularDOJ("2018-03-16"), "Verified Employee Leave Balance successfully");
+		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForParticularDOJ("2018-02-28"), "Verified Employee Leave Balance successfully");
 				
 	}
 }

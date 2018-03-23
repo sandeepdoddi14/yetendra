@@ -148,6 +148,7 @@ public class TestBase {
 
 	@AfterClass(alwaysRun = true)
 	public void endTest() {
+		System.out.println("TestBase------------->");
 		gotoHomePage();
 	}
 

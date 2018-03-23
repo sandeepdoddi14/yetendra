@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -40,7 +41,7 @@ public class TC_10_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 
 	@BeforeClass
 	public void setup() throws Exception {
-		ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_Scenarios");
+		ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_Without_Probation");
 	}
 
 	@BeforeMethod
@@ -65,8 +66,11 @@ public class TC_10_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
-		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
-		Assert.assertTrue(leavesAction.verifyEmployeeTenureBasedLeaveBalanceForWholeYear(), "Leave Balance for whole leave cycle calculated successfully") ;			
-		
+		leavesAction.getAllEmployeeTypes();
+	}
+	
+	@AfterClass
+	public void print() {
+		System.out.println("Effective date------------->");
 	}
 }

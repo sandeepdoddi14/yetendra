@@ -957,7 +957,7 @@ public class LeavesActionClass extends TestBase {
 						+ "||Actual Leave Balance=" + actualBalance, "Fail");
 			} else {
 				Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
-						+ "5aa3a37fed0d5||Actual Leave Balance=" + actualBalance, "Pass");
+						+ "||Actual Leave Balance=" + actualBalance, "Pass");
 			}
 			if (flag > 0) {
 				return false;
@@ -1065,9 +1065,9 @@ public class LeavesActionClass extends TestBase {
 				if (Pro_rata.equalsIgnoreCase("Yes")) {
 					if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
-						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
@@ -1076,18 +1076,18 @@ public class LeavesActionClass extends TestBase {
 						midJoinigYesLeaves = 0;
 					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 12);
 							// midJoinigYesLeaves = 0;
-						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
 					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
-						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
@@ -1624,18 +1624,29 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
+public static List<String> EmployeeTypeName;
+public static List<String> EmployeeTypeId;
 
-//	public void getAllEmployeeTypes() {
-//		try {
-//			String applicationURL = ObjectRepo.reader.getApplication();
-//			String URL = applicationURL + "emailtemplate/GetAllEmployeeTypes";
-//			driver.navigate().to(URL);
-//			String text
-//			String frontEndLeaveBalance = objUtil.getHTMLTextFromAPI(driver, text)
-//		} catch (Exception e) {
-//			Reporter("Exception while getting front end leave balance for the employee", "Fail");
-//			e.printStackTrace();
-//			throw new RuntimeException(e);
-//		}
-//	}
+	public void getAllEmployeeTypes() {
+		try {
+			String text = "emailtemplate/GetAllEmployeeTypes";
+			String frontEndEmployeeType = objUtil.getHTMLTextFromAPI(driver, text);
+			System.out.println(frontEndEmployeeType);
+			String[] frontEndEmployeeTypeSplit = frontEndEmployeeType.split("\\r?\\n");
+			int i = 0;
+			for (String line : frontEndEmployeeTypeSplit) {
+	            System.out.println("line -->" + " : " + line);
+	            EmployeeTypeName.add(line.substring(0, line.indexOf("<")-1));
+	            EmployeeTypeId.add(line.substring(line.indexOf(">")+1));
+	            System.out.println("EmployeeTypeName.get(i)-->"+EmployeeTypeName.get(i));
+	            System.out.println("EmployeeTypeId.get(i)-->"+EmployeeTypeId.get(i));
+			}
+			
+		} catch (Exception e) {
+			Reporter("Exception while getting front end leave balance for the employee", "Fail");
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
 }
