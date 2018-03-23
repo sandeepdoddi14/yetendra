@@ -40,7 +40,7 @@ public class TC_06a_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenarios
 
 	@BeforeClass
 	public void setup() throws Exception {
-		ExcelReader.setFilenameAndSheetName("Tenure_Leave_Scenarios.xlsx", "TC_03");
+		ExcelReader.setFilenameAndSheetName("Tenure_Leave_Scenarios.xlsx", "All_Scenarios");
 	}
 
 	@BeforeMethod
@@ -61,7 +61,7 @@ public class TC_06a_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenarios
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");
-		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
+		Assert.assertTrue(leavesAction.setEmployeeID(objUtil.getProperty("config","Employee.id")), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
