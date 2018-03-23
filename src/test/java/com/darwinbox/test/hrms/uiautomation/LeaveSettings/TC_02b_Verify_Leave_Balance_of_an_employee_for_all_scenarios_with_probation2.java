@@ -22,7 +22,7 @@ import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 
-public class TC_02_Verify_Leave_Balance_of_an_employee_for_all_scenarios extends TestBase{
+public class TC_02b_Verify_Leave_Balance_of_an_employee_for_all_scenarios_with_probation2 extends TestBase{
  
 HomePage homepage;
 LoginPage loginpage;
@@ -34,11 +34,11 @@ RightMenuOptionsPage rightMenuOption;
 LeavesActionClass leavesAction;
 CommonActionClass commonAction;
 
-private static final Logger log = Logger.getLogger(TC_02_Verify_Leave_Balance_of_an_employee_for_all_scenarios.class);
+private static final Logger log = Logger.getLogger(TC_02b_Verify_Leave_Balance_of_an_employee_for_all_scenarios_with_probation2.class);
 
 @BeforeClass
 public void setup() throws Exception {
-	ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_Scenarios");
+	ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_With_Probation");
 }
 
 @BeforeMethod 
