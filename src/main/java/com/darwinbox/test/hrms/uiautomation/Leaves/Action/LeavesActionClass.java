@@ -1525,9 +1525,9 @@ public class LeavesActionClass extends TestBase {
 				if (Pro_rata.equalsIgnoreCase("Yes")) {
 					if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
-						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
@@ -1536,18 +1536,18 @@ public class LeavesActionClass extends TestBase {
 						midJoinigYesLeaves = 0;
 					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 12);
 							// midJoinigYesLeaves = 0;
-						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
 					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
-						if (objDateTimeHelper.verifyDOJMidJoining(DOJ).equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
 							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
-						} else if (objDateTimeHelper.verifyDOJMidJoining(DOJ)
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
 								.equalsIgnoreCase("No")) {
 							midJoinigYesLeaves = 0;
 						}
