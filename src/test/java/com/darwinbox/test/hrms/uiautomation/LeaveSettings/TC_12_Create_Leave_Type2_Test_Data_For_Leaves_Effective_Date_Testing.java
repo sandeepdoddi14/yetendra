@@ -22,7 +22,7 @@ import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 
-public class TC_08_Create_Leave_Type2_Test_Data_For_Leaves_Effective_Date_Testing extends TestBase{
+public class TC_12_Create_Leave_Type2_Test_Data_For_Leaves_Effective_Date_Testing extends TestBase{
  
 HomePage homepage;
 LoginPage loginpage;
@@ -34,7 +34,7 @@ RightMenuOptionsPage rightMenuOption;
 LeavesActionClass leavesAction;
 CommonActionClass commonAction;
 
-private static final Logger log = Logger.getLogger(TC_08_Create_Leave_Type2_Test_Data_For_Leaves_Effective_Date_Testing.class);
+private static final Logger log = Logger.getLogger(TC_12_Create_Leave_Type2_Test_Data_For_Leaves_Effective_Date_Testing.class);
 
 @BeforeClass
 public void setup() throws Exception {
