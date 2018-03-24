@@ -1242,6 +1242,7 @@ public class LeavesActionClass extends TestBase {
 
 			String result = "";
 			int flag = 0;
+			double expectedBalance = 0;
 			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
 			String leaveCycleLastDate = getLastDayofLeaveCycle(Leave_Cycle);
 			double expectedLeaveBalanceAfterAnniversary;
@@ -1289,24 +1290,23 @@ public class LeavesActionClass extends TestBase {
 							LocalDate anniversaryDateInDateFormat = iterationDate.minusYears(-CreditFromYearVarLong);
 
 							if (anniversaryDateInDateFormat.isAfter(LocalDate.now())) {
-								anniversaryDateInDateFormat = LocalDate.now();
-							}
-							String anniversaryDate = anniversaryDateInDateFormat.toString();
-
-							double expectedLeaveBalanceBeforeAnniversary = calculateTenureBasedLeaveBalance(
-									leaveCycleStartDate, anniversaryDate);
-
-							double temLeaveVar = Leaves_Allowed_Per_Year;
-							Leaves_Allowed_Per_Year = CreditNoOfLeavesVarLong;
-							if (anniversaryDateInDateFormat.isBefore(LocalDate.now())) {
-								expectedLeaveBalanceAfterAnniversary = calculateTenureBasedLeaveBalance(anniversaryDate,
-										objDateTimeHelper.getCurrentLocalDate());
+								expectedBalance = calculateLeaveBalance(leaveCycleStartDate);
 							} else {
-								expectedLeaveBalanceAfterAnniversary = 0;
+								String anniversaryDate = anniversaryDateInDateFormat.toString();
+								double expectedLeaveBalanceBeforeAnniversary = calculateTenureBasedLeaveBalance(
+										leaveCycleStartDate, anniversaryDate, "Before");
+								double temLeaveVar = Leaves_Allowed_Per_Year;
+								Leaves_Allowed_Per_Year = CreditNoOfLeavesVarLong;
+								if (anniversaryDateInDateFormat.isBefore(LocalDate.now())) {
+									expectedLeaveBalanceAfterAnniversary = calculateTenureBasedLeaveBalance(
+											anniversaryDate, objDateTimeHelper.getCurrentLocalDate(), "After");
+								} else {
+									expectedLeaveBalanceAfterAnniversary = 0;
+								}
+								Leaves_Allowed_Per_Year = temLeaveVar;
+								expectedBalance = expectedLeaveBalanceBeforeAnniversary
+										+ expectedLeaveBalanceAfterAnniversary;
 							}
-							Leaves_Allowed_Per_Year = temLeaveVar;
-							double expectedBalance = expectedLeaveBalanceBeforeAnniversary
-									+ expectedLeaveBalanceAfterAnniversary;
 							double actualBalance = getEmployeesFrontEndLeaveBalance(Leave_Type);
 							if (expectedBalance != actualBalance) {
 								Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance="
@@ -1402,13 +1402,13 @@ public class LeavesActionClass extends TestBase {
 						String anniversaryDate = anniversaryDateInDateFormat.toString();
 
 						double expectedLeaveBalanceBeforeAnniversary = calculateTenureBasedLeaveBalance(
-								leaveCycleStartDate, anniversaryDate);
+								leaveCycleStartDate, anniversaryDate, "Before");
 
 						double temLeaveVar = Leaves_Allowed_Per_Year;
 						Leaves_Allowed_Per_Year = CreditNoOfLeavesVarLong;
 						if (anniversaryDateInDateFormat.isBefore(LocalDate.now())) {
 							expectedLeaveBalanceAfterAnniversary = calculateTenureBasedLeaveBalance(anniversaryDate,
-									objDateTimeHelper.getCurrentLocalDate());
+									objDateTimeHelper.getCurrentLocalDate(), "After");
 						} else {
 							expectedLeaveBalanceAfterAnniversary = 0;
 						}
@@ -1457,7 +1457,7 @@ public class LeavesActionClass extends TestBase {
 	 */
 	public boolean verifyEmployeeTenureBasedLeaveBalanceForAParticularDOJ(String DOJ, String endDate) {
 		try {
-			
+
 			LocalDate endDateinDateFormat = LocalDate.parse(endDate);
 			String result = "";
 			int flag = 0;
@@ -1494,17 +1494,16 @@ public class LeavesActionClass extends TestBase {
 					LocalDate lastDateForCalculation = leaveCycleLastDateInDateFormat.minusYears(CreditFromYearVarLong);
 					LocalDate dateToCalculate = dateToCalculateInDateFormat.minusYears(CreditFromYearVarLong);
 
-					
 					Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
 							+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
 							+ "' till current date", "Info");
 
-					int i  =0;
+					int i = 0;
 					LocalDate iterationDate = dateToCalculate;
 
 					while (iterationDate.isAfter(startDateForCalculation.minusDays(-1))
 							&& iterationDate.isBefore(lastDateForCalculation.minusDays(-1))) {
-						iterationDate = dateToCalculate.minusYears(i++);
+						iterationDate = dateToCalculate.minusYears(i);
 						DateOfJoining = changeEmployeeDOJ(iterationDate);
 
 						LocalDate anniversaryDateInDateFormat = iterationDate.minusYears(-CreditFromYearVarLong);
@@ -1512,13 +1511,13 @@ public class LeavesActionClass extends TestBase {
 						String anniversaryDate = anniversaryDateInDateFormat.toString();
 
 						double expectedLeaveBalanceBeforeAnniversary = calculateTenureBasedLeaveBalance(
-								leaveCycleStartDate, anniversaryDate);
+								leaveCycleStartDate, anniversaryDate, "Before");
 
 						double temLeaveVar = Leaves_Allowed_Per_Year;
 						Leaves_Allowed_Per_Year = CreditNoOfLeavesVarLong;
 						if (anniversaryDateInDateFormat.isBefore(endDateinDateFormat)) {
 							expectedLeaveBalanceAfterAnniversary = calculateTenureBasedLeaveBalance(anniversaryDate,
-									endDate);
+									endDate, "After");
 						} else {
 							expectedLeaveBalanceAfterAnniversary = 0;
 						}
@@ -1535,14 +1534,15 @@ public class LeavesActionClass extends TestBase {
 							Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance="
 									+ expectedBalance + "||Actual Leave Balance=" + actualBalance, "Pass");
 							result = "Pass";
-						} i++;
+						}
+						i++;
 						if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
 							writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 									LocalDateTime.now().toString());
 						}
-						
+
 					}
-					
+
 				} else {
 					Reporter("Credit on Tenure Basis is selected as 'NO' or is not assigned", "Fail");
 				}
@@ -1591,7 +1591,7 @@ public class LeavesActionClass extends TestBase {
 	 * @param leaveType
 	 * @return double
 	 */
-	public double calculateTenureBasedLeaveBalance(String DOJ, String LastDayOfCalculation) {
+	public double calculateTenureBasedLeaveBalance(String DOJ, String LastDayOfCalculation, String beforeAfter) {
 		try {
 			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
 			String leaveCycleEndDate = getLastDayofLeaveCycle(Leave_Cycle);
@@ -1624,8 +1624,14 @@ public class LeavesActionClass extends TestBase {
 					}
 					if (Accrual.equalsIgnoreCase("No")) {
 						perMonthOrQuarterLeaves = perMonthLeaves;
-						MonthOrQuarterDifference = objDateTimeHelper
-								.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, leaveCycleEndDate);
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							MonthOrQuarterDifference = objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, LastDayOfCalculation);
+						} else if (beforeAfter.equalsIgnoreCase("After")) {
+							MonthOrQuarterDifference = objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, leaveCycleEndDate);
+						}
+
 						if (MonthOrQuarterDifference < 0) {
 							MonthOrQuarterDifference = -MonthOrQuarterDifference;
 						}
@@ -1635,9 +1641,22 @@ public class LeavesActionClass extends TestBase {
 					leavesCalculationStartDate = leaveCycleStartDate;
 					if (Accrual.equalsIgnoreCase("No")) {
 						perMonthOrQuarterLeaves = perMonthLeaves;
-						MonthOrQuarterDifference = 12;
+						// MonthOrQuarterDifference = 12;
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							MonthOrQuarterDifference = objDateTimeHelper.getMonthDifferenceBetweenTwoDates(
+									leavesCalculationStartDate, LastDayOfCalculation);
+						} else if (beforeAfter.equalsIgnoreCase("After")) {
+							MonthOrQuarterDifference = objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, leaveCycleEndDate);
+						}
+
+						if (MonthOrQuarterDifference < 0) {
+							MonthOrQuarterDifference = -MonthOrQuarterDifference;
+						}
+						MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
 					}
 				}
+
 				if (Pro_rata.equalsIgnoreCase("Yes")) {
 					if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
 							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
