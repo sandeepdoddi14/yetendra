@@ -38,7 +38,7 @@ private static final Logger log = Logger.getLogger(TC_11_Create_Test_Data_For_Le
 
 @BeforeClass
 public void setup() throws Exception {
-	ExcelReader.setFilenameAndSheetName("Leave_Type_Repository.xlsx", "LeaveType1_Scenarios");
+	ExcelReader.setFilenameAndSheetName("EffectiveDate.xlsx", "All_Scenarios_LTA");
 }
 
 @BeforeMethod 
@@ -58,15 +58,15 @@ public void initializeObjects() {
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");			
-		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
 		Assert.assertTrue(commonSettings.clickLeaves(), "Click on Leaves link");		
-		Assert.assertTrue(leavesAction.leaveTypeSequenceGenerator(), "Leave Type is presnt are deleted successfully");
+//		Assert.assertTrue(leavesAction.leaveTypeSequenceGenerator(), "Leave Type is presnt are deleted successfully");
 		Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
 		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(1), "Select Group Company");
+		Assert.assertTrue(createManageLeaves.insertDescription(data.get("Test_Description")), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertLeaveType(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		

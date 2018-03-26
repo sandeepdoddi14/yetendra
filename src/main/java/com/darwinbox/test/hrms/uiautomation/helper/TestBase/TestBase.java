@@ -4,14 +4,10 @@ package com.darwinbox.test.hrms.uiautomation.helper.TestBase;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -21,8 +17,6 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.*;
@@ -61,7 +55,7 @@ public class TestBase {
 	public static ExtentHtmlReporter htmlReporter = null;
 	public static List<Map<String, String>> dataItem = null;
 	public static int dataCounter = 0;
-	private static int currentData = 0;
+	public static int currentData = 0;
 	public static Map<String, String> data;
 	ExtentTest parentLog = null;
 	public static Markup strcode = MarkupHelper.createCodeBlock("text");
@@ -71,6 +65,7 @@ public class TestBase {
 	public static void setDataItem(List<Map<String, String>> dataItem) {
 		TestBase.dataItem = dataItem;
 		dataCounter = dataItem.size();
+		System.out.println("dataCounter-->"+ dataCounter);
 		currentData = 0;
 	}
 
@@ -109,6 +104,7 @@ public class TestBase {
 			e.printStackTrace();
 		}
 	}
+	
 
 	@BeforeMethod()
 	public void beforeMethod(Method method) {
@@ -148,7 +144,6 @@ public class TestBase {
 
 	@AfterClass(alwaysRun = true)
 	public void endTest() {
-		System.out.println("TestBase------------->");
 		gotoHomePage();
 	}
 
@@ -198,6 +193,9 @@ public class TestBase {
 		}
 	}
 
+	public void setCurrentData() {
+		currentData=0;
+	}
 	public void setUpDriver(BrowserType bType) {
 
 		try {

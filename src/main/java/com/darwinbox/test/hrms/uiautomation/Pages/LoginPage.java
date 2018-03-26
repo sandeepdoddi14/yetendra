@@ -109,7 +109,7 @@ public class LoginPage extends TestBase{
 			clickSignIn();
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while ing to application :" + e.getMessage(), "Fail");
+			Reporter("Exception while signing to application :" + e.getMessage(), "Fail");
 			e.printStackTrace();
 			return false;
 		}

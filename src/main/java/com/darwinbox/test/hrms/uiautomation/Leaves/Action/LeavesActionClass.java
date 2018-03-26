@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -331,7 +333,6 @@ public class LeavesActionClass extends TestBase {
 
 			if (i == 1) {
 				leaveTypeID = leaveTypeNameList.get(0).getAttribute("id");
-				System.out.println("Leave_Type-->" + Leave_Type + "--" + "leaveTypeID---->" + leaveTypeID);
 
 				String leaveTypeShortId = leaveTypeID.substring(leaveTypeID.indexOf("-") + 1);
 				writeInLeaveTypeRepository(sheetName, LeaveScenario.toString(), Leave_Type, leaveTypeShortId,
@@ -976,10 +977,12 @@ public class LeavesActionClass extends TestBase {
 	public boolean setEmployeeID(String employeeID) {
 		try {
 			EMPID = employeeID;
-			Reporter("Employee is set to '" + EMPID + "' to calculate leave balance", "Pass");
+			// Reporter("Employee is set to '" + EMPID + "' to calculate leave balance",
+			// "Pass");
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while setting Employee id to calculate leave balance", "Fail");
+			// Reporter("Exception while setting Employee id to calculate leave balance",
+			// "Fail");
 			return false;
 		}
 	}
@@ -1385,9 +1388,10 @@ public class LeavesActionClass extends TestBase {
 							.minusYears(CreditToYearVarLong - 1);
 					LocalDate lastDateForCalculation = leaveCycleLastDateInDateFormat.minusYears(CreditFromYearVarLong);
 
+					Reporter("Leave will get calculated for: " + anniversaryIterator + " Annivaersary", "Info");
 					Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
 							+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
-							+ "' till current date", "Info");
+							+ "' till " + lastDateForCalculation, "Info");
 
 					int i = 0;
 					LocalDate iterationDate = lastDateForCalculation;
@@ -1759,8 +1763,8 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
-	public static List<String> EmployeeTypeName;
-	public static List<String> EmployeeTypeId;
+	public static List<String> EmployeeTypeName = new ArrayList<String>();
+	public static List<String> EmployeeTypeId = new ArrayList<String>();;
 
 	public void getAllEmployeeTypes() {
 		try {
@@ -1770,17 +1774,208 @@ public class LeavesActionClass extends TestBase {
 			String[] frontEndEmployeeTypeSplit = frontEndEmployeeType.split("\\r?\\n");
 			int i = 0;
 			for (String line : frontEndEmployeeTypeSplit) {
-				System.out.println("line -->" + " : " + line);
-				EmployeeTypeName.add(line.substring(0, line.indexOf("<") - 1));
+				// System.out.println("line -->" + ": " + line);
+				EmployeeTypeName.add(line.substring(0, line.indexOf("<")));
 				EmployeeTypeId.add(line.substring(line.indexOf(">") + 1));
-				System.out.println("EmployeeTypeName.get(i)-->" + EmployeeTypeName.get(i));
-				System.out.println("EmployeeTypeId.get(i)-->" + EmployeeTypeId.get(i));
+				// System.out.println("EmployeeTypeName.get(i)-->" + EmployeeTypeName.get(i));
+				// System.out.println("EmployeeTypeId.get(i)-->" + EmployeeTypeId.get(i));
 			}
 
+		} catch (Exception e) {
+			// Reporter("Exception while getting all employee types in instance", "Fail");
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static String EmployeeDataEmployeeNo;
+	public static String EmployeeDataEmployeeType;
+	public static String EmployeeDataEmployeeTypeID;
+	public static String EmployeeDataDesignation;
+	public static String EmployeeDataDesignationID;
+
+	public static HashMap<String, String> EmployeeDataHmap = new HashMap<String, String>();
+
+	public void getEmployeeData() {
+		try {
+			String text = "emailtemplate/GetEmployeeData/id/" + EMPID;
+			String frontEndEmployeeDataDetails = objUtil.getHTMLTextFromAPI(driver, text);
+			// System.out.println(frontEndEmployeeDataDetails);
+			String[] frontEndEmployeeDataDetailsSplit = frontEndEmployeeDataDetails.split("\\r?\\n");
+
+			for (String line : frontEndEmployeeDataDetailsSplit) {
+				// System.out.println("line -->" + " : " + line);
+				String key = line.substring(0, line.indexOf("<") - 1);
+				String value = line.substring(line.indexOf(">") + 1);
+				EmployeeDataHmap.put(key, value);
+			}
+
+			EmployeeDataEmployeeNo = "employee_no";
+			EmployeeDataEmployeeType = "type";
+			EmployeeDataEmployeeTypeID = "emp_type_id";
+			EmployeeDataDesignation = "designation";
+			EmployeeDataDesignationID = "designation_id";
 		} catch (Exception e) {
 			Reporter("Exception while getting front end leave balance for the employee", "Fail");
 			e.printStackTrace();
 			throw new RuntimeException(e);
+		}
+	}
+
+	public boolean changeEmployeeType() {
+		try {
+			String anotherEmployeeTypeID = "";
+			int flag = 0;
+			int i = 0;
+			while (flag == 0) {
+				if (EmployeeTypeId.get(i).trim().equals(EmployeeDataHmap.get(EmployeeDataEmployeeTypeID))) {
+					flag = 0;
+				} else {
+					flag++;
+					anotherEmployeeTypeID = EmployeeTypeId.get(i).trim();
+				}
+			}
+
+			String text = "emailtemplate/SetEmployeeData/id/" + EMPID + "/type/" + anotherEmployeeTypeID;
+			objUtil.callTheAPI(driver, text);
+
+			Reporter("Changed emaployees Employee Type from '" + EmployeeDataHmap.get(EmployeeDataEmployeeType)
+					+ "' to '" + EmployeeTypeName.get(i), "Pass");
+			String currentURL = driver.getCurrentUrl();
+			String getEmployeeURL = ObjectRepo.reader.getApplication() + "emailtemplate/GetEmployeeData/id/" + EMPID;
+
+			if (currentURL.trim().equals(getEmployeeURL)) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} catch (Exception e) {
+			Reporter("Exception while changing Employee Type", "Fail");
+			return false;
+		}
+	}
+
+	public boolean changeEmployeeTypeBackToOriginal() {
+		try {
+			String text = "emailtemplate/SetEmployeeData/id/" + EMPID + "/type/" + EmployeeDataHmap.get(EmployeeDataEmployeeType).trim();
+			objUtil.callTheAPI(driver, text);
+
+			Reporter("Changed emaployees Employee Type back to original value which is: '" + EmployeeDataHmap.get(EmployeeDataEmployeeType), "Pass");
+			String currentURL = driver.getCurrentUrl();
+			String getEmployeeURL = ObjectRepo.reader.getApplication() + "emailtemplate/GetEmployeeData/id/" + EMPID;
+
+			if (currentURL.trim().equals(getEmployeeURL)) {
+				return true;
+			} else {
+				return false;
+			}
+
+		}catch(Exception e) {
+			Reporter("Exception while changing Employee type back to Original value", "Fail");
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+	
+	public boolean setLeaveType1() {
+		Leave_Type = getData("Leave Type 1");
+		return true;
+	}
+
+	public boolean setLeaveType2() {
+		Leave_Type = getData("Leave Type 2");
+		return true;
+	}
+
+	/**
+	 * This method verifies leave balance of an employee for a particular DOJ
+	 * 
+	 * @param DOJ
+	 * @author shikhar
+	 * @return boolean
+	 */
+	public boolean verifyEffectiveDateLeaveBalanceForParticularDOJ(String DOJ) {
+		try {
+			int flag = 0;
+			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
+			Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
+					+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
+					+ "' till current date", "Info");
+			LocalDate iterationDate = LocalDate.parse(DOJ);
+			DateOfJoining = changeEmployeeDOJ(iterationDate);
+			double expectedBalance = calculateTenureBasedLeaveBalance(DateOfJoining,
+					objDateTimeHelper.getCurrentLocalDate(), "After");
+			double actualBalance = getEmployeesFrontEndLeaveBalance(Leave_Type);
+			if (expectedBalance != actualBalance) {
+				flag++;
+				Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
+						+ "||Actual Leave Balance=" + actualBalance, "Fail");
+			} else {
+				Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
+						+ "||Actual Leave Balance=" + actualBalance, "Pass");
+			}
+			if (flag > 0) {
+				return false;
+			}
+			return true;
+		} catch (Exception e) {
+			Reporter("Exception while verifying leave balance for particular DOJ", "Fail");
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * This method verifies leaves balance for whole leave cycle of the employee
+	 * 
+	 * @return boolean
+	 */
+	public boolean verifyEffectiveDateLeaveBalanceForWholeLeaveCycle(String LeaveType) {
+		try {
+			String result = "";
+			int flag = 0;
+			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
+			Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
+					+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
+					+ "' till current date", "Info");
+			LocalDate leaveCycleStartDateInDateFormat = LocalDate.parse(leaveCycleStartDate);
+			int i = 1;
+			LocalDate iterationDate = LocalDate.now();
+			while (iterationDate.isAfter(leaveCycleStartDateInDateFormat)) {
+				iterationDate = LocalDate.now().minusDays(i);
+				DateOfJoining = changeEmployeeDOJ(iterationDate);
+
+				double expectedBalance = calculateLeaveBalance(DateOfJoining);
+				double actualBalance = getEmployeesFrontEndLeaveBalance(Leave_Type);
+				if (expectedBalance != actualBalance) {
+					Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
+							+ "||Actual Leave Balance=" + actualBalance, "Fail");
+					result = "Fail";
+					flag++;
+				} else {
+					Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
+							+ "||Actual Leave Balance=" + actualBalance, "Pass");
+					result = "Pass";
+				}
+				i++;
+				if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
+					writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+							LocalDateTime.now().toString());
+				}
+			}
+
+			if (flag > 0) {
+				return false;
+			} else {
+				return true;
+			}
+
+		} catch (
+
+		Exception e) {
+			Reporter("Exception while comparing leave balance", "Fail");
+			return false;
 		}
 	}
 

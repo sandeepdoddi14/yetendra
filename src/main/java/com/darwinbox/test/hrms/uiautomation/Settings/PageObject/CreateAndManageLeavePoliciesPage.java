@@ -278,7 +278,7 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * @return
 	 */
 	public boolean insertDescription(String text) {
-		return objGenHelper.setElementText(descriptionTextBox, text, "Description");
+		return objGenHelper.setElementText(descriptionTextBox,  "Description", text);
 	}
 
 	/**
