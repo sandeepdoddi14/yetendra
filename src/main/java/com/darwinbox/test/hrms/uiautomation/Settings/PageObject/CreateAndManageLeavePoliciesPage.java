@@ -396,6 +396,8 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * @return
 	 */
 	public boolean clickAccordingToEmployeeProbationPeriodRadioButton() {
+		objAction.moveToElement(driver, accordingToEmployeeProbationPeriodRadioButton, "According to employee probation period Radio button");
+		objWait.waitElementToBeClickable(accordingToEmployeeProbationPeriodRadioButton);
 		return objGenHelper.elementClick(accordingToEmployeeProbationPeriodRadioButton,
 				"According to employee probation period Radio button");
 	}

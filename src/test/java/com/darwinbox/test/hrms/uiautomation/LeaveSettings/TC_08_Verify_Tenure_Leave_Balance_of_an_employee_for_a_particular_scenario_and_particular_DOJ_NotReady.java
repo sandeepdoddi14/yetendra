@@ -74,6 +74,6 @@ public class TC_08_Verify_Tenure_Leave_Balance_of_an_employee_for_a_particular_s
 		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.setCreditOnTenureBasisLeaveScenario(), "Leaves type with mentioned scenarios is created");						
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-		Assert.assertTrue(leavesAction.verifyEmployeeTenureBasedLeaveBalanceForAParticularDOJ("2017-03-15", LocalDate.now().toString()), "Leave Balance for whole leave cycle calculated successfully") ;
+		Assert.assertTrue(leavesAction.verifyEmployeeTenureBasedLeaveBalanceForAParticularDOJ("2017-02-29", LocalDate.now().toString()), "Leave Balance for whole leave cycle calculated successfully") ;
 	}
 }

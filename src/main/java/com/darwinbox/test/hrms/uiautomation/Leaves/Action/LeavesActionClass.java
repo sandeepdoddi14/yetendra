@@ -1607,6 +1607,9 @@ public class LeavesActionClass extends TestBase {
 			String leavesCalculationStartDate = "";
 			String midYearEndDate;
 			double biannualLeave = 0;
+			double truncateLeaves = 0;
+			LocalDate LastDayOfCalculationInDateFormat = LocalDate.parse(LastDayOfCalculation);
+			Boolean tempFlag = false;
 
 			if (checkDOJisUnderLeaveProbationPeriod(DOJ) == true) {
 				ExpectedLeaveBalance = 0;
@@ -1623,6 +1626,7 @@ public class LeavesActionClass extends TestBase {
 				}
 
 				if (Pro_rata.equalsIgnoreCase("Yes")) {
+
 					if (Accrual.equalsIgnoreCase("Yes")) {
 						leavesCalculationStartDate = LeaveCalBeginningDate;
 					}
@@ -1641,8 +1645,15 @@ public class LeavesActionClass extends TestBase {
 						}
 						MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
 					}
+
 				} else if (Pro_rata.equalsIgnoreCase("No")) {
-					leavesCalculationStartDate = leaveCycleStartDate;
+
+					if (beforeAfter.equalsIgnoreCase("Before")) {
+						leavesCalculationStartDate = leaveCycleStartDate;
+					} else if (beforeAfter.equalsIgnoreCase("After")) {
+						leavesCalculationStartDate = LeaveCalBeginningDate;
+					}
+
 					if (Accrual.equalsIgnoreCase("No")) {
 						perMonthOrQuarterLeaves = perMonthLeaves;
 						// MonthOrQuarterDifference = 12;
@@ -1706,6 +1717,10 @@ public class LeavesActionClass extends TestBase {
 								.getQuarterDiffBetweenTwoDates(leavesCalculationStartDate, LastDayOfCalculation);
 						leavesDiffFromFirstDayOfQuarter = ((perMonthLeaves)
 								* objDateTimeHelper.getMonthDiffFromFirstDayOfQuarter(leavesCalculationStartDate));
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							truncateLeaves = (perMonthLeaves
+									* objDateTimeHelper.getMonthDiffFromLastMonthOfQuarter(LastDayOfCalculation));
+						}
 					} else if (Monthly.equalsIgnoreCase("No") && Quarterly.equalsIgnoreCase("No")
 							&& Biannually.equalsIgnoreCase("Yes")) {
 
@@ -1738,16 +1753,34 @@ public class LeavesActionClass extends TestBase {
 							throw new RuntimeException();
 						}
 
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							truncateLeaves = perMonthLeaves * objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LastDayOfCalculation, biannualEndDate);
+						}
+
 					}
 
 					if (Begin_of_monthORQuarter.equalsIgnoreCase("Yes") && End_of_monthORQuarter.equalsIgnoreCase("No")
 							&& Biannually.equalsIgnoreCase("No")) {
 						MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
+					} else if (Begin_of_monthORQuarter.equalsIgnoreCase("No")
+							&& End_of_monthORQuarter.equalsIgnoreCase("Yes") && Biannually.equalsIgnoreCase("No")
+							&& beforeAfter.equalsIgnoreCase("Before")) {
+						if (Monthly.equalsIgnoreCase("Yes")) {
+							tempFlag = checkIfDayIsLastDayOfMonth(LastDayOfCalculationInDateFormat);
+						} else if (Quarterly.equalsIgnoreCase("Yes")) {
+							tempFlag = checkIfDayIsLastDayOfQuarter(LastDayOfCalculationInDateFormat);
+						} else {
+							tempFlag = false;
+						}
+						if (tempFlag == true) {
+							MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
+						}
 					}
 				}
 
 				ExpectedLeaveBalance = (((perMonthOrQuarterLeaves) * (MonthOrQuarterDifference))
-						- (leavesDiffFromFirstDayOfQuarter) - (midJoinigYesLeaves) + biannualLeave);
+						- (leavesDiffFromFirstDayOfQuarter) - (midJoinigYesLeaves) - (truncateLeaves) + biannualLeave);
 			}
 			double ExpectedLeaveBalanceRoundOff = Math.round(ExpectedLeaveBalance * 100.0) / 100.0;
 
@@ -1759,6 +1792,56 @@ public class LeavesActionClass extends TestBase {
 		} catch (Exception e) {
 			Reporter("Exception while calculating employess expected leave balance", "Fail");
 			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	public boolean checkIfDayIsLastDayOfMonth(LocalDate LastDateOfCalculationInDateFormat) {
+		try {
+			LocalDate todaysDate = LocalDate.now();
+			LocalDate lastDayOfCurrentMonth = todaysDate.withDayOfMonth(todaysDate.lengthOfMonth());
+			LocalDate firstDayOfCurrentMonth = todaysDate.with(firstDayOfMonth());
+
+			if (LastDateOfCalculationInDateFormat.isBefore(firstDayOfCurrentMonth)) {
+				return true;
+			} else if (LastDateOfCalculationInDateFormat.isAfter(firstDayOfCurrentMonth)
+					|| LastDateOfCalculationInDateFormat.isEqual(firstDayOfCurrentMonth)) {
+				if (LastDateOfCalculationInDateFormat.isEqual(lastDayOfCurrentMonth)) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				throw new RuntimeException("Date is not before or after 1st day of current month. Please check");
+			}
+		} catch (Exception e) {
+			Reporter("Exception while calculating Last Day of Month or Quarter", "Fail");
+			throw new RuntimeException();
+		}
+	}
+
+	public boolean checkIfDayIsLastDayOfQuarter(LocalDate LastDateOfCalculationInDateFormat) {
+		try {
+			LocalDate todaysDate = LocalDate.now();
+			LocalDate currentQuarterLastMonth = objDateTimeHelper.getFirstDayOfQuarterLastMonth(todaysDate.toString());
+			LocalDate lastDayOfCurrentQuarterLastMonth = currentQuarterLastMonth
+					.withDayOfMonth(currentQuarterLastMonth.lengthOfMonth());
+			LocalDate firstDayOfCurrentQuarter = objDateTimeHelper.getFirstDayOfQuarter(todaysDate.toString());
+
+			if (LastDateOfCalculationInDateFormat.isBefore(firstDayOfCurrentQuarter)) {
+				return true;
+			} else if (LastDateOfCalculationInDateFormat.isAfter(firstDayOfCurrentQuarter)
+					|| LastDateOfCalculationInDateFormat.isEqual(firstDayOfCurrentQuarter)) {
+				if (LastDateOfCalculationInDateFormat.isEqual(lastDayOfCurrentQuarterLastMonth)) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				throw new RuntimeException("Date is not before or after 1st day of current month. Please check");
+			}
+		} catch (Exception e) {
+			Reporter("Exception while calculating Last Day of Month or Quarter", "Fail");
 			throw new RuntimeException();
 		}
 	}
@@ -1858,10 +1941,12 @@ public class LeavesActionClass extends TestBase {
 
 	public boolean changeEmployeeTypeBackToOriginal() {
 		try {
-			String text = "emailtemplate/SetEmployeeData/id/" + EMPID + "/type/" + EmployeeDataHmap.get(EmployeeDataEmployeeType).trim();
+			String text = "emailtemplate/SetEmployeeData/id/" + EMPID + "/type/"
+					+ EmployeeDataHmap.get(EmployeeDataEmployeeType).trim();
 			objUtil.callTheAPI(driver, text);
 
-			Reporter("Changed emaployees Employee Type back to original value which is: '" + EmployeeDataHmap.get(EmployeeDataEmployeeType), "Pass");
+			Reporter("Changed emaployees Employee Type back to original value which is: '"
+					+ EmployeeDataHmap.get(EmployeeDataEmployeeType), "Pass");
 			String currentURL = driver.getCurrentUrl();
 			String getEmployeeURL = ObjectRepo.reader.getApplication() + "emailtemplate/GetEmployeeData/id/" + EMPID;
 
@@ -1871,13 +1956,13 @@ public class LeavesActionClass extends TestBase {
 				return false;
 			}
 
-		}catch(Exception e) {
+		} catch (Exception e) {
 			Reporter("Exception while changing Employee type back to Original value", "Fail");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
 	}
-	
+
 	public boolean setLeaveType1() {
 		Leave_Type = getData("Leave Type 1");
 		return true;

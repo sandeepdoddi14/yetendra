@@ -247,6 +247,47 @@ public class DateTimeHelper {
 	}
 
 	/**
+	 * This method returns Month difference from first day of Quarter
+	 * 
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return
+	 */
+	public double getMonthDiffFromLastMonthOfQuarter(String DATEIN_YYYY_MM_DD_format) {
+		try {
+			String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
+			int year = Integer.parseInt(arr[0]);
+			int month = Integer.parseInt(arr[1]);
+			int day = Integer.parseInt(arr[2]);
+
+			LocalDate endDate = getFirstDayOfQuarterLastMonth(DATEIN_YYYY_MM_DD_format);
+			LocalDate startDate = LocalDate.of(year, month, day).with(firstDayOfMonth());
+			double monthsDiffFromQuarterMonth = ChronoUnit.MONTHS.between(startDate, endDate);
+			return monthsDiffFromQuarterMonth;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+	/**
+	 * This method returns Month difference from first day of Quarter
+	 * 
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return
+	 */
+	public double getMonthDiffFromFirstDayOfQuarterBetweenTwoDates(String DATEIN_YYYY_MM_DD_format, String endDateString) {
+		try {
+			
+			LocalDate startDate = getFirstDayOfQuarter(DATEIN_YYYY_MM_DD_format);
+			LocalDate endDate = LocalDate.parse(endDateString).with(firstDayOfMonth());
+			double monthsDiffFromQuarterMonth = ChronoUnit.MONTHS.between(startDate, endDate);
+			return monthsDiffFromQuarterMonth;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+	
+	/**
 	 * This method will return First Day of Quarter in Local Date format
 	 * 
 	 * @param DATEIN_YYYY_MM_DD_format
@@ -268,6 +309,36 @@ public class DateTimeHelper {
 			quarterMonth = 7;
 		} else if (DOJQuarter == 4) {
 			quarterMonth = 10;
+		} else {
+			throw new RuntimeException("DOJ is not correct");
+		}
+
+		LocalDate startDate = LocalDate.of(year, quarterMonth, 01).with(firstDayOfMonth());
+		return startDate;
+	}
+
+	/**
+	 * This method will return First Day of Quarter in Local Date format
+	 * 
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return Local Date
+	 */
+	public LocalDate getFirstDayOfQuarterLastMonth(String DATEIN_YYYY_MM_DD_format) {
+
+		String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
+		int year = Integer.parseInt(arr[0]);
+
+		int DOJQuarter = LocalDate.parse(DATEIN_YYYY_MM_DD_format).get(IsoFields.QUARTER_OF_YEAR);
+		int quarterMonth = 0;
+
+		if (DOJQuarter == 1) {
+			quarterMonth = 3;
+		} else if (DOJQuarter == 2) {
+			quarterMonth = 6;
+		} else if (DOJQuarter == 3) {
+			quarterMonth = 9;
+		} else if (DOJQuarter == 4) {
+			quarterMonth = 12;
 		} else {
 			throw new RuntimeException("DOJ is not correct");
 		}
