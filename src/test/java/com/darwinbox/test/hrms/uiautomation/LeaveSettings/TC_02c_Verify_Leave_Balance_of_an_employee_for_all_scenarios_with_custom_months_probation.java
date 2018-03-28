@@ -40,7 +40,7 @@ private static final Logger log = Logger.getLogger(TC_02c_Verify_Leave_Balance_o
 
 @BeforeClass
 public void setup() throws Exception {
-	ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_Employee_Probation");
+	ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_Probation");
 }
 
 @BeforeMethod 
