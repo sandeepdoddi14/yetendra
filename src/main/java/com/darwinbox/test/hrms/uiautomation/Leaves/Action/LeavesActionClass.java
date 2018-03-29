@@ -162,7 +162,7 @@ public class LeavesActionClass extends TestBase {
 					"Leave Probation Period according to Employee Probation Period");
 			Employee_probation_period = getData("Employee Probation Period");
 
-//			Leave_Type = getData("Leave_Type");
+			Leave_Type = getData("Leave_Type");
 			Max_Leaves_Allowed_Per_Year = getData("Max_Leaves_Allowed_Per_Year");
 			Leaves_Allowed_Per_Year = Double.parseDouble(Max_Leaves_Allowed_Per_Year);
 			Leave_Cycle = getData("Leave Cycle");
