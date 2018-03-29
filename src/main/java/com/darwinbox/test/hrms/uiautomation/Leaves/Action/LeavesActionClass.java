@@ -991,12 +991,12 @@ public class LeavesActionClass extends TestBase {
 	public boolean setEmployeeID(String employeeID) {
 		try {
 			EMPID = employeeID;
-			// Reporter("Employee is set to '" + EMPID + "' to calculate leave balance",
-			// "Pass");
+			 Reporter("Employee is set to '" + EMPID + "' to calculate leave balance",
+			 "Pass");
 			return true;
 		} catch (Exception e) {
-			// Reporter("Exception while setting Employee id to calculate leave balance",
-			// "Fail");
+			 Reporter("Exception while setting Employee id to calculate leave balance",
+			 "Fail");
 			return false;
 		}
 	}
