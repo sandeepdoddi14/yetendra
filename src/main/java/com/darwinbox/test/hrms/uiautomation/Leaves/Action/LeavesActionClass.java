@@ -162,7 +162,7 @@ public class LeavesActionClass extends TestBase {
 					"Leave Probation Period according to Employee Probation Period");
 			Employee_probation_period = getData("Employee Probation Period");
 
-			Leave_Type = getData("Leave_Type");
+//			Leave_Type = getData("Leave_Type");
 			Max_Leaves_Allowed_Per_Year = getData("Max_Leaves_Allowed_Per_Year");
 			Leaves_Allowed_Per_Year = Double.parseDouble(Max_Leaves_Allowed_Per_Year);
 			Leave_Cycle = getData("Leave Cycle");
@@ -1291,7 +1291,9 @@ public class LeavesActionClass extends TestBase {
 							.minusYears(CreditToYearVarLong - 1);
 					LocalDate lastDateForCalculation = leaveCycleLastDateInDateFormat.minusYears(CreditFromYearVarLong);
 					
-					Reporter("Leaves will be calculated for ~" + anniversaryIterator+1 + "~ anniversary", "Info");
+					int anniversaryYear = anniversaryIterator + 1;
+					
+					Reporter("Leaves will be calculated for ~" + anniversaryYear + "~ anniversary", "Info");
 					Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
 							+ " hence leave balance will be verifed from '" + lastDateForCalculation
 							+ "' till '" + startDateForCalculation, "Info");
@@ -1914,7 +1916,7 @@ public class LeavesActionClass extends TestBase {
 			EmployeeDataDesignation = "designation";
 			EmployeeDataDesignationID = "designation_id";
 		} catch (Exception e) {
-			Reporter("Exception while getting front end leave balance for the employee", "Fail");
+			Reporter("Exception while getting front end leave balance for the employee", "Fatal");
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -1932,6 +1934,7 @@ public class LeavesActionClass extends TestBase {
 					flag++;
 					anotherEmployeeTypeID = EmployeeTypeId.get(i).trim();
 				}
+				i++;
 			}
 
 			String text = "emailtemplate/SetEmployeeData/id/" + EMPID + "/type/" + anotherEmployeeTypeID;
@@ -1979,12 +1982,14 @@ public class LeavesActionClass extends TestBase {
 	}
 
 	public boolean setLeaveType1() {
-		Leave_Type = getData("Leave Type 1");
+		Leave_Type = getData("Leave Type1");
+		Reporter("Leave Type is : '"+ Leave_Type +"'","Info");
 		return true;
 	}
 
 	public boolean setLeaveType2() {
-		Leave_Type = getData("Leave Type 2");
+		Leave_Type = getData("Leave Type2");
+		Reporter("Leave Type is : '"+ Leave_Type +"'","Info");
 		return true;
 	}
 
@@ -1999,9 +2004,7 @@ public class LeavesActionClass extends TestBase {
 		try {
 			int flag = 0;
 			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
-			Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
-					+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
-					+ "' till current date", "Info");
+			Reporter("Leave will be calculated for Effective Date which is: "+ DOJ, "Info");
 			LocalDate iterationDate = LocalDate.parse(DOJ);
 			DateOfJoining = changeEmployeeDOJ(iterationDate);
 			double expectedBalance = calculateTenureBasedLeaveBalance(DateOfJoining,

@@ -20,6 +20,7 @@ import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CommonSettingsPa
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CreateAndManageLeavePoliciesPage;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.LeavesSettingsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
@@ -42,6 +43,10 @@ public class TC_05_Verify_Leave_Balance_of_an_employee_for_all_scenarios_and_par
 	@BeforeClass
 	public void setup() throws Exception {
 		ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_Scenarios");
+		WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
+		if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
+			ExcelWriter.copyExportFileToResultsDir();					
+		}
 	}
 
 	@BeforeMethod

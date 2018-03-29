@@ -42,7 +42,7 @@ public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 
 	@BeforeClass
 	public void setup() throws Exception {
-		ExcelReader.setFilenameAndSheetName("EffectiveDate.xlsx", "Test");
+		ExcelReader.setFilenameAndSheetName("EffectiveDate.xlsx", "All_Scenarios_WithOut_PB");
 	}
 
 	@BeforeTest
@@ -68,13 +68,11 @@ public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
 		Assert.assertTrue(leavesAction.setEmployeeID("WIP001"), "Employee ID is set successfully to test");		
 		
-		
 		leavesAction.getAllEmployeeTypes();
 		leavesAction.getEmployeeData();
 		Assert.assertTrue(leavesAction.changeEmployeeType(), "Click on Settings link");	
 		int tem = currentData;
-		Assert.assertTrue(leavesAction.setLeaveType1(), "Leave scenario is set successfully");		
-			i = 0;
+			i = 1;
 		while (i < dataCounter) {
 			currentData = i;
 			try {
@@ -85,6 +83,7 @@ public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 			i++;
 		}
 		currentData = tem;
+		Assert.assertTrue(leavesAction.setLeaveType1(), "Leave scenario is set successfully");		
 		Assert.assertTrue(leavesAction.changeEmployeeTypeBackToOriginal(), "Click on Settings link");
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");		
 		leavesAction.verifyEffectiveDateLeaveBalanceForParticularDOJ(LocalDate.now().toString());							
