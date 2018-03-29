@@ -19,6 +19,7 @@ import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CommonSettingsPa
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CreateAndManageLeavePoliciesPage;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.LeavesSettingsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
@@ -41,6 +42,10 @@ public class TC_06b_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenario_
 	@BeforeClass
 	public void setup() throws Exception {
 		ExcelReader.setFilenameAndSheetName("Tenure_Leave_Scenarios.xlsx", "All_Without_Probation");
+		WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
+		if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
+			ExcelWriter.copyExportFileToResultsDir();					
+		}
 	}
 
 	@BeforeMethod
@@ -61,7 +66,7 @@ public class TC_06b_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenario_
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");
-		Assert.assertTrue(leavesAction.setEmployeeID(objUtil.getProperty("config","Employee.id")), "Employee ID is set successfully to test");
+		Assert.assertTrue(leavesAction.setEmployeeID(UtilityHelper.getProperty("config","Employee.id")), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		

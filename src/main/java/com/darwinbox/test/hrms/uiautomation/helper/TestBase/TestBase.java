@@ -22,6 +22,7 @@ import org.testng.Reporter;
 import org.testng.annotations.*;
 
 import com.darwinbox.test.hrms.uiautomation.Utility.DateTimeHelper;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
 import com.darwinbox.test.hrms.uiautomation.Utility.ResourceHelper;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
@@ -59,13 +60,13 @@ public class TestBase {
 	public static Map<String, String> data;
 	ExtentTest parentLog = null;
 	public static Markup strcode = MarkupHelper.createCodeBlock("text");
+	public static String WriteResultToExcel = "No";
 
 	public static String resultsDIR = "Test_Execution_Results/Results" + UtilityHelper.getCurrentDateTime();
 
 	public static void setDataItem(List<Map<String, String>> dataItem) {
 		TestBase.dataItem = dataItem;
 		dataCounter = dataItem.size();
-		System.out.println("dataCounter-->"+ dataCounter);
 		currentData = 0;
 	}
 
@@ -263,7 +264,6 @@ public class TestBase {
 				String scrPath = tempPath + "-" + "FAIL" + "-" + DateTimeHelper.getCurrentDateTime() + ".png";
 				screenShotName = new File(scrPath);
 				FileUtils.copyFile(scrFile, screenShotName);
-
 				String filePath = screenShotName.toString();
 				xtReportLog.fail("Failure Screenshot",
 						MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
@@ -388,6 +388,9 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Fail")) {
 			xtReportLog.log(Status.FAIL, text);
 			log.error(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, text);
 			log.info(text);
@@ -405,6 +408,9 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Skip")) {
 			xtReportLog.log(Status.SKIP, text);
 			log.debug(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, text);
 			log.info(text);
@@ -421,6 +427,9 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Fail")) {
 			xtReportLog.log(Status.FAIL, code);
 			log.error(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);
 			log.info(text);
@@ -437,6 +446,9 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Fail")) {
 			xtReportLog.log(Status.FAIL, code);
 			log.error(code);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);
 			log.info(code);

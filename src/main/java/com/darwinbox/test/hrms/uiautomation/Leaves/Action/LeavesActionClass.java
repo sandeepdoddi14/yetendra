@@ -48,7 +48,8 @@ public class LeavesActionClass extends TestBase {
 	LeavesSettingsPage leaveSettings;
 	ActionHelper objActionHelper;
 	BrowserHelper objBrowserHelper;
-
+	ExcelWriter objExcelWriter;
+	
 	public static final Logger log = Logger.getLogger(LeavesActionClass.class);
 
 	public LeavesActionClass(WebDriver driver) {
@@ -65,6 +66,7 @@ public class LeavesActionClass extends TestBase {
 		leaveSettings = PageFactory.initElements(driver, LeavesSettingsPage.class);
 		objActionHelper = PageFactory.initElements(driver, ActionHelper.class);
 		objBrowserHelper = PageFactory.initElements(driver, BrowserHelper.class);
+		objExcelWriter = PageFactory.initElements(driver, ExcelWriter.class);
 
 	}
 
@@ -99,7 +101,7 @@ public class LeavesActionClass extends TestBase {
 	public static String CreditFromYear;
 	public static String CreditToYear;
 	public static String CreditNoOfLeaves;
-	public static String WriteResultToExcel = "No";
+//	public static String WriteResultToExcel = "No";
 
 	/**
 	 * This method set Leave Scenario parameters from property file
@@ -107,37 +109,37 @@ public class LeavesActionClass extends TestBase {
 	public boolean setLeaveScenarioFromPropertyFile() {
 		try {
 
-			Leave_Probation_period_Custom_Months = objUtil.getProperty("leavesCalculation",
+			Leave_Probation_period_Custom_Months = UtilityHelper.getProperty("leavesCalculation",
 					"Probation.period.Custom.Months");
-			Probation_period_before_leave_validity_months = objUtil.getProperty("leavesCalculation",
+			Probation_period_before_leave_validity_months = UtilityHelper.getProperty("leavesCalculation",
 					"Probation.period.before.leave.validity.months");
-			Leave_Probation_period_employee_probation_period = objUtil.getProperty("leavesCalculation",
+			Leave_Probation_period_employee_probation_period = UtilityHelper.getProperty("leavesCalculation",
 					"Probation.period.employee.probation.period");
-			Employee_probation_period = objUtil.getProperty("leavesCalculation", "Employees.Probation.Days");
+			Employee_probation_period = UtilityHelper.getProperty("leavesCalculation", "Employees.Probation.Days");
 
-			Leave_Type = objUtil.getProperty("leavesCalculation", "Leave.Type");
-			Max_Leaves_Allowed_Per_Year = objUtil.getProperty("leavesCalculation", "Max.Leaves.Allowed.Per.Year");
+			Leave_Type = UtilityHelper.getProperty("leavesCalculation", "Leave.Type");
+			Max_Leaves_Allowed_Per_Year = UtilityHelper.getProperty("leavesCalculation", "Max.Leaves.Allowed.Per.Year");
 			Leaves_Allowed_Per_Year = Double.parseDouble(Max_Leaves_Allowed_Per_Year);
-			Leave_Cycle = objUtil.getProperty("leavesCalculation", "Leave.Cycle");
-			Pro_rata = objUtil.getProperty("leavesCalculation", "Pro.rata");
-			Calculate_from_joining_date = objUtil.getProperty("leavesCalculation", "From.Joining.date");
-			Calculate_after_probation_period = objUtil.getProperty("leavesCalculation", "After.Probation.period");
-			Half_Month_Leaves_if_employee_joins_after_15th = objUtil.getProperty("leavesCalculation",
+			Leave_Cycle = UtilityHelper.getProperty("leavesCalculation", "Leave.Cycle");
+			Pro_rata = UtilityHelper.getProperty("leavesCalculation", "Pro.rata");
+			Calculate_from_joining_date = UtilityHelper.getProperty("leavesCalculation", "From.Joining.date");
+			Calculate_after_probation_period = UtilityHelper.getProperty("leavesCalculation", "After.Probation.period");
+			Half_Month_Leaves_if_employee_joins_after_15th = UtilityHelper.getProperty("leavesCalculation",
 					"Half.Month.Leaves.if.employee.joins.after.15th");
-			Full_Month_Leaves_if_employee_joins_after_15th = objUtil.getProperty("leavesCalculation",
+			Full_Month_Leaves_if_employee_joins_after_15th = UtilityHelper.getProperty("leavesCalculation",
 					"Full.Month.Leaves.if.employee.joins.after.15th");
-			Accrual = objUtil.getProperty("leavesCalculation", "Accrual");
-			Monthly = objUtil.getProperty("leavesCalculation", "Monthly");
-			Quarterly = objUtil.getProperty("leavesCalculation", "Quarterly");
-			Biannually = objUtil.getProperty("leavesCalculation", "Biannually");
-			Begin_of_monthORQuarter = objUtil.getProperty("leavesCalculation", "Begin.of.monthORQuarter");
-			End_of_monthORQuarter = objUtil.getProperty("leavesCalculation", "End.of.monthORQuarter");
-			CreditOnTenureBasis = objUtil.getProperty("leavesCalculation", "Credit.on.Tenure.basis");
-			CreditFromYear = objUtil.getProperty("leavesCalculation", "Credit.From.Year");
-			CreditToYear = objUtil.getProperty("leavesCalculation", "Credit.To.Year");
-			CreditNoOfLeaves = objUtil.getProperty("leavesCalculation", "NO.OF.LEAVES");
+			Accrual = UtilityHelper.getProperty("leavesCalculation", "Accrual");
+			Monthly = UtilityHelper.getProperty("leavesCalculation", "Monthly");
+			Quarterly = UtilityHelper.getProperty("leavesCalculation", "Quarterly");
+			Biannually = UtilityHelper.getProperty("leavesCalculation", "Biannually");
+			Begin_of_monthORQuarter = UtilityHelper.getProperty("leavesCalculation", "Begin.of.monthORQuarter");
+			End_of_monthORQuarter = UtilityHelper.getProperty("leavesCalculation", "End.of.monthORQuarter");
+			CreditOnTenureBasis = UtilityHelper.getProperty("leavesCalculation", "Credit.on.Tenure.basis");
+			CreditFromYear = UtilityHelper.getProperty("leavesCalculation", "Credit.From.Year");
+			CreditToYear = UtilityHelper.getProperty("leavesCalculation", "Credit.To.Year");
+			CreditNoOfLeaves = UtilityHelper.getProperty("leavesCalculation", "NO.OF.LEAVES");
 
-			WriteResultToExcel = objUtil.getProperty("leavesCalculation", "Write.Result.to.excel");
+//			WriteResultToExcel = objUtil.getProperty("leavesCalculation", "Write.Result.to.excel");
 
 			displayLeaveScenarioToReport();
 			return true;
@@ -179,9 +181,7 @@ public class LeavesActionClass extends TestBase {
 			CreditFromYear = getData("Credit From Year");
 			CreditToYear = getData("Credit To Year");
 			CreditNoOfLeaves = getData("Credit No of Leaves");
-
-			WriteResultToExcel = objUtil.getProperty("leavesCalculation", "Write.Result.to.excel");
-
+			
 			displayLeaveScenarioToReport();
 			return true;
 		} catch (Exception e) {
@@ -279,13 +279,27 @@ public class LeavesActionClass extends TestBase {
 				}
 			}
 			ReporterForCodeBlock(LeaveScenario.toString(), "Info");
-			// String[] strArr = new String[] { LeaveScenario.toString() };
-			// ExcelWriter.writeToExcel(strArr, "Test_Des");
+//			writeInLeaveScenarioToExcel("Leave_Sce_Des", LeaveScenario.toString(), objDateTimeHelper.getCurrentLocalDateTime());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	public void writeInLeaveScenarioToExcel(String sheetName, String LeaveScenario, String CurrentDateTime) {
+
+		String[] dataToWrite = new String[3];
+		dataToWrite[0] = LeaveScenario;
+		dataToWrite[1] = CurrentDateTime;
+
+		try {
+			ExcelWriter.writeToExcel("ExportExcel.xlsx", sheetName, dataToWrite);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			Reporter("Exception while sending data to Excel", "Fail");
+		}
+	}
 	/**
 	 * This method deletes mentioned Leave Type if it is already present
 	 * 
@@ -810,7 +824,7 @@ public class LeavesActionClass extends TestBase {
 				}
 				i++;
 				if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
-					writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+					writeLeavesResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 							LocalDateTime.now().toString());
 				}
 			}
@@ -869,7 +883,7 @@ public class LeavesActionClass extends TestBase {
 					}
 
 					if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
-						writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+						writeLeavesResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 								LocalDateTime.now().toString());
 					}
 				}
@@ -911,7 +925,7 @@ public class LeavesActionClass extends TestBase {
 	 * @param result
 	 * @param dateTime
 	 */
-	public void writeResultToExcel(String DateOfJoining, double expectedBalance, double actualBalance, String result,
+	public void writeLeavesResultToExcel(String DateOfJoining, double expectedBalance, double actualBalance, String result,
 			String dateTime) {
 
 		String[] dataToWrite = new String[6];
@@ -923,7 +937,7 @@ public class LeavesActionClass extends TestBase {
 		dataToWrite[5] = dateTime;
 
 		try {
-			ExcelWriter.writeToExcel("ExportExcel.xlsx", "Leave_Balance", dataToWrite);
+			ExcelWriter.writeToExcel(TestBase.resultsDIR, "ExportExcel.xlsx", "Leave_Balance", dataToWrite);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -1276,10 +1290,11 @@ public class LeavesActionClass extends TestBase {
 					LocalDate startDateForCalculation = leaveCycleStartDateInDateFormat
 							.minusYears(CreditToYearVarLong - 1);
 					LocalDate lastDateForCalculation = leaveCycleLastDateInDateFormat.minusYears(CreditFromYearVarLong);
-
+					
+					Reporter("Leaves will be calculated for ~" + anniversaryIterator+1 + "~ anniversary", "Info");
 					Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
-							+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
-							+ "' till current date", "Info");
+							+ " hence leave balance will be verifed from '" + lastDateForCalculation
+							+ "' till '" + startDateForCalculation, "Info");
 
 					int i = 0;
 					LocalDate iterationDate = lastDateForCalculation;
@@ -1322,8 +1337,8 @@ public class LeavesActionClass extends TestBase {
 								result = "Pass";
 							}
 
-							if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
-								writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+							if (WriteResultToExcel.equalsIgnoreCase("Yes")) {								
+								writeLeavesResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 										LocalDateTime.now().toString());
 							}
 						}
@@ -1431,7 +1446,7 @@ public class LeavesActionClass extends TestBase {
 							result = "Pass";
 						}
 						if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
-							writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+							writeLeavesResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 									LocalDateTime.now().toString());
 						}
 					}
@@ -1541,7 +1556,7 @@ public class LeavesActionClass extends TestBase {
 						}
 						i++;
 						if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
-							writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+							writeLeavesResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 									LocalDateTime.now().toString());
 						}
 
@@ -2045,7 +2060,7 @@ public class LeavesActionClass extends TestBase {
 				}
 				i++;
 				if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
-					writeResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+					writeLeavesResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 							LocalDateTime.now().toString());
 				}
 			}

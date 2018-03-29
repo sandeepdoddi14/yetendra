@@ -38,6 +38,8 @@ public class UtilityHelper {
 		} 
 	}
 	
+	
+	
 	public static String getCurrentDateTime() {
 
 		DateFormat dateFormat = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
@@ -56,7 +58,7 @@ public class UtilityHelper {
 	 * @param key
 	 * @return String
 	 */
-	public String getProperty(String filename, String key) {
+	public static String getProperty(String filename, String key) {
 		Properties prop = new Properties();
 		try {
 			prop.load(ResourceHelper.getResourcePathInputStream("/src/main/resources/configfile/"+ filename +".properties"));

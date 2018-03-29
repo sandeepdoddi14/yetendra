@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -19,6 +20,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 
 public class ExcelWriter {
 
@@ -53,29 +56,50 @@ public class ExcelWriter {
 	}
 
 	/**
+	 * This method copies Export File to Test_Exceution Results folder
+	 */
+	public static void copyExportFileToResultsDir() {
+		try {
+			String scrPath = ResourceHelper.getBaseResourcePath()
+					+ "//src//main//resources//TestData//ExportExcel.xlsx";
+			String targetPath = TestBase.resultsDIR;
+			File sourceFile = new File(scrPath);
+			String name = sourceFile.getName();
+
+			File targetFile = new File(targetPath);
+			FileUtils.copyFileToDirectory(sourceFile, targetFile);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Exception while copying file");
+		}
+	}
+
+	/**
 	 * This method used to write to Excel
+	 * 
 	 * @param valueToWrite
 	 * @param sheetName
 	 * @throws IOException
 	 */
-	public static void writeToExcel(String[] valueToWrite) throws IOException {
+	public static void writeToExcel(String path, String fileName, String sheetName, String[] valueToWrite)
+			throws IOException {
 		ExcelWriter objExcelFile = new ExcelWriter();
-		objExcelFile.writeExcel(ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData",
-				"ExportExcel.xlsx", "Leave_Balance", valueToWrite);
+		objExcelFile.writeExcel(path, fileName, sheetName, valueToWrite);
 	}
-	
+
 	/**
 	 * This method used to write in Excel
+	 * 
 	 * @param valueToWrite
 	 * @param fileName
 	 * @param sheetName
 	 * @throws IOException
 	 */
-	public static void writeToExcel(String fileName, String sheetName, String[] valueToWrite ) throws IOException {
+	public static void writeToExcel(String fileName, String sheetName, String[] valueToWrite) throws IOException {
 
 		ExcelWriter objExcelFile = new ExcelWriter();
-		objExcelFile.writeExcel(ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData",
-				fileName, sheetName, valueToWrite);
+		objExcelFile.writeExcel(ResourceHelper.getBaseResourcePath() + "//src//main//resources//TestData", fileName,
+				sheetName, valueToWrite);
 	}
 
 }
