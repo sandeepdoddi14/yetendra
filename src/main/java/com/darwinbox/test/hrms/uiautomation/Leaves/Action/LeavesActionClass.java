@@ -146,7 +146,7 @@ public class LeavesActionClass extends TestBase {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while setting Leave Calculation Scenario", "Fail");
+			Reporter("Exception while setting Leave Calculation Scenario", "Error");
 			return false;
 		}
 	}
@@ -185,7 +185,7 @@ public class LeavesActionClass extends TestBase {
 			displayLeaveScenarioToReport();
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while setting Leave Calculation Scenario", "Fail");
+			Reporter("Exception while setting Leave Calculation Scenario", "Error");
 			return false;
 		}
 	}
@@ -298,7 +298,7 @@ public class LeavesActionClass extends TestBase {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while sending data to Excel", "Fail");
+			Reporter("Exception while sending data to Excel", "Error");
 		}
 	}
 
@@ -328,7 +328,7 @@ public class LeavesActionClass extends TestBase {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while deleting already present same leave type", "Fail");
+			Reporter("Exception while deleting already present same leave type", "Error");
 			return false;
 		}
 	}
@@ -360,7 +360,7 @@ public class LeavesActionClass extends TestBase {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while deleting already present same leave type", "Fail");
+			Reporter("Exception while deleting already present same leave type", "Error");
 			return false;
 		}
 	}
@@ -380,7 +380,7 @@ public class LeavesActionClass extends TestBase {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while sending data to Excel", "Fail");
+			Reporter("Exception while sending data to Excel", "Error");
 		}
 	}
 
@@ -399,7 +399,7 @@ public class LeavesActionClass extends TestBase {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while genearting sequencial no. for Leave Type", "Fail");
+			Reporter("Exception while genearting sequencial no. for Leave Type", "Error");
 			return false;
 		}
 	}
@@ -430,7 +430,7 @@ public class LeavesActionClass extends TestBase {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while setting Leave Probation Period", "Fail");
+			Reporter("Exception while setting Leave Probation Period", "Error");
 			return false;
 		}
 	}
@@ -481,7 +481,7 @@ public class LeavesActionClass extends TestBase {
 			}
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while setting Credit on Pro Rata Basis scenario", "Fail");
+			Reporter("Exception while setting Credit on Pro Rata Basis scenario", "Error");
 			return false;
 		}
 	}
@@ -536,7 +536,7 @@ public class LeavesActionClass extends TestBase {
 			return true;
 
 		} catch (Exception e) {
-			Reporter("Exception while setting Credit on Accrual Basis scenario", "Fail");
+			Reporter("Exception while setting Credit on Accrual Basis scenario", "Error");
 			return false;
 		}
 	}
@@ -648,7 +648,7 @@ public class LeavesActionClass extends TestBase {
 			// driver.switchTo().defaultContent();
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while creating leave type with desiered Scenarios", "Fail");
+			Reporter("Exception while creating leave type with desiered Scenarios", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -694,7 +694,7 @@ public class LeavesActionClass extends TestBase {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while setting tenure leave scebario", "Fail");
+			Reporter("Exception while setting tenure leave scebario", "Error");
 			return false;
 		}
 	}
@@ -718,7 +718,7 @@ public class LeavesActionClass extends TestBase {
 			double actualLeaveBalance = Double.valueOf(frontEndLeaveBalance);
 			return actualLeaveBalance;
 		} catch (Exception e) {
-			Reporter("Exception while getting front end leave balance for the employee", "Fail");
+			Reporter("Exception while getting front end leave balance for the employee", "Fatal");
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -840,7 +840,7 @@ public class LeavesActionClass extends TestBase {
 		} catch (
 
 		Exception e) {
-			Reporter("Exception while comparing leave balance", "Fail");
+			Reporter("Exception while comparing leave balance", "Error");
 			return false;
 		}
 	}
@@ -898,7 +898,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while comparing leave balance", "Fail");
+			Reporter("Exception while comparing leave balance", "Error");
 			return false;
 		}
 	}
@@ -943,7 +943,7 @@ public class LeavesActionClass extends TestBase {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			Reporter("Exception while sending data to Excel", "Fail");
+			Reporter("Exception while sending data to Excel", "Error");
 		}
 	}
 
@@ -973,7 +973,7 @@ public class LeavesActionClass extends TestBase {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-			Reporter("Exception while sending data to Excel", "Fail");
+			Reporter("Exception while sending data to Excel", "Error");
 		}
 	}
 
@@ -1008,7 +1008,7 @@ public class LeavesActionClass extends TestBase {
 			}
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while verifying leave balance for particular DOJ", "Fail");
+			Reporter("Exception while verifying leave balance for particular DOJ", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -1026,7 +1026,7 @@ public class LeavesActionClass extends TestBase {
 			Reporter("Employee is set to '" + EMPID + "' to calculate leave balance", "Pass");
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while setting Employee id to calculate leave balance", "Fail");
+			Reporter("Exception while setting Employee id to calculate leave balance", "Error");
 			return false;
 		}
 	}
@@ -1046,7 +1046,7 @@ public class LeavesActionClass extends TestBase {
 			driver.navigate().to(URL);
 			return DOJ;
 		} catch (Exception e) {
-			Reporter("Exception while changing employees DOJ", "Fail");
+			Reporter("Exception while changing employees DOJ", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -1179,7 +1179,7 @@ public class LeavesActionClass extends TestBase {
 								&& currentDateBiannualHalf.equalsIgnoreCase("Second")) {
 							biannualLeave = 0;
 						} else {
-							Reporter("Exception while calculating Biannual Leaves", "Fail");
+							Reporter("Exception while calculating Biannual Leaves", "Error");
 							throw new RuntimeException();
 						}
 
@@ -1202,7 +1202,7 @@ public class LeavesActionClass extends TestBase {
 
 			return ExpectedLeaveBalanceRoundOff;
 		} catch (Exception e) {
-			Reporter("Exception while calculating employess expected leave balance", "Fail");
+			Reporter("Exception while calculating employess expected leave balance", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -1274,7 +1274,7 @@ public class LeavesActionClass extends TestBase {
 			return biannualHalf;
 		} catch (Exception e) {
 			e.printStackTrace();
-			Reporter("Exception while calculating Biannual Leave Balance", "Fail");
+			Reporter("Exception while calculating Biannual Leave Balance", "Error");
 			throw new RuntimeException();
 		}
 	}
@@ -1388,7 +1388,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while comparing leave balance", "Fail");
+			Reporter("Exception while comparing leave balance", "Error");
 			e.printStackTrace();
 			return false;
 		}
@@ -1496,7 +1496,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while comparing leave balance", "Fail");
+			Reporter("Exception while comparing leave balance", "Error");
 			return false;
 		}
 	}
@@ -1607,7 +1607,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while comparing leave balance", "Fail");
+			Reporter("Exception while comparing leave balance", "Error");
 			return false;
 		}
 	}
@@ -1815,7 +1815,7 @@ public class LeavesActionClass extends TestBase {
 
 			return ExpectedLeaveBalanceRoundOff;
 		} catch (Exception e) {
-			Reporter("Exception while calculating employess expected leave balance", "Fail");
+			Reporter("Exception while calculating employess expected leave balance", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -2024,7 +2024,7 @@ public class LeavesActionClass extends TestBase {
 
 			return ExpectedLeaveBalanceRoundOff;
 		} catch (Exception e) {
-			Reporter("Exception while calculating employess expected leave balance", "Fail");
+			Reporter("Exception while calculating employess expected leave balance", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -2049,7 +2049,7 @@ public class LeavesActionClass extends TestBase {
 				throw new RuntimeException("Date is not before or after 1st day of current month. Please check");
 			}
 		} catch (Exception e) {
-			Reporter("Exception while calculating Last Day of Month or Quarter", "Fail");
+			Reporter("Exception while calculating Last Day of Month or Quarter", "Error");
 			throw new RuntimeException();
 		}
 	}
@@ -2075,7 +2075,7 @@ public class LeavesActionClass extends TestBase {
 				throw new RuntimeException("Date is not before or after 1st day of current month. Please check");
 			}
 		} catch (Exception e) {
-			Reporter("Exception while calculating Last Day of Month or Quarter", "Fail");
+			Reporter("Exception while calculating Last Day of Month or Quarter", "Error");
 			throw new RuntimeException();
 		}
 	}
@@ -2099,7 +2099,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while getting all employee types in instance", "Fail");
+			Reporter("Exception while getting all employee types in instance", "Error");
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -2123,7 +2123,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while getting all employee types in instance", "Fail");
+			Reporter("Exception while getting all employee types in instance", "Error");
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -2194,7 +2194,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while changing Employee Type", "Fail");
+			Reporter("Exception while changing Employee Type", "Error");
 			e.printStackTrace();
 			return false;
 		}
@@ -2218,7 +2218,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while changing Employee type back to Original value", "Fail");
+			Reporter("Exception while changing Employee type back to Original value", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -2243,7 +2243,7 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			Reporter("Exception while changing Employee Type", "Fail");
+			Reporter("Exception while changing Employee Type", "Error");
 			e.printStackTrace();
 			return false;
 		}
@@ -2274,32 +2274,32 @@ public class LeavesActionClass extends TestBase {
 	 * @author shikhar
 	 * @return boolean
 	 */
-	public boolean verifyEffectiveDateLeaveBalanceForParticularDOJ(String DOJ) {
+	public boolean verifyEffectiveDateLeaveBalanceForParticularDOJ(String effectiveDate) {
 		try {
 			int flag = 0;
 			String result = "";
 			// String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
-			Reporter("Leave will be calculated for Effective Date which is: " + DOJ, "Info");
+			Reporter("Leave will be calculated for Effective Date which is: " + effectiveDate, "Info");
 			// LocalDate leaveCycleStartDateInDateFormat =
 			// LocalDate.parse(leaveCycleStartDate);
 			// LocalDate iterationDate = LocalDate.parse(DOJ);
-			// DateOfJoining = changeEmployeeDOJ(iterationDate);
-			double expectedBalance = calculateTenureBasedLeaveBalance(DOJ, objDateTimeHelper.getCurrentLocalDate(),
-					"After");
+			 DateOfJoining = changeEmployeeDOJ(LocalDate.parse("2017-01-01"));
+			double expectedBalance = calculateEffectiveDateLeaveBalance(DateOfJoining,
+					objDateTimeHelper.getCurrentLocalDate(), "After", effectiveDate);
 			double actualBalance = getEmployeesFrontEndLeaveBalance(Leave_Type);
 			if (expectedBalance != actualBalance) {
 				flag++;
-				Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
+				Reporter("Failed||" + "Effective Date '" + effectiveDate + "'||" + "Expected Leave Balance=" + expectedBalance
 						+ "||Actual Leave Balance=" + actualBalance, "Fail");
 				result = "Fail";
 			} else {
-				Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
+				Reporter("Passed||" + "Effective Date '" + effectiveDate + "'||" + "Expected Leave Balance=" + expectedBalance
 						+ "||Actual Leave Balance=" + actualBalance, "Pass");
 				result = "Pass";
 			}
 
 			if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
-				writeEffectiveDateResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+				writeEffectiveDateResultToExcel(effectiveDate, expectedBalance, actualBalance, result,
 						LocalDateTime.now().toString());
 			}
 
@@ -2308,7 +2308,7 @@ public class LeavesActionClass extends TestBase {
 			}
 			return true;
 		} catch (Exception e) {
-			Reporter("Exception while verifying leave balance for particular DOJ", "Fail");
+			Reporter("Exception while verifying leave balance for particular DOJ", "Error");
 			e.printStackTrace();
 			throw new RuntimeException();
 		}
@@ -2364,7 +2364,7 @@ public class LeavesActionClass extends TestBase {
 		} catch (
 
 		Exception e) {
-			Reporter("Exception while comparing leave balance", "Fail");
+			Reporter("Exception while comparing leave balance", "Error");
 			return false;
 		}
 	}

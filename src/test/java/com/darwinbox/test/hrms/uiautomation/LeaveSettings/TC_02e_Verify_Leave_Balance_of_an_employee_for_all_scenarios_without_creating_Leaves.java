@@ -41,7 +41,7 @@ private static final Logger log = Logger.getLogger(TC_02e_Verify_Leave_Balance_o
 
 @BeforeClass
 public void setup() throws Exception {
-	ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_without_Creation");
+	ExcelReader.setFilenameAndSheetName("Leave_Scenarios_Without_Creation.xlsx", "All_without_Creation");
 	WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
 	if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
 		ExcelWriter.copyExportFileToResultsDir();					
@@ -65,7 +65,7 @@ public void initializeObjects() {
 @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Leave_Settings")
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 
-	Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");				
+		Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");				
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");			
 		Assert.assertTrue(leavesAction.setEmployeeID("WIP002"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");

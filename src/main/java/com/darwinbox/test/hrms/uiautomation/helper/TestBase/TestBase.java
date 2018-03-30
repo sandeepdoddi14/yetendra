@@ -139,7 +139,7 @@ public class TestBase {
 			getresult(result);
 			extent.flush();
 		} catch (Exception e) {
-			Reporter("Exception in @AfterMethod: " + e, "Fail", log);
+			Reporter("Exception in @AfterMethod: " + e, "Error", log);
 		}
 	}
 
@@ -190,7 +190,7 @@ public class TestBase {
 			driver.manage().window().maximize();
 			// driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		} catch (Exception e) {
-			Reporter("Exception while initlization :" + e.getMessage(), "Fail");
+			Reporter("Exception while initlization :" + e.getMessage(), "Error");
 		}
 	}
 
@@ -391,6 +391,9 @@ public class TestBase {
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.ERROR, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, text);
 			log.info(text);
@@ -411,6 +414,9 @@ public class TestBase {
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.ERROR, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, text);
 			log.info(text);
@@ -430,6 +436,9 @@ public class TestBase {
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.ERROR, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);
 			log.info(text);
@@ -448,6 +457,9 @@ public class TestBase {
 			log.error(code);
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.ERROR, text);
 			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);
