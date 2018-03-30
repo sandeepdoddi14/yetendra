@@ -20,11 +20,12 @@ import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CommonSettingsPa
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CreateAndManageLeavePoliciesPage;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.LeavesSettingsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 
-public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios extends TestBase {
+public class TC_14_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios extends TestBase {
 
 	HomePage homepage;
 	LoginPage loginpage;
@@ -38,11 +39,15 @@ public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 	CommonActionClass commonAction;
 	private static int i = 1;
 	
-	private static final Logger log = Logger.getLogger(TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios.class);
+	private static final Logger log = Logger.getLogger(TC_14_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios.class);
 
 	@BeforeClass
 	public void setup() throws Exception {
 		ExcelReader.setFilenameAndSheetName("EffectiveDate.xlsx", "All_Scenarios_WithOut_PB");
+		WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
+		if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
+			ExcelWriter.copyExportFileToResultsDir();					
+		}
 	}
 
 	@BeforeTest
@@ -62,15 +67,16 @@ public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 
 	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
-		
+	try {	
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
 		Assert.assertTrue(leavesAction.setEmployeeID("WIP001"), "Employee ID is set successfully to test");		
 		
-		leavesAction.getAllEmployeeTypes();
+		leavesAction.getAllEmployeeTypesInInstance();
+		Assert.assertTrue(leavesAction.changeEmployeeType("Full Time"), "Click on Settings link");	
 		leavesAction.getEmployeeData();
-		Assert.assertTrue(leavesAction.changeEmployeeType(), "Click on Settings link");	
+		Assert.assertTrue(leavesAction.changeEmployeeType("Part Time"), "Click on Settings link");	
 		int tem = currentData;
 			i = 1;
 		while (i < dataCounter) {
@@ -84,10 +90,12 @@ public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 		}
 		currentData = tem;
 		Assert.assertTrue(leavesAction.setLeaveType1(), "Leave scenario is set successfully");		
-		Assert.assertTrue(leavesAction.changeEmployeeTypeBackToOriginal(), "Click on Settings link");
+		Assert.assertTrue(leavesAction.changeEmployeeType("Full Time"), "Click on Settings link");	
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");		
 		leavesAction.verifyEffectiveDateLeaveBalanceForParticularDOJ(LocalDate.now().toString());							
-		
+	}catch(Exception e) {
+		Reporter("Exception in TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios", "Fatal");
+	}
 	}
 	
 	public void wrapperMethod() {

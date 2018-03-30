@@ -19,10 +19,12 @@ import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CommonSettingsPa
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CreateAndManageLeavePoliciesPage;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.LeavesSettingsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
+import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
 
-public class TC_11_Create_Test_Data_For_Leaves_Effective_Date_Testing extends TestBase{
+public class TC_02e_Verify_Leave_Balance_of_an_employee_for_all_scenarios_without_creating_Leaves extends TestBase{
  
 HomePage homepage;
 LoginPage loginpage;
@@ -33,12 +35,17 @@ CreateAndManageLeavePoliciesPage createManageLeaves;
 RightMenuOptionsPage rightMenuOption;
 LeavesActionClass leavesAction;
 CommonActionClass commonAction;
+UtilityHelper objUtil;
 
-private static final Logger log = Logger.getLogger(TC_11_Create_Test_Data_For_Leaves_Effective_Date_Testing.class);
+private static final Logger log = Logger.getLogger(TC_02e_Verify_Leave_Balance_of_an_employee_for_all_scenarios_without_creating_Leaves.class);
 
 @BeforeClass
 public void setup() throws Exception {
-	ExcelReader.setFilenameAndSheetName("EffectiveDate.xlsx", "All_Scenarios_LTA");
+	ExcelReader.setFilenameAndSheetName("Leave_Scenarios.xlsx", "All_without_Creation");
+	WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
+	if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
+		ExcelWriter.copyExportFileToResultsDir();					
+	}
 }
 
 @BeforeMethod 
@@ -52,33 +59,18 @@ public void initializeObjects() {
 	rightMenuOption = PageFactory.initElements(driver, RightMenuOptionsPage.class);
 	leavesAction = PageFactory.initElements(driver, LeavesActionClass.class);
 	commonAction = PageFactory.initElements(driver, CommonActionClass.class);
+	objUtil = PageFactory.initElements(driver, UtilityHelper.class);
 }
 
 @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Leave_Settings")
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 
-		Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");				
+	Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");				
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");			
+		Assert.assertTrue(leavesAction.setEmployeeID("WIP002"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
-		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
-		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
-		Assert.assertTrue(commonSettings.clickLeaves(), "Click on Leaves link");		
-//		Assert.assertTrue(leavesAction.leaveTypeSequenceGenerator(), "Leave Type is presnt are deleted successfully");
-		Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
-		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(1), "Select Group Company");
-		Assert.assertTrue(createManageLeaves.insertDescription(data.get("Test_Description")), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.insertLeaveType(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.setLeaveProbationPeriod(), "Leaves type with mentioned scenarios is created");				
-		Assert.assertTrue(leavesAction.setLeaveCycle(), "Leaves type with mentioned scenarios is created");				
-		Assert.assertTrue(createManageLeaves.insertRestrictionDepartmentEmployeeTypeLocationElasticSearch("Full Time"), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.setCreditOnProRataBasis(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.setCreditOnAccrualBasis(), "Leaves type with mentioned scenarios is created");		
-//		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-		Assert.assertTrue(leavesAction.getLeaveTypeIdAndWriteToExcel("Leave_Type1_Repo"), "Leave Balance for whole leave cycle calculated successfully") ;
+		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForWholeLeaveCycleForFourEdgeDays(), "Leave Balance for whole leave cycle calculated successfully") ;
 
-}
+	}
 }

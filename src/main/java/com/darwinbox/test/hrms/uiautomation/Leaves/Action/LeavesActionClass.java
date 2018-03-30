@@ -49,7 +49,7 @@ public class LeavesActionClass extends TestBase {
 	ActionHelper objActionHelper;
 	BrowserHelper objBrowserHelper;
 	ExcelWriter objExcelWriter;
-	
+
 	public static final Logger log = Logger.getLogger(LeavesActionClass.class);
 
 	public LeavesActionClass(WebDriver driver) {
@@ -75,7 +75,7 @@ public class LeavesActionClass extends TestBase {
 	double ActualLeaveBalance;
 	Date leaveCycleFirstDay = null;
 	String DateOfJoining = "";
-	public static String Leave_Type;
+	public static String Leave_Type = "";
 	public static String Max_Leaves_Allowed_Per_Year;
 	public static double Leaves_Allowed_Per_Year;
 	public static String Leave_Cycle;
@@ -101,7 +101,7 @@ public class LeavesActionClass extends TestBase {
 	public static String CreditFromYear;
 	public static String CreditToYear;
 	public static String CreditNoOfLeaves;
-//	public static String WriteResultToExcel = "No";
+	// public static String WriteResultToExcel = "No";
 
 	/**
 	 * This method set Leave Scenario parameters from property file
@@ -139,7 +139,8 @@ public class LeavesActionClass extends TestBase {
 			CreditToYear = UtilityHelper.getProperty("leavesCalculation", "Credit.To.Year");
 			CreditNoOfLeaves = UtilityHelper.getProperty("leavesCalculation", "NO.OF.LEAVES");
 
-//			WriteResultToExcel = objUtil.getProperty("leavesCalculation", "Write.Result.to.excel");
+			// WriteResultToExcel = objUtil.getProperty("leavesCalculation",
+			// "Write.Result.to.excel");
 
 			displayLeaveScenarioToReport();
 			return true;
@@ -161,8 +162,7 @@ public class LeavesActionClass extends TestBase {
 			Leave_Probation_period_employee_probation_period = getData(
 					"Leave Probation Period according to Employee Probation Period");
 			Employee_probation_period = getData("Employee Probation Period");
-
-			Leave_Type = getData("Leave_Type");
+//			Leave_Type = getData("Leave_Type");			
 			Max_Leaves_Allowed_Per_Year = getData("Max_Leaves_Allowed_Per_Year");
 			Leaves_Allowed_Per_Year = Double.parseDouble(Max_Leaves_Allowed_Per_Year);
 			Leave_Cycle = getData("Leave Cycle");
@@ -181,7 +181,7 @@ public class LeavesActionClass extends TestBase {
 			CreditFromYear = getData("Credit From Year");
 			CreditToYear = getData("Credit To Year");
 			CreditNoOfLeaves = getData("Credit No of Leaves");
-			
+
 			displayLeaveScenarioToReport();
 			return true;
 		} catch (Exception e) {
@@ -279,7 +279,8 @@ public class LeavesActionClass extends TestBase {
 				}
 			}
 			ReporterForCodeBlock(LeaveScenario.toString(), "Info");
-//			writeInLeaveScenarioToExcel("Leave_Sce_Des", LeaveScenario.toString(), objDateTimeHelper.getCurrentLocalDateTime());
+			// writeInLeaveScenarioToExcel("Leave_Sce_Des", LeaveScenario.toString(),
+			// objDateTimeHelper.getCurrentLocalDateTime());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -300,6 +301,7 @@ public class LeavesActionClass extends TestBase {
 			Reporter("Exception while sending data to Excel", "Fail");
 		}
 	}
+
 	/**
 	 * This method deletes mentioned Leave Type if it is already present
 	 * 
@@ -925,8 +927,8 @@ public class LeavesActionClass extends TestBase {
 	 * @param result
 	 * @param dateTime
 	 */
-	public void writeLeavesResultToExcel(String DateOfJoining, double expectedBalance, double actualBalance, String result,
-			String dateTime) {
+	public void writeLeavesResultToExcel(String DateOfJoining, double expectedBalance, double actualBalance,
+			String result, String dateTime) {
 
 		String[] dataToWrite = new String[6];
 		dataToWrite[0] = LeaveScenario.toString();
@@ -938,6 +940,36 @@ public class LeavesActionClass extends TestBase {
 
 		try {
 			ExcelWriter.writeToExcel(TestBase.resultsDIR, "ExportExcel.xlsx", "Leave_Balance", dataToWrite);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			Reporter("Exception while sending data to Excel", "Fail");
+		}
+	}
+
+	/**
+	 * This method writes Leave calculation results to Excel
+	 * 
+	 * @param DateOfJoining
+	 * @param expectedBalance
+	 * @param actualBalance
+	 * @param result
+	 * @param dateTime
+	 */
+	public void writeEffectiveDateResultToExcel(String DateOfJoining, double expectedBalance, double actualBalance,
+			String result, String dateTime) {
+
+		String[] dataToWrite = new String[7];
+		dataToWrite[0] = LeaveScenario.toString();
+		dataToWrite[1] = Leave_Type;
+		dataToWrite[2] = DateOfJoining;
+		dataToWrite[3] = String.valueOf(expectedBalance);
+		dataToWrite[4] = String.valueOf(actualBalance);
+		dataToWrite[5] = result;
+		dataToWrite[6] = dateTime;
+
+		try {
+			ExcelWriter.writeToExcel(TestBase.resultsDIR, "ExportExcel.xlsx", "Effective Date", dataToWrite);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -991,12 +1023,10 @@ public class LeavesActionClass extends TestBase {
 	public boolean setEmployeeID(String employeeID) {
 		try {
 			EMPID = employeeID;
-			 Reporter("Employee is set to '" + EMPID + "' to calculate leave balance",
-			 "Pass");
+			Reporter("Employee is set to '" + EMPID + "' to calculate leave balance", "Pass");
 			return true;
 		} catch (Exception e) {
-			 Reporter("Exception while setting Employee id to calculate leave balance",
-			 "Fail");
+			Reporter("Exception while setting Employee id to calculate leave balance", "Fail");
 			return false;
 		}
 	}
@@ -1290,13 +1320,13 @@ public class LeavesActionClass extends TestBase {
 					LocalDate startDateForCalculation = leaveCycleStartDateInDateFormat
 							.minusYears(CreditToYearVarLong - 1);
 					LocalDate lastDateForCalculation = leaveCycleLastDateInDateFormat.minusYears(CreditFromYearVarLong);
-					
+
 					int anniversaryYear = anniversaryIterator + 1;
-					
+
 					Reporter("Leaves will be calculated for ~" + anniversaryYear + "~ anniversary", "Info");
 					Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
-							+ " hence leave balance will be verifed from '" + lastDateForCalculation
-							+ "' till '" + startDateForCalculation, "Info");
+							+ " hence leave balance will be verifed from '" + lastDateForCalculation + "' till '"
+							+ startDateForCalculation, "Info");
 
 					int i = 0;
 					LocalDate iterationDate = lastDateForCalculation;
@@ -1339,7 +1369,7 @@ public class LeavesActionClass extends TestBase {
 								result = "Pass";
 							}
 
-							if (WriteResultToExcel.equalsIgnoreCase("Yes")) {								
+							if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
 								writeLeavesResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
 										LocalDateTime.now().toString());
 							}
@@ -1582,28 +1612,6 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
-	// /**
-	// * This function return details required in tenure based leaves
-	// * @author shikhar
-	// */
-	// public void getTenureBasedLeavesDetails() {
-	//
-	// List<String> creditFromYearList = Arrays.asList(CreditFromYear.split(","));
-	// List<String> creditToYearList = Arrays.asList(CreditToYear.split(","));
-	// List<String> creditNoOfLeavesList =
-	// Arrays.asList(CreditNoOfLeaves.split(","));
-	//
-	// Iterator<String> creditFromYearListitr = creditFromYearList.iterator();
-	// Iterator<String> creditToYearListitr = creditToYearList.iterator();
-	// Iterator<String> creditNoOfLeavesListitr = creditNoOfLeavesList.iterator();
-	//
-	// while (creditFromYearListitr.hasNext() && creditToYearListitr.hasNext() &&
-	// creditNoOfLeavesListitr.hasNext()) {
-	// verifyEmployeeTenureBasedLeaveBalanceForWholeYear(creditFromYearListitr.next().toString(),
-	// creditToYearListitr.next().toString(),
-	// creditNoOfLeavesListitr.next().toString());
-	// }
-	// }
 
 	/**
 	 * This method calculate leave balance
@@ -1638,6 +1646,215 @@ public class LeavesActionClass extends TestBase {
 				} else if (Pro_rata.equalsIgnoreCase("Yes") && Calculate_from_joining_date.equalsIgnoreCase("No")
 						&& Calculate_after_probation_period.equalsIgnoreCase("Yes")) {
 					LeaveCalBeginningDate = Leave_Probation_End_Date;
+				} else if (Pro_rata.equalsIgnoreCase("No")) {
+					LeaveCalBeginningDate = DOJ;
+				}
+
+				if (Pro_rata.equalsIgnoreCase("Yes")) {
+
+					if (Accrual.equalsIgnoreCase("Yes")) {
+						leavesCalculationStartDate = LeaveCalBeginningDate;
+					}
+					if (Accrual.equalsIgnoreCase("No")) {
+						perMonthOrQuarterLeaves = perMonthLeaves;
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							MonthOrQuarterDifference = objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, LastDayOfCalculation);
+						} else if (beforeAfter.equalsIgnoreCase("After")) {
+							MonthOrQuarterDifference = objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, leaveCycleEndDate);
+						}
+
+						if (MonthOrQuarterDifference < 0) {
+							MonthOrQuarterDifference = -MonthOrQuarterDifference;
+						}
+						MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
+					}
+
+				} else if (Pro_rata.equalsIgnoreCase("No")) {
+
+					if (beforeAfter.equalsIgnoreCase("Before")) {
+						leavesCalculationStartDate = leaveCycleStartDate;
+					} else if (beforeAfter.equalsIgnoreCase("After")) {
+						leavesCalculationStartDate = LeaveCalBeginningDate;
+					}
+
+					if (Accrual.equalsIgnoreCase("No")) {
+						perMonthOrQuarterLeaves = perMonthLeaves;
+						// MonthOrQuarterDifference = 12;
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							MonthOrQuarterDifference = objDateTimeHelper.getMonthDifferenceBetweenTwoDates(
+									leavesCalculationStartDate, LastDayOfCalculation);
+						} else if (beforeAfter.equalsIgnoreCase("After")) {
+							MonthOrQuarterDifference = objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, leaveCycleEndDate);
+						}
+
+						if (MonthOrQuarterDifference < 0) {
+							MonthOrQuarterDifference = -MonthOrQuarterDifference;
+						}
+						MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
+					}
+				}
+
+				if (Pro_rata.equalsIgnoreCase("Yes")) {
+					if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
+							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
+							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
+								.equalsIgnoreCase("No")) {
+							midJoinigYesLeaves = 0;
+						}
+					} else if (Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
+							&& Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
+						midJoinigYesLeaves = 0;
+					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")
+							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("No")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
+							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 12);
+							// midJoinigYesLeaves = 0;
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
+								.equalsIgnoreCase("No")) {
+							midJoinigYesLeaves = 0;
+						}
+					} else if (Half_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")
+							&& Full_Month_Leaves_if_employee_joins_after_15th.equalsIgnoreCase("Yes")) {
+						if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate).equalsIgnoreCase("Yes")) {
+							midJoinigYesLeaves = (Leaves_Allowed_Per_Year / 24);
+						} else if (objDateTimeHelper.verifyDOJMidJoining(LeaveCalBeginningDate)
+								.equalsIgnoreCase("No")) {
+							midJoinigYesLeaves = 0;
+						}
+					}
+				}
+				if (Accrual.equalsIgnoreCase("Yes")) {
+					if (Monthly.equalsIgnoreCase("Yes") && Quarterly.equalsIgnoreCase("No")
+							&& Biannually.equalsIgnoreCase("No")) {
+						perMonthOrQuarterLeaves = (Leaves_Allowed_Per_Year / 12);
+						MonthOrQuarterDifference = objDateTimeHelper
+								.getMonthDifferenceBetweenTwoDates(leavesCalculationStartDate, LastDayOfCalculation);
+						leavesDiffFromFirstDayOfQuarter = 0;
+					} else if (Monthly.equalsIgnoreCase("No") && Quarterly.equalsIgnoreCase("Yes")
+							&& Biannually.equalsIgnoreCase("No")) {
+						perMonthOrQuarterLeaves = (Leaves_Allowed_Per_Year / 4);
+						MonthOrQuarterDifference = objDateTimeHelper
+								.getQuarterDiffBetweenTwoDates(leavesCalculationStartDate, LastDayOfCalculation);
+						leavesDiffFromFirstDayOfQuarter = ((perMonthLeaves)
+								* objDateTimeHelper.getMonthDiffFromFirstDayOfQuarter(leavesCalculationStartDate));
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							truncateLeaves = (perMonthLeaves
+									* objDateTimeHelper.getMonthDiffFromLastMonthOfQuarter(LastDayOfCalculation));
+						}
+					} else if (Monthly.equalsIgnoreCase("No") && Quarterly.equalsIgnoreCase("No")
+							&& Biannually.equalsIgnoreCase("Yes")) {
+
+						perMonthOrQuarterLeaves = perMonthLeaves;
+						String DOJBiannualHalf = checkBiannualHalfOfDate(LeaveCalBeginningDate);
+						String currentDateBiannualHalf = checkBiannualHalfOfDate(LastDayOfCalculation);
+
+						midYearEndDate = LocalDate.parse(leaveCycleEndDate).minusMonths(6).toString();
+						String biannualEndDate = "";
+
+						if (DOJBiannualHalf.equalsIgnoreCase("First")) {
+							biannualEndDate = midYearEndDate;
+						} else if (DOJBiannualHalf.equalsIgnoreCase("Second")) {
+							biannualEndDate = leaveCycleEndDate;
+						}
+						MonthOrQuarterDifference = objDateTimeHelper
+								.getMonthDifferenceBetweenTwoDates(leavesCalculationStartDate, biannualEndDate) + 1;
+
+						if (DOJBiannualHalf.equalsIgnoreCase("First")
+								&& currentDateBiannualHalf.equalsIgnoreCase("First")) {
+							biannualLeave = 0;
+						} else if (DOJBiannualHalf.equalsIgnoreCase("First")
+								&& currentDateBiannualHalf.equalsIgnoreCase("Second")) {
+							biannualLeave = Leaves_Allowed_Per_Year / 2;
+						} else if (DOJBiannualHalf.equalsIgnoreCase("Second")
+								&& currentDateBiannualHalf.equalsIgnoreCase("Second")) {
+							biannualLeave = 0;
+						} else {
+							Reporter("Exception while calculating Biannual Leaves", "Fail");
+							throw new RuntimeException();
+						}
+
+						if (beforeAfter.equalsIgnoreCase("Before")) {
+							truncateLeaves = perMonthLeaves * objDateTimeHelper
+									.getMonthDifferenceBetweenTwoDates(LastDayOfCalculation, biannualEndDate);
+						}
+
+					}
+
+					if (Begin_of_monthORQuarter.equalsIgnoreCase("Yes") && End_of_monthORQuarter.equalsIgnoreCase("No")
+							&& Biannually.equalsIgnoreCase("No")) {
+						MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
+					} else if (Begin_of_monthORQuarter.equalsIgnoreCase("No")
+							&& End_of_monthORQuarter.equalsIgnoreCase("Yes") && Biannually.equalsIgnoreCase("No")
+							&& beforeAfter.equalsIgnoreCase("Before")) {
+						if (Monthly.equalsIgnoreCase("Yes")) {
+							tempFlag = checkIfDayIsLastDayOfMonth(LastDayOfCalculationInDateFormat);
+						} else if (Quarterly.equalsIgnoreCase("Yes")) {
+							tempFlag = checkIfDayIsLastDayOfQuarter(LastDayOfCalculationInDateFormat);
+						} else {
+							tempFlag = false;
+						}
+						if (tempFlag == true) {
+							MonthOrQuarterDifference = MonthOrQuarterDifference + 1;
+						}
+					}
+				}
+
+				ExpectedLeaveBalance = (((perMonthOrQuarterLeaves) * (MonthOrQuarterDifference))
+						- (leavesDiffFromFirstDayOfQuarter) - (midJoinigYesLeaves) - (truncateLeaves) + biannualLeave);
+			}
+			double ExpectedLeaveBalanceRoundOff = Math.round(ExpectedLeaveBalance * 100.0) / 100.0;
+
+			if (ExpectedLeaveBalanceRoundOff < 0) {
+				ExpectedLeaveBalanceRoundOff = 0;
+			}
+
+			return ExpectedLeaveBalanceRoundOff;
+		} catch (Exception e) {
+			Reporter("Exception while calculating employess expected leave balance", "Fail");
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * This method calculate leave balance
+	 * 
+	 * @param DOJ
+	 * @param leaveType
+	 * @return double
+	 */
+	public double calculateEffectiveDateLeaveBalance(String DOJ, String LastDayOfCalculation, String beforeAfter,
+			String EffectiveDate) {
+		try {
+			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
+			String leaveCycleEndDate = getLastDayofLeaveCycle(Leave_Cycle);
+			double midJoinigYesLeaves = 0;
+			double perMonthLeaves = (Leaves_Allowed_Per_Year / 12);
+			double perMonthOrQuarterLeaves = 0;
+			double MonthOrQuarterDifference = 0;
+			double leavesDiffFromFirstDayOfQuarter = 0;
+			String leavesCalculationStartDate = "";
+			String midYearEndDate;
+			double biannualLeave = 0;
+			double truncateLeaves = 0;
+			LocalDate LastDayOfCalculationInDateFormat = LocalDate.parse(LastDayOfCalculation);
+			Boolean tempFlag = false;
+
+			if (checkDOJisUnderLeaveProbationPeriod(DOJ) == true) {
+				ExpectedLeaveBalance = 0;
+			} else if (checkDOJisUnderLeaveProbationPeriod(DOJ) == false) {
+				DOJ = EffectiveDate;
+				if (Pro_rata.equalsIgnoreCase("Yes") && Calculate_from_joining_date.equalsIgnoreCase("Yes")
+						&& Calculate_after_probation_period.equalsIgnoreCase("No")) {
+					LeaveCalBeginningDate = DOJ;
+				} else if (Pro_rata.equalsIgnoreCase("Yes") && Calculate_from_joining_date.equalsIgnoreCase("No")
+						&& Calculate_after_probation_period.equalsIgnoreCase("Yes")) {
+					LeaveCalBeginningDate = DOJ;// Leave_Probation_End_Date;
 				} else if (Pro_rata.equalsIgnoreCase("No")) {
 					LeaveCalBeginningDate = DOJ;
 				}
@@ -1882,7 +2099,31 @@ public class LeavesActionClass extends TestBase {
 			}
 
 		} catch (Exception e) {
-			// Reporter("Exception while getting all employee types in instance", "Fail");
+			Reporter("Exception while getting all employee types in instance", "Fail");
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static HashMap<String, String> EmployeeTypesHmap = new HashMap<String, String>();
+
+	public void getAllEmployeeTypesInInstance() {
+		try {
+			String text = "emailtemplate/GetAllEmployeeTypes";
+			String frontEndEmployeeType = objUtil.getHTMLTextFromAPI(driver, text);
+			System.out.println(frontEndEmployeeType);
+			String[] frontEndEmployeeTypeSplit = frontEndEmployeeType.split("\\r?\\n");
+			String employeeType;
+			String employeeTypeID;
+
+			for (String line : frontEndEmployeeTypeSplit) {
+				employeeType = line.substring(0, line.indexOf("<"));
+				employeeTypeID = line.substring(line.indexOf(">") + 1);
+				EmployeeTypesHmap.put(employeeType, employeeTypeID);
+			}
+
+		} catch (Exception e) {
+			Reporter("Exception while getting all employee types in instance", "Fail");
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
@@ -1900,13 +2141,14 @@ public class LeavesActionClass extends TestBase {
 		try {
 			String text = "emailtemplate/GetEmployeeData/id/" + EMPID;
 			String frontEndEmployeeDataDetails = objUtil.getHTMLTextFromAPI(driver, text);
-			// System.out.println(frontEndEmployeeDataDetails);
+			System.out.println(frontEndEmployeeDataDetails);
 			String[] frontEndEmployeeDataDetailsSplit = frontEndEmployeeDataDetails.split("\\r?\\n");
 
 			for (String line : frontEndEmployeeDataDetailsSplit) {
-				// System.out.println("line -->" + " : " + line);
-				String key = line.substring(0, line.indexOf("<") - 1);
+				String key = line.substring(0, line.indexOf("<"));
 				String value = line.substring(line.indexOf(">") + 1);
+				System.out.println("key----->" + key);
+				System.out.println("value--->" + value);
 				EmployeeDataHmap.put(key, value);
 			}
 
@@ -1953,6 +2195,7 @@ public class LeavesActionClass extends TestBase {
 
 		} catch (Exception e) {
 			Reporter("Exception while changing Employee Type", "Fail");
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -1981,15 +2224,46 @@ public class LeavesActionClass extends TestBase {
 		}
 	}
 
+	public boolean changeEmployeeType(String empType) {
+		try {
+			String anotherEmployeeTypeID = EmployeeTypesHmap.get(empType.trim());
+
+			String text = "emailtemplate/SetEmployeeData/id/" + EMPID + "/type/" + anotherEmployeeTypeID;
+			objUtil.callTheAPI(driver, text);
+
+			Reporter("Changed emaployees Employee Type from '" + EmployeeDataHmap.get(EmployeeDataEmployeeType)
+					+ "' to '" + empType, "Pass");
+			String currentURL = driver.getCurrentUrl();
+			String getEmployeeURL = ObjectRepo.reader.getApplication() + "emailtemplate/GetEmployeeData/id/" + EMPID;
+
+			if (currentURL.trim().equals(getEmployeeURL)) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} catch (Exception e) {
+			Reporter("Exception while changing Employee Type", "Fail");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean setLeaveType() {
+		Leave_Type = getData("Leave_Type");
+		Reporter("Leave Type is : '" + Leave_Type + "'", "Info");
+		return true;
+	}
+	
 	public boolean setLeaveType1() {
 		Leave_Type = getData("Leave Type1");
-		Reporter("Leave Type is : '"+ Leave_Type +"'","Info");
+		Reporter("Leave Type is : '" + Leave_Type + "'", "Info");
 		return true;
 	}
 
 	public boolean setLeaveType2() {
 		Leave_Type = getData("Leave Type2");
-		Reporter("Leave Type is : '"+ Leave_Type +"'","Info");
+		Reporter("Leave Type is : '" + Leave_Type + "'", "Info");
 		return true;
 	}
 
@@ -2003,21 +2277,32 @@ public class LeavesActionClass extends TestBase {
 	public boolean verifyEffectiveDateLeaveBalanceForParticularDOJ(String DOJ) {
 		try {
 			int flag = 0;
-			String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
-			Reporter("Leave will be calculated for Effective Date which is: "+ DOJ, "Info");
-			LocalDate iterationDate = LocalDate.parse(DOJ);
-			DateOfJoining = changeEmployeeDOJ(iterationDate);
-			double expectedBalance = calculateTenureBasedLeaveBalance(DateOfJoining,
-					objDateTimeHelper.getCurrentLocalDate(), "After");
+			String result = "";
+			// String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
+			Reporter("Leave will be calculated for Effective Date which is: " + DOJ, "Info");
+			// LocalDate leaveCycleStartDateInDateFormat =
+			// LocalDate.parse(leaveCycleStartDate);
+			// LocalDate iterationDate = LocalDate.parse(DOJ);
+			// DateOfJoining = changeEmployeeDOJ(iterationDate);
+			double expectedBalance = calculateTenureBasedLeaveBalance(DOJ, objDateTimeHelper.getCurrentLocalDate(),
+					"After");
 			double actualBalance = getEmployeesFrontEndLeaveBalance(Leave_Type);
 			if (expectedBalance != actualBalance) {
 				flag++;
 				Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
 						+ "||Actual Leave Balance=" + actualBalance, "Fail");
+				result = "Fail";
 			} else {
 				Reporter("Passed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance
 						+ "||Actual Leave Balance=" + actualBalance, "Pass");
+				result = "Pass";
 			}
+
+			if (WriteResultToExcel.equalsIgnoreCase("Yes")) {
+				writeEffectiveDateResultToExcel(DateOfJoining, expectedBalance, actualBalance, result,
+						LocalDateTime.now().toString());
+			}
+
 			if (flag > 0) {
 				return false;
 			}
@@ -2034,7 +2319,7 @@ public class LeavesActionClass extends TestBase {
 	 * 
 	 * @return boolean
 	 */
-	public boolean verifyEffectiveDateLeaveBalanceForWholeLeaveCycle(String LeaveType) {
+	public boolean verifyEffectiveDateLeaveBalanceForWholeLeaveCycle(String effectiveDate) {
 		try {
 			String result = "";
 			int flag = 0;
@@ -2042,14 +2327,16 @@ public class LeavesActionClass extends TestBase {
 			Reporter("Leave Cycle defined is '" + Leave_Cycle + "',"
 					+ " hence leave balance will be verifed from leave cycle start date '" + leaveCycleStartDate
 					+ "' till current date", "Info");
+			Reporter("Leave will be calculated for Effective Date which is: " + effectiveDate, "Info");
+			
 			LocalDate leaveCycleStartDateInDateFormat = LocalDate.parse(leaveCycleStartDate);
 			int i = 1;
 			LocalDate iterationDate = LocalDate.now();
 			while (iterationDate.isAfter(leaveCycleStartDateInDateFormat)) {
 				iterationDate = LocalDate.now().minusDays(i);
 				DateOfJoining = changeEmployeeDOJ(iterationDate);
-
-				double expectedBalance = calculateLeaveBalance(DateOfJoining);
+				double expectedBalance = calculateEffectiveDateLeaveBalance(DateOfJoining,
+						objDateTimeHelper.getCurrentLocalDate(), "After", effectiveDate);
 				double actualBalance = getEmployeesFrontEndLeaveBalance(Leave_Type);
 				if (expectedBalance != actualBalance) {
 					Reporter("Failed||" + "DOJ '" + DateOfJoining + "'||" + "Expected Leave Balance=" + expectedBalance

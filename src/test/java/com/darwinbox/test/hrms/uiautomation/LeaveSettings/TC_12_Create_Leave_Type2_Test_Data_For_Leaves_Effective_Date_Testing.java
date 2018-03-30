@@ -57,6 +57,7 @@ public void initializeObjects() {
 @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class ,groups = "Leave_Settings")
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 
+		Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");				
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");			
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");

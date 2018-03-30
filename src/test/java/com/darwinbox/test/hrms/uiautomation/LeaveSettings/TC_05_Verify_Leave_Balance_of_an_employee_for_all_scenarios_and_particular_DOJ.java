@@ -66,6 +66,7 @@ public class TC_05_Verify_Leave_Balance_of_an_employee_for_all_scenarios_and_par
 	@Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
+		Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");				
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");		
 		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");

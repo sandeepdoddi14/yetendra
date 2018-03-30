@@ -66,7 +66,7 @@ public void initializeObjects() {
 public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");			
-		Assert.assertTrue(leavesAction.setEmployeeID(objUtil.getProperty("config","Employee.id")), "Employee ID is set successfully to test");
+		Assert.assertTrue(leavesAction.setEmployeeID(UtilityHelper.getProperty("config","Employee.id")), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(),"User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
