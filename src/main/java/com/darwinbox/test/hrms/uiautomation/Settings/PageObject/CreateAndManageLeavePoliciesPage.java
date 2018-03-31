@@ -732,8 +732,10 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * @param value
 	 * @return boolean
 	 */
-	public boolean selectCreditOnTenureBasisFromYearFromDropdown(String value) {
-		return objDropDownHelper.selectUsingVisibleValue(creditOnTenureBasisFromYearDropdown, value, "From Year");
+	public boolean selectCreditOnTenureBasisFromYearFromDropdown(String value, int additionNo) {
+		String creditOnTenureBasisFromYearDropdownString = "//*[@name='LeavePolicyTenure[leaves_per_year][" + additionNo + "][from_year]']";
+		WebElement creditOnTenureBasisFromYearDropdownWebElement = driver.findElement(By.xpath(creditOnTenureBasisFromYearDropdownString));
+		return objDropDownHelper.selectUsingVisibleValue(creditOnTenureBasisFromYearDropdownWebElement, value, "From Year");
 	}
 
 	/**
@@ -742,9 +744,12 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * @param value
 	 * @return boolean
 	 */
-	public boolean selectCreditOnTenureBasisToYearFromDropdown(String value) {
-		objWait.waitElementToBeClickable(creditOnTenureBasisToYearDropdown);
-		return objDropDownHelper.selectUsingVisibleValue(creditOnTenureBasisToYearDropdown, value, "To Year");
+	public boolean selectCreditOnTenureBasisToYearFromDropdown(String value, int additionNo) {
+		String creditOnTenureBasisToYearDropdownString = "//*[@name='LeavePolicyTenure[leaves_per_year][" + additionNo + "][to_year]']";
+		WebElement creditOnTenureBasisToYearDropdownWebElement = driver.findElement(By.xpath(creditOnTenureBasisToYearDropdownString));
+
+		objWait.waitElementToBeClickable(creditOnTenureBasisToYearDropdownWebElement);
+		return objDropDownHelper.selectUsingVisibleValue(creditOnTenureBasisToYearDropdownWebElement, value, "To Year");
 	}
 
 	/**
@@ -753,8 +758,10 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 	 * @param text
 	 * @return
 	 */
-	public boolean insertCreditOnTenureBasisNumberOfLeavesTextBox(String value) {
-		return objGenHelper.setElementText(creditOnTenureBasisNoOfLeavesYearTextBox, "Number of Leaves", value);
+	public boolean insertCreditOnTenureBasisNumberOfLeavesTextBox(String value, int additionNo) {
+		String creditOnTenureBasisNoOfLeavesYearTextBoxString = "//*[@name='LeavePolicyTenure[leaves_per_year][" + additionNo + "][leaves]']";
+		WebElement creditOnTenureBasisNoOfLeavesYearTextBoxWebElement = driver.findElement(By.xpath(creditOnTenureBasisNoOfLeavesYearTextBoxString));
+		return objGenHelper.setElementText(creditOnTenureBasisNoOfLeavesYearTextBoxWebElement, "Number of Leaves", value);
 	}
 
 	/**

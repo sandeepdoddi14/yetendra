@@ -415,7 +415,7 @@ public class TestBase {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
 		}else if (status.equalsIgnoreCase("Error")) {
-			xtReportLog.log(Status.ERROR, text);
+			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, text);
@@ -437,7 +437,7 @@ public class TestBase {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
 		}else if (status.equalsIgnoreCase("Error")) {
-			xtReportLog.log(Status.ERROR, text);
+			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);
@@ -459,7 +459,7 @@ public class TestBase {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
 		}else if (status.equalsIgnoreCase("Error")) {
-			xtReportLog.log(Status.ERROR, text);
+			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);

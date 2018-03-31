@@ -67,7 +67,6 @@ public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) t
 //		Assert.assertTrue(leavesAction.leaveTypeSequenceGenerator(), "Leave Type is presnt are deleted successfully");
 		Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
 		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(1), "Select Group Company");
-		Assert.assertTrue(createManageLeaves.insertDescription(data.get("Test_Description")), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertLeaveType(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		

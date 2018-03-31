@@ -671,19 +671,21 @@ public class LeavesActionClass extends TestBase {
 				createManageLeaves.clickCreditOnTenureBasisAccordion();
 				createManageLeaves.clickCreditOnTenureBasisYesRadioButton();
 
+				int i = 0;
 				int flag = 1;
 				while (flag == 1) {
 					String CreditFromYearVar = creditFromYearListitr.next().toString();
 					String CreditToYearVar = creditToYearListitr.next().toString();
 					String CreditNoOfLeavesVar = creditNoOfLeavesListitr.next().toString();
 
-					createManageLeaves.selectCreditOnTenureBasisFromYearFromDropdown(CreditFromYearVar);
-					createManageLeaves.selectCreditOnTenureBasisToYearFromDropdown(CreditToYearVar);
-					createManageLeaves.insertCreditOnTenureBasisNumberOfLeavesTextBox(CreditNoOfLeavesVar);
+					createManageLeaves.selectCreditOnTenureBasisFromYearFromDropdown(CreditFromYearVar, i);
+					createManageLeaves.selectCreditOnTenureBasisToYearFromDropdown(CreditToYearVar, i);
+					createManageLeaves.insertCreditOnTenureBasisNumberOfLeavesTextBox(CreditNoOfLeavesVar, i);
 
 					if (creditFromYearListitr.hasNext() && creditToYearListitr.hasNext()
 							&& creditNoOfLeavesListitr.hasNext()) {
 						createManageLeaves.clickCreditOnTenureBasisAddNewIcon();
+						i++;
 					} else {
 						flag = 0;
 					}

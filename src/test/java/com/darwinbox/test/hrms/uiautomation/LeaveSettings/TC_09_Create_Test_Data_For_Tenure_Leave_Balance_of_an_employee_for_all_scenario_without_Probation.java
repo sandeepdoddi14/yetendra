@@ -41,11 +41,7 @@ public class TC_09_Create_Test_Data_For_Tenure_Leave_Balance_of_an_employee_for_
 
 	@BeforeClass
 	public void setup() throws Exception {
-		ExcelReader.setFilenameAndSheetName("Tenure_Leave_Scenarios.xlsx", "All_Without_Probation");
-		WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
-		if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
-			ExcelWriter.copyExportFileToResultsDir();					
-		}
+		ExcelReader.setFilenameAndSheetName("Leave_Scenarios_Without_Creation.xlsx", "Tenure_without_Creation");
 	}
 
 	@BeforeMethod
@@ -73,11 +69,11 @@ public class TC_09_Create_Test_Data_For_Tenure_Leave_Balance_of_an_employee_for_
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
 		Assert.assertTrue(commonSettings.clickLeaves(), "Click on Leaves link");		
 		Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
-		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(1), "Select Group Company");
+		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown("Tenure Balance DO NOT TOUCH"), "Select Group Company");
 		Assert.assertTrue(createManageLeaves.insertDescription(data.get("Test_Description")), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertLeaveType(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
+//		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.setLeaveProbationPeriod(), "Leaves type with mentioned scenarios is created");				
 		Assert.assertTrue(leavesAction.setLeaveCycle(), "Leaves type with mentioned scenarios is created");				
 		Assert.assertTrue(createManageLeaves.insertRestrictionDepartmentEmployeeTypeLocationElasticSearch("Part Time"), "Leaves type with mentioned scenarios is created");		
@@ -85,6 +81,6 @@ public class TC_09_Create_Test_Data_For_Tenure_Leave_Balance_of_an_employee_for_
 		Assert.assertTrue(leavesAction.setCreditOnAccrualBasis(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.setCreditOnTenureBasisLeaveScenario(), "Leaves type with mentioned scenarios is created");						
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-		Assert.assertTrue(leavesAction.getLeaveTypeIdAndWriteToExcel("Leave_Type2_Repo"), "Leave Balance for whole leave cycle calculated successfully") ;
+		Assert.assertTrue(leavesAction.getLeaveTypeIdAndWriteToExcel("Tenure_Leaves"), "Leave Balance for whole leave cycle calculated successfully") ;
 	}
 }
