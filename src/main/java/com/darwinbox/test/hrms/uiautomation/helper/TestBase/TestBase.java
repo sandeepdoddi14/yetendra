@@ -391,7 +391,7 @@ public class TestBase {
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
-		}else if (status.equalsIgnoreCase("Fatal")) {
+		}else if (status.equalsIgnoreCase("Error")) {
 			xtReportLog.log(Status.ERROR, text);
 			log.fatal(text);
 		} else {
@@ -414,7 +414,7 @@ public class TestBase {
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
-		}else if (status.equalsIgnoreCase("Fatal")) {
+		}else if (status.equalsIgnoreCase("Error")) {
 			xtReportLog.log(Status.ERROR, text);
 			log.fatal(text);
 		} else {
@@ -436,7 +436,7 @@ public class TestBase {
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
-		}else if (status.equalsIgnoreCase("Fatal")) {
+		}else if (status.equalsIgnoreCase("Error")) {
 			xtReportLog.log(Status.ERROR, text);
 			log.fatal(text);
 		} else {
@@ -458,7 +458,7 @@ public class TestBase {
 		}else if (status.equalsIgnoreCase("Fatal")) {
 			xtReportLog.log(Status.FATAL, text);
 			log.fatal(text);
-		}else if (status.equalsIgnoreCase("Fatal")) {
+		}else if (status.equalsIgnoreCase("Error")) {
 			xtReportLog.log(Status.ERROR, text);
 			log.fatal(text);
 		} else {
