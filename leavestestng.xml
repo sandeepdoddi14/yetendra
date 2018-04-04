@@ -3,23 +3,23 @@
 <suite name="Suite">
   <test name="Test">
     <classes>
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02e_Verify_Leave_Balance_of_an_employee_for_all_scenarios_without_creating_Leaves"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios_and_particular_DOJ"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02a_Verify_Leave_Balance_of_an_employee_for_all_scenarios"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_05_Verify_Leave_Balance_of_an_employee_for_all_scenarios_and_particular_DOJ"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_07_Verify_Tenure_Leave_Balance_of_an_employee_for_a_particular_scenario"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_14_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_08_Verify_Tenure_Leave_Balance_of_an_employee_for_a_particular_scenario_and_particular_DOJ_NotReady"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02b_Verify_Leave_Balance_of_an_employee_for_all_scenarios_without_probation"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_12_Create_Leave_Type2_Test_Data_For_Leaves_Effective_Date_Testing"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_06a_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenarios"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios_without_changing_DOJ"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02c_Verify_Leave_Balance_of_an_employee_for_all_scenarios_with_custom_months_probation"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_06b_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenario_without_Probation"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_11_Create_Test_Data_For_Leaves_Effective_Date_Testing"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_09_Create_Test_Data_For_Tenure_Leave_Balance_of_an_employee_for_all_scenario_without_Probation"/> -->
-<!--       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02d_Verify_Leave_Balance_of_an_employee_for_all_scenarios_with_employee_probation"/> -->
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02e_Verify_Leave_Balance_of_an_employee_for_all_scenarios_without_creating_Leaves"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios_and_particular_DOJ"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02a_Verify_Leave_Balance_of_an_employee_for_all_scenarios"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_05_Verify_Leave_Balance_of_an_employee_for_all_scenarios_and_particular_DOJ"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_07_Verify_Tenure_Leave_Balance_of_an_employee_for_a_particular_scenario"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_14_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_08_Verify_Tenure_Leave_Balance_of_an_employee_for_a_particular_scenario_and_particular_DOJ_NotReady"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02b_Verify_Leave_Balance_of_an_employee_for_all_scenarios_without_probation"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_12_Create_Leave_Type2_Test_Data_For_Leaves_Effective_Date_Testing"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_03_Verify_Leave_Balance_of_an_employee_for_a_particular_scenarios"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_06a_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenarios"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_scenarios_without_changing_DOJ"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02c_Verify_Leave_Balance_of_an_employee_for_all_scenarios_with_custom_months_probation"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_06b_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenario_without_Probation"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_11_Create_Test_Data_For_Leaves_Effective_Date_Testing"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_09_Create_Test_Data_For_Tenure_Leave_Balance_of_an_employee_for_all_scenario_without_Probation"/>
+      <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_02d_Verify_Leave_Balance_of_an_employee_for_all_scenarios_with_employee_probation"/>
       <class name="com.darwinbox.test.hrms.uiautomation.LeaveSettings.TC_06c_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenario_without_Creation"/>
     </classes>
   </test> <!-- Test -->
