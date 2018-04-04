@@ -73,7 +73,6 @@ public class TC_09_Create_Test_Data_For_Tenure_Leave_Balance_of_an_employee_for_
 		Assert.assertTrue(createManageLeaves.insertDescription(data.get("Test_Description")), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertLeaveType(), "Leaves type with mentioned scenarios is created");		
-//		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.setLeaveProbationPeriod(), "Leaves type with mentioned scenarios is created");				
 		Assert.assertTrue(leavesAction.setLeaveCycle(), "Leaves type with mentioned scenarios is created");				
 		Assert.assertTrue(createManageLeaves.insertRestrictionDepartmentEmployeeTypeLocationElasticSearch("Part Time"), "Leaves type with mentioned scenarios is created");		

@@ -70,13 +70,11 @@ public void Verify_Admin_is_able_to_create_New_Shifts(Map<String,String> data) t
 		Assert.assertTrue(createManageLeaves.insertDescription(data.get("Test_Description")), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.insertLeaveType(), "Leaves type with mentioned scenarios is created");		
-		Assert.assertTrue(leavesAction.insertMaxLeaveAllowedPerYear(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.setLeaveProbationPeriod(), "Leaves type with mentioned scenarios is created");				
 		Assert.assertTrue(leavesAction.setLeaveCycle(), "Leaves type with mentioned scenarios is created");				
 		Assert.assertTrue(createManageLeaves.insertRestrictionDepartmentEmployeeTypeLocationElasticSearch("Full Time"), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.setCreditOnProRataBasis(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(leavesAction.setCreditOnAccrualBasis(), "Leaves type with mentioned scenarios is created");		
-//		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
 		Assert.assertTrue(leavesAction.getLeaveTypeIdAndWriteToExcel("Leave_Type1_Repo"), "Leave Balance for whole leave cycle calculated successfully") ;
 

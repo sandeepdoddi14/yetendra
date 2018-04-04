@@ -42,10 +42,10 @@ public class TC_06b_Verify_Tenure_Leave_Balance_of_an_employee_for_all_scenario_
 	@BeforeClass
 	public void setup() throws Exception {
 		ExcelReader.setFilenameAndSheetName("Tenure_Leave_Scenarios.xlsx", "All_Without_Probation");
-//		WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
-//		if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
-//			ExcelWriter.copyExportFileToResultsDir();					
-//		}
+		WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
+		if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
+			ExcelWriter.copyExportFileToResultsDir();					
+		}
 	}
 
 	@BeforeMethod

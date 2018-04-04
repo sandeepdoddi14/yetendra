@@ -71,7 +71,7 @@ public class TC_13_Verify_Effective_Date_Leave_Balance_of_an_employee_for_all_sc
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
-		Assert.assertTrue(leavesAction.setEmployeeID("WIP001"), "Employee ID is set successfully to test");		
+		Assert.assertTrue(leavesAction.setEmployeeID(UtilityHelper.getProperty("config","Employee.id")), "Employee ID is set successfully to test");		
 		
 		leavesAction.getAllEmployeeTypesInInstance();
 		Assert.assertTrue(leavesAction.changeEmployeeType("Full Time"), "Click on Settings link");	
