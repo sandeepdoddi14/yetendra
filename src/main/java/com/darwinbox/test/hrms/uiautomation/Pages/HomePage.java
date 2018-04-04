@@ -106,7 +106,7 @@ public class HomePage extends TestBase{
 	 * s This method used to click UserProfileIcon
 	 */
 	public boolean clickUserProfileIconAdmin() {
-		objWait.waitForElementDisapear(mainSideBar, 10);
+//		objWait.waitForElementDisapear(mainSideBar, 10);
 		WebElement ele = objWait.waitForElement(2000, userProfileIconAdmin);
 		return objGenHelper.elementClick(ele, "User Profile icon");
 }

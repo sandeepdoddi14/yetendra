@@ -8,6 +8,7 @@ import com.darwinbox.test.hrms.uiautomation.Pages.HomePage;
 import com.darwinbox.test.hrms.uiautomation.Pages.RightMenuOptionsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
+import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
 import com.darwinbox.test.hrms.uiautomation.helper.Action.ActionHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.Alert.AlertHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.Browser.BrowserHelper;
@@ -74,4 +75,26 @@ public class CommonActionClass extends TestBase {
 			return false;
 		}
 	}
+	
+	public boolean changeApplicationAccessMode(String text) {
+		try {
+			String applicationURL = ObjectRepo.reader.getApplication();
+			String URL = applicationURL + "dashboard/changeAccess";
+			driver.navigate().to(URL);
+			objWait.waitForPageToLoad();
+			driver.navigate().to(applicationURL);
+			objWait.waitForPageToLoad();
+			Reporter("Access is changed to '"+ text+ "' mode", "Pass");
+			return true;
+		}catch(Exception e) {
+			e.printStackTrace();
+			Reporter("Exception while changing access to '"+ text + "' mode", "Fail");
+			return false;
+		}
+	}
 }
+
+
+
+
+

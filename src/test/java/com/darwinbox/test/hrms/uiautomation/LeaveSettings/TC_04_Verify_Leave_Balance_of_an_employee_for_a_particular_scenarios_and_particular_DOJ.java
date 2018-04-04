@@ -19,6 +19,7 @@ import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CommonSettingsPa
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.CreateAndManageLeavePoliciesPage;
 import com.darwinbox.test.hrms.uiautomation.Settings.PageObject.LeavesSettingsPage;
 import com.darwinbox.test.hrms.uiautomation.Utility.ExcelReader;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.helper.TestBase.TestBase;
 import com.darwinbox.test.hrms.uiautomation.helper.Wait.WaitHelper;
@@ -41,7 +42,10 @@ public class TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 	@BeforeClass
 	public void setup() throws Exception {
 		ExcelReader.setFilenameAndSheetName("Leave_Settings_TestData.xlsx", "TC_03");
-		
+		WriteResultToExcel = UtilityHelper.getProperty("config", "Write.Result.to.excel");
+		if(WriteResultToExcel.equalsIgnoreCase("Yes")) {
+			ExcelWriter.copyExportFileToResultsDir();					
+		}
 	}
 
 	@BeforeMethod
@@ -62,9 +66,11 @@ public class TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 	public void Verify_Leave_Balance_is_calculated_correctly(Map<String,String> data) throws Exception {
 
 		Assert.assertTrue(leavesAction.setLeaveScenarioFromPropertyFile(), "Leave scenario is set successfully");		
-		Assert.assertTrue(leavesAction.setEmployeeID("EMP002"), "Employee ID is set successfully to test");
+		Assert.assertTrue(leavesAction.setEmployeeID(UtilityHelper.getProperty("config","Employee.id")), "Employee ID is set successfully to test");
 		Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
-		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
+		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
+//		Assert.assertTrue(commonAction.switchToAdminMode(), "Switched To admin Mode successfully");
+		Assert.assertTrue(homepage.clickUserProfileIconAdmin(), "Click on Settings link");		
 		Assert.assertTrue(rightMenuOption.clickSidebarSettings(), "Click on Settings link");
 		Assert.assertTrue(commonSettings.clickLeaves(), "Click on Leaves link");		
 		Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
@@ -72,7 +78,7 @@ public class TC_04_Verify_Leave_Balance_of_an_employee_for_a_particular_scenario
 		Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(0), "Select Group Company");				
 		Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");		
 		Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForParticularDOJ("2017-10-01"), "Verified Employee Leave Balance successfully");
+		Assert.assertTrue(leavesAction.verifyEmployeeLeaveBalanceForParticularDOJ("2018-02-28"), "Verified Employee Leave Balance successfully");
 				
 	}
 }

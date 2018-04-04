@@ -11,6 +11,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Properties;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
+
 /**
  * @author balaji
  * @Creation_Date:  1 Dec 2017 
@@ -33,6 +38,8 @@ public class UtilityHelper {
 		} 
 	}
 	
+	
+	
 	public static String getCurrentDateTime() {
 
 		DateFormat dateFormat = new SimpleDateFormat("_yyyy-MM-dd_HH-mm-ss");
@@ -51,7 +58,7 @@ public class UtilityHelper {
 	 * @param key
 	 * @return String
 	 */
-	public String getProperty(String filename, String key) {
+	public static String getProperty(String filename, String key) {
 		Properties prop = new Properties();
 		try {
 			prop.load(ResourceHelper.getResourcePathInputStream("/src/main/resources/configfile/"+ filename +".properties"));
@@ -90,6 +97,44 @@ public class UtilityHelper {
 		String numRoundUpString = roundUp.format(num);
 		double doubleNum = Double.parseDouble(numRoundUpString);
 		return doubleNum;
+	}
+
+	/**
+	 * This method provides front end value of API you called
+	 * @param text
+	 * @return
+	 */
+	public String getHTMLTextFromAPI(WebDriver driver, String text) {
+		try {
+		String applicationURL = ObjectRepo.reader.getApplication();
+		String URL = applicationURL + text;
+		driver.navigate().to(URL);
+		String frontEndValue = driver.findElement(By.xpath("//body")).getText();
+		if (frontEndValue.isEmpty()) {
+			throw new RuntimeException("Front End value you are get is empty PLEASE CHECK");
+		}else {
+			return frontEndValue;
+		}	
+		}catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * This method calls the API
+	 * @param text
+	 * @return
+	 */
+	public boolean callTheAPI(WebDriver driver, String text) {
+		try {
+		String applicationURL = ObjectRepo.reader.getApplication();
+		String URL = applicationURL + text;
+		driver.navigate().to(URL);
+		return true;
+		}catch(Exception e){
+			throw new RuntimeException("Exception while calling the API" );
+		}
 	}
 
 }

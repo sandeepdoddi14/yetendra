@@ -4,14 +4,10 @@ package com.darwinbox.test.hrms.uiautomation.helper.TestBase;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
@@ -21,13 +17,12 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.ITestResult;
 import org.testng.Reporter;
 import org.testng.annotations.*;
 
 import com.darwinbox.test.hrms.uiautomation.Utility.DateTimeHelper;
+import com.darwinbox.test.hrms.uiautomation.Utility.ExcelWriter;
 import com.darwinbox.test.hrms.uiautomation.Utility.ResourceHelper;
 import com.darwinbox.test.hrms.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.test.hrms.uiautomation.configreader.ObjectRepo;
@@ -61,11 +56,12 @@ public class TestBase {
 	public static ExtentHtmlReporter htmlReporter = null;
 	public static List<Map<String, String>> dataItem = null;
 	public static int dataCounter = 0;
-	private static int currentData = 0;
+	public static int currentData = 0;
 	public static Map<String, String> data;
 	ExtentTest parentLog = null;
 	public static Markup strcode = MarkupHelper.createCodeBlock("text");
-	
+	public static String WriteResultToExcel = "No";
+
 	public static String resultsDIR = "Test_Execution_Results/Results" + UtilityHelper.getCurrentDateTime();
 
 	public static void setDataItem(List<Map<String, String>> dataItem) {
@@ -73,7 +69,6 @@ public class TestBase {
 		dataCounter = dataItem.size();
 		currentData = 0;
 	}
-
 
 	@BeforeSuite
 	public void startReport() {
@@ -87,7 +82,7 @@ public class TestBase {
 				+ File.separator + "Response_Report" + UtilityHelper.getCurrentDateTime() + ".html");
 		htmlReporter.setAppendExisting(true);
 		htmlReporter.config().setChartVisibilityOnOpen(true);
-		
+
 		htmlReporter.loadXMLConfig(
 				new File(ResourceHelper.getBaseResourcePath() + "/src/main/resources/configfile/extent-config.xml"));
 
@@ -110,8 +105,8 @@ public class TestBase {
 			e.printStackTrace();
 		}
 	}
-
 	
+
 	@BeforeMethod()
 	public void beforeMethod(Method method) {
 		try {
@@ -144,7 +139,7 @@ public class TestBase {
 			getresult(result);
 			extent.flush();
 		} catch (Exception e) {
-			Reporter("Exception in @AfterMethod: " + e, "Fail", log);
+			Reporter("Exception in @AfterMethod: " + e, "Error", log);
 		}
 	}
 
@@ -179,9 +174,9 @@ public class TestBase {
 	@AfterSuite
 	public void closeBrowser() {
 		try {
-		driver.close();
-		driver.quit();
-		}catch(NoSuchSessionException e) {
+			driver.close();
+			driver.quit();
+		} catch (NoSuchSessionException e) {
 			log.info("browser closed");
 		}
 	}
@@ -193,12 +188,15 @@ public class TestBase {
 			setUpDriver(ObjectRepo.reader.getBrowser());
 			log.info(ObjectRepo.reader.getBrowser());
 			driver.manage().window().maximize();
-			driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			// driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		} catch (Exception e) {
-			Reporter("Exception while initlization :" + e.getMessage(), "Fail");
+			Reporter("Exception while initlization :" + e.getMessage(), "Error");
 		}
 	}
 
+	public void setCurrentData() {
+		currentData=0;
+	}
 	public void setUpDriver(BrowserType bType) {
 
 		try {
@@ -266,12 +264,11 @@ public class TestBase {
 				String scrPath = tempPath + "-" + "FAIL" + "-" + DateTimeHelper.getCurrentDateTime() + ".png";
 				screenShotName = new File(scrPath);
 				FileUtils.copyFile(scrFile, screenShotName);
-
 				String filePath = screenShotName.toString();
 				xtReportLog.fail("Failure Screenshot",
 						MediaEntityBuilder.createScreenCaptureFromPath(filePath).build());
 				log.error(result.getName() + " test is failed" + result.getThrowable());
-				xtReportLog.fail(result.getThrowable());
+				// xtReportLog.fail(result.getThrowable());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -380,6 +377,7 @@ public class TestBase {
 
 	/**
 	 * This method is used for reporting in extent report
+	 * 
 	 * @param text
 	 * @param status
 	 */
@@ -390,6 +388,12 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Fail")) {
 			xtReportLog.log(Status.FAIL, text);
 			log.error(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Error")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, text);
 			log.info(text);
@@ -407,6 +411,12 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Skip")) {
 			xtReportLog.log(Status.SKIP, text);
 			log.debug(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Error")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, text);
 			log.info(text);
@@ -414,9 +424,8 @@ public class TestBase {
 		Reporter.log(text);
 	}
 
-	
 	public void ReporterForCodeBlock(String text, String status) {
-		
+
 		Markup code = MarkupHelper.createCodeBlock(text);
 		if (status.equalsIgnoreCase("Pass")) {
 			xtReportLog.log(Status.PASS, code);
@@ -424,6 +433,12 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Fail")) {
 			xtReportLog.log(Status.FAIL, code);
 			log.error(text);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Error")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);
 			log.info(text);
@@ -431,7 +446,6 @@ public class TestBase {
 		Reporter.log(text);
 	}
 
-	
 	public void ReporterForLabel(String text, String status) {
 
 		Markup code = MarkupHelper.createLabel(text, ExtentColor.BLUE);
@@ -441,15 +455,22 @@ public class TestBase {
 		} else if (status.equalsIgnoreCase("Fail")) {
 			xtReportLog.log(Status.FAIL, code);
 			log.error(code);
+		}else if (status.equalsIgnoreCase("Fatal")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
+		}else if (status.equalsIgnoreCase("Error")) {
+			xtReportLog.log(Status.FATAL, text);
+			log.fatal(text);
 		} else {
 			xtReportLog.log(Status.INFO, code);
 			log.info(code);
 		}
 		Reporter.log(text);
 	}
-	
+
 	/**
-	 * This method gets data specified in excel 
+	 * This method gets data specified in excel
+	 * 
 	 * @param key
 	 * @return String
 	 */
