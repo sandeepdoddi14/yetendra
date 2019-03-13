@@ -1,9 +1,9 @@
 package com.darwinbox.mobile.pages.attendance;
 
-import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.Alert.AlertHelper;
 import com.darwinbox.framework.uiautomation.helper.Dropdown.DropDownHelper;
 import com.darwinbox.framework.uiautomation.helper.Javascript.JavaScriptHelper;
+import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
 import org.apache.log4j.Logger;
@@ -11,9 +11,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class AttendanceRequestLocationPage extends TestBase {
@@ -52,8 +49,8 @@ public class AttendanceRequestLocationPage extends TestBase {
 
     public void attendanceReqApplyBtnClick()
     {
-        attendanceReqApplyBtn.click();
-    }
+         attendanceReqApplyBtn.click();
+     }
     public List getAttendanceReqType()
     {
         List reqTypes = objDropDownHelper.getAllDropDownValues(attendanceReqType);

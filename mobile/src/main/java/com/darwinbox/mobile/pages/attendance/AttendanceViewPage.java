@@ -45,7 +45,7 @@ public class AttendanceViewPage extends TestBase {
     @FindBy(xpath="//*[@id='attendance_log']/tbody/tr[1]/td[4]")
     WebElement workDuration;
 
-    @FindBy(xpath="//*[@id='attendance_log']/tbody/tr[1]/td[8]")
+    @FindBy(xpath="//*[@id='attendance_log']/tbody/tr[1]/td[7]")
     WebElement status;
 
     @FindBy(xpath = "//*[@id='attendance_log']/tbody/tr")
@@ -71,7 +71,7 @@ public class AttendanceViewPage extends TestBase {
     }
     public String getStatus(int i)
     {
-        String status = driver.findElement(By.xpath("//*[@id='attendance_log']/tbody/tr["+i+"]/td[8]")).getText().toString().trim();
+        String status = driver.findElement(By.xpath("//*[@id='attendance_log']/tbody/tr["+i+"]/td[7]")).getText().toString().trim();
         return status;
     }
 

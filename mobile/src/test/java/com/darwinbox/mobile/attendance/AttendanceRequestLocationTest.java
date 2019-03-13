@@ -1,35 +1,58 @@
 package com.darwinbox.mobile.attendance;
 
+import com.darwinbox.dashboard.actionClasses.CommonAction;
+import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
+import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
+import com.darwinbox.dashboard.pageObjectRepo.generic.RightMenuOptionsPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.base.TestBase;
+import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.mobile.dataFetching.mobileData.attendance.MobAttendanceRequestLocation;
 import com.darwinbox.mobile.dataFetching.webData.attendance.WebAttendanceRequestLocation;
 import org.apache.log4j.Logger;
-import org.json.JSONObject;
+import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AttendanceRequestLocationTest extends TestBase {
 
     private static final Logger log = Logger.getLogger(AttendanceRequestLocationTest.class);
-    MobAttendanceRequestLocation mobAttReqLoc = new MobAttendanceRequestLocation();
-    WebAttendanceRequestLocation webAttReqLoc = new WebAttendanceRequestLocation();
+    HomePage homepage;
+    LoginPage loginpage;
+    WaitHelper objWaitHelper;
+    RightMenuOptionsPage rightMenuOption;
+    CommonAction commonAction;
+
+    MobAttendanceRequestLocation mobAttReqLoc ;
+    WebAttendanceRequestLocation webAttReqLoc ;
 
     @BeforeClass
     public void setup() throws Exception {
-        ms.getDataFromMasterSheet(this.getClass( ).getName( ));
+        ms.getDataFromMasterSheet(this.getClass().getName());
+        System.out.println(" Master Sheet record obtained ");
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
-    public void getAttendanceReqLocationAPICheck(Map<String,String> data) {
+    @BeforeMethod
+    public void initializeObjects() {
+        loginpage = PageFactory.initElements(driver, LoginPage.class);
+        objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);
+        homepage = PageFactory.initElements(driver, HomePage.class);
+        rightMenuOption = PageFactory.initElements(driver, RightMenuOptionsPage.class);
+        commonAction = PageFactory.initElements(driver, CommonAction.class);
 
-        HashMap webData = webAttReqLoc.getWebAttendanceSummary();
+        webAttReqLoc = PageFactory.initElements(driver, WebAttendanceRequestLocation.class);
+        mobAttReqLoc = PageFactory.initElements(driver, MobAttendanceRequestLocation.class);
+        }
+
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
+    public void getAttendanceReqLocationAPICheck(Map<String, String> data) throws Exception {
+
+        HashMap webData = webAttReqLoc.getWebRequestLocation();
         log.info("********************* Web Data Fetched **********************");
         log.info("Web Data -> "+webData);
         HashMap mobData = mobAttReqLoc.getMobAttendanceRequestLocation();
@@ -37,14 +60,14 @@ public class AttendanceRequestLocationTest extends TestBase {
         log.info("Mob Data -> "+mobData);
 
         //Mobile Response data
-        ArrayList<JSONObject> mobRequestType = (ArrayList<JSONObject>) mobData.get("request_type");
-        ArrayList<JSONObject> mobRequestLocation = (ArrayList<JSONObject>) mobData.get("locations");
-        ArrayList<JSONObject> mobHrs = (ArrayList<JSONObject>) mobData.get("hrs");
-        ArrayList<JSONObject> mobMin = (ArrayList<JSONObject>) mobData.get("mins");
-
+        ArrayList<String> mobRequestType = (ArrayList<String>) mobData.get("reqType");
+        ArrayList<String> mobRequestLocation = (ArrayList<String>) mobData.get("reqLocation");
+//        ArrayList<String> mobHrs = (ArrayList<String>) mobData.get("hrs");
+//        ArrayList<String> mobMin = (ArrayList<String>) mobData.get("mins");
+//
         //Web Response data
-        ArrayList webRequestType = (ArrayList) webData.get("reqType");
-        ArrayList webRequestLocation = (ArrayList) webData.get("reqLocation");
+        LinkedList<String> webRequestType = (LinkedList<String>) webData.get("reqType");
+        LinkedList<String> webRequestLocation = (LinkedList<String>) webData.get("reqLocation");
 
         try {
             Assert.assertEquals(mobRequestType.size(), webRequestType.size());
@@ -57,9 +80,10 @@ public class AttendanceRequestLocationTest extends TestBase {
             }
             log.info("Total Mobile Request Types in Pass Case -->" + mobRequestType);
             log.info("Total Web Request Types in Pass Case -->" + webRequestType);
+            Reporter("Pass at Request Types Count","Pass");
         } catch (AssertionError e) {
 //            e.printStackTrace();
-            Reporter.log("Failed at Request Types Count");
+            Reporter("Failed at Request Types Count","Fail");
             log.info("Total Mobile Request Types in Failed Case -->" + mobRequestType);
             log.info("Total Web Request Types in Failed Case -->" + webRequestType);
         }
@@ -75,9 +99,10 @@ public class AttendanceRequestLocationTest extends TestBase {
             }
             log.info("Total Mobile Request Location in Pass Case -->" + mobRequestLocation);
             log.info("Total Web Request Location in Pass Case -->" + webRequestLocation);
+            Reporter("Pass at Request Location Count","Pass");
         } catch (AssertionError e) {
 //            e.printStackTrace();
-            Reporter.log("Failed at Request Location Count");
+            Reporter("Failed at Request Location Count","Fail");
             log.info("Total Mobile Request Location in Failed Case -->" + mobRequestLocation);
             log.info("Total Web Request Location in Failed Case -->" + webRequestLocation);
         }

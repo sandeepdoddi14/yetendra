@@ -8,10 +8,13 @@ import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+
+import java.util.List;
 
 public class CheckInShowPage extends TestBase {
 
@@ -40,23 +43,67 @@ public class CheckInShowPage extends TestBase {
     @FindBy(xpath = "//tbody[1]/tr[1]/td[2]")
     WebElement presentDays;
 
+    @FindBy(id = "month_list_dropdown")
+    WebElement monthDrpDown;
+
+    @FindBy(xpath = "//tbody[1]/tr")
+    WebElement rowsCount;
+
     public void checkInBtnClick() {
         checkInButton.click();
     }
-
+    public int getRowsCount()
+    {
+        try {
+            List<WebElement> rows = driver.findElements(By.xpath("//tbody[1]/tr"));
+            return rows.size();
+        }
+        catch (NoSuchElementException e)
+        {
+            return 0;
+        }
+    }
     public String getTime(int rowNum)
     {
-        String time = driver.findElement(By.xpath("//tbody[1]/tr["+rowNum+"]/td[2]")).getText().toString();
-        return time;
+        try {
+        objGenHelper.checkVisbilityOfElement(driver.findElement(By.xpath("//tbody[1]/tr["+rowNum+"]/td[2]")), "Check-IN time ");
+            WebElement element = driver.findElement(By.xpath("//tbody[1]/tr["+rowNum+"]/td[2]"));
+            String time = element.getText().toString();
+            return time;
+        }
+        catch (NoSuchElementException e)
+        {
+            return null;
+        }
     }
     public String getComment(int rowNum)
     {
-        String comment = driver.findElement(By.xpath("//tbody[1]/tr["+rowNum+"]/td[4]")).getText().toString();
-        return comment;
+        WebElement element = driver.findElement(By.xpath("//tbody[1]/tr["+rowNum+"]/td[4]"));
+        if(objGenHelper.checkVisbilityOfElement(element, "Comment  "))
+        {
+            String comment = element.getText().toString();
+            return comment;
+        }
+        else
+        {
+            return "false";
+        }
     }
     public String getLocation(int rowNum)
     {
-        String location = driver.findElement(By.xpath("//tbody[1]/tr["+rowNum+"]/td[5]")).getText().toString();
-        return location;
+        WebElement element = driver.findElement(By.xpath("//tbody[1]/tr["+rowNum+"]/td[5]"));
+        if(objGenHelper.checkVisbilityOfElement(element, "location  "))
+        {
+            String location = element.getText().toString();
+            return location;
+        }
+        else
+        {
+            return "false";
+        }
+    }
+    public void selectMothFilter(int requiredMonth)
+    {
+        objDropDownHelper.selectUsingIndex(monthDrpDown,requiredMonth, "Month Filter");
     }
 }
