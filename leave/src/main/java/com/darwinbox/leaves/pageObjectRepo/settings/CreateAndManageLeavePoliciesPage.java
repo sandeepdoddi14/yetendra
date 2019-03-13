@@ -8,10 +8,8 @@ import com.darwinbox.framework.uiautomation.helper.Javascript.JavaScriptHelper;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
@@ -59,6 +57,10 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
     @FindBy(xpath = "//*[@id='Leaves_auto_approve_days']")
     private WebElement autoApproveLeaveRequestTextBox;
 
+
+    @FindBy(xpath="//*[@id='week_days']")
+    private WebElement restrictToWeekDaysDropDown;
+
     @FindBy(xpath = "//*[@id='Leaves_name']")
     private WebElement leaveTypeTextBox;
 
@@ -88,6 +90,9 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
 
     @FindBy(xpath = "//*[@id='Leaves_min_consecutive_days_limit']")
     private WebElement minimumConsecutiveLeavesTextBox;
+
+    @FindBy(xpath = "//*[@id='Leaves_max_consecutive_days_limit']")
+    private WebElement maximumConsecutiveLeavesTextBox;
 
     @FindBy(xpath = "//*[@id='Leaves_is_special_leave']")
     private WebElement specialLeaveCheckBox;
@@ -258,6 +263,39 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
     @FindBy(xpath = "//*[@id='Leaves_dont_show_in_probation_period']")
     private WebElement dontShowApplyInProbationPeriodCheckbox;
 
+
+    /**** Emp Apply More than
+     * more than the available leave balance Accordian
+     * @param driver
+     */
+
+    @FindBy(xpath ="//*[@id='leavePolicyAccordion']/div[6]/div[2]/div[2]/div[4]/div/div[1]/div/a/i")
+    private WebElement canEmpApplyMoreThanAvailableLeaveBalanceAccordian;
+
+    @FindBy(xpath ="//*[@id='LeavePolicy_OverUtilization_status_0']")
+    private WebElement canEmpApplyMoreThanAvailableLeaveBalanceYesRadioButton;
+
+    @FindBy(xpath ="//*[@id='LeavePolicy_OverUtilization_utilize_from_0']")
+    private WebElement countExcessLeaveAsPaidByDefault;
+
+    @FindBy(xpath ="//*[@id='collapse9']/div/div/div/div[3]/div[2]/label")
+    private WebElement countExcessLeaveAsUnPaidByDefault;
+
+    @FindBy(xpath ="//*[@id='LeavePolicy_OverUtilization_utilize_from_2']")
+    private WebElement utilizeFromRadioButton;
+
+    @FindBy(xpath ="//*[@id='LeavePolicy_OverUtilization_not_more_than_yearly']")
+    private WebElement dontAllowLeaveMoreThanYearlyAllocation;
+
+    @FindBy(xpath ="//*[@id='LeavePolicy_OverUtilization_not_more_than_yearly_accrual']")
+    private WebElement dontAllowLeaveMoreThanYearlyAccural;
+
+    @FindBy(xpath ="//*[@id='LeavePolicy_OverUtilization_fixed_overutilization']")
+    private WebElement maxLeaveOverUtilization;
+
+    @FindBy(xpath ="//*[@id='LeavePolicy_OverUtilization_other_leave']")
+    private WebElement leaveForOverUtilizationDropDown;
+
     public CreateAndManageLeavePoliciesPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
@@ -406,6 +444,8 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
         return objGenHelper.setElementText(leaveTypeTextBox, "Leave Type", text);
     }
 
+
+
     /**
      * This method select text from Gender applicability Drop down
      *
@@ -471,6 +511,32 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
     public boolean insertMaximumLeavesAllowedPerMonth(String value) {
         return objGenHelper.setElementText(maximumLeavesAllowedPerMonthTextBox, "Maximum leaves allowed per month",
                 value);
+    }
+
+    public boolean insertMimConsecutiveDaysAllowedInSingleApplication(String value){
+        return objGenHelper.setElementText(minimumConsecutiveLeavesTextBox,"Minimum Consecutive Days Allowed in Single Application",value);
+    }
+
+    public void insertRestrictToWeekDaysDropDown(String[] values){
+
+        for (String value:values) {
+            WebElement ele = driver.findElement(By.xpath("//*[@id='week_days_chosen']/ul/li/input"));
+            JavascriptExecutor executor = (JavascriptExecutor)driver;
+            executor.executeScript("arguments[0].click();", ele);
+           ele.sendKeys(value);
+           Actions a= new Actions(driver);
+           a.sendKeys(Keys.ARROW_DOWN);
+           a.sendKeys(Keys.ENTER).build().perform();
+
+        }
+    }
+
+    public boolean inertConsecitiveDaysAllowed(String value){
+        return objGenHelper.setElementText(consecutiveLeavesAllowedPerMonthTextBox,"Consecutive Leaves Allowed",value);
+    }
+
+    public boolean insertMaxConsecutiveDaysAllowedInSingleApplication(String value){
+        return objGenHelper.setElementText(maximumConsecutiveLeavesTextBox,"Minimum Consecutive Days Allowed in Single Application",value);
     }
 
     public boolean insertRestrictionDepartmentEmployeeTypeLocationElasticSearch(String value) {
@@ -1018,6 +1084,50 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
      */
     public boolean insertUnusedCarryoverAmountTextbox(String value) {
         return objGenHelper.setElementText(carryForwardPolicyUnusedCarryoverAmountTextbox, "Carry Over amount", value);
+    }
+
+    //  collapse/uncollapse Can Employees apply for more than their
+    //  leave balance accordion
+
+    public boolean  clickCanEmpApplyForMoreThanTheirAvailableLveBalAccordion(){
+        objJavaScrHelper.scrollToElemetAndClick(canEmpApplyMoreThanAvailableLeaveBalanceAccordian,"Over Utilization Accordion is Expanded");
+        return true;
+    }
+
+    //click on yes radio button for
+    //Can emp apply more than thier available leave Balance
+    public boolean  clickCanEmpApplyForMoreThanTheirAvailableLveBalYesButton(){
+        objJavaScrHelper.scrollToElemetAndClick(canEmpApplyMoreThanAvailableLeaveBalanceYesRadioButton,"Yes Button For Over Utilization");
+        return true;
+        // return objGenHelper.elementClick(canEmpApplyMoreThanAvailableLeaveBalanceYesRadioButton,"Yes button For Can Emp Apply More Than Available Leave Balnce");
+    }
+
+    public boolean  clickCountExcessLeaveAsPaidRadioButton(){
+        return objGenHelper.elementClick(countExcessLeaveAsPaidByDefault,"Count Excess Leave As Paid");
+    }
+
+    public boolean  clickCountExcessLeaveAsUnPaidRadioButton(){
+        return objGenHelper.elementClick(countExcessLeaveAsUnPaidByDefault,"Count Excess Leave As Un Paid");
+    }
+
+    public boolean  clickUtilizeFromRadioButton(){
+        return objGenHelper.elementClick(utilizeFromRadioButton,"Utilize From");
+    }
+
+    public boolean  clickDontAllowLeaveMoreThanYearlyAllocationChkBox(){
+        return objGenHelper.elementClick(dontAllowLeaveMoreThanYearlyAllocation,"Dont Allow Leave More Than Yearly Allocation");
+    }
+
+    public boolean clickDontAllowMoreThanYearlyAccuralChkBox(){
+        return objGenHelper.elementClick(dontAllowLeaveMoreThanYearlyAccural,"Dont Allow Leave More Than Yearly Accural");
+    }
+
+    public boolean typeMaxLeaveOverUtilizationTxtBox(String value){
+        return objGenHelper.setElementText(maxLeaveOverUtilization,"Max Leave Over Utilization",value);
+    }
+
+    public boolean selectOverUtilizationPolicyDropDown(String policy){
+        return objGenHelper.selectDropdown(leaveForOverUtilizationDropDown,policy,"Utilze From Policy");
     }
 
 }

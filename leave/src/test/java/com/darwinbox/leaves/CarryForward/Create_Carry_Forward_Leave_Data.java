@@ -22,9 +22,9 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-public class Verify_Carry_Forward_Leave_Balance extends TestBase {
+public class Create_Carry_Forward_Leave_Data extends TestBase {
 
-    private static final Logger log = Logger.getLogger(Verify_Carry_Forward_Leave_Balance.class);
+    private static final Logger log = Logger.getLogger(Create_Carry_Forward_Leave_Data.class);
     HomePage homepage;
     LoginPage loginpage;
     WaitHelper objWaitHelper;
@@ -56,7 +56,7 @@ public class Verify_Carry_Forward_Leave_Balance extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
-    public void Verify_Carry_Forward_Leave_Balance(Map<String, String> data) throws Exception {
+    public void Create_Carry_Forward_Leave_Data(Map<String, String> data) throws Exception {
 
         Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");
         Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");
@@ -66,18 +66,14 @@ public class Verify_Carry_Forward_Leave_Balance extends TestBase {
         Assert.assertTrue(leavesAction.navigateToSettings_Leaves(), "Navigated to Leaves link");
         Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
         Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
-        Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown("Working Days (DO NOT TOUCH)"), "Select Group Company");
+        Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown(1), "Select Group Company");
         Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");
         Assert.assertTrue(leavesAction.setCarryForwardScenario(), "Set carry forward scemario successfully");
         Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-        Assert.assertTrue(leavesAction.verifyEmployeeCarryForward(), "Leave Balance for whole leave cycle calculated successfully");
-
     }
 
     @AfterMethod
     public void clearTestData(){
-        leavesAction.navigateToSettings_Leaves();
-        Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is present are deleted successfully");
+        Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
     }
 }
-

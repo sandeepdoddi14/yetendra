@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.CarryForward;
+package com.darwinbox.leaves.LeaveSettings.Over_Utilization;
 
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
@@ -15,30 +15,28 @@ import com.darwinbox.leaves.pageObjectRepo.settings.LeavesSettingsPage;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Map;
 
-public class Verify_Carry_Forward_Leave_Balance extends TestBase {
-
-    private static final Logger log = Logger.getLogger(Verify_Carry_Forward_Leave_Balance.class);
-    HomePage homepage;
-    LoginPage loginpage;
-    WaitHelper objWaitHelper;
-    CommonSettingsPage commonSettings;
-    LeavesSettingsPage leaveSettings;
-    CreateAndManageLeavePoliciesPage createManageLeaves;
-    RightMenuOptionsPage rightMenuOption;
-    LeavesAction leavesAction;
-    CommonAction commonAction;
-    UtilityHelper objUtil;
+public class Create_LeavePolicy extends TestBase {
+    private static final Logger log = Logger.getLogger(Create_LeavePolicy.class);
+    public HomePage homepage;
+    public LoginPage loginpage;
+    public WaitHelper objWaitHelper;
+    public CommonSettingsPage commonSettings;
+    public LeavesSettingsPage leaveSettings;
+    public CreateAndManageLeavePoliciesPage createManageLeaves;
+    public RightMenuOptionsPage rightMenuOption;
+    public LeavesAction leavesAction;
+    public UtilityHelper objUtil;
+    public CommonAction commonAction;
 
     @BeforeClass
     public void setup() throws Exception {
-        ms.getDataFromMasterSheet(this.getClass().getName());
+        ms.getDataFromMasterSheet(this.getClass( ).getName( ));
     }
 
     @BeforeMethod
@@ -51,33 +49,30 @@ public class Verify_Carry_Forward_Leave_Balance extends TestBase {
         createManageLeaves = PageFactory.initElements(driver, CreateAndManageLeavePoliciesPage.class);
         rightMenuOption = PageFactory.initElements(driver, RightMenuOptionsPage.class);
         leavesAction = PageFactory.initElements(driver, LeavesAction.class);
-        commonAction = PageFactory.initElements(driver, CommonAction.class);
         objUtil = PageFactory.initElements(driver, UtilityHelper.class);
+        commonAction = PageFactory.initElements(driver, CommonAction.class);
     }
-
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
-    public void Verify_Carry_Forward_Leave_Balance(Map<String, String> data) throws Exception {
-
-        Assert.assertTrue(leavesAction.setLeaveType(), "Leave Type is set successfully");
-        Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile(), "Leave scenario is set successfully");
-        Assert.assertTrue(leavesAction.setEmployeeID(UtilityHelper.getProperty("config", "Employee.id")), "Employee ID is set successfully to test");
+    public void Create_Leaves_for_EmpApplyMoreThanAvailableLeaveBalance(Map<String, String> data) throws Exception {
+        Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile( ), "Leave scenario is set successfully");
         Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
         Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
-        Assert.assertTrue(leavesAction.navigateToSettings_Leaves(), "Navigated to Leaves link");
-        Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
+        Assert.assertTrue(leavesAction.navigateToSettings_Leaves( ), "Navigated to Leaves link");
+
+        if(leavesAction.checkIfLeaveTypeIsPresent())
+            Assert.assertTrue(leavesAction.editLeaveType(),"Edit Leave Type is Clicked Successfully");
+        else
         Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
+
         Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown("Working Days (DO NOT TOUCH)"), "Select Group Company");
-        Assert.assertTrue(leavesAction.createLeaveTypeWithMentionedScenarios(), "Leaves type with mentioned scenarios is created");
-        Assert.assertTrue(leavesAction.setCarryForwardScenario(), "Set carry forward scemario successfully");
-        Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");
-        Assert.assertTrue(leavesAction.verifyEmployeeCarryForward(), "Leave Balance for whole leave cycle calculated successfully");
 
-    }
+        leavesAction.setMandatoryLeaveScenarios();
 
-    @AfterMethod
-    public void clearTestData(){
-        leavesAction.navigateToSettings_Leaves();
-        Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is present are deleted successfully");
-    }
+        leavesAction.setCreditOnAccrualBasis();
+
+        leavesAction.setOverutilizationScenario();
+        createManageLeaves.clickCreateLeavePolicySaveButton();
+
+
+  }
 }
-

@@ -25,16 +25,16 @@ import java.util.Map;
 public class Create_Leaves_for_Multiple_Allotment_Leave_Transfer extends TestBase {
 
     private static final Logger log = Logger.getLogger(Create_Leaves_for_Multiple_Allotment_Leave_Transfer.class);
-    HomePage homepage;
-    LoginPage loginpage;
-    WaitHelper objWaitHelper;
-    CommonSettingsPage commonSettings;
-    LeavesSettingsPage leaveSettings;
-    CreateAndManageLeavePoliciesPage createManageLeaves;
-    RightMenuOptionsPage rightMenuOption;
-    LeavesAction leavesAction;
-    UtilityHelper objUtil;
-    CommonAction commonAction;
+    public HomePage homepage;
+    public LoginPage loginpage;
+    public WaitHelper objWaitHelper;
+    public CommonSettingsPage commonSettings;
+    public LeavesSettingsPage leaveSettings;
+    public CreateAndManageLeavePoliciesPage createManageLeaves;
+    public RightMenuOptionsPage rightMenuOption;
+    public LeavesAction leavesAction;
+    public UtilityHelper objUtil;
+    public CommonAction commonAction;
 
     @BeforeClass
     public void setup() throws Exception {
@@ -62,7 +62,10 @@ public class Create_Leaves_for_Multiple_Allotment_Leave_Transfer extends TestBas
         Assert.assertTrue(leavesAction.setLeaveScenarioFromExcelFile( ), "Leave scenario is set successfully");
         Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
         Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
-        Assert.assertTrue(leavesAction.navigateToSettings_Leaves( ), "Navigated to Leaves link");
+        Assert.assertTrue(leavesAction.navigateToSettings_Leaves(), "Navigated to Leaves link");
+
+        Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
+
         Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
         Assert.assertTrue(createManageLeaves.selectGroupCompanyDropdown("Working Days (DO NOT TOUCH)"), "Select Group Company");
         Assert.assertTrue(leavesAction.setMandatoryLeaveScenarios(), "Leaves type with mentioned scenarios is created");
