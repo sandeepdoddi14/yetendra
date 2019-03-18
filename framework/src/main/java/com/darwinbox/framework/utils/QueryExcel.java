@@ -1,30 +1,24 @@
 package com.darwinbox.framework.utils;
 
-import com.codoid.products.exception.FilloException;
 import com.codoid.products.fillo.Connection;
 import com.codoid.products.fillo.Fillo;
 import com.codoid.products.fillo.Recordset;
-import com.darwinbox.framework.beans.Configuration;
-import com.darwinbox.framework.beans.Suite;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class QueryExcel {
 
-    private final Fillo fillo;
+  // private  Fillo fillo;
     private Connection connection;
-    private Configuration config;
-    private String query = "";
+  // private Configuration config;
+   private String query = "";
 
+
+/*
     public QueryExcel(Configuration config) {
         fillo = new Fillo();
-        this.config = config;
-    }
+        //this.config = config;
+    }*//*
 
-    public void createQuery(){
+    public void createQuery() {
 
         List<Integer> tcIds = new ArrayList<Integer>();
         String queryString = config.getTestcases();
@@ -56,10 +50,10 @@ public class QueryExcel {
                 tcIds.add(idnum);
 
                 String tcidStr = "";
-                for (Integer tcId : tcIds ){
-                    tcidStr = tcidStr +","+ tcId;
+                for (Integer tcId : tcIds) {
+                    tcidStr = tcidStr + "," + tcId;
                 }
-                query = "where TCID in ("+tcidStr.substring(1)+")" ;
+                query = "where TCID in (" + tcidStr.substring(1) + ")";
             }
         }
     }
@@ -73,11 +67,27 @@ public class QueryExcel {
         } catch (FilloException e) {
             e.printStackTrace();
         } finally {
-        	connection.close();
+            connection.close();
         }
     }
 
     private void createSuite(Recordset recordset) {
-       }
+    }*/
 
+
+    public Recordset getOverUtlizationPolicyFromExcelSheet(String leaveType) {
+        try {
+            Fillo fillo = new Fillo();
+            query = "select * from CreatePolicy where LEAVE_TYPE=" + "'"+leaveType.trim()+"'";
+            connection=fillo.getConnection("C:\\Users\\sande\\IdeaProjects\\Automation_Project\\leave\\src\\main\\resources\\TestData\\LeaveSettings\\AccordionSettings.xlsx");
+            Recordset record = connection.executeQuery(query);
+            record.moveNext();
+            return record;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            connection.close();
+        }
+        return null;
+    }
 }

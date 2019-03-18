@@ -13,7 +13,8 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.util.Calendar;
 
-import static java.time.temporal.TemporalAdjusters.*;
+import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 /**
  * @author balaji
@@ -493,6 +494,10 @@ public class DateTimeHelper {
 
 		LocalDate biannualEndDate = LocalDate.of(year, biannualEndMonth, 01).with(lastDayOfMonth());
 		return biannualEndDate;
+	}
+
+	public static LocalDate getCurrentDateLocalDateFormat(){
+		return LocalDate.parse(LocalDate.now().toString());
 	}
 
 }

@@ -3,7 +3,7 @@
  */
 package com.darwinbox.dashboard.pageObjectRepo.generic;
 
-import com.darwinbox.framework.uiautomation.configreader.ObjectRepo;
+import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
@@ -31,7 +31,7 @@ public class LoginPage extends TestBase {
 		this.driver = driver;
 		PageFactory.initElements(driver, this);
 		objGenHelper = PageFactory.initElements(driver, GenericHelper.class);
-		objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);		
+		objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);
 	}
 	
 	@FindBy(id = "UserLogin_username")
@@ -116,6 +116,26 @@ public class LoginPage extends TestBase {
 		}
 	}
 
+	/**
+	 * This method for login to Application for a Employee
+	 *
+	 * @author sandeep
+
+	 * @return boolean
+	 */
+	public boolean empLoginToApplication() {
+		try {
+			EnterUsername(UtilityHelper.getProperty("config", "Employee.email"));
+			EnterPassword(UtilityHelper.getProperty("config", "Employee.pass"));
+			clickSignIn();
+			objWaitHelper.waitForPageToLoad();
+			return true;
+		} catch (Exception e) {
+			Reporter("Exception while signing to application :" + e.getMessage(), "Error");
+			e.printStackTrace();
+			return false;
+		}
+	}
 	/**
 	 * This method for login to Application
 	 *
