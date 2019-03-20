@@ -1,7 +1,7 @@
 package com.darwinbox.mobile.dataFetching.mobileData.login;
 
-import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
-import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
+//import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
+//import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
@@ -16,9 +16,9 @@ import org.openqa.selenium.support.PageFactory;
 import java.util.HashMap;
 
 public class MobileAuthLogin extends TestBase {
-    LoginPage loginpage;
+//    LoginPage loginpage;
     GenericHelper objgenhelper;
-    HomePage homepage;
+//    HomePage homepage;
     WaitHelper objWaitHelper;
     GenericMethodsInDataFetching genericMethodsInDataFetching;
     RequestSpecification request;
@@ -26,10 +26,10 @@ public class MobileAuthLogin extends TestBase {
     public MobileAuthLogin(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        loginpage = PageFactory.initElements(driver, LoginPage.class);
+//        loginpage = PageFactory.initElements(driver, LoginPage.class);
         objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);
         objgenhelper = PageFactory.initElements(driver, GenericHelper.class);
-        homepage = PageFactory.initElements(driver, HomePage.class);
+//        homepage = PageFactory.initElements(driver, HomePage.class);
         genericMethodsInDataFetching = PageFactory.initElements(driver, GenericMethodsInDataFetching.class);
         request = RestAssured.given();
     }

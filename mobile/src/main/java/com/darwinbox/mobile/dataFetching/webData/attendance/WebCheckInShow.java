@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WebCheckInShow extends TestBase {
-    HomePage homepage;
+//    HomePage homepage;
     LoginPage loginpage;
     WaitHelper objWaitHelper;
     GenericHelper objgenhelper;
@@ -29,7 +29,7 @@ public class WebCheckInShow extends TestBase {
         loginpage = PageFactory.initElements(driver, LoginPage.class);
         objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);
         objgenhelper = PageFactory.initElements(driver, GenericHelper.class);
-        homepage = PageFactory.initElements(driver, HomePage.class);
+//        homepage = PageFactory.initElements(driver, HomePage.class);
     }
 
 

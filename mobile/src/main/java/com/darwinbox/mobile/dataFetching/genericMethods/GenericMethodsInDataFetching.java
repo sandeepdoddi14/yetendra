@@ -23,18 +23,9 @@ public class GenericMethodsInDataFetching extends TestBase{
     Username and Password are taken from excel
      */
     public HashMap loginResponse() {
-        RequestSpecification request = RestAssured.given();
-        request.header("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-
-        json.put("username", getData("UserName"));
-        json.put("password", getData("Password"));
-
-        request.body(json.toString());
-        Response response = request.post(getData("API"));
-
-        int code = response.getStatusCode();
-
+        String jsonBody = "{'username' : '601', 'password' : '123456' }";
+        Response response = getPostResponse(jsonBody, "Mobileapi/auth", "","","");
+        Response response1 = getPostResponse(jsonBody, "Mobileapi/index", response.path("token"),"","");
         HashMap loginResponse = new HashMap();
         loginResponse.put("token", response.path("token"));
         loginResponse.put("user_id", response.path("user_id"));
@@ -43,7 +34,29 @@ public class GenericMethodsInDataFetching extends TestBase{
         loginResponse.put("is_manager", response.path("is_manager"));
         loginResponse.put("status", response.path("status"));
         loginResponse.put("message", response.path("message"));
+        loginResponse.put("mongo_id", response1.path("user_details.mongo_id"));
         return loginResponse;
+    }
+    public Response getPostResponse(String jsonBody, String api, String token, String user_id, String mongo_id)
+    {
+        String applicationURL = data.get("@@url");
+        RequestSpecification request = RestAssured.given();
+        request.header("Content-Type", "application/json");
+        JSONObject jsonObject = new JSONObject(jsonBody);
+        for (String key : jsonObject.keySet()) {
+            if (key.equalsIgnoreCase("token")) {
+                jsonObject.put(key, token);
+            } else if (key.equalsIgnoreCase("user_id")) {
+                jsonObject.put(key, user_id);
+            } else if (key.equalsIgnoreCase("mongo_id")) {
+                jsonObject.put(key, mongo_id);
+            } else {
+                jsonObject.put(key, jsonObject.get(key));
+            }
+        }
+        request.body(jsonObject.toString());
+        Response response = request.post(applicationURL+api);
+        return response;
     }
 /*
 Return all the current month dates in the required format passed in parameters
