@@ -3,11 +3,9 @@ package com.darwinbox.mobile.dataFetching.webData.attendance;
 
 import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
-import com.darwinbox.dashboard.pageObjectRepo.generic.MainMenuNavigationPage;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
-import com.darwinbox.mobile.pages.attendance.AttendanceViewPage;
 import com.darwinbox.mobile.pages.attendance.CheckInShowPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -16,7 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WebCheckInShow extends TestBase {
-//    HomePage homepage;
+    HomePage homepage;
     LoginPage loginpage;
     WaitHelper objWaitHelper;
     GenericHelper objgenhelper;
@@ -29,7 +27,7 @@ public class WebCheckInShow extends TestBase {
         loginpage = PageFactory.initElements(driver, LoginPage.class);
         objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);
         objgenhelper = PageFactory.initElements(driver, GenericHelper.class);
-//        homepage = PageFactory.initElements(driver, HomePage.class);
+        homepage = PageFactory.initElements(driver, HomePage.class);
     }
 
 

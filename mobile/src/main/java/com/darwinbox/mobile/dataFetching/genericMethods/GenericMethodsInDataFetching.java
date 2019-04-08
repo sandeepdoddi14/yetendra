@@ -23,9 +23,10 @@ public class GenericMethodsInDataFetching extends TestBase{
     Username and Password are taken from excel
      */
     public HashMap loginResponse() {
-        String jsonBody = "{'username' : '601', 'password' : '123456' }";
-        Response response = getPostResponse(jsonBody, "Mobileapi/auth", "","","");
-        Response response1 = getPostResponse(jsonBody, "Mobileapi/index", response.path("token"),"","");
+        String jsonBody_forLogin = "{'username' : '"+getData("UserName")+"', 'password' : '"+getData("Password")+"' }";
+        Response response = getPostResponse(jsonBody_forLogin, "Mobileapi/auth", "","","");
+        String jsonBody_ProfileIndex = "{'token' : '"+response.path("token")+"'}";
+        Response response1 = getPostResponse(jsonBody_ProfileIndex, "Mobileapi/index", response.path("token"),"","");
         HashMap loginResponse = new HashMap();
         loginResponse.put("token", response.path("token"));
         loginResponse.put("user_id", response.path("user_id"));
@@ -50,6 +51,15 @@ public class GenericMethodsInDataFetching extends TestBase{
                 jsonObject.put(key, user_id);
             } else if (key.equalsIgnoreCase("mongo_id")) {
                 jsonObject.put(key, mongo_id);
+            } else if(key.equals("id")){
+                if (api.contains("RequestResponse"))
+                {
+                    getPostResponse(getData("Dependent Body_1"),getData("Dependent API_1"), token, user_id,mongo_id);
+                    Response dependent_response = getPostResponse(getData("Dependent Body_2"),getData("Dependent API_2"), token, user_id,mongo_id);
+                    String s1= ((HashMap)dependent_response.path("users[0]")).get("id").toString();
+                    jsonObject.put(key, s1);
+                }
+
             } else {
                 jsonObject.put(key, jsonObject.get(key));
             }

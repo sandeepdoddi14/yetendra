@@ -9,10 +9,12 @@ import com.darwinbox.mobile.dataFetching.genericMethods.GenericMethodsInDataFetc
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AllApiStatusCheck extends TestBase {
@@ -46,7 +48,7 @@ public class AllApiStatusCheck extends TestBase {
         log.info("API : " + data.get("@@url")+getData("API"));
         HashMap mobApi_statusCheck = new HashMap();
         mobApi_statusCheck.put("status", response.path("status"));
-        mobApi_statusCheck.put("module", getData("Module"));
+        mobApi_statusCheck.put("module", getData("Module Name"));
         mobApi_statusCheck.put("apiName", getData("API Name"));
         log.info("Response Data : "+response.asString());
         return mobApi_statusCheck;
