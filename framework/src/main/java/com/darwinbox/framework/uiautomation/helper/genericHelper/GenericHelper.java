@@ -204,6 +204,19 @@ public class GenericHelper extends TestBase {
         }
     }
 
+    public boolean toggleElement(WebElement element, boolean expected, String label) {
+
+        try {
+            boolean actual = element.isSelected( );
+            if (actual != expected) {
+                element.click( );
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public String getRandomNumber(int num) throws Exception {
         Random randomGenerator = new Random( );
         int randomInt = randomGenerator.nextInt(num);
@@ -288,18 +301,6 @@ public class GenericHelper extends TestBase {
         }
     }
 
-    public boolean toggleElement(WebElement element, boolean expected, String label) {
-
-        try {
-            boolean actual = element.isSelected( );
-            if (actual != expected) {
-                element.click( );
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     public synchronized void attachFile(String fileName) {
 

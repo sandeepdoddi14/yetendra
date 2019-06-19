@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.darwinbox.framework.uiautomation.Utility;
 
@@ -12,6 +12,8 @@ import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
@@ -40,18 +42,19 @@ public class DateTimeHelper {
 
 	/**
 	 * Set custom Date
+	 *
 	 * @return
 	 */
 	public static String getCurrentLocalDateAndTime() {
 		try {
 			String dateTime;
-			if(UtilityHelper.getProperty("config", "Local.Date.Change.Required").equalsIgnoreCase("Yes")) {
+			if (UtilityHelper.getProperty("config", "Local.Date.Change.Required").equalsIgnoreCase("Yes")) {
 				dateTime = UtilityHelper.getProperty("config", "Change.Local.Date") + LocalTime.now().toString();
-			}else {
+			} else {
 				dateTime = LocalDateTime.now().toString();
 			}
 			return dateTime;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Exception while getting date and Time");
 		}
@@ -59,27 +62,61 @@ public class DateTimeHelper {
 
 	/**
 	 * Set custom Date
+	 *
 	 * @return
 	 */
 	public static String getCurrentLocalDate() {
 		try {
 			String dateTime;
-			if(UtilityHelper.getProperty("config", "Local.Date.Change.Required").equalsIgnoreCase("Yes")) {
+			if (UtilityHelper.getProperty("config", "Local.Date.Change.Required").equalsIgnoreCase("Yes")) {
 				dateTime = UtilityHelper.getProperty("config", "Change.Local.Date");
-			}else {
+			} else {
 				dateTime = LocalDate.now().toString();
 			}
 			return dateTime;
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("Exception while getting date and Time");
 		}
 	}
 
+	public static void changeLocalDateUsingCommandLine() {
+		try {
+
+			String localDate = UtilityHelper.getProperty("config", "Change.Server.Date");
+			if (System.getProperty("os.name").contains("Window")) {
+				String cmd1 = "cmd /c date " + UtilityHelper.getProperty("config", "Change.Local.Date");
+				Runtime.getRuntime().exec(cmd1);
+
+				String cmd2 = "cmd /c time 10:05";
+				Runtime.getRuntime().exec(cmd2);
+			} else if (System.getProperty("os.name").contains("Linux")) {
+				String dateToChange = UtilityHelper.getProperty("config", "Change.Local.Date");
+				String text = "echo Shikhar123 | sudo -S date --set='" + dateToChange + " 10:05:59'";
+				String[] cmd = {"/bin/bash", "-c", text};
+				Runtime.getRuntime().exec(cmd);
+			}
+
+			if (LocalDate.now().toString().equals(localDate)) {
+				Reporter.log("System date changed to " + LocalDate.now().toString(), true);
+			} else {
+				throw new RuntimeException("Exception while changing server date its " + LocalDate.now().toString()
+						+ " and not changed to " + localDate);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static LocalDate getCurrentDateLocalDateFormat() {
+		return LocalDate.parse(LocalDate.now().toString());
+	}
+
 	public boolean changeServerDate(WebDriver driver, String date) {
 		try {
-			String text = "emailtemplate/Setserverdate?set_date="+ date;
-			Reporter.log("Server date is changed to '" + objUtil.getHTMLTextFromAPI(driver, text)+ "'",true);
+			String text = "emailtemplate/Setserverdate?set_date=" + date;
+			Reporter.log("Server date is changed to '" + objUtil.getHTMLTextFromAPI(driver, text) + "'", true);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,56 +124,26 @@ public class DateTimeHelper {
 		}
 	}
 
-    /**
-     * This method converts Local Date to Epoch day
-     * @param date
-     * @return long
-     */
-    public long convertLocalDateToEpochDay(String date){
-	    try {
-	        String dateTime = date + "T14:47:55";
-           return ((LocalDateTime.parse(dateTime).atZone(ZoneId.of("Asia/Kolkata")).toInstant().toEpochMilli())/1000);
-	    }catch (Exception e){
-	        e.printStackTrace();
-            throw new RuntimeException("Exception while changing Local date to epoch day");
-        }
-    }
-
-
-	public static void changeLocalDateUsingCommandLine() {
+	/**
+	 * This method converts Local Date to Epoch day
+	 *
+	 * @param date
+	 * @return long
+	 */
+	public long convertLocalDateToEpochDay(String date) {
 		try {
-
-			String localDate = UtilityHelper.getProperty("config", "Change.Server.Date");
-			if(System.getProperty("os.name").contains("Window")) {
-				String cmd1 = "cmd /c date " + UtilityHelper.getProperty("config", "Change.Local.Date");
-				Runtime.getRuntime().exec(cmd1);
-
-				String cmd2 = "cmd /c time 10:05";
-				Runtime.getRuntime().exec(cmd2);
-			}else if (System.getProperty("os.name").contains("Linux")) {
-				String dateToChange = UtilityHelper.getProperty("config", "Change.Local.Date");
-				String text = "echo Shikhar123 | sudo -S date --set='" +dateToChange+ " 10:05:59'";
-				String[] cmd = {"/bin/bash","-c",text};
-				Runtime.getRuntime().exec(cmd);
-			}
-
-			if(LocalDate.now().toString().equals(localDate)) {
-				Reporter.log("System date changed to " + LocalDate.now().toString(),true);
-			}else {
-				throw new RuntimeException("Exception while changing server date its "+ LocalDate.now().toString()
-						+ " and not changed to "+ localDate);
-			}
-
+			String dateTime = date + "T14:47:55";
+			return ((LocalDateTime.parse(dateTime).atZone(ZoneId.of("Asia/Kolkata")).toInstant().toEpochMilli()) / 1000);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException("Exception while changing Local date to epoch day");
 		}
 	}
-
 
 	/**
 	 * This month will calculate difference between months
 	 *
-     * @param DATEIN_YYYY_MM_DD_format
+	 * @param DATEIN_YYYY_MM_DD_format
 	 * @return
 	 */
 	public double getMonthDifferenceFromCurrentDate(String DATEIN_YYYY_MM_DD_format) {
@@ -161,8 +168,9 @@ public class DateTimeHelper {
 	/**
 	 * This month will calculate months difference between first day of month of two
 	 * dates
+	 *
 	 * @param Date1
-     * @param Date2
+	 * @param Date2
 	 * @return
 	 */
 	public double getMonthDifferenceBetweenTwoDates(String Date1, String Date2) {
@@ -181,8 +189,9 @@ public class DateTimeHelper {
 
 	/**
 	 * This month will calculate exact month difference between two dates
+	 *
 	 * @param Date1
-     * @param Date2
+	 * @param Date2
 	 * @return
 	 */
 	public double getExactMonthDifferenceBetweenTwoDates(String Date1, String Date2) {
@@ -215,6 +224,7 @@ public class DateTimeHelper {
 
 	/**
 	 * This month will calculate days difference between two dates
+	 *
 	 * @param Date1
 	 * @param Date2
 	 * @return
@@ -234,7 +244,7 @@ public class DateTimeHelper {
 	/**
 	 * This month will calculate difference between two dates
 	 *
-     * @param DOJ
+	 * @param DOJ
 	 * @return
 	 */
 	public double getDaysDifferenceBetweenDOJAndCurrentDate(String DOJ) {
@@ -251,8 +261,9 @@ public class DateTimeHelper {
 
 	/**
 	 * This month will calculate difference between two dates
+	 *
 	 * @param customCurrentDate
-     * @param DOJ
+	 * @param DOJ
 	 * @return
 	 */
 	public double getDaysDifferenceBetweenDOJAndCurrentDate(String DOJ, String customCurrentDate) {
@@ -449,7 +460,6 @@ public class DateTimeHelper {
 		return lastDate;
 	}
 
-
 	/**
 	 * This method will return First Day of Quarter in Local Date format
 	 *
@@ -488,7 +498,7 @@ public class DateTimeHelper {
 		int biannualEndMonth = 0;
 		if (leaveCycle.equalsIgnoreCase("Calendar")) {
 			biannualEndMonth = 6;
-		}else if (leaveCycle.equalsIgnoreCase("Financial")) {
+		} else if (leaveCycle.equalsIgnoreCase("Financial")) {
 			biannualEndMonth = 9;
 		}
 
@@ -496,8 +506,170 @@ public class DateTimeHelper {
 		return biannualEndDate;
 	}
 
-	public static LocalDate getCurrentDateLocalDateFormat(){
-		return LocalDate.parse(LocalDate.now().toString());
+	public String getNextDate(String date) {
+
+		Calendar cal = Calendar.getInstance();
+		try {
+			Date currentDate = formatStringToDate("dd-MM-yyyy", date);
+			cal.setTime(currentDate);
+			cal.add(Calendar.DAY_OF_YEAR, 1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("ERROR: Unable to parse date: " + date);
+		}
+		return formatDateTo(cal.getTime(), "dd-MM-yyyy");
+	}
+
+	public Date getNextDate(Date date) {
+		return addDays(date, 1);
+	}
+
+	public Date getPreviousDate(Date date) {
+		return addDays(date, -1);
+	}
+
+	public String getRandomDateBetween(int startYr, int endYr) {
+		Calendar gc = Calendar.getInstance();
+		int year = startYr + (int) Math.round(Math.random() * (endYr - startYr));
+		gc.set(Calendar.YEAR, year);
+		int dayOfYear = 1 + (int) Math.round(Math.random() * (gc.getActualMaximum(Calendar.DAY_OF_YEAR) - 1));
+		gc.set(Calendar.DAY_OF_YEAR, dayOfYear);
+		return String.format("%d-%02d-%02d", gc.get(Calendar.YEAR), (gc.get(Calendar.MONTH) + 1), gc.get(Calendar.DAY_OF_MONTH));
+	}
+
+	public String formatDateTo(Date date, String formatPattern) {
+		String format = "";
+		try {
+			format = new SimpleDateFormat(formatPattern).format(date);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			return format;
+		}
+	}
+
+	public Date formatStringToDate(String format, String date) {
+
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
+		Date req = null;
+		try {
+			req = sdf.parse(date);
+		} catch (Exception e) {
+
+		}
+
+		return req;
+	}
+
+	public String parseTime(int n) {
+
+		String hrs = String.format("%02d", (n / 60));
+		String mins = String.format("%02d", n % 60);
+
+		String secs = String.format("%02d", new Random().nextInt(60));
+
+		return hrs + ":" + mins + ":" + secs;
+	}
+
+	public Date setDayofMonth(Date date, int n) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.DAY_OF_MONTH, n);
+
+		return cal.getTime();
+	}
+
+	public Date addDays(Date date, int n) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DAY_OF_MONTH, n);
+
+		return cal.getTime();
+	}
+
+	public Date getNextMonthFirst(Date date) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		cal.add(Calendar.MONTH, 1);
+
+		return cal.getTime();
+
+	}
+
+	public int getMins() {
+
+		Calendar cal = Calendar.getInstance();
+		return cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+	}
+
+	public long getMins(Date date) {
+		Calendar cal = Calendar.getInstance();
+		return cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE);
+	}
+
+	public Date setTime(Date date, int mins) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR_OF_DAY, mins / 60);
+		cal.set(Calendar.MINUTE, mins % 60);
+		cal.set(Calendar.SECOND, 0);
+		return cal.getTime();
+	}
+
+
+	public Date setEndingTime(Date date, int mins) {
+		mins = mins - 1;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR_OF_DAY, mins / 60);
+		cal.set(Calendar.MINUTE, mins % 60 );
+		cal.set(Calendar.SECOND, 59);
+		return cal.getTime();
+	}
+
+
+	public LocalDateTime getLocalDateFromDate(Date date){
+		return LocalDateTime.from(Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()));
+	}
+
+	public long getDateDiff(Date date1, Date date2){
+
+		LocalDateTime start = getLocalDateFromDate(date1);
+		LocalDateTime end = getLocalDateFromDate(date2);
+		return Duration.between(start, end).toMillis()/1000;
+
+	}
+
+	public Date addTime(Date date, int mins) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.HOUR_OF_DAY, mins / 60);
+		cal.add(Calendar.MINUTE, mins % 60 );
+		return cal.getTime();
+	}
+
+	public Date addEndTime(Date date, int mins) {
+		mins = mins - 1;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.HOUR_OF_DAY, mins / 60);
+		cal.add(Calendar.MINUTE, mins % 60 );
+		cal.add(Calendar.SECOND, 59 );
+		return cal.getTime();
+	}
+
+	public long getDifference(Date second,Date first) {
+
+		long firstInstant = first.toInstant().getEpochSecond();
+		long secondInstant = second.toInstant().getEpochSecond();
+
+		return  secondInstant - firstInstant;
 	}
 
 }

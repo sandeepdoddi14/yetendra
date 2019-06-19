@@ -12,6 +12,16 @@
 
     <artifactId>attendance</artifactId>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>com.darwinbox.test.automation</groupId>
+            <artifactId>dashboard</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>

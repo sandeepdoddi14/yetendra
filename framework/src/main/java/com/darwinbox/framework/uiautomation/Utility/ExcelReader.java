@@ -40,7 +40,7 @@ public class ExcelReader {
         }
     }
 
-    public void setFilenameAndSheetName(HashMap masterData) {
+    public void setFilenameAndSheetName(Map masterData) {
         fileName = masterData.get("FileName").toString();
         sheetName = masterData.get("SheetName").toString();
         testDataRow = masterData.get("TestDataRow").toString();

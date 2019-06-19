@@ -30,13 +30,14 @@
     <dependencies>
         <dependency>
             <groupId>com.darwinbox.test.automation</groupId>
-            <artifactId>framework</artifactId>
+            <artifactId>services</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
     <modules>
         <module>../dashboard</module>
+        <module>../attendance</module>
         <module>../mobile</module>
         <module>../leave</module>
     </modules>

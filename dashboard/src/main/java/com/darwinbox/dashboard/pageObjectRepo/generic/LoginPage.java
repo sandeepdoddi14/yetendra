@@ -116,6 +116,20 @@ public class LoginPage extends TestBase {
 		}
 	}
 
+	public boolean loginToApplicationAsAdmin() {
+		try {
+			EnterUsername(data.get("@@admin"));
+			EnterPassword(data.get("@@password"));
+			clickSignIn();
+			objWaitHelper.waitForPageToLoad();
+			return true;
+		} catch (Exception e) {
+			Reporter("Exception while signing to application :" + e.getMessage(), "Error");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	/**
 	 * This method for login to Application for a Employee
 	 *
@@ -193,5 +207,23 @@ public class LoginPage extends TestBase {
 			}
 		}
 	}
+
+	public boolean switchToAdmin() {
+
+		int retry = 2;
+		boolean switched = false;
+		while(retry >= 0 ) {
+			objGenHelper.navigateTo("/dashboard/changeAccess");
+			objGenHelper.navigateTo("/dashboard");
+			objGenHelper.sleep(2);
+			switched = driver.getPageSource().contains("Switch to Employee");
+			if (switched)
+				return switched;
+			retry--;
+		}
+		return switched;
+
+	}
+
 
 }

@@ -15,10 +15,10 @@
     <artifactId>framework</artifactId>
     <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Framework</name>
+    <name>framework</name>
 
     <properties>
-            <jdk.level>1.8</jdk.level>
+        <jdk.level>1.8</jdk.level>
     </properties>
     <dependencies>
 
@@ -123,6 +123,25 @@
             <artifactId>commons-configuration</artifactId>
             <version>1.10</version>
         </dependency>
+
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>javax.mail-api</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -6,7 +6,7 @@
     <artifactId>darwinbox-hrms-automation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Darwinbox-CoreAutomation</name>
+    <name>coreautomation</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -14,6 +14,7 @@
     </properties>
     <modules>
         <module>framework</module>
+        <module>services</module>
         <module>tests</module>
     </modules>
 </project>
