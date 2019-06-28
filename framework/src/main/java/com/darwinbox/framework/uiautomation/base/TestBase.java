@@ -1,4 +1,3 @@
-
 package com.darwinbox.framework.uiautomation.base;
 
 import java.io.File;
@@ -167,9 +166,14 @@ public class TestBase implements IRetryAnalyzer {
 
 		String url = (c.getProperty("url").toString());
 
+
 		data.put("@@url",url);
 		data.put("@@admin", (c.getProperty("admin").toString()));
 		data.put("@@password", (c.getProperty("password").toString()));
+
+		data.put("@@parent", ( (c.getProperty("parent") == null) ? "" : c.getProperty("parent").toString() ));
+		data.put("@@group", ( (c.getProperty("group") == null) ? " " : c.getProperty("group").toString() ));
+
 
 		log.info(" Instance URL ----> " + url);
 
@@ -311,7 +315,7 @@ public class TestBase implements IRetryAnalyzer {
 				log.debug(result.getName() + " test is skipped and skip reason is:-" + result.getThrowable());
 			} else if (result.getStatus() == ITestResult.FAILURE) {
 
-				xtReportLog.log(Status.WARNING, result.getName() + " test is failed");
+				xtReportLog.log(Status.FAIL, result.getName() + " test is failed");
 				File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 				String scrPath = tempPath + "-" + "FAIL" + "-" + DateTimeHelper.getCurrentLocalDateAndTime().replace(":", "_") + ".png";
 				screenShotName = new File(scrPath);
