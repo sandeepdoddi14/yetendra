@@ -33,6 +33,8 @@ public class LeaveBalanceAPI extends TestBase {
 
     public double getApprovedLeaves(){return leaveBalnce().approved_leaves;}
 
+    public double getCarryForwardBalance(){return leaveBalnce().prevBalance;}
+
 }
 
 //mapper class to convert json to java object
@@ -45,7 +47,7 @@ final class leaveBalanceResponse {
     @JsonProperty("balance")
     public double balance;
     @JsonProperty("prevBalance")
-    public String prevBalance;
+    public double prevBalance;
     @JsonProperty("approved_leaves")
     public double approved_leaves;
     @JsonProperty("pending_leaves")

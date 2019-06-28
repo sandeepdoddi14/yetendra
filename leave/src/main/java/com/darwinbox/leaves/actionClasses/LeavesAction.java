@@ -1,5 +1,6 @@
 package com.darwinbox.leaves.actionClasses;
 
+import Service.LeaveBalanceAPI;
 import com.codoid.products.fillo.Recordset;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
@@ -39,6 +40,10 @@ import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 
 public class LeavesAction extends TestBase {
+
+    public LeavesAction(){
+
+    }
 
     public static final Logger log = Logger.getLogger(LeavesAction.class);
 
@@ -525,7 +530,8 @@ public class LeavesAction extends TestBase {
                 leaveTypeNameDeleteButtonList.get(0).click();
                 objAlertHelper.acceptAlert();
                 objBrowserHelper.refresh();
-                Leave_Type = Leave_Type + objGenHelper.getRandomNumber(100);
+                //Leave_Type = Leave_Type + objGenHelper.getRandomNumber(100);
+                Leave_Type = Leave_Type;
             }
             return true;
         } catch (Exception e) {
@@ -1194,24 +1200,25 @@ public class LeavesAction extends TestBase {
      * @return Leave Balance
      * @author shikhar
      */
-    public double runCarryFrowardCronByEndPointURL() {
-        try {
-            double actualLeaveBalance = 0;
+    public boolean runCarryFrowardCronByEndPointURL() {
+             double actualLeaveBalance = 0;
             String applicationURL = data.get("@@url");
-            String URL = UtilityHelper.getProperty("allAPIRepository", "Run.Cron.API") + "CarryforwardLeaves 26";
+            String URL = UtilityHelper.getProperty("allAPIRepository", "Run.Cron.API") + "CarryforwardLeavesnew"+"&type=2&eno="+EMPID;
             objUtil.getHTMLTextFromAPI(driver, URL);
             String frontEndLeaveBalance = driver.findElement(By.xpath("//body")).getText();
             if (frontEndLeaveBalance.isEmpty()) {
                 Reporter("Carry Forward cron has not ran successfully", "Error");
                 throw new RuntimeException("Carry Forward cron has not ran successfully");
             }
-            actualLeaveBalance = Double.valueOf(frontEndLeaveBalance);
-            return actualLeaveBalance;
-        } catch (Exception e) {
-            Reporter("Exception while getting front end carry forward leave balance for the employee", "Error");
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+            //actualLeaveBalance = Double.valueOf(frontEndLeaveBalance);
+            if(frontEndLeaveBalance.toLowerCase().contains("job finished")){
+                Reporter("Cron for Carry Forward is Run Successfully", "INFO");
+                return true;
+            }
+            else{
+                Reporter("Exception while running cron for carry forward", "Error");
+                return false;
+            }
     }
 
     /**
@@ -5425,18 +5432,18 @@ public class LeavesAction extends TestBase {
         try {
             double workingDaysBalance = 0;
             String leaveCycleStartDate = getFirstDayofLeaveCycle(Leave_Cycle);
-
+            //String leaveCycleStartDate =""
             if (checkDOJisUnderLeaveProbationPeriod(DOJ) == true) {
                 workingDaysBalance = 0;
             } else if (checkDOJisUnderLeaveProbationPeriod(DOJ) == false) {
 
                 if (!EndOfYear.equalsIgnoreCase("Yes")) {
                     if ((LocalDate.parse(DOJ)).isBefore(LocalDate.parse(leaveCycleStartDate))) {
-                        DOJ = leaveCycleStartDate;
+                       // DOJ = leaveCycleStartDate;
                     }
 
                     if ((LocalDate.parse(Leave_Probation_End_Date)).isBefore(LocalDate.parse(leaveCycleStartDate))) {
-                        Leave_Probation_End_Date = leaveCycleStartDate;
+                       // Leave_Probation_End_Date = leaveCycleStartDate;
                     }
                 }
 
@@ -5458,7 +5465,7 @@ public class LeavesAction extends TestBase {
 
                 double daysConsiderForCalculation = LocalDate.parse(DateTimeHelper.getCurrentLocalDate())
                         .lengthOfYear();
-                double workingDays = getWorkingDaysToConsiderForCalculation(LeaveCalBeginningDate, toDate);
+               double workingDays = getWorkingDaysToConsiderForCalculation(LeaveCalBeginningDate, toDate);
                 workingDaysBalance = Leaves_Allowed_Per_Year * (workingDays / daysConsiderForCalculation);
             }
             return workingDaysBalance;
@@ -8027,9 +8034,10 @@ public class LeavesAction extends TestBase {
                     expectedCarryForwardBalance = calculateCarryForwardBalance(expectedBalance);
                     expectedCarryForwardBalance = Math.round(expectedCarryForwardBalance * 100.0) / 100.0;
 
-                    removeEmployeeCarryForwardLeaveLogs();
+                    //removeEmployeeCarryForwardLeaveLogs();//no need to run deleted from vizjay
                     runCarryFrowardCronByEndPointURL();
-                    actualCarryForwardBalance = getEmployeesFrontEndCarryForwardLeaveBalance(Leave_Type); //This gets employees leave balance from frontend
+                    //actualCarryForwardBalance = getEmployeesFrontEndCarryForwardLeaveBalance(Leave_Type); //This gets employees leave balance from frontend
+                    actualCarryForwardBalance = new LeaveBalanceAPI(EMPID,Leave_Type).getCarryForwardBalance();
                     /*
                     In below code we are comparing calculated balance to actual balance shown in frontend
                      */
@@ -8064,7 +8072,7 @@ public class LeavesAction extends TestBase {
     public double calculateleavesToBeAppliedForOverUtilization(String empId,String leaveType,Recordset r){
         String scenario=data.get("scenario").toLowerCase();
 
-        double currentBalance=new Employee(empId).getCurrentLeaveBalanceOfEmp(leaveType);
+        double currentBalance=new EmployeeAction(empId).getCurrentLeaveBalanceOfEmp(leaveType);
         int overUtilization=getOverUtilizationLeaveForEmp(scenario,r);
 
         return currentBalance+overUtilization;

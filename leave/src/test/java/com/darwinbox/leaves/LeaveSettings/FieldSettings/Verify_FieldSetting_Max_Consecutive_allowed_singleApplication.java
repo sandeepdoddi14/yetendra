@@ -28,6 +28,7 @@ public class Verify_FieldSetting_Max_Consecutive_allowed_singleApplication exten
         ms.getDataFromMasterSheet(this.getClass( ).getName( ));
     }
 
+
     @BeforeMethod
     public void initializeObjects() {
         leavesAction = PageFactory.initElements(driver, LeavesAction.class);

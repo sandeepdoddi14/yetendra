@@ -3,6 +3,8 @@
  */
 package com.darwinbox.framework.uiautomation.Utility;
 
+import com.aventstack.extentreports.Status;
+import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.openqa.selenium.WebDriver;
 import org.testng.Reporter;
 
@@ -671,5 +673,64 @@ public class DateTimeHelper {
 
 		return  secondInstant - firstInstant;
 	}
+
+	//changes the Local Date format ex : 10th January 2019
+	public String changeDateFormatForHolidays(LocalDate date) {
+		Month month = date.getMonth();
+		String day = null;
+		int year = date.getYear();
+		if (date.getDayOfMonth() < 10) {
+			if (date.getDayOfMonth() == 1)
+				day = date.getDayOfMonth() + "st".replace("0", "").trim();
+			if (date.getDayOfMonth() == 2)
+				day = date.getDayOfMonth() + "nd".replace("0", "").trim();
+			if (date.getDayOfMonth() == 3)
+				day = date.getDayOfMonth() + "rd".replace("0", "").trim();
+			if (date.getDayOfMonth() >= 4)
+				day = date.getDayOfMonth() + "th".replace("0", "").trim();
+		} else {
+			day = date.getDayOfMonth() + "th";
+		}
+		return day + " " + month + " " + year;
+	}
+
+	public long getDifferenceBetweenDOJAndCurrentLocalLate(String DOJ){
+		LocalDate startDate = LocalDate.parse(DOJ);
+		LocalDate endDate = LocalDate.now();
+		long daysDiff = ChronoUnit.DAYS.between(startDate, endDate);
+		return daysDiff;
+	}
+	//changes the Local Date to table format ex: 29-10-1992
+	public String changeDateFormatForTable(LocalDate date) {
+		int day = date.getDayOfMonth();
+		String tempMonth = date.getMonth() + "";
+		String tempMonth1 = tempMonth.toLowerCase();
+		String month = tempMonth1.replace(tempMonth1.charAt(0), tempMonth1.toUpperCase().charAt(0));
+		int year = date.getYear();
+		return day + "-" + month.substring(0, 3) + "-" + year;
+	}
+
+
+	public LocalDate changeServerDateToStartOfFirstmonth(WebDriver driver){
+		try {
+			LocalDate today = LocalDate.now();
+			if(today.getDayOfMonth()!=01) {
+				LocalDate requestedChangeDate = today.plusDays(today.lengthOfMonth() - today.getDayOfMonth() + 1);
+				changeServerDate(driver, requestedChangeDate.toString());
+				TestBase.xtReportLog.log(Status.INFO, "Server Date is Changed Successfully to" + requestedChangeDate);
+				return requestedChangeDate;
+			}
+			changeServerDate(driver, today.toString());
+			return today;
+		}
+		catch (Exception e){
+			TestBase.xtReportLog.log(Status.ERROR,"Exception while changing server date");
+			throw new RuntimeException("Exception while changing server date");
+		}
+	}
+
+
+
+
 
 }

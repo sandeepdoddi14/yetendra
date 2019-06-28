@@ -66,7 +66,7 @@ public class Verify_CarryForward_WorkingDays extends TestBase {
 
         Assert.assertTrue(loginpage.loginToApplication(), "User Loggin to Application as Admin");
         Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
-      /*  Assert.assertTrue(leavesAction.navigateToSettings_Leaves(), "Navigated to Leaves link");
+     /*  Assert.assertTrue(leavesAction.navigateToSettings_Leaves(), "Navigated to Leaves link");
 
         Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is presnt are deleted successfully");
         Assert.assertTrue(leaveSettings.clickCreateLeavePolicies(), "Clicked on Create Leave Policies link");
@@ -77,13 +77,12 @@ public class Verify_CarryForward_WorkingDays extends TestBase {
         Assert.assertTrue(leavesAction.setCreditOnTenureBasisLeaveScenario(), "Leaves type with mentioned scenarios is created");
         Assert.assertTrue(leavesAction.setCarryForwardScenario(), "Leave Balance for whole leave cycle calculated successfully");
         Assert.assertTrue(createManageLeaves.clickCreateLeavePolicySaveButton(), "Click on Create Leave Policy Save Button");*/
-
        Assert.assertTrue(leavesAction.verifyEmployeeCarryForward(), "Leave Balance for whole leave cycle calculated successfully");
     }
 
     @AfterMethod
     public void clearTestData(){
-        //leavesAction.navigateToSettings_Leaves();
-        //Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is present are deleted successfully");
+       // leavesAction.navigateToSettings_Leaves();
+      //  Assert.assertTrue(leavesAction.deleteLeaveTypeIfAlreadyPresent(), "Leave Type is present are deleted successfully");
     }
 }

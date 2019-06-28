@@ -71,6 +71,9 @@ public class Create_LeavePolicy extends TestBase {
         leavesAction.setCreditOnAccrualBasis();
 
         leavesAction.setOverutilizationScenario();
+
+        Thread.sleep(2000);
+
         createManageLeaves.clickCreateLeavePolicySaveButton();
 
 

@@ -7,7 +7,7 @@ import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.utils.QueryExcel;
-import com.darwinbox.leaves.actionClasses.Employee;
+import com.darwinbox.leaves.actionClasses.EmployeeAction;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
 import org.apache.log4j.Logger;
@@ -60,10 +60,10 @@ public class Verify_OverUtilization  extends TestBase {
         int calculatedLeavesToBeApplid=new Double(leavesAction.calculateleavesToBeAppliedForOverUtilization(empId,leaveType,r)).intValue();
 
         if(data.get("properties").toLowerCase().contains("make leave balance 12")) {
-            new Employee(empId).setEmpLeaveBal(12,r);
+            new EmployeeAction(empId).setEmpLeaveBal(12,r);
         }
         else if(data.get("properties").toLowerCase().contains("make leave balance-2")){
-            new Employee(empId).setEmpLeaveBal(2,r);
+            new EmployeeAction(empId).setEmpLeaveBal(2,r);
         }
 
         Assert.assertTrue(leavePage.setFromAndToDates(calculatedLeavesToBeApplid),"Unable to set Leave Dates");
