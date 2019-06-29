@@ -729,7 +729,17 @@ public class DateTimeHelper {
 		}
 	}
 
+	public Long parseTime(String time){
 
+		String timeSplit[]=time.split(":");
+
+		long hrs = Long.parseLong(timeSplit[0]);
+		long mins = Long.parseLong(timeSplit[1]);
+		long secs = Long.parseLong(timeSplit[2]);
+
+		return  (hrs + mins*60)*60 +secs;
+
+	}
 
 
 
