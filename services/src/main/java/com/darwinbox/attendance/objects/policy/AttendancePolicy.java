@@ -155,7 +155,7 @@ public class AttendancePolicy implements Serializable {
         workDuration = WorkDuration.jsonToObject(policyData);
         lateDuration = LateDuration.jsonToObject(policyData);
         absent = Absent.jsonToObject(policyData);
-        earlyDuration = EarlyDuration.jsonToObject(policyData);
+      //  earlyDuration = EarlyDuration.jsonToObject(policyData);
 
     }
 
@@ -178,7 +178,7 @@ public class AttendancePolicy implements Serializable {
         body.putAll(LatePlusEarly.getMap(lateEarly));
         body.putAll(WorkDuration.getMap(workDuration) );
         body.putAll(Absent.getMap(absent) );
-        body.putAll(EarlyDuration.getMap(earlyDuration) );
+       // body.putAll(EarlyDuration.getMap(earlyDuration) );
 
         return body;
     }

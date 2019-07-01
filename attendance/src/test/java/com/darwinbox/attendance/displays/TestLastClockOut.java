@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.Random;
 
 import static com.darwinbox.attendance.pages.settings.DisplaySettingsPage.coloumnName;
-import static java.lang.Thread.sleep;
 
-public class TestEarlyMarkDuration extends TestBase {
+public class TestLastClockOut  extends TestBase {
+
 
     LoginPage loginPage;
     DateTimeHelper dateHelper;
@@ -47,7 +47,7 @@ public class TestEarlyMarkDuration extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
-    public void testEarlymark(Map<String, String> testData) throws InterruptedException {
+    public void testClockOut(Map<String, String> testData) throws InterruptedException {
 
         try {
             Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
@@ -63,18 +63,15 @@ public class TestEarlyMarkDuration extends TestBase {
         String weekoffId = atb.getWeeklyOff("None");
         DisplayFlags displayFlags = policy.getDisplayFlags();
 
-        Employee employee = empService.createAnEmployee(policy.getPolicyInfo().getCompanyID().length() == 0);
+        Employee  employee = empService.createAnEmployee(policy.getPolicyInfo().getCompanyID().length() == 0);
         atb.assignPolicyAndShift(employee.getUserID(), employee.getDoj(), shift, policy, weekoffId);
         Reporter("Employee created " + employee.getUserID(), "INFO");
 
-        long graceTimeIn= shift.getStartTime()+ policy.getPolicyInfo().getGraceTimeIn();
-        long graceTimeOut=shift.getEndTime()- policy.getPolicyInfo().getGraceTimeOut();
-
         Date date = dateHelper.getPreviousDate(new Date());
         String inTimeDate = dateHelper.formatDateTo(date, "dd-MM-yyyy");
-        String inTime = dateHelper.parseTime((int)graceTimeIn+1);
+        String inTime = dateHelper.parseTime(shift.getStartTime());
         String outTimeDate = shift.isOverNightShift() ? dateHelper.formatDateTo(new Date(), "dd-MM-yyyy") : inTimeDate;
-        String outTime = dateHelper.parseTime((int)graceTimeOut-1);
+        String outTime = dateHelper.parseTime(shift.getEndTime());
         String breakTime = dateHelper.parseTime(new Random().nextInt(60));
 
         AttendanceImportPage attendanceImportPage = new AttendanceImportPage();
@@ -93,30 +90,28 @@ public class TestEarlyMarkDuration extends TestBase {
 
         displaySettingsPage.navigateToAttendancePage(employee.getUserID());
         Reporter("Navigated to user attendance page", "INFO");
-
         boolean isDisplayed = displaySettingsPage.headersDisplay(testData.get("header"));
-        boolean check = displayFlags.isShowEarlyOut();
+        boolean check = displayFlags.isShowfirstClockOut();
 
         if (isDisplayed && (check != isDisplayed)) {
+
+            long end = dateHelper.parseTime(outTime);
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
             displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
 
-            String userEndEarlyBy = displaySettingsPage.verifyColoumnValue(date, testData.get("header"));
-            long attPage= dateHelper.parseTime(userEndEarlyBy);
+            String userEnd = displaySettingsPage.verifyColoumnValue(date, testData.get("header"));
+            Reporter("Recorded out time from system is " + userEnd, "INFO");
 
-            String outTimeDisplay = displaySettingsPage.verifyColoumnValue(date,"Time Out");
-            Reporter("Out Time from system is " + outTimeDisplay, "INFO");
-            long outTimeuserEnd = dateHelper.parseTime(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", outTimeDisplay), "HH:mm:ss"));
+            long attPage = dateHelper.parseTime(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", userEnd), "HH:mm:ss"));
 
-            long res = graceTimeOut*60-outTimeuserEnd;
-
-            if (attPage == res) {
-                Reporter("Early out duration is as expected " + userEndEarlyBy, "PASS");
-            } else {
-                Reporter("Early out duration is not as expected " + userEndEarlyBy, "FAIL");
-                Reporter("Expected is " + outTime + " Actual is " + attPage, "INFO");
+            if (end == attPage)
+                Reporter("Recorded Out Time is as expected " + userEnd, "PASS");
+            else {
+                Reporter("Recorded Out Time is not as expected " + userEnd, "FAIL");
+                Reporter("Expected is " + end + " Actual is " + attPage, "INFO");
             }
+
         }
     }
 }
