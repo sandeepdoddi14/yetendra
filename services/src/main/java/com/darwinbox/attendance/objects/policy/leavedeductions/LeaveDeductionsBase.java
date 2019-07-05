@@ -8,9 +8,12 @@ public abstract class LeaveDeductionsBase implements Serializable {
     private boolean isApprovalRequired;
     private boolean isWeekoff;
     private boolean isHoliday;
-    private boolean inDay = false;
-
+    private boolean inDay;
     private String leaveId;
+
+    public void setApprovalRequired(boolean approvalRequired) {
+        isApprovalRequired = approvalRequired;
+    }
 
     public static boolean getFilterObject(Map<String, Object> data, String key, String value) {
         if (data.get(key).toString().equals(value))
@@ -33,9 +36,8 @@ public abstract class LeaveDeductionsBase implements Serializable {
         return ld.isApprovalRequired() == ld1.isApprovalRequired() &&
                 ld.isHoliday() == ld1.isHoliday() &&
                 ld.isWeekoff() == ld1.isWeekoff() &&
-             //   ld.isInDay() == ld1.isInDay() &&
+                ld.isInDay() == ld1.isInDay() &&
                 ld.getLeaveId().equals(ld1.getLeaveId());
-
     }
 
     public boolean isApprovalRequired() {

@@ -3,7 +3,6 @@ package com.darwinbox.attendance.services;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.attendance.objects.EmployeeProfileEmailSettings;
-import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.github.javafaker.Faker;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,7 +10,6 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
-//import org.omg.PortableServer.THREAD_POLICY_ID;
 
 import java.util.*;
 import java.util.regex.Matcher;

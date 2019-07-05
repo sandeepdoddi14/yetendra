@@ -70,7 +70,7 @@ public class EarlyDuration extends LeaveDeductionsBase implements Serializable {
             boolean requiresApproval = getFilterObject(data, "maxout_deduct_after_approval", "1");
             boolean isHoliday = getFilterObject(data, "maxout_deduction_on_holiday", "1");
             boolean isWeeklyOff = getFilterObject(data, "maxout_deduction_on_weeklyoff", "1");
-         //   boolean isInDay = getFilterObject(data, "maxout_deduction_on_leave", "1");
+            boolean isInDay = getFilterObject(data, "maxout_deduction_on_leave", "1");
 
             String wdHrs_half = data.get("maxout_clock_in_hrs_half_day").toString();
             String wdmins_half = data.get("maxout_clock_in_min_half_day").toString();
@@ -80,7 +80,7 @@ public class EarlyDuration extends LeaveDeductionsBase implements Serializable {
             earlyDuration.isApprovalRequired(requiresApproval);
             earlyDuration.setHoliday(isHoliday);
             earlyDuration.setWeekoff(isWeeklyOff);
-           // earlyDuration.setInDay(isInDay);
+            earlyDuration.setInDay(isInDay);
             earlyDuration.setLeaveId(data.get("maxout_leave_type").toString());
             earlyDuration.setWdhrs_fullday(wdHrs_full);
             earlyDuration.setWdmins_fullday(wdmins_full);
