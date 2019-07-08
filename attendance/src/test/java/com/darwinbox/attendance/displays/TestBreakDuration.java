@@ -113,11 +113,6 @@ public class TestBreakDuration extends TestBase {
                 Reporter("Expected is "+breakDur+" Actual is "+attPage,"INFO");
 
             }
-
-
-
         }
-
-
     }
 }

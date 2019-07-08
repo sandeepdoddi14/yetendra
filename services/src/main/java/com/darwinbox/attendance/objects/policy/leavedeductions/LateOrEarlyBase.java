@@ -1,11 +1,6 @@
 package com.darwinbox.attendance.objects.policy.leavedeductions;
 
-import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public abstract class LateOrEarlyBase extends LeaveDeductionsBase implements Serializable {
 
@@ -46,20 +41,4 @@ public abstract class LateOrEarlyBase extends LeaveDeductionsBase implements Ser
         return status && LeaveDeductionsBase.compareToSuper(ld,ld1 );
 
     }
-
-    public List<Date> getDatesforDeduction(Date date) {
-
-        DateTimeHelper helper = new DateTimeHelper();
-
-        List<Date> dates = new ArrayList<>();
-        for (int i = 0; i < count; i++ ) {
-            dates.add(date);
-            date = helper.getNextDate(date);
-        }
-
-        return dates;
-    }
-
-
-
 }

@@ -32,7 +32,7 @@ public class Absent extends LeaveDeductionsBase implements Serializable {
         setWeekoff(isWeeklyOff);
         setInDay(isInDay);
         setHalfDay(isHalfDay);
-        setLeaveId(data.get("LeaveToDeductId").toString());
+        setLeaveId(data.get("LeaveToDeductId"));
     }
 
     public static Absent jsonToObject(Map<String, Object> data) {

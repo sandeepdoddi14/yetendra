@@ -55,7 +55,7 @@ public class TestFullDayAppliedAndPendingForAbsentDeductionFullDay extends TestB
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("Absent.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -78,10 +78,10 @@ public class TestFullDayAppliedAndPendingForAbsentDeductionFullDay extends TestB
             Assert.assertFalse(true, "Leave deductions for Absent is not enabled");
         }
 
-        title += " >> Attendance ";
+        title += " >> Attendance Policy ";
 
-        title += absent.isWeekoff() ? " WeeklyOff " : "";
-        title += absent.isHoliday() ? " Holiday " : "";
+        title += absent.isWeekoff() ? " >> WeeklyOff " : "";
+        title += absent.isHoliday() ? " >> Holiday " : "";
 
         if ((!absent.isWeekoff()) && (!absent.isHoliday())) {
             title += " Empty ";
@@ -102,11 +102,11 @@ public class TestFullDayAppliedAndPendingForAbsentDeductionFullDay extends TestB
             String leaveid = atb.getLeaveId(leaveToApply);
             atb.applyLeave(date, employee, leaveid, isFirst, isSecond, isApproved);
 
-            temp += isWeekoff ? " WeeklyOff " : "";
-            temp += isholiday ? " Holiday " : "";
+            temp += isWeekoff ? " >> WeeklyOff " : "";
+            temp += isholiday ? " >> Holiday " : "";
 
             if ((!isWeekoff) && (!isholiday)) {
-                temp += " Empty ";
+                temp += " >> Empty ";
             }
 
             if (isholiday) {

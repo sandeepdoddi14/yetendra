@@ -22,5 +22,4 @@ public class TestNGSuiteCreator {
 		rdtcs.readTestCases(config.getTestcases());
 		rdtcs.createTestngFile();
 	}
-
 }

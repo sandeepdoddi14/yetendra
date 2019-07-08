@@ -4,7 +4,9 @@ import com.darwinbox.attendance.objects.policy.leavedeductions.*;
 import com.darwinbox.attendance.objects.policy.others.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendancePolicy implements Serializable {
@@ -26,7 +28,29 @@ public class AttendancePolicy implements Serializable {
     private AutoShift autoShift;
     private ShortLeave shortLeave;
 
-    public Absent getAbsent() {
+    public List<String> sortOder = new ArrayList<>();
+
+    public List<String> getSortOrder() {
+        if (sortOder.size() == 0)
+            setSortOrder(null);
+        return sortOder;
+    }
+
+    public void setSortOrder(Object sortObj) {
+
+        String orderStr = "sortableitem_1,sortableitem_2,sortableitem_3,sortableitem_4,sortableitem_5,sortableitem_6,sortableitem_7";
+
+        if ( sortObj!= null ) {
+            orderStr = sortObj.toString();
+        }
+
+        String order [] = orderStr.split(",");
+
+        for ( String orderItem : order)
+            this.sortOder.add(orderItem);
+    }
+
+     public Absent getAbsent() {
         return absent;
     }
 
@@ -155,7 +179,9 @@ public class AttendancePolicy implements Serializable {
         workDuration = WorkDuration.jsonToObject(policyData);
         lateDuration = LateDuration.jsonToObject(policyData);
         absent = Absent.jsonToObject(policyData);
-      //  earlyDuration = EarlyDuration.jsonToObject(policyData);
+        earlyDuration = EarlyDuration.jsonToObject(policyData);
+
+        setSortOrder(policyData.get("sortable_order"));
 
     }
 
@@ -178,7 +204,9 @@ public class AttendancePolicy implements Serializable {
         body.putAll(LatePlusEarly.getMap(lateEarly));
         body.putAll(WorkDuration.getMap(workDuration) );
         body.putAll(Absent.getMap(absent) );
-       // body.putAll(EarlyDuration.getMap(earlyDuration) );
+        body.putAll(EarlyDuration.getMap(earlyDuration) );
+
+        body.put("AttendancePolicyForm[sortable_order]",String.join(",", getSortOrder()));
 
         return body;
     }

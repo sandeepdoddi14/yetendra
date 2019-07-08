@@ -97,18 +97,36 @@ public class EarlyMark extends LateOrEarlyBase implements Serializable {
         setCount(n);
     }
 
+    public Map<String, String> getEarlyMarks(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff) {
+
+        Map<String, String> body = new HashMap<>();
+        DateTimeHelper helper = new DateTimeHelper();
+
+        for ( int i = 0; i < 2*getCount(); i++ ) {
+            body.putAll(getEarly(empId, policyInfo, shift, date, isWeekOff, i + 2));
+            date = helper.getNextDate(date);
+        }
+
+        return body;
+    }
+
     public Map<String, String> getEarlyMark(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff) {
 
+        return getEarly(empId, policyInfo, shift, date, isWeekOff, 2);
+    }
+
+
+    private Map<String,String> getEarly(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff, int i){
         DateTimeHelper helper = new DateTimeHelper();
 
         Map<String, String> body = new HashMap<>();
 
+        int shiftStart = shift.getStartTime();
+        int shiftEnd = shift.getEndTime() - policyInfo.getGraceTimeOut() - 1;
+
         String shiftDate = helper.formatDateTo(date, "dd-MM-yyyy");
         String inDate = shiftDate;
         String outDate = shift.isOverNightShift() ? helper.getNextDate(shiftDate) : shiftDate;
-
-        int shiftStart = shift.getStartTime();
-        int shiftEnd = shift.getEndTime() - policyInfo.getGraceTimeOut() - 1;
 
         String inTime = helper.parseTime(shiftStart % 1440);
         String outTime = helper.parseTime(shiftEnd % 1440);
@@ -116,18 +134,20 @@ public class EarlyMark extends LateOrEarlyBase implements Serializable {
         if ((shiftEnd > shiftStart) && shift.isOverNightShift())
             outDate = inDate;
 
-        body.put("UserAttendanceImportBack[2][0]", empId);
-        body.put("UserAttendanceImportBack[2][1]", shiftDate);
-        body.put("UserAttendanceImportBack[2][2]", inDate);
-        body.put("UserAttendanceImportBack[2][3]", inTime);
-        body.put("UserAttendanceImportBack[2][4]", outDate);
-        body.put("UserAttendanceImportBack[2][5]", outTime);
-        body.put("UserAttendanceImportBack[2][6]", shift.getShiftName());
-        body.put("UserAttendanceImportBack[2][7]", policyInfo.getPolicyName());
-        body.put("UserAttendanceImportBack[2][8]", isWeekOff ? "All" : "None");
-        body.put("UserAttendanceImportBack[2][9]", "00:00:00");
+        body.put("UserAttendanceImportBack["+i+"][0]", empId);
+        body.put("UserAttendanceImportBack["+i+"][1]", shiftDate);
+        body.put("UserAttendanceImportBack["+i+"][2]", inDate);
+        body.put("UserAttendanceImportBack["+i+"][3]", inTime);
+        body.put("UserAttendanceImportBack["+i+"][4]", outDate);
+        body.put("UserAttendanceImportBack["+i+"][5]", outTime);
+        body.put("UserAttendanceImportBack["+i+"][6]", shift.getShiftName());
+        body.put("UserAttendanceImportBack["+i+"][7]", policyInfo.getPolicyName());
+        body.put("UserAttendanceImportBack["+i+"][8]", isWeekOff ? "All" : "None");
+        body.put("UserAttendanceImportBack["+i+"][9]", "00:00:00");
 
         return body;
 
     }
+
+
 }

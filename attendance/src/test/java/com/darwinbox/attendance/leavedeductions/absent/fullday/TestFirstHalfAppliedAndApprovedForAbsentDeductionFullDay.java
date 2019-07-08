@@ -51,11 +51,12 @@ public class TestFirstHalfAppliedAndApprovedForAbsentDeductionFullDay extends Te
         boolean isApproved = true;
         boolean isFirst = true;
         boolean isSecond = false;
+        boolean isHalf = false;
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("Absent.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -78,13 +79,13 @@ public class TestFirstHalfAppliedAndApprovedForAbsentDeductionFullDay extends Te
             Assert.assertFalse(true, "Leave deductions for Absent is not enabled");
         }
 
-        title += " >> Attendance ";
+        title += " >> Attendance Policy ";
 
-        title += absent.isWeekoff() ? " WeeklyOff " : "";
-        title += absent.isHoliday() ? " Holiday " : "";
+        title += absent.isWeekoff() ? " >> WeeklyOff " : "";
+        title += absent.isHoliday() ? " >> Holiday " : "";
 
         if ((!absent.isWeekoff()) && (!absent.isHoliday())) {
-            title += " Empty ";
+            title += " >> Empty ";
         }
 
         Reporter(" Test Scenario  : " + title, "INFO");
@@ -102,11 +103,11 @@ public class TestFirstHalfAppliedAndApprovedForAbsentDeductionFullDay extends Te
             String leaveid = atb.getLeaveId(leaveToApply);
             atb.applyLeave(date, employee, leaveid, isFirst, isSecond, isApproved);
 
-            temp += isWeekoff ? " WeeklyOff " : "";
-            temp += isholiday ? " Holiday " : "";
+            temp += isWeekoff ? " >> WeeklyOff " : "";
+            temp += isholiday ? " >> Holiday " : "";
 
             if ((!isWeekoff) && (!isholiday)) {
-                temp += " Empty ";
+                temp += " >> Empty ";
             }
 
             if (isholiday) {

@@ -88,7 +88,7 @@ public class AttendanceTestBase {
 
 
     public static AttendanceTestBase getObject() {
-        return getObject("BaseData.xlsx");
+        return getObject("LeaveDeductionPolicies.xlsx");
     }
 
     private void loadData() {

@@ -43,18 +43,17 @@ public class TestForFullDayFWDDeduction extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Absent,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testBasicLeaveDeduction(Map<String, String> testData) {
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "FinalWorkDuration,LeaveDeduction", retryAnalyzer = TestBase.class)
+    public void testForFullDayLeaveDeduction(Map<String, String> testData) {
 
         String title = " With No Leave Applied";
 
         boolean isFinal = true;
-        boolean forHalf = false;
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject();
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -68,11 +67,12 @@ public class TestForFullDayFWDDeduction extends TestBase {
         Reporter("Employee created " + employee.getUserID(), "INFO");
 
         String leaveName = testData.get("Leave Name");
+        String leaveToApply = testData.get("ApplyLeave");
 
         WorkDuration workDuration = policy.getWorkDuration();
 
         if (workDuration == null) {
-            Assert.assertFalse(true, "Leave deductions for Absent is not enabled");
+            Assert.assertFalse(true, "Leave deductions for Final Work Duration is not enabled");
         }
 
         title += " >> Attendance ";
@@ -91,27 +91,24 @@ public class TestForFullDayFWDDeduction extends TestBase {
             date = dateHelper.getNextDate(date);
 
             String temp = " >> Status ";
-            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY);
             boolean isboth = day.equals(LeaveDeductionsBase.DAYSTATUS.WH);
-            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF);
+            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY) || isboth;
+            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF) || isboth;
 
-            isholiday = isholiday || isboth;
-            isWeekoff = isWeekoff || isboth;
+            String leaveid = atb.getLeaveId(leaveToApply);
 
-            temp += isWeekoff || isboth ? " WeeklyOff " : "";
-            temp += isholiday || isboth ? " Holiday " : "";
-            boolean empty = false;
+            temp += isWeekoff ? " WeeklyOff " : "";
+            temp += isholiday ? " Holiday " : "";
 
             if ((!isWeekoff) && (!isholiday)) {
                 temp += " Empty ";
-                empty = true;
             }
 
             if (isholiday) {
                 atb.createHoliday(date);
             }
 
-            Map<String, String> body = workDuration.getWorkDuration(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift, date, forHalf,isFinal, isWeekoff);
+            Map<String, String> body = workDuration.getWorkDuration(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift, date, false,isFinal, isWeekoff);
             atb.importBackdated(body);
 
             String date_test = " >> Date :" + body.get("UserAttendanceImportBack[2][1]");
@@ -125,7 +122,13 @@ public class TestForFullDayFWDDeduction extends TestBase {
             atb.validateHoliday(isholiday, status, this);
             atb.validateWeekoff(isWeekoff, status, this);
 
-            atb.validateLeave(workDuration.isApprovalRequired(), false, status, leaveName, this);
+            boolean proceed = workDuration.getProceedOnNoLeave(workDuration, day);
+
+            if (proceed) {
+                atb.validateLeave(workDuration.isApprovalRequired(), false, status, leaveName, this);
+            } else {
+                atb.validateNoLeave(status, leaveName, this);
+            }
 
             validateDate();
         }

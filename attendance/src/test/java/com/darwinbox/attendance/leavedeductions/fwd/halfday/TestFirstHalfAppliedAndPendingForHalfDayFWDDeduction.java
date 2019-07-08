@@ -43,10 +43,10 @@ public class TestFirstHalfAppliedAndPendingForHalfDayFWDDeduction extends TestBa
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Absent,LeaveDeduction", retryAnalyzer = TestBase.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "FinalWorkDuration,LeaveDeduction", retryAnalyzer = TestBase.class)
     public void testFirstHalfAppliedAndPending(Map<String, String> testData) {
 
-        String title = " With First Half Applied and Pending";
+        String title = " With First Half Applied and Pending ";
 
         boolean isFinal = true;
         boolean forHalf = true;
@@ -57,7 +57,7 @@ public class TestFirstHalfAppliedAndPendingForHalfDayFWDDeduction extends TestBa
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject();
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -76,7 +76,7 @@ public class TestFirstHalfAppliedAndPendingForHalfDayFWDDeduction extends TestBa
         WorkDuration workDuration = policy.getWorkDuration();
 
         if (workDuration == null) {
-            Assert.assertFalse(true, "Leave deductions for Absent is not enabled");
+            Assert.assertFalse(true, "Leave deductions for Final Work Duration is not enabled");
         }
 
         title += " >> Attendance ";
@@ -95,23 +95,18 @@ public class TestFirstHalfAppliedAndPendingForHalfDayFWDDeduction extends TestBa
             date = dateHelper.getNextDate(date);
 
             String temp = " >> Status ";
-            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY);
             boolean isboth = day.equals(LeaveDeductionsBase.DAYSTATUS.WH);
-            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF);
-
-            isholiday = isholiday || isboth;
-            isWeekoff = isWeekoff || isboth;
+            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY) || isboth;
+            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF) || isboth;
 
             String leaveid = atb.getLeaveId(leaveToApply);
             atb.applyLeave(date, employee, leaveid, isFirst, isSecond, isApproved);
 
-            temp += isWeekoff || isboth ? " WeeklyOff " : "";
-            temp += isholiday || isboth ? " Holiday " : "";
-            boolean empty = false;
+            temp += isWeekoff ? " WeeklyOff " : "";
+            temp += isholiday ? " Holiday " : "";
 
             if ((!isWeekoff) && (!isholiday)) {
                 temp += " Empty ";
-                empty = true;
             }
 
             if (isholiday) {
@@ -129,25 +124,12 @@ public class TestFirstHalfAppliedAndPendingForHalfDayFWDDeduction extends TestBa
             Reporter(" Day Status " + temp, "INFO");
             Reporter(" Actual Status " + date_test + " " + status.replaceAll("\\<.*?>", ""), "INFO");
 
-            try {
+            atb.validateHoliday(isholiday, status, this);
+            atb.validateWeekoff(isWeekoff, status, this);
 
-                if (isholiday) {
-                    Assert.assertTrue(status.contains(atb.holiday), "Holiday is not marked");
-                }
+            atb.validateLeave(isApproved, isFirst || isSecond, status, leaveToApply, this);
 
-                if (isWeekoff) {
-                    Assert.assertTrue(status.contains(atb.weekoff), "WeekOff is not marked");
-                }
-
-                Assert.assertTrue(status.contains(atb.pending_halfday + "(" + leaveToApply + ")"), "No Leave is Deducted and in Pending state");
-
-                Assert.assertFalse(status.contains("(" + leaveName + ")"), "No Leave is Deducted and Approved");
-
-                Reporter(title + temp, "Pass");
-
-            } catch (Exception e) {
-                Reporter(title + temp + "/n" + e.getMessage(), "Fail");
-            }
+            atb.validateNoLeave(status, leaveName, this);
 
             validateDate();
         }

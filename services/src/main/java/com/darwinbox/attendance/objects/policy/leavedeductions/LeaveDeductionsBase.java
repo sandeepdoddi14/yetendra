@@ -11,18 +11,16 @@ public abstract class LeaveDeductionsBase implements Serializable {
     private boolean inDay;
     private String leaveId;
 
-    public void setApprovalRequired(boolean approvalRequired) {
-        isApprovalRequired = approvalRequired;
-    }
+    public enum DAYSTATUS {WEEKOFF, HOLIDAY, WH, EMPTY}
 
     public static boolean getFilterObject(Map<String, Object> data, String key, String value) {
-        if (data.get(key).toString().equals(value))
+        if (data.containsKey(key) && data.get(key).toString().equals(value))
             return true;
         return false;
     }
 
     public static boolean getFilter(Map<String, String> data, String key, String value) {
-        if (data.get(key).equals(value))
+        if (data.containsKey(key) && data.get(key).equals(value))
             return true;
         return false;
     }
@@ -65,7 +63,7 @@ public abstract class LeaveDeductionsBase implements Serializable {
     }
 
     public boolean isInDay() {
-        return false;
+        return inDay;
     }
 
     public void setInDay(boolean inDay) {
@@ -91,11 +89,13 @@ public abstract class LeaveDeductionsBase implements Serializable {
         boolean isWeekoff = day.equals(DAYSTATUS.WEEKOFF) || isboth;
         boolean empty = day.equals(DAYSTATUS.EMPTY);
 
+        if ( ldbase instanceof  Absent)
+            return empty;
+
         boolean proceed = ( empty ||  ( isholiday && ldbase.isHoliday() )  ||
                           ( isWeekoff && ldbase.isWeekoff() && (!isholiday)) );
 
         return proceed;
     }
 
-    public enum DAYSTATUS {WEEKOFF, HOLIDAY, WH, EMPTY}
 }

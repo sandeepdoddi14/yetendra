@@ -21,7 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TestAttendanceRequests extends TestBase {
+public class TestShiftChangeRequests extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -52,8 +52,9 @@ public class TestAttendanceRequests extends TestBase {
 
         AttendanceTestBase atb = AttendanceTestBase.getObject();
 
-        AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
-        Shift shift = atb.getShift(testData.get("ShiftName"));
+        AttendancePolicy policy = atb.getAttendancePolicy(testData.get("Policy"));
+        Shift shift = atb.getShift(testData.get("Shift"));
+
 
         Date date = new Date();
         int days = Integer.parseInt(testData.get("Days"));
@@ -91,12 +92,11 @@ public class TestAttendanceRequests extends TestBase {
         headers.put("Cookie",employee.getPhpSessid());
         headers.put("X-Requested-With", "XMLHttpRequest");
 
-        long mins = dateHelper.getMins(date)-2;
+        int mins = dateHelper.getMins()-2;
         date = dateHelper.addDays(date,days );
 
         if (isFuture)
             mins += 5;
-
         String response = atb.applyClockin(headers,(int)mins,location, dateHelper.formatDateTo(date, "dd-MM-yyyy")).get("error").toString();
 
         Reporter(" Response : " + response, "INFO");
@@ -132,8 +132,6 @@ public class TestAttendanceRequests extends TestBase {
         String id = atb.getUserAttendanceId(employee);
 
         atb.approveAttendance(id);
-
-
 
 
     }

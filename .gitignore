@@ -1,6 +1,8 @@
 target/
 bin/
-**/Test_Execution_Results/*
+**/TestResults/*
+**/config
+**/testng.xml
 .classpath
 .project
 .idea/

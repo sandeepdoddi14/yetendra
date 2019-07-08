@@ -43,7 +43,7 @@ public class TestFirstHalfAppliedAndApprovedForFullDayFWDDeduction extends TestB
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Absent,LeaveDeduction", retryAnalyzer = TestBase.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "FinalWorkDuration,LeaveDeduction", retryAnalyzer = TestBase.class)
     public void testFirstHalfAppliedAndApproved(Map<String, String> testData) {
 
         String title = " With First Half Applied and Approved ";
@@ -57,7 +57,7 @@ public class TestFirstHalfAppliedAndApprovedForFullDayFWDDeduction extends TestB
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject();
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -76,7 +76,7 @@ public class TestFirstHalfAppliedAndApprovedForFullDayFWDDeduction extends TestB
         WorkDuration workDuration = policy.getWorkDuration();
 
         if (workDuration == null) {
-            Assert.assertFalse(true, "Leave deductions for Absent is not enabled");
+            Assert.assertFalse(true, "Leave deductions for Final Work Duration is not enabled");
         }
 
         title += " >> Attendance ";
@@ -95,23 +95,18 @@ public class TestFirstHalfAppliedAndApprovedForFullDayFWDDeduction extends TestB
             date = dateHelper.getNextDate(date);
 
             String temp = " >> Status ";
-            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY);
             boolean isboth = day.equals(LeaveDeductionsBase.DAYSTATUS.WH);
-            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF);
-
-            isholiday = isholiday || isboth;
-            isWeekoff = isWeekoff || isboth;
+            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY) || isboth;
+            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF) || isboth;
 
             String leaveid = atb.getLeaveId(leaveToApply);
             atb.applyLeave(date, employee, leaveid, isFirst, isSecond, isApproved);
 
-            temp += isWeekoff || isboth ? " WeeklyOff " : "";
-            temp += isholiday || isboth ? " Holiday " : "";
-            boolean empty = false;
+            temp += isWeekoff ? " WeeklyOff " : "";
+            temp += isholiday ? " Holiday " : "";
 
             if ((!isWeekoff) && (!isholiday)) {
                 temp += " Empty ";
-                empty = true;
             }
 
             if (isholiday) {
@@ -137,7 +132,7 @@ public class TestFirstHalfAppliedAndApprovedForFullDayFWDDeduction extends TestB
             boolean proceed = workDuration.getProceed(workDuration, day);
 
             if (proceed) {
-                atb.validateLeave(workDuration.isApprovalRequired(), false, status, leaveName, this);
+                atb.validateLeave(workDuration.isApprovalRequired(), isFirst || isSecond, status, leaveName, this);
             } else {
                 atb.validateNoLeave(status, leaveName, this);
             }

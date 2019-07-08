@@ -43,13 +43,27 @@ public class TestFullDayAppliedAndApprovedForHalfDayFWDDeduction extends TestBas
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Absent,LeaveDeduction", retryAnalyzer = TestBase.class)
+    private void validateDate() {
+
+        Date local = dateHelper.getNextDate(date);
+
+        String curr = dateHelper.formatDateTo(new Date(), "yyyy-MM-dd");
+        String expected = dateHelper.formatDateTo(local, "yyyy-MM-dd");
+
+        if (curr.equals(expected)) {
+            employee = empService.createAnEmployee(employee.getCompanyID().equals("main"));
+            AttendanceTestBase.getObject().assignPolicyAndShift(employee.getUserID(), employee.getDoj());
+            date = dateHelper.formatStringToDate("yyyy-MM-dd", employee.getDoj());
+        }
+    }
+
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "FinalWorkDuration,LeaveDeduction", retryAnalyzer = TestBase.class)
     public void testFullDayAppliedAndApproved(Map<String, String> testData) {
 
-        String title = " With Full Day Applied and Approved ";
+        String title = " With Full day Applied and Approved ";
 
         boolean isFinal = true;
-        boolean forHalf = true;
+        boolean forHalf = false;
         boolean isApproved = true;
         boolean isFirst = false;
         boolean isSecond = false;
@@ -57,7 +71,7 @@ public class TestFullDayAppliedAndApprovedForHalfDayFWDDeduction extends TestBas
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject();
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -76,7 +90,7 @@ public class TestFullDayAppliedAndApprovedForHalfDayFWDDeduction extends TestBas
         WorkDuration workDuration = policy.getWorkDuration();
 
         if (workDuration == null) {
-            Assert.assertFalse(true, "Leave deductions for Absent is not enabled");
+            Assert.assertFalse(true, "Leave deductions for Final Work Duration is not enabled");
         }
 
         title += " >> Attendance ";
@@ -95,30 +109,25 @@ public class TestFullDayAppliedAndApprovedForHalfDayFWDDeduction extends TestBas
             date = dateHelper.getNextDate(date);
 
             String temp = " >> Status ";
-            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY);
             boolean isboth = day.equals(LeaveDeductionsBase.DAYSTATUS.WH);
-            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF);
-
-            isholiday = isholiday || isboth;
-            isWeekoff = isWeekoff || isboth;
+            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY) || isboth;
+            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF) || isboth;
 
             String leaveid = atb.getLeaveId(leaveToApply);
             atb.applyLeave(date, employee, leaveid, isFirst, isSecond, isApproved);
 
-            temp += isWeekoff || isboth ? " WeeklyOff " : "";
-            temp += isholiday || isboth ? " Holiday " : "";
-            boolean empty = false;
+            temp += isWeekoff ? " WeeklyOff " : "";
+            temp += isholiday ? " Holiday " : "";
 
             if ((!isWeekoff) && (!isholiday)) {
                 temp += " Empty ";
-                empty = true;
             }
 
             if (isholiday) {
                 atb.createHoliday(date);
             }
 
-            Map<String, String> body = workDuration.getWorkDuration(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift, date, forHalf, isFinal, isWeekoff);
+            Map<String, String> body = workDuration.getWorkDuration(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift, date, forHalf,isFinal, isWeekoff);
             atb.importBackdated(body);
 
             String date_test = " >> Date :" + body.get("UserAttendanceImportBack[2][1]");
@@ -129,41 +138,20 @@ public class TestFullDayAppliedAndApprovedForHalfDayFWDDeduction extends TestBas
             Reporter(" Day Status " + temp, "INFO");
             Reporter(" Actual Status " + date_test + " " + status.replaceAll("\\<.*?>", ""), "INFO");
 
-            try {
+            atb.validateHoliday(isholiday, status, this);
+            atb.validateWeekoff(isWeekoff, status, this);
 
-                if (isholiday) {
-                    Assert.assertTrue(status.contains(atb.holiday), "Holiday is not marked");
-                }
+            atb.validateLeave(isApproved, isFirst || isSecond, status, leaveToApply, this);
 
-                if (isWeekoff) {
-                    Assert.assertTrue(status.contains(atb.weekoff), "WeekOff is not marked");
-                }
+            boolean proceed = workDuration.getProceed(workDuration, day);
 
-                Assert.assertTrue(status.contains(atb.approved + "(" + leaveToApply + ")"), "No Leave is Deducted and in Pending state");
-
-                Assert.assertFalse(status.contains("(" + leaveName + ")"), "No Leave is Deducted and Approved");
-
-                Reporter(title + temp, "Pass");
-
-            } catch (Exception e) {
-                Reporter(title + temp + "/n" + e.getMessage(), "Fail");
+            if (proceed) {
+                atb.validateLeave(workDuration.isApprovalRequired(), isFirst || isSecond, status, leaveName, this);
+            } else {
+                atb.validateNoLeave(status, leaveName, this);
             }
 
             validateDate();
-        }
-    }
-
-    private void validateDate() {
-
-        Date local = dateHelper.getNextDate(date);
-
-        String curr = dateHelper.formatDateTo(new Date(), "yyyy-MM-dd");
-        String expected = dateHelper.formatDateTo(local, "yyyy-MM-dd");
-
-        if (curr.equals(expected)) {
-            employee = empService.createAnEmployee(employee.getCompanyID().equals("main"));
-            AttendanceTestBase.getObject().assignPolicyAndShift(employee.getUserID(), employee.getDoj());
-            date = dateHelper.formatStringToDate("yyyy-MM-dd", employee.getDoj());
         }
     }
 }

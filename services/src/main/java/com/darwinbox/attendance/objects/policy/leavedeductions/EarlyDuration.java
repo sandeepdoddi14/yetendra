@@ -20,14 +20,14 @@ public class EarlyDuration extends LeaveDeductionsBase implements Serializable {
         boolean isWeeklyOff = getFilter(data, "IsOnWeeklyOff", "yes");
         boolean isInDay = getFilter(data, "IsInDay", "yes");
 
-        String halfday [] = data.get("MinHrs").toString().split(":");
-        String fullday [] = data.get("MaxHrs").toString().split(":");
+        String halfday [] = data.get("MinHrs").split(":");
+        String fullday [] = data.get("MaxHrs").split(":");
 
         isApprovalRequired(isApprovalRequired);
         setHoliday(isHoliday);
         setWeekoff(isWeeklyOff);
         setInDay(isInDay);
-        setLeaveId(data.get("LeaveToDeductId").toString());
+        setLeaveId(data.get("LeaveToDeductId"));
         setWdhrs_fullday(fullday[0]);
         setWdmins_fullday(fullday[1]);
         setWdhrs_halfday(halfday[0]);
