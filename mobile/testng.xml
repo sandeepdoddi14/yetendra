@@ -1,1 +1,0 @@
-<suite name="TestAutomation"><test name="Verifying Auth Login API"><classes><class name="com.darwinbox.mobile.allAPIs.AllApiStatusCheckTest"/></classes></test></suite>
