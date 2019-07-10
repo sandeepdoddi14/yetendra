@@ -1,16 +1,14 @@
 package Objects.LeavePolicyObject;
 
 import Objects.Employee;
+import Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
+import Objects.LeavePolicyObject.Accural.Credit_On_Pro_Rata_Basis;
 import Objects.LeavePolicyObject.Fields.*;
-import Service.EmployeeServices;
 import Service.*;
-import Service.LeaveService;
-import Service.Service;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.leaves.Utils.LeaveBase;
 import com.darwinbox.leaves.Utils.MapUtils;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
-import com.github.javafaker.Bool;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -40,6 +38,16 @@ public class LeavePolicyObject extends LeaveBase {
     private String group_Company = null;
     private String leave_Type = null;
     private String description;
+
+    public String getCustomLeaveCycleMonth() {
+        return customLeaveCycleMonth;
+    }
+
+    public void setCustomLeaveCycleMonth(String customLeaveCycleMonth) {
+        this.customLeaveCycleMonth = customLeaveCycleMonth;
+    }
+
+    private String customLeaveCycleMonth=null;
     private int maximum_leave_allowed_per_year;
     private RestrictCondition restriction_Condition = new RestrictCondition();
     private int consecutive_leave_allowed;
@@ -65,6 +73,17 @@ public class LeavePolicyObject extends LeaveBase {
     private OverUtilization OverUtilization = new OverUtilization();
 
     private ApprovalFlow approvalFlow=null;
+
+
+    /*
+    Leave Accural Objects
+     */
+    private Credit_On_Pro_Rata_Basis credit_on_pro_rata_basis=new Credit_On_Pro_Rata_Basis();
+    private Credit_On_Accural_Basis credit_on_accural_basis=new Credit_On_Accural_Basis();
+
+
+
+
 
     public LeavePolicyObject() {
 
@@ -106,6 +125,23 @@ public class LeavePolicyObject extends LeaveBase {
     public void setPrefixSuffixSetting(PrefixSuffixSetting prefixSuffixSetting) {
         this.prefixSuffixSetting = prefixSuffixSetting;
     }
+
+    public Credit_On_Pro_Rata_Basis getCredit_on_pro_rata_basis() {
+        return credit_on_pro_rata_basis;
+    }
+
+    public void setCredit_on_pro_rata_basis(Credit_On_Pro_Rata_Basis credit_on_pro_rata_basis) {
+        this.credit_on_pro_rata_basis = credit_on_pro_rata_basis;
+    }
+
+    public Credit_On_Accural_Basis getCredit_on_accural_basis() {
+        return credit_on_accural_basis;
+    }
+
+    public void setCredit_on_accural_basis(Credit_On_Accural_Basis credit_on_accural_basis) {
+        this.credit_on_accural_basis = credit_on_accural_basis;
+    }
+
 
     public boolean isDontShowAndApplyInNoticePeriod() {
         return dontShowAndApplyInNoticePeriod;
@@ -693,9 +729,85 @@ public class LeavePolicyObject extends LeaveBase {
 
         }
 
-        if(approvalFlow!=null){
+        if(this.approvalFlow!=null){
             formData.removeIf(x -> x.getName().contains("Leaves[approval_flow]"));
             formData.add(new BasicNameValuePair("Leaves[approval_flow]", new ApprovalFlowServices().getAllApprovalFlows().get(this.getApprovalFlow().getName())));
+        }
+
+        if(this.getCredit_on_pro_rata_basis()!=null && this.getCredit_on_pro_rata_basis().indicator){
+
+            formData.removeIf(x -> x.getName().contains("LeavePolicy_Prorated[status]"));
+            formData.add(new BasicNameValuePair("LeavePolicy_Prorated[status]", "1"));
+
+            formData.removeIf(x -> x.getName().contains("LeavePolicy_Prorated[probation_status]"));
+            formData.add(new BasicNameValuePair("LeavePolicy_Prorated[probation_status]",
+                        this.getCredit_on_pro_rata_basis().calculateFromJoiningDate?"0":"1"));
+
+            formData.removeIf(x -> x.getName().contains("LeavePolicy_Prorated[mid_joining_leaves]"));
+            if(this.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th)
+                formData.add(new BasicNameValuePair("LeavePolicy_Prorated[mid_joining_leaves]","1"));
+
+            formData.removeIf(x -> x.getName().contains("LeavePolicy_Prorated[mid_joining_leaves_full]"));
+            if(this.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
+            formData.add(new BasicNameValuePair("LeavePolicy_Prorated[mid_joining_leaves_full]","1"));
+
+        }
+
+        if(this.getCredit_on_accural_basis()!=null && this.getCredit_on_accural_basis().getIndicator()){
+            formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[status]"));
+            formData.add(new BasicNameValuePair("LeavePolicy_Accural[status]", "1"));
+
+            if(this.getCredit_on_accural_basis().getMonth())
+            {
+                formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
+                formData.add(new BasicNameValuePair("LeavePolicy_Accural[is_monthly_quaterly]", "0"));
+                if(this.getCredit_on_accural_basis().getBeginOfMonth()) {
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
+
+
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from]", "0"));
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from_monthly]", "0"));
+
+                }
+                if(this.getCredit_on_accural_basis().getEndOfMonth()) {
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
+
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from]", "1"));
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from_monthly]", "1"));
+
+                }
+            }
+            if(this.getCredit_on_accural_basis().getQuarter())
+            {
+                formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
+                formData.add(new BasicNameValuePair("LeavePolicy_Accural[is_monthly_quaterly]", "1"));
+                if(this.getCredit_on_accural_basis().getBeginOfQuarter()) {
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
+
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from]", "0"));
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from_monthly]", "0"));
+                }
+                if(this.getCredit_on_accural_basis().getEndOfQuarter()) {
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
+
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from]", "1"));
+                    formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from_monthly]", "0"));
+                }
+            }
+
+            if(this.getCredit_on_accural_basis().getBiAnnual()){
+                formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
+                formData.add(new BasicNameValuePair("LeavePolicy_Accural[is_monthly_quaterly]", "2"));
+                //formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from]", "1"));
+
+            }
+
+
+
         }
         return formData;
     }
