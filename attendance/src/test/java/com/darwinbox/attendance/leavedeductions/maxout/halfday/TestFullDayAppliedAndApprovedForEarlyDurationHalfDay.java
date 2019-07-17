@@ -55,7 +55,7 @@ public class TestFullDayAppliedAndApprovedForEarlyDurationHalfDay extends TestBa
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("EarlyDuration.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
