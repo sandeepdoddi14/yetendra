@@ -151,6 +151,7 @@ public class Shift implements Serializable {
         map.put("TenantShiftForm[show_in_request]",parseToPHP(showShiftChangeRequest));
         map.put("TenantShiftForm[policy_id]", getPolicyId());
         map.put("TenantShiftForm[id]",getShiftID());
+
         return map;
     }
 

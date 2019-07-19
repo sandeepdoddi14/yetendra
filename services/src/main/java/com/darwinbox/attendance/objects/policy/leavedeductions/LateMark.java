@@ -104,21 +104,22 @@ public class LateMark extends LateOrEarlyBase implements Serializable {
         setCount(n);
     }
 
-    public Map<String, String> getLatemark(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff) {
+    public Map<String, String> getLatemarks(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff) {
 
         DateTimeHelper helper = new DateTimeHelper();
-
         Map<String, String> body = new HashMap<>();
 
-
-        for (int i = 0; i < getCount(); i++) {
-
+        for (int i = 0; i < 2 * getCount(); i++) {
             body.putAll(getLatemark(empId, policyInfo, shift, date, isWeekOff, i + 2));
             date = helper.getNextDate(date);
         }
 
         return body;
 
+    }
+
+    public Map<String, String> getLatemark(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff) {
+        return (getLatemark(empId, policyInfo, shift, date, isWeekOff, 2));
     }
 
     private Map<String, String> getLatemark(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff, int import_line) {
@@ -131,7 +132,6 @@ public class LateMark extends LateOrEarlyBase implements Serializable {
 
         int shiftStart = shift.getStartTime() + policyInfo.getGraceTimeIn();
         int shiftEnd = shift.getEndTime();
-
 
         String inTime = helper.parseTime(shiftStart % 1440);
         String outTime = helper.parseTime(shiftEnd % 1440);

@@ -28,26 +28,15 @@ public class AttendancePolicy implements Serializable {
     private AutoShift autoShift;
     private ShortLeave shortLeave;
 
-    public List<String> sortOder = new ArrayList<>();
+    public String sortOder = "sortableitem_4,sortableitem_6,sortableitem_1,sortableitem_2,sortableitem_7,sortableitem_3,sortableitem_5";
 
-    public List<String> getSortOrder() {
-        if (sortOder.size() == 0)
-            setSortOrder(null);
+    public String getSortOrder() {
         return sortOder;
     }
 
     public void setSortOrder(Object sortObj) {
-
-        String orderStr = "sortableitem_1,sortableitem_2,sortableitem_3,sortableitem_4,sortableitem_5,sortableitem_6,sortableitem_7";
-
-        if ( sortObj!= null ) {
-            orderStr = sortObj.toString();
-        }
-
-        String order [] = orderStr.split(",");
-
-        for ( String orderItem : order)
-            this.sortOder.add(orderItem);
+        if ( sortObj != null )
+            sortOder = sortObj.toString();
     }
 
      public Absent getAbsent() {
@@ -206,7 +195,7 @@ public class AttendancePolicy implements Serializable {
         body.putAll(Absent.getMap(absent) );
         body.putAll(EarlyDuration.getMap(earlyDuration) );
 
-        body.put("AttendancePolicyForm[sortable_order]",String.join(",", getSortOrder()));
+        body.put("AttendancePolicyForm[sortable_order]",getSortOrder());
 
         return body;
     }
@@ -219,6 +208,8 @@ public class AttendancePolicy implements Serializable {
                 getReqFlags().compareTo(policy.getReqFlags()) &&
                 getReqDays().compareTo(policy.getReqDays()) &&
 
+                getSortOrder().equalsIgnoreCase(policy.getSortOrder()) &&
+
                 ShortLeave.compareTo(getShortLeave(),policy.getShortLeave()) &&
                 BufferTime.compareTo(getBufferTime(),policy.getBufferTime()) &&
                 AutoShift.compareTo(getAutoShift(),policy.getAutoShift()) &&
@@ -230,5 +221,6 @@ public class AttendancePolicy implements Serializable {
                 WorkDuration.compareTo(getWorkDuration(),policy.getWorkDuration()) &&
                 EarlyDuration.compareTo(getEarlyDuration(),policy.getEarlyDuration()) &&
                 LateDuration.compareTo(getLateDuration(),policy.getLateDuration());
+
     }
 }

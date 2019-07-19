@@ -89,7 +89,7 @@ public abstract class LeaveDeductionsBase implements Serializable {
         boolean isWeekoff = day.equals(DAYSTATUS.WEEKOFF) || isboth;
         boolean empty = day.equals(DAYSTATUS.EMPTY);
 
-        if ( ldbase instanceof  Absent)
+        if ( ldbase instanceof Absent)
             return empty;
 
         boolean proceed = ( empty ||  ( isholiday && ldbase.isHoliday() )  ||

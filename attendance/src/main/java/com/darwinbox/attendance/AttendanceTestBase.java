@@ -20,6 +20,7 @@ import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.json.JSONObject;
+import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -368,6 +369,23 @@ public class AttendanceTestBase {
             }
             policy.setWorkDuration(workdurObj);
 
+            String sortOrder = data.get("SortOrder");
+
+            if ( sortOrder != null && (!sortOrder.equalsIgnoreCase("no")) ) {
+
+                String finalStr = "";
+                String orderStr[] = sortOrder.split("|");
+
+                for (String order : orderStr)
+                    finalStr = finalStr + "," + "sortableitem_"+ order;
+
+                sortOrder = finalStr.substring(1);
+            } else {
+                sortOrder = null;
+            }
+
+            policy.setSortOrder(sortOrder);
+
             try {
                 String policy_id = srvc.getAttendancePolicyId(data.get("Policy Name"), companyName);
 
@@ -458,8 +476,10 @@ public class AttendanceTestBase {
 
             String name = data.get("WeeklyOffName");
             String id = data.get("id");
+            String instance = data.get("instance");
 
-            weekoffs.put(name, id);
+            if (TestBase.data.get("@@url").contains(instance))
+                weekoffs.put(name, id);
 
         }
     }

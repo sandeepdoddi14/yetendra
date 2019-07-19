@@ -7,34 +7,25 @@ import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.others.BufferTime;
 import com.darwinbox.attendance.objects.policy.others.PolicyInfo;
 import com.darwinbox.framework.utils.DatabaseUtils;
+import org.apache.commons.math3.util.CombinatoricsUtils;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class AttendancePunchProcessor {
 
     public static void main(String[] args) throws Exception {
 
 
-        float f1 = (float) 28.179; // total balance
-        float f2 = (float)12.657; // carry fwd
+        int n[] = new int [] {1,2,3,4,5,6};
 
-        System.out.println(f1 - f2 );
+String s = "";
+
+        System.out.println(sout(n,s));
 
 
-        double dd1 = 28.179;
-        double dd2 = 12.657;
-
-        System.out.println(dd1 -dd2);
-
-        BigDecimal bd1 = new BigDecimal("28.179");
-        BigDecimal bd2 = new BigDecimal("12.657");
-
-        System.out.println(bd1.subtract(bd2));
 
         System.exit(0);
 
@@ -92,7 +83,7 @@ public class AttendancePunchProcessor {
             DatabaseUtils dbu = new DatabaseUtils();
             dbu.loadDriver("com.mysql.jdbc.Driver");
             dbu.getConnection("jdbc:mysql://biometric.qa.darwinbox.io:3306/biometric","darwinbox","darwinbox123");
-            int n  = dbu.executeUpdate("select * from devices");
+            int n8  = dbu.executeUpdate("select * from devices");
 
         }catch(Exception e){
 
@@ -133,10 +124,24 @@ public class AttendancePunchProcessor {
     }
 
 
-    private static void validatePunches(Attendance attendance) {
+    private static String sout(int n[] ,String s) {
 
 
+        if ( s.length() == 6)
+            return s;
+        for ( int i = 0;i<n.length; i++ ) {
 
+            if ( s.contains(n[i]+""))
+                return "";
+            else
+                s = s+ ( n[i] + "");
+
+            n[i] = n[i] + 1;
+
+            s = sout(n,s);
+        }
+
+        return s;
     }
 
 

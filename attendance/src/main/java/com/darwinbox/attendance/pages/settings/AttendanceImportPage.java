@@ -127,6 +127,28 @@ public class AttendanceImportPage {
         body.put("UserAttendanceImportBack[2][9]", getBreakDuration());
 
         return body;
-            }
+    }
+
+    public void toObject(Map<String, String> body) {
+
+        DateTimeHelper helper = new DateTimeHelper();
+        Date shiftDate = helper.formatStringToDate("dd-MM-yyyy",body.get("UserAttendanceImportBack[2][1]"));
+
+        setEmployeeId(body.get("UserAttendanceImportBack[2][0]"));
+        setShitDate(shiftDate);
+
+        setInTimeDate(body.get("UserAttendanceImportBack[2][2]"));
+        setInTime(body.get("UserAttendanceImportBack[2][3]"));
+
+        setOutTimeDate(body.get("UserAttendanceImportBack[2][4]"));
+        setOutTime(body.get("UserAttendanceImportBack[2][5]"));
+
+        setShiftName(body.get("UserAttendanceImportBack[2][6]"));
+        setPolicyName(body.get("UserAttendanceImportBack[2][7]"));
+        setWeekoff(body.get("UserAttendanceImportBack[2][8]").equalsIgnoreCase("All"));
+
+        setBreakDuration(body.get("UserAttendanceImportBack[2][9]"));
+
+    }
 
 }

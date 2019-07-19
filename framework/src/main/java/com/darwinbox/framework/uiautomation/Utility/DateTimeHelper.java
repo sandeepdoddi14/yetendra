@@ -13,9 +13,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.IsoFields;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 import static java.time.temporal.TemporalAdjusters.firstDayOfMonth;
 import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
@@ -742,5 +740,15 @@ public class DateTimeHelper {
 	}
 
 
+    public List<Date> getDatesForNextNDays(Date date, int n) {
 
+		List<Date> dates = new ArrayList<>();
+
+		for ( int i = 0 ; i<=n ; i++ ) {
+			dates.add(date);
+			date = getNextDate(date);
+		}
+
+		return dates;
+    }
 }
