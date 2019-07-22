@@ -8,7 +8,6 @@ import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LateMark;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.attendance.services.EmployeeServices;
-import com.darwinbox.attendance.services.Services;
 import com.darwinbox.attendance.services.settings.AttendanceSettingsServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -24,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction extends TestBase {
+public class TestFirstHalfAppliedAndPendingForLateMarkFullDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -46,11 +45,11 @@ public class TestFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction extends 
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction(Map<String, String> testData) {
+    public void testFirstHalfAppliedAndPendingForLateMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With First Half Applied and Approved ";
+        String title = " With First Half Applied and Pending ";
 
-        boolean isApproved = true;
+        boolean isApproved = false;
         boolean isFirst = true;
         boolean isSecond = false;
 

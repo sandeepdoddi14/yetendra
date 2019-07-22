@@ -8,7 +8,6 @@ import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LateMark;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.attendance.services.EmployeeServices;
-import com.darwinbox.attendance.services.Services;
 import com.darwinbox.attendance.services.settings.AttendanceSettingsServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -24,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction extends TestBase {
+public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -46,13 +45,13 @@ public class TestFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction extends 
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction(Map<String, String> testData) {
+    public void testSecondHalfAppliedAndPendingForLateMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With First Half Applied and Approved ";
+        String title = " With Second Half Applied and Pending ";
 
-        boolean isApproved = true;
-        boolean isFirst = true;
-        boolean isSecond = false;
+        boolean isApproved = false;
+        boolean isFirst = false;
+        boolean isSecond = true;
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
@@ -114,7 +113,12 @@ public class TestFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction extends 
             Reporter("Employee created " + employee.getUserID(), "INFO");
             List<Date> dates = dateHelper.getDatesForNextNDays(date, lateMark.getCount() * 2+2);
 
+            int count = -1;
+            boolean isEvery = false;
+
             for ( Date d : dates ) {
+
+                count ++;
 
                 Map<String, String> body = lateMark.getLatemark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
 
@@ -139,7 +143,18 @@ public class TestFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction extends 
                 atb.validateWeekoff(isWeekoff, status, this);
 
                 atb.validateLeave(isApproved, isFirst || isSecond, status, leaveToApply, this);
-                atb.validateNoLeave(status, leaveName, this);
+
+                boolean proceed = lateMark.getProceed(lateMark, day) && ( count >= lateMark.getCount() );
+
+                if (proceed) {
+                    atb.validateLeave(!lateMark.isApprovalRequired(), isFirst || isSecond, status, leaveName, this);
+                } else {
+                    atb.validateNoLeave(status, leaveName, this);
+                }
+
+                if ( !lateMark.isForEvery())
+                    count = count % lateMark.getCount();
+
 
             }
         }
