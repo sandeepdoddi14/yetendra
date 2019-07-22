@@ -76,7 +76,7 @@ public class ExcelReader {
 
                 data.put("ROW_ID", i + "");
 
-                if (data != null)
+                if (data != null && data.getOrDefault("RunMode","yes").equalsIgnoreCase("yes"))
                     excelData.add(data);
             }
         } catch (Exception e) {

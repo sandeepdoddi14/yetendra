@@ -751,4 +751,15 @@ public class DateTimeHelper {
 
 		return dates;
     }
+
+    public Date getByPayCycle(boolean isPayCycle, Date date) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.MONTH,1);
+		cal.set(Calendar.DAY_OF_MONTH, isPayCycle ? 25 : 1);
+
+		return cal.getTime();
+
+    }
 }
