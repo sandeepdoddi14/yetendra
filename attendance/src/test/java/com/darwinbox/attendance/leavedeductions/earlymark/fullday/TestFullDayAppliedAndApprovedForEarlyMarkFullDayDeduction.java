@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends TestBase {
+public class TestFullDayAppliedAndApprovedForEarlyMarkFullDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -45,12 +45,12 @@ public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "EarlyMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction(Map<String, String> testData) {
+    public void testFullDayAppliedAndApprovedForEarlyMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With First Half Applied and Approved ";
+        String title = " With FullDay Applied and Approved ";
 
         boolean isApproved = true;
-        boolean isFirst = true;
+        boolean isFirst = false;
         boolean isSecond = false;
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
@@ -113,11 +113,7 @@ public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends
             Reporter("Employee created " + employee.getUserID(), "INFO");
             List<Date> dates = dateHelper.getDatesForNextNDays(date, earlyMark.getCount() * 2+2);
 
-            int count = -1;
-
             for ( Date d : dates ) {
-
-                count ++;
 
                 Map<String, String> body = earlyMark.getEarlymark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
 
@@ -142,17 +138,7 @@ public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends
                 atb.validateWeekoff(isWeekoff, status, this);
 
                 atb.validateLeave(isApproved, isFirst || isSecond, status, leaveToApply, this);
-
-                boolean proceed = earlyMark.getProceed(earlyMark, day) && ( count >= earlyMark.getCount() );
-
-                if (proceed) {
-                    atb.validateLeave(!earlyMark.isApprovalRequired(), isFirst || isSecond, status, leaveName, this);
-                } else {
-                    atb.validateNoLeave(status, leaveName, this);
-                }
-
-                if ( !earlyMark.isForEvery())
-                    count = count % earlyMark.getCount();
+                atb.validateNoLeave(status, leaveName, this);
 
             }
 

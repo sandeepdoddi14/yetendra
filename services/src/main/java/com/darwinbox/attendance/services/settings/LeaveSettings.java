@@ -54,12 +54,11 @@ public class LeaveSettings extends Services {
             leaveId = getLeaveID(leavename,company );
             log.info(leavename + " Leave is created");
         }
-
-//        else {
-//            body.put("Leaves[id]",leaveId );
-//            updateLeave(body);
-//            log.info(leavename + " Leave is updated");
-//        }
+        else {
+            body.put("Leaves[id]",leaveId );
+            updateLeave(body);
+            log.info(leavename + " Leave is updated");
+        }
 
         return leaveId;
 

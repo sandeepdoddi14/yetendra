@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends TestBase {
+public class TestFirstHalfAppliedAndPendingForEarlyMarkFullDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -45,11 +45,11 @@ public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "EarlyMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction(Map<String, String> testData) {
+    public void testFirstHalfAppliedAndPendingForEarlyMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With First Half Applied and Approved ";
+        String title = " With First Half Applied and Pending ";
 
-        boolean isApproved = true;
+        boolean isApproved = false;
         boolean isFirst = true;
         boolean isSecond = false;
 

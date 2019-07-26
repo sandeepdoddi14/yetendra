@@ -1,11 +1,11 @@
-package com.darwinbox.attendance.leavedeductions.earlymark.fullday;
+package com.darwinbox.attendance.leavedeductions.earlymark.halfday;
 
 import com.darwinbox.attendance.AttendanceTestBase;
 import com.darwinbox.attendance.objects.AttendanceSettingsPage;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Shift;
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
-import com.darwinbox.attendance.objects.policy.leavedeductions.LateMark;
+import com.darwinbox.attendance.objects.policy.leavedeductions.EarlyMark;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.attendance.services.EmployeeServices;
 import com.darwinbox.attendance.services.settings.AttendanceSettingsServices;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestFullDayAppliedAndPendingForLateMarkFullDayDeduction extends TestBase {
+public class TestSecondHalfAppliedAndApprovedForEarlyMarkHalfDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -44,14 +44,14 @@ public class TestFullDayAppliedAndPendingForLateMarkFullDayDeduction extends Tes
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testFullDayAppliedAndPendingForLateMarkFullDayDeduction(Map<String, String> testData) {
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "EarlyMark,LeaveDeduction", retryAnalyzer = TestBase.class)
+    public void testSecondHalfAppliedAndApprovedForEarlyMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With FullDay Applied and Pending ";
+        String title = " With Second Half Applied and Approved ";
 
-        boolean isApproved = false;
+        boolean isApproved = true;
         boolean isFirst = false;
-        boolean isSecond = false;
+        boolean isSecond = true;
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
@@ -61,7 +61,7 @@ public class TestFullDayAppliedAndPendingForLateMarkFullDayDeduction extends Tes
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
 
-        boolean isPayCycle = testData.get("PayCycle").equalsIgnoreCase("yes");
+        boolean isPayCycle = testData.get("isPayCycle").equalsIgnoreCase("yes");
 
         AttendanceSettingsPage attSettings = new AttendanceSettingsPage();
         attSettings.setUsePayrollCycle(isPayCycle);
@@ -72,19 +72,19 @@ public class TestFullDayAppliedAndPendingForLateMarkFullDayDeduction extends Tes
         String leaveName = testData.get("Leave Name");
         String leaveToApply = testData.get("ApplyLeave");
 
-        LateMark lateMark = policy.getLateMark();
+        EarlyMark earlyMark = policy.getEarlyMark();
 
-        if (lateMark == null) {
-            Reporter("LateMark deduction is disabled ", "FAIL");
+        if (earlyMark == null) {
+            Reporter("EarlyMark deduction is disabled ", "FAIL");
             return;
         }
 
         title += " >> Attendance Policy ";
 
-        title += lateMark.isWeekoff() ? " >> WeeklyOff " : "";
-        title += lateMark.isHoliday() ? " >> Holiday " : "";
+        title += earlyMark.isWeekoff() ? " >> WeeklyOff " : "";
+        title += earlyMark.isHoliday() ? " >> Holiday " : "";
 
-        if ((!lateMark.isWeekoff()) && (!lateMark.isHoliday())) {
+        if ((!earlyMark.isWeekoff()) && (!earlyMark.isHoliday())) {
             title += " >> Empty ";
         }
 
@@ -111,11 +111,11 @@ public class TestFullDayAppliedAndPendingForLateMarkFullDayDeduction extends Tes
             date = dateHelper.getPreviousDate(dateHelper.getByPayCycle(isPayCycle,date));
 
             Reporter("Employee created " + employee.getUserID(), "INFO");
-            List<Date> dates = dateHelper.getDatesForNextNDays(date, lateMark.getCount() * 2+2);
+            List<Date> dates = dateHelper.getDatesForNextNDays(date, earlyMark.getCount() * 2+2);
 
             for ( Date d : dates ) {
 
-                Map<String, String> body = lateMark.getLatemark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
+                Map<String, String> body = earlyMark.getEarlymark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
 
                 String leaveid = atb.getLeaveId(leaveToApply);
                 atb.applyLeave(d, employee, leaveid, isFirst, isSecond, isApproved);
@@ -141,8 +141,6 @@ public class TestFullDayAppliedAndPendingForLateMarkFullDayDeduction extends Tes
                 atb.validateNoLeave(status, leaveName, this);
 
             }
-
-            break;
         }
     }
 

@@ -45,13 +45,13 @@ public class TestSecondHalfAppliedAndPendingForEarlyMarkFullDayDeduction extends
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "EarlyMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testFirstHalfAppliedAndPendingForEarlyMarkFullDayDeduction(Map<String, String> testData) {
+    public void testSecondHalfAppliedAndPendingForEarlyMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With First Half Applied and Pending ";
+        String title = " With Second Half Applied and Pending ";
 
         boolean isApproved = false;
-        boolean isFirst = true;
-        boolean isSecond = false;
+        boolean isFirst = false;
+        boolean isSecond = true;
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
@@ -72,19 +72,19 @@ public class TestSecondHalfAppliedAndPendingForEarlyMarkFullDayDeduction extends
         String leaveName = testData.get("Leave Name");
         String leaveToApply = testData.get("ApplyLeave");
 
-        EarlyMark EarlyMark = policy.getEarlyMark();
+        EarlyMark earlyMark = policy.getEarlyMark();
 
-        if (EarlyMark == null) {
+        if (earlyMark == null) {
             Reporter("EarlyMark deduction is disabled ", "FAIL");
             return;
         }
 
         title += " >> Attendance Policy ";
 
-        title += EarlyMark.isWeekoff() ? " >> WeeklyOff " : "";
-        title += EarlyMark.isHoliday() ? " >> Holiday " : "";
+        title += earlyMark.isWeekoff() ? " >> WeeklyOff " : "";
+        title += earlyMark.isHoliday() ? " >> Holiday " : "";
 
-        if ((!EarlyMark.isWeekoff()) && (!EarlyMark.isHoliday())) {
+        if ((!earlyMark.isWeekoff()) && (!earlyMark.isHoliday())) {
             title += " >> Empty ";
         }
 
@@ -111,11 +111,11 @@ public class TestSecondHalfAppliedAndPendingForEarlyMarkFullDayDeduction extends
             date = dateHelper.getPreviousDate(dateHelper.getByPayCycle(isPayCycle,date));
 
             Reporter("Employee created " + employee.getUserID(), "INFO");
-            List<Date> dates = dateHelper.getDatesForNextNDays(date, EarlyMark.getCount() * 2+2);
+            List<Date> dates = dateHelper.getDatesForNextNDays(date, earlyMark.getCount() * 2+2);
 
             for ( Date d : dates ) {
 
-                Map<String, String> body = EarlyMark.getEarlymark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
+                Map<String, String> body = earlyMark.getEarlymark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
 
                 String leaveid = atb.getLeaveId(leaveToApply);
                 atb.applyLeave(d, employee, leaveid, isFirst, isSecond, isApproved);
@@ -143,5 +143,4 @@ public class TestSecondHalfAppliedAndPendingForEarlyMarkFullDayDeduction extends
             }
         }
     }
-
 }

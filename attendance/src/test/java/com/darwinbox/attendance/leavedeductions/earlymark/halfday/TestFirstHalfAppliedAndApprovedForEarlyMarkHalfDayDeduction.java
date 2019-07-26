@@ -1,4 +1,4 @@
-package com.darwinbox.attendance.leavedeductions.earlymark.fullday;
+package com.darwinbox.attendance.leavedeductions.earlymark.halfday;
 
 import com.darwinbox.attendance.AttendanceTestBase;
 import com.darwinbox.attendance.objects.AttendanceSettingsPage;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends TestBase {
+public class TestFirstHalfAppliedAndApprovedForEarlyMarkHalfDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -45,7 +45,7 @@ public class TestFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction extends
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "EarlyMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testFirstHalfAppliedAndApprovedForEarlyMarkFullDayDeduction(Map<String, String> testData) {
+    public void testFirstHalfAppliedAndApprovedForEarlyMarkHalfDayDeduction(Map<String, String> testData) {
 
         String title = " With First Half Applied and Approved ";
 
