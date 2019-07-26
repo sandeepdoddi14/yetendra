@@ -1,4 +1,4 @@
-package com.darwinbox.attendance.leavedeductions.latemark.fullday;
+package com.darwinbox.attendance.leavedeductions.earlymark.fullday;
 
 import com.darwinbox.attendance.AttendanceTestBase;
 import com.darwinbox.attendance.objects.AttendanceSettingsPage;

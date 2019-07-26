@@ -1,4 +1,4 @@
-package com.darwinbox.attendance.leavedeductions.latemark.fullday;
+package com.darwinbox.attendance.leavedeductions.earlymark.fullday;
 
 import com.darwinbox.attendance.AttendanceTestBase;
 import com.darwinbox.attendance.objects.AttendanceSettingsPage;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends TestBase {
+public class TestFullDayAppliedAndApprovedForLateMarkFullDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -45,13 +45,13 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testSecondHalfAppliedAndPendingForLateMarkFullDayDeduction(Map<String, String> testData) {
+    public void testFullDayAppliedAndApprovedForLateMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With Second Half Applied and Pending ";
+        String title = " With FullDay Applied and Approved ";
 
-        boolean isApproved = false;
+        boolean isApproved = true;
         boolean isFirst = false;
-        boolean isSecond = true;
+        boolean isSecond = false;
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
@@ -113,11 +113,7 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
             Reporter("Employee created " + employee.getUserID(), "INFO");
             List<Date> dates = dateHelper.getDatesForNextNDays(date, lateMark.getCount() * 2+2);
 
-            int count = -1;
-
             for ( Date d : dates ) {
-
-                count ++;
 
                 Map<String, String> body = lateMark.getLatemark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
 
@@ -142,17 +138,7 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
                 atb.validateWeekoff(isWeekoff, status, this);
 
                 atb.validateLeave(isApproved, isFirst || isSecond, status, leaveToApply, this);
-
-                boolean proceed = lateMark.getProceed(lateMark, day) && ( count >= lateMark.getCount() );
-
-                if (proceed) {
-                    atb.validateLeave(!lateMark.isApprovalRequired(), isFirst || isSecond, status, leaveName, this);
-                } else {
-                    atb.validateNoLeave(status, leaveName, this);
-                }
-
-                if ( !lateMark.isForEvery())
-                    count = count % lateMark.getCount();
+                atb.validateNoLeave(status, leaveName, this);
 
             }
 

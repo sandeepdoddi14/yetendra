@@ -8,7 +8,6 @@ import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LateMark;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.attendance.services.EmployeeServices;
-import com.darwinbox.attendance.services.Services;
 import com.darwinbox.attendance.services.settings.AttendanceSettingsServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -62,7 +61,7 @@ public class TestFirstHalfAppliedAndApprovedForLateMarkFullDayDeduction extends 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
 
-        boolean isPayCycle = testData.get("isPayCycle").equalsIgnoreCase("yes");
+        boolean isPayCycle = testData.getOrDefault("isPayCycle","yes").equalsIgnoreCase("yes");
 
         AttendanceSettingsPage attSettings = new AttendanceSettingsPage();
         attSettings.setUsePayrollCycle(isPayCycle);

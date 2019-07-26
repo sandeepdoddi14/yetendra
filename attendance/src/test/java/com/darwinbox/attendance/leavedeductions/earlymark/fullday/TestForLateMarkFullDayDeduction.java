@@ -1,4 +1,4 @@
-package com.darwinbox.attendance.leavedeductions.latemark.fullday;
+package com.darwinbox.attendance.leavedeductions.earlymark.fullday;
 
 import com.darwinbox.attendance.AttendanceTestBase;
 import com.darwinbox.attendance.objects.AttendanceSettingsPage;
@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends TestBase {
+public class TestForLateMarkFullDayDeduction extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -45,13 +45,9 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateMark,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testSecondHalfAppliedAndPendingForLateMarkFullDayDeduction(Map<String, String> testData) {
+    public void testForLateMarkFullDayDeduction(Map<String, String> testData) {
 
-        String title = " With Second Half Applied and Pending ";
-
-        boolean isApproved = false;
-        boolean isFirst = false;
-        boolean isSecond = true;
+        String title = " With No Leave applied ";
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
@@ -121,9 +117,6 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
 
                 Map<String, String> body = lateMark.getLatemark(employee.getEmployeeID(), policy.getPolicyInfo(), shift, d, isWeekoff);
 
-                String leaveid = atb.getLeaveId(leaveToApply);
-                atb.applyLeave(d, employee, leaveid, isFirst, isSecond, isApproved);
-
                 if (isholiday) {
                     atb.createHoliday(d);
                 }
@@ -141,12 +134,10 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
                 atb.validateHoliday(isholiday, status, this);
                 atb.validateWeekoff(isWeekoff, status, this);
 
-                atb.validateLeave(isApproved, isFirst || isSecond, status, leaveToApply, this);
-
                 boolean proceed = lateMark.getProceed(lateMark, day) && ( count >= lateMark.getCount() );
 
                 if (proceed) {
-                    atb.validateLeave(!lateMark.isApprovalRequired(), isFirst || isSecond, status, leaveName, this);
+                    atb.validateLeave(!lateMark.isApprovalRequired(), false, status, leaveName, this);
                 } else {
                     atb.validateNoLeave(status, leaveName, this);
                 }
@@ -159,5 +150,4 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
             break;
         }
     }
-
 }
