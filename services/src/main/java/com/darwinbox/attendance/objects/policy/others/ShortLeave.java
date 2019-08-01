@@ -18,6 +18,8 @@ public class ShortLeave implements Serializable {
 
         if (data.get("short_leave_allowed_attendance_regularise").equals("1")) {
 
+            shortleave = new ShortLeave();
+
             int minMins = Integer.parseInt(data.get("short_leave_min_mins").toString());
             int maxMins = Integer.parseInt(data.get("short_leave_max_mins").toString());
             int count = Integer.parseInt(data.get("short_leave_allowed_days").toString());
