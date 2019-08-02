@@ -1,11 +1,13 @@
 package Objects.LeavePolicyObject;
 
 import Objects.Employee;
+import Objects.LeavePolicyObject.Accural.CarryForwardUnusedLeave;
 import Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
 import Objects.LeavePolicyObject.Accural.Credit_On_Pro_Rata_Basis;
 import Objects.LeavePolicyObject.Fields.*;
 import Service.*;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
+import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.Utils.LeaveBase;
 import com.darwinbox.leaves.Utils.MapUtils;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
@@ -70,7 +72,7 @@ public class LeavePolicyObject extends LeaveBase {
     private CountInterveningHolidaysWeeklyOff Count_intervening_holidays_weeklys_offs_as_leave = new CountInterveningHolidaysWeeklyOff();
     private PastDatedLeave pastDatedLeave = new PastDatedLeave();
     private Clubbing Clubbing = new Clubbing();
-    private OverUtilization OverUtilization = new OverUtilization();
+    private Objects.LeavePolicyObject.Fields.OverUtilization OverUtilization = new OverUtilization();
 
     private ApprovalFlow approvalFlow=null;
 
@@ -81,7 +83,15 @@ public class LeavePolicyObject extends LeaveBase {
     private Credit_On_Pro_Rata_Basis credit_on_pro_rata_basis=new Credit_On_Pro_Rata_Basis();
     private Credit_On_Accural_Basis credit_on_accural_basis=new Credit_On_Accural_Basis();
 
+    public CarryForwardUnusedLeave getCarryForwardUnusedLeave() {
+        return carryForwardUnusedLeave;
+    }
 
+    public void setCarryForwardUnusedLeave(CarryForwardUnusedLeave carryForwardUnusedLeave) {
+        this.carryForwardUnusedLeave = carryForwardUnusedLeave;
+    }
+
+    private CarryForwardUnusedLeave carryForwardUnusedLeave=new CarryForwardUnusedLeave();
 
 
 
@@ -480,6 +490,23 @@ public class LeavePolicyObject extends LeaveBase {
             Reporter("Maximum Leave Allowed Per Year  is     " + this.maximum_leave_allowed_per_year, "Info");
         }
 
+
+        if(this.getLeave_cycle()!=null){
+            if(this.getLeave_cycle().equalsIgnoreCase("Custom Leave Cycle")) {
+                formData.removeIf(x -> x.getName().contains("Leaves[p4_carry_over_time]"));
+                formData.removeIf(x -> x.getName().contains("Leaves[p4_custom_month]"));
+
+                formData.add(new BasicNameValuePair("Leaves[p4_carry_over_time]", "4"));
+               // formData.add(new BasicNameValuePair("Leaves[p4_custom_month]",new LeaveAccuralBase().getMonthValue(customLeaveCycleMonth)));
+                formData.add(new BasicNameValuePair("Leaves[p4_custom_month]",new LeaveAccuralBase().getMonthValue(customLeaveCycleMonth).startsWith("0")?
+                        new LeaveAccuralBase().getMonthValue(customLeaveCycleMonth).replace("0","").trim():
+                        new LeaveAccuralBase().getMonthValue(customLeaveCycleMonth)));
+            }
+
+
+
+        }
+
         if (this.restriction_Condition != null) {
 
             if (this.restriction_Condition.AND_OR != null) {
@@ -753,15 +780,14 @@ public class LeavePolicyObject extends LeaveBase {
 
         }
 
-        if(this.getCredit_on_accural_basis()!=null && this.getCredit_on_accural_basis().getIndicator()){
+        if(this.getCredit_on_accural_basis()!=null && this.getCredit_on_accural_basis().getIndicator()) {
             formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[status]"));
             formData.add(new BasicNameValuePair("LeavePolicy_Accural[status]", "1"));
 
-            if(this.getCredit_on_accural_basis().getMonth())
-            {
+            if (this.getCredit_on_accural_basis().getMonth()) {
                 formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
                 formData.add(new BasicNameValuePair("LeavePolicy_Accural[is_monthly_quaterly]", "0"));
-                if(this.getCredit_on_accural_basis().getBeginOfMonth()) {
+                if (this.getCredit_on_accural_basis().getBeginOfMonth()) {
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
 
@@ -770,7 +796,7 @@ public class LeavePolicyObject extends LeaveBase {
                     formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from_monthly]", "0"));
 
                 }
-                if(this.getCredit_on_accural_basis().getEndOfMonth()) {
+                if (this.getCredit_on_accural_basis().getEndOfMonth()) {
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
 
@@ -779,18 +805,17 @@ public class LeavePolicyObject extends LeaveBase {
 
                 }
             }
-            if(this.getCredit_on_accural_basis().getQuarter())
-            {
+            if (this.getCredit_on_accural_basis().getQuarter()) {
                 formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
                 formData.add(new BasicNameValuePair("LeavePolicy_Accural[is_monthly_quaterly]", "1"));
-                if(this.getCredit_on_accural_basis().getBeginOfQuarter()) {
+                if (this.getCredit_on_accural_basis().getBeginOfQuarter()) {
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
 
                     formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from]", "0"));
                     formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from_monthly]", "0"));
                 }
-                if(this.getCredit_on_accural_basis().getEndOfQuarter()) {
+                if (this.getCredit_on_accural_basis().getEndOfQuarter()) {
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from]"));
                     formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[starting_from_monthly]"));
 
@@ -799,16 +824,63 @@ public class LeavePolicyObject extends LeaveBase {
                 }
             }
 
-            if(this.getCredit_on_accural_basis().getBiAnnual()){
+            if (this.getCredit_on_accural_basis().getBiAnnual()) {
                 formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
                 formData.add(new BasicNameValuePair("LeavePolicy_Accural[is_monthly_quaterly]", "2"));
                 //formData.add(new BasicNameValuePair("LeavePolicy_Accural[starting_from]", "1"));
 
             }
-
-
-
         }
+
+
+            if(this.getCarryForwardUnusedLeave().indicator){
+                formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
+                formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[status]","1"));
+
+                if(this.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave)
+                {
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[carry_forward]"));
+                    formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[carry_forward]","0"));
+
+                }
+                if(this.getCarryForwardUnusedLeave().carryForwardOnly){
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[carry_forward]"));
+                    formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[carry_forward]","1"));
+
+                    if(this.getCarryForwardUnusedLeave().percentage){
+                        formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[carry_forward_amount_type]"));
+                        formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[carry_forward_amount_type]","1"));
+
+                        formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[carry_forward_amount]"));
+                        formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[carry_forward_amount]",this.carryForwardUnusedLeave.percentageValue+""));
+
+                    }
+
+
+                    if(this.getCarryForwardUnusedLeave().fixed){
+                        formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[carry_forward_amount_type]"));
+                        formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[carry_forward_amount_type]","0"));
+
+                        formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[carry_forward_amount]"));
+                        formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[carry_forward_amount]",this.carryForwardUnusedLeave.fixedValue+""));
+
+                    }
+
+
+                    //Discarding remaining leaves
+                    formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[remaining]"));
+                    formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[remaining]","0"));
+
+
+
+                }
+
+
+            }
+
+
+
+
         return formData;
     }
 

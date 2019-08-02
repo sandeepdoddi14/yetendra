@@ -3,7 +3,7 @@ package Objects.LeavePolicyObject.Accural;
 public class Credit_On_Accural_Basis {
     private Boolean indicator=false;
     //Accural time frame
-    private Boolean month;
+    private Boolean month=false;
     private Boolean beginOfMonth=false;
     private Boolean endOfMonth=false;
     private Boolean quarter=false;
@@ -85,7 +85,7 @@ public class Credit_On_Accural_Basis {
     }
 
 
-    public void setMonthlyAccuralSetting(Boolean indicator,Boolean beginOfMonth,Boolean endOfMonth)
+    public void setMonthlyAccuralSetting(Boolean month,Boolean beginOfMonth,Boolean endOfMonth)
     {
         if(this.indicator==true) {
             this.month=month;

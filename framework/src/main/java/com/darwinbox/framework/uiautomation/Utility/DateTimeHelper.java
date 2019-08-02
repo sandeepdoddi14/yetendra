@@ -139,7 +139,30 @@ public class DateTimeHelper {
 			throw new RuntimeException("Exception while changing Local date to epoch day");
 		}
 	}
+	/**
+	 * This month will calculate difference between months
+	 *
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return
+	 */
+	public double getMonthDifferenceFromCurrentDate(String DATEIN_YYYY_MM_DD_format,String toDate) {
+		try {
+			String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
+			int year = Integer.parseInt(arr[0]);
+			int month = Integer.parseInt(arr[1]);
+			int day = Integer.parseInt(arr[2]);
+			LocalDate currentDate = LocalDate.parse(toDate);
 
+			LocalDate startDate = LocalDate.of(year, month, day).with(firstDayOfMonth());
+			LocalDate endDate = currentDate.with(firstDayOfMonth());
+			double monthsDiff = ChronoUnit.MONTHS.between(startDate, endDate);
+			return monthsDiff;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
 	/**
 	 * This month will calculate difference between months
 	 *
@@ -314,6 +337,27 @@ public class DateTimeHelper {
 			throw new RuntimeException();
 		}
 	}
+
+	/**
+	 * This method returns Quarter difference from Current Date
+	 *
+	 * @param DATEIN_YYYY_MM_DD_format
+	 * @return
+	 */
+	public double getQuarterDiffFromCurrentDate(String DATEIN_YYYY_MM_DD_format,String toDate) {
+		try {
+		/*	LocalDate DOJQuarterStartDate = getFirstDayOfQuarter(DATEIN_YYYY_MM_DD_format);
+			LocalDate currentQuarterStartDate = getFirstDayOfQuarter(toDate);
+			double quarterDiff = (ChronoUnit.MONTHS.between(DOJQuarterStartDate, currentQuarterStartDate) / 3);
+			return quarterDiff;*/
+			Period age=Period.between(LocalDate.parse(DATEIN_YYYY_MM_DD_format),LocalDate.parse(toDate));
+			return -age.getMonths()/3;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+
 
 	/**
 	 * This method returns Quarter difference from Current Date
