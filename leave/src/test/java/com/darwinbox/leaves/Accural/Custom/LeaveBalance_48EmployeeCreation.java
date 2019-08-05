@@ -56,8 +56,15 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
 
             new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
             while (doj.isAfter(LocalDate.parse(firstDayOfCycle))) {
+                try{
                 if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
                     employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                }
+                }
+                catch (Exception e){
+                    if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                        employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                    }
                 }
 
                 doj = doj.minusDays(1);
