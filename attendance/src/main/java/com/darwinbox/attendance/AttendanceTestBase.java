@@ -20,7 +20,6 @@ import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.json.JSONObject;
-import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -122,6 +121,7 @@ public class AttendanceTestBase {
             String companyId = data.get("isParent").equalsIgnoreCase("yes") ? "main" : grpCompany;
             String leave_id = srvc.createLeave(data.get("LeaveName"), companyId);
             leaves.put(data.get("LeaveName"), leave_id);
+            leaves.put("id_"+ leave_id , "name_"+ data.get("LeaveName"));
             srvc.log.info(" Leave : " + data.get("LeaveName") + " is available " );
         }
     }
@@ -130,10 +130,13 @@ public class AttendanceTestBase {
         return leaves.get(name);
     }
 
+    public String getLeaveNameById(String id) {
+        return leaves.get("id_"+id).substring(5);
+    }
+
     public AttendancePolicy getAttendancePolicy(String name) {
         return policies.stream().filter(policy -> policy.getPolicyInfo().getPolicyName().equals(name)).collect(Collectors.toList()).get(0);
     }
-
 
     public String getWeeklyOff(String name) {
         return weekoffs.get(name);
@@ -348,12 +351,12 @@ public class AttendanceTestBase {
             policy.setEarlyMark(earlyMark);
 
             res = getData(data.get("LatePlusEarly"), "LatePlusEarly");
-            LatePlusEarly lateplusearly = null;
+            LateEarly lateplusearly = null;
             if (res != -1) {
                 Map<String, String> lateearlyData = lateearly.get(res - 1);
                 String leave_id = leaves.get(lateearlyData.get("LeaveToDeduct"));
                 lateearlyData.put("LeaveToDeductId", leave_id);
-                lateplusearly = new LatePlusEarly();
+                lateplusearly = new LateEarly();
                 lateplusearly.toObject(lateearlyData);
             }
             policy.setLateEarly(lateplusearly);
@@ -393,7 +396,6 @@ public class AttendanceTestBase {
                     srvc.createAttendancePolicy(policy);
                     srvc.log.info(data.get("Policy Name") + " is created ");
                 } else {
-
                     AttendancePolicy policylive = srvc.getAttendancePolicy(policy_id);
                     policy.getPolicyInfo().setPolicyID(policy_id);
 
@@ -415,53 +417,6 @@ public class AttendanceTestBase {
                 srvc.log.error(e.getMessage());
             }
 
-        }
-
-    }
-
-    private void writeDatatoFile() {
-
-        try {
-            FileOutputStream fileOut = new FileOutputStream(System.getProperty("testdata") + "attendance");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            for ( AttendancePolicy policy : policies)
-                out.writeObject(policy);
-            for ( Shift shift : shifts)
-                out.writeObject(shift);
-            out.close();
-            fileOut.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void readDatafromFile() {
-
-        policies = new ArrayList<>();
-        shifts = new ArrayList<>();
-
-        try {
-
-            FileInputStream fileIn = new FileInputStream(System.getProperty("testdata") + "attendance");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            Object obj;
-
-            while ( true ) {
-
-                obj = in.readObject();
-                if ( obj == null)
-                    break;
-                if (obj instanceof AttendancePolicy) {
-                    AttendancePolicy policy = (AttendancePolicy)obj;
-                    policies.add(policy);
-                }
-                if (obj instanceof Shift) {
-                    shifts.add((Shift)obj);
-                }
-            }
-            return;
-        } catch (Exception e) {
-            System.out.println(e);
         }
 
     }
@@ -710,5 +665,80 @@ public class AttendanceTestBase {
     public void runBiometricCron() {
         CronServices srvc = new CronServices();
         srvc.runBiometricCron();
+    }
+
+
+    public Map<String,String> createEntry(String employee,AttendancePolicy policy,Shift shift, List<LeaveDeductionsBase> policies, Date date,boolean isLate) {
+
+        Map<String,String> body = new Absent().getAbsent(employee,policy.getPolicyInfo().getPolicyName(),shift.getShiftName(),date,false);
+        boolean isLateMarked = false;
+        boolean isEarlyMarked = false;
+
+        for ( LeaveDeductionsBase ldbase : policies) {
+
+            Map<String,String> tempBody = new HashMap<>();
+
+            if ( ldbase instanceof  LateDuration) {
+                LateDuration duration = policy.getLateDuration();
+                tempBody = duration.getLateDuration("","",shift,date,true,false);
+                body.put("UserAttendanceImportBack[2][2]",tempBody.get("UserAttendanceImportBack[2][2]"));
+                body.put("UserAttendanceImportBack[2][3]",tempBody.get("UserAttendanceImportBack[2][3]"));
+                isLateMarked = true;
+            }
+
+            if ( ldbase instanceof  EarlyDuration) {
+                EarlyDuration duration = policy.getEarlyDuration();
+                tempBody = duration.getEarlyDuration("","",shift,date,true,false);
+                body.put("UserAttendanceImportBack[2][4]",tempBody.get("UserAttendanceImportBack[2][4]"));
+                body.put("UserAttendanceImportBack[2][5]",tempBody.get("UserAttendanceImportBack[2][5]"));
+                isEarlyMarked = true;
+            }
+
+            if ( ldbase instanceof LateMark) {
+                LateMark latemark = policy.getLateMark();
+                tempBody = latemark.getLatemarks("",policy.getPolicyInfo(),shift,date,false);
+                body.put("UserAttendanceImportBack[2][2]",tempBody.get("UserAttendanceImportBack[2][2]"));
+                body.put("UserAttendanceImportBack[2][3]",tempBody.get("UserAttendanceImportBack[2][3]"));
+                isLateMarked = true;
+            }
+
+            if ( ldbase instanceof EarlyMark) {
+                EarlyMark earlyMark = policy.getEarlyMark();
+                tempBody = earlyMark.getEarlymark("",policy.getPolicyInfo(),shift,date,false);
+                body.put("UserAttendanceImportBack[2][4]",tempBody.get("UserAttendanceImportBack[2][4]"));
+                body.put("UserAttendanceImportBack[2][5]",tempBody.get("UserAttendanceImportBack[2][5]"));
+                isEarlyMarked = true;
+            }
+
+            if ( ldbase instanceof LateEarly) {
+                LateEarly lateEarly = policy.getLateEarly();
+                tempBody = lateEarly.getLateEarly("",policy.getPolicyInfo(),shift,date,false);
+                if ( isLate ) {
+                    isLateMarked = true;
+                    body.put("UserAttendanceImportBack[2][2]", tempBody.get("UserAttendanceImportBack[2][3]"));
+                    body.put("UserAttendanceImportBack[2][3]", tempBody.get("UserAttendanceImportBack[2][3]"));
+                } else {
+                    body.put("UserAttendanceImportBack[2][4]", tempBody.get("UserAttendanceImportBack[2][4]"));
+                    body.put("UserAttendanceImportBack[2][5]", tempBody.get("UserAttendanceImportBack[2][5]"));
+                    isEarlyMarked = true;
+                }
+            }
+
+            if ( ldbase instanceof WorkDuration) {
+                WorkDuration duration = policy.getWorkDuration();
+                tempBody = duration.getWorkDuration("","",shift,date,true, duration.isFinal(),false);
+                if ( isLateMarked ) {
+                    body.put("UserAttendanceImportBack[2][4]", tempBody.get("UserAttendanceImportBack[2][4]"));
+                    body.put("UserAttendanceImportBack[2][5]", tempBody.get("UserAttendanceImportBack[2][5]"));
+                }
+                if ( isEarlyMarked ) {
+                    body.put("UserAttendanceImportBack[2][2]", tempBody.get("UserAttendanceImportBack[2][3]"));
+                    body.put("UserAttendanceImportBack[2][3]", tempBody.get("UserAttendanceImportBack[2][3]"));
+                }
+            }
+
+        }
+
+        return body;
     }
 }

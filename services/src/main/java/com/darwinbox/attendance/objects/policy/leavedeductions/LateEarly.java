@@ -1,6 +1,7 @@
 package com.darwinbox.attendance.objects.policy.leavedeductions;
 
 import com.darwinbox.attendance.objects.Shift;
+import com.darwinbox.attendance.objects.policy.others.PolicyInfo;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 
 import java.io.Serializable;
@@ -8,7 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LatePlusEarly extends LateOrEarlyBase implements Serializable {
+public class LateEarly extends LateOrEarlyBase implements Serializable {
 
     public boolean isCount_as_2() {
         return count_as_2;
@@ -20,13 +21,13 @@ public class LatePlusEarly extends LateOrEarlyBase implements Serializable {
 
     private boolean count_as_2;
 
-    public static LatePlusEarly jsonToObject(Map<String, Object> data) {
+    public static LateEarly jsonToObject(Map<String, Object> data) {
 
-        LatePlusEarly lateEarly = null;
+        LateEarly lateEarly = null;
 
         if (getFilterObject(data, "lateplusearlymark_policy", "1")) {
 
-            lateEarly = new LatePlusEarly();
+            lateEarly = new LateEarly();
 
             boolean isApprovalRequired = getFilterObject(data, "lateplusearlymark_deduct_after_approval", "1");
             boolean isHoliday = getFilterObject(data, "lateplusearlymark_deduction_on_holiday", "1");
@@ -76,7 +77,7 @@ public class LatePlusEarly extends LateOrEarlyBase implements Serializable {
         setCount_as_2(count_as_2);
     }
 
-    public static Map<String,String> getMap(LatePlusEarly latePlusEarly) {
+    public static Map<String,String> getMap(LateEarly latePlusEarly) {
 
         Map<String,String> body = new HashMap<>();
 
@@ -95,7 +96,7 @@ public class LatePlusEarly extends LateOrEarlyBase implements Serializable {
         return body;
     }
 
-    public static boolean compareTo(LatePlusEarly lateEarly, LatePlusEarly lateEarly1) {
+    public static boolean compareTo(LateEarly lateEarly, LateEarly lateEarly1) {
 
         if ( lateEarly != null ) {
 
@@ -118,25 +119,51 @@ public class LatePlusEarly extends LateOrEarlyBase implements Serializable {
         }
 
     }
+    
+    public Map<String, String> getLateEarlys(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff) {
 
-    public Map<String,String> getLateEarly(String employeeID, String policyName, Shift shift, Date date, boolean isWeekoff) {
+        DateTimeHelper helper = new DateTimeHelper();
+        Map<String, String> body = new HashMap<>();
+
+        for (int i = 0; i < 2 * getCount(); i++) {
+            body.putAll(getLateEarly(empId, policyInfo, shift, date, isWeekOff, i + 2));
+            date = helper.getNextDate(date);
+        }
+
+        return body;
+
+    }
+
+    public Map<String, String> getLateEarly(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff) {
+        return (getLateEarly(empId, policyInfo, shift, date, isWeekOff, 2));
+    }
+
+    private Map<String, String> getLateEarly(String empId, PolicyInfo policyInfo, Shift shift, Date date, boolean isWeekOff, int import_line) {
 
         DateTimeHelper helper = new DateTimeHelper();
 
-        String shiftDate = helper.formatDateTo(date,"dd-MM-yyyy" );
+        String shiftDate = helper.formatDateTo(date, "dd-MM-yyyy");
+        String inDate = shiftDate;
+        String outDate = shift.isOverNightShift() ? helper.getNextDate(shiftDate) : shiftDate;
 
-        Map<String,String> body = new HashMap<>();
+        int shiftStart = shift.getStartTime() + policyInfo.getGraceTimeIn();
+        int shiftEnd = shift.getEndTime() - policyInfo.getGraceTimeOut() -1 ; 
 
-        body.put("UserAttendanceImportBack[2][0]", employeeID);
-        body.put("UserAttendanceImportBack[2][1]",shiftDate);
-        body.put("UserAttendanceImportBack[2][2]","");
-        body.put("UserAttendanceImportBack[2][3]","");
-        body.put("UserAttendanceImportBack[2][4]","");
-        body.put("UserAttendanceImportBack[2][5]","");
-        body.put("UserAttendanceImportBack[2][6]",shift.getShiftName());
-        body.put("UserAttendanceImportBack[2][7]",policyName);
-        body.put("UserAttendanceImportBack[2][8]",isWeekoff ? "All" : "None");
-        body.put("UserAttendanceImportBack[2][9]","");
+        String inTime = helper.parseTime(shiftStart % 1440);
+        String outTime = helper.parseTime(shiftEnd % 1440);
+
+        Map<String, String> body = new HashMap<>();
+
+        body.put("UserAttendanceImportBack[" + import_line + "][0]", empId);
+        body.put("UserAttendanceImportBack[" + import_line + "][1]", shiftDate);
+        body.put("UserAttendanceImportBack[" + import_line + "][2]", inDate);
+        body.put("UserAttendanceImportBack[" + import_line + "][3]", inTime);
+        body.put("UserAttendanceImportBack[" + import_line + "][4]", outDate);
+        body.put("UserAttendanceImportBack[" + import_line + "][5]", outTime);
+        body.put("UserAttendanceImportBack[" + import_line + "][6]", shift.getShiftName());
+        body.put("UserAttendanceImportBack[" + import_line + "][7]", policyInfo.getPolicyName());
+        body.put("UserAttendanceImportBack[" + import_line + "][8]", isWeekOff ? "All" : "None");
+        body.put("UserAttendanceImportBack[" + import_line + "+][9]", "00:00:00");
 
         return body;
 

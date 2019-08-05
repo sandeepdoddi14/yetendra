@@ -4,9 +4,7 @@ import com.darwinbox.attendance.objects.policy.leavedeductions.*;
 import com.darwinbox.attendance.objects.policy.others.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AttendancePolicy implements Serializable {
@@ -16,7 +14,7 @@ public class AttendancePolicy implements Serializable {
     private LateMark lateMark;
     private EarlyMark earlyMark;
     private WorkDuration workDuration;
-    private LatePlusEarly lateEarly;
+    private LateEarly lateEarly;
     private EarlyDuration earlyDuration;
 
     private PolicyInfo policyInfo;
@@ -79,11 +77,11 @@ public class AttendancePolicy implements Serializable {
         this.workDuration = workDuration;
     }
 
-    public LatePlusEarly getLateEarly() {
+    public LateEarly getLateEarly() {
         return lateEarly;
     }
 
-    public void setLateEarly(LatePlusEarly lateEarly) {
+    public void setLateEarly(LateEarly lateEarly) {
         this.lateEarly = lateEarly;
     }
 
@@ -164,7 +162,7 @@ public class AttendancePolicy implements Serializable {
 
         lateMark = LateMark.jsonToObject(policyData);
         earlyMark = EarlyMark.jsonToObject(policyData);
-        lateEarly = LatePlusEarly.jsonToObject(policyData);
+        lateEarly = LateEarly.jsonToObject(policyData);
         workDuration = WorkDuration.jsonToObject(policyData);
         lateDuration = LateDuration.jsonToObject(policyData);
         absent = Absent.jsonToObject(policyData);
@@ -190,7 +188,7 @@ public class AttendancePolicy implements Serializable {
         body.putAll(LateDuration.getMap(lateDuration));
         body.putAll(LateMark.getMap(lateMark));
         body.putAll(EarlyMark.getMap(earlyMark));
-        body.putAll(LatePlusEarly.getMap(lateEarly));
+        body.putAll(LateEarly.getMap(lateEarly));
         body.putAll(WorkDuration.getMap(workDuration) );
         body.putAll(Absent.getMap(absent) );
         body.putAll(EarlyDuration.getMap(earlyDuration) );
@@ -217,7 +215,7 @@ public class AttendancePolicy implements Serializable {
                 LateMark.compareTo(getLateMark(),policy.getLateMark()) &&
                 Absent.compareTo(getAbsent(),policy.getAbsent()) &&
                 EarlyMark.compareTo(getEarlyMark(),policy.getEarlyMark()) &&
-                LatePlusEarly.compareTo(getLateEarly(),policy.getLateEarly()) &&
+                LateEarly.compareTo(getLateEarly(),policy.getLateEarly()) &&
                 WorkDuration.compareTo(getWorkDuration(),policy.getWorkDuration()) &&
                 EarlyDuration.compareTo(getEarlyDuration(),policy.getEarlyDuration()) &&
                 LateDuration.compareTo(getLateDuration(),policy.getLateDuration());
