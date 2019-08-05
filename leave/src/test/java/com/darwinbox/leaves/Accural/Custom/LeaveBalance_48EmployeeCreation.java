@@ -99,6 +99,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                                     Reporter("Passed || actual leave balance and expected are same","Pass");
                                 else
                                     Reporter("FAILED || actual leave balance and expected are not same","Fail");
+
                             }
                         }
                     }
