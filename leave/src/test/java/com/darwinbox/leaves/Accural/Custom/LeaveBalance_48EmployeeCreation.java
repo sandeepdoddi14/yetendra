@@ -65,8 +65,15 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                 }
                 }
                 catch (Exception e){
-                    if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                        employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                    try {
+                        if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                            employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                        }
+                    }
+                    catch(Exception e1){
+                        if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                            employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                        }
                     }
                 }
 
