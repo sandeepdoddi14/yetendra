@@ -50,7 +50,7 @@ public class TestBreakDuration extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testBreakDuration(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
@@ -100,6 +100,7 @@ public class TestBreakDuration extends TestBase {
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
             displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            sleep(3000);
             String userEnd =displaySettingsPage.verifyColoumnValue(date,testData.get("header"));
             Reporter("Break Duration from system is "+userEnd,"INFO");
 

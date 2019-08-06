@@ -46,7 +46,7 @@ public class TestLastClockOut  extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testClockOut(Map<String, String> testData) throws InterruptedException {
 
         try {
@@ -106,7 +106,7 @@ public class TestLastClockOut  extends TestBase {
             long attPage = dateHelper.parseTime(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", userEnd), "HH:mm:ss"));
 
             if (end == attPage)
-                Reporter("Recorded Out Time is as expected " + userEnd, "PASS");
+                Reporter("Recorded Out Time is as expected " +userEnd, "PASS");
             else {
                 Reporter("Recorded Out Time is not as expected " + userEnd, "FAIL");
                 Reporter("Expected is " + end + " Actual is " + attPage, "INFO");

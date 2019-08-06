@@ -100,11 +100,12 @@ public String verifyColoumnValue(Date date, String coloumnName) throws Interrupt
 
     for (int i = 1; i <= headersCheck.size() - 1; i++) {
         objWaitHelper.waitForPageToLoad();
+        sleep(3000);
         WebElement particularColoumn = driver.findElement(By.xpath("//table[@id='attendance_log']//th[@class='sorting'][" + i + "]"));
         String text = particularColoumn.getText().toLowerCase();
         try {
             if (text.contains(coloumnName.toLowerCase())) {
-
+sleep(2000);
                 Reporter(coloumnName + " is  displayed", "INFO");
 
                 WebElement workTime = driver.findElement(By.xpath("//table[@id='attendance_log']//tr[1]/td[" + (i+1) + "]"));
@@ -114,7 +115,7 @@ public String verifyColoumnValue(Date date, String coloumnName) throws Interrupt
                 Reporter("The duration captured is "+a,"INFO");
 
                 if (workTime.getText().isEmpty()) {
-                    Reporter("No data recorded.Null for given date " + dateAndMonth, "FAIL");
+                    Reporter("No data recorded.For given date " + dateAndMonth, "FAIL");
 
                 }
             }
@@ -176,7 +177,7 @@ sleep(2000);
 
         List<WebElement> elements = driver.findElements(By.xpath("//a[@class='site-color text-underline']"));
         for (int i = 1; i <= elements.size() ; i++) {
-
+sleep(2000);
             WebElement policy= driver.findElement(By.xpath("//a[@class='site-color text-underline']["+i+"]"));
 
             policy.click();

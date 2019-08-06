@@ -51,7 +51,7 @@ public class TestPolicyDisplay extends TestBase {
         attendanceSettingsPage= new AttendanceSettingsPage();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testPoiliciesDisplay(Map<String, String> testData) throws InterruptedException {
 
         try {
