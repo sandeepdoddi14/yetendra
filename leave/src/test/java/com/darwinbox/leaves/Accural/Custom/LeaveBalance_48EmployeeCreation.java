@@ -29,6 +29,9 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
     CommonAction commonAction = null;
     Boolean runTest = true;
 
+    static LocalDate serverDateInFormat=null;
+
+
     @BeforeMethod
     public void initializeObjects() {
         loginpage = PageFactory.initElements(driver, LoginPage.class);
@@ -75,7 +78,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
             new DateTimeHelper().changeServerDate(driver, lastDayOfCycle);
 
 
-            LocalDate serverDateInFormat = LocalDate.parse(serverChangedDate);
+            serverDateInFormat  = LocalDate.parse(serverChangedDate);
 
             double actualLeaveBalance=0.0D;
             double expecetedLeaveBalance=0.0D;
@@ -87,7 +90,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                     for (LeavePolicyObject leavePolicyObject : leaveBalancePolicies) {
                         for (Employee employee : employees) {
                             if (LocalDate.parse(employee.getDoj()).isBefore(serverDateInFormat)) {
-                                super.setEmployee(employee);
+                               super.setEmployee(employee);
                                 Reporter("Employee is" + employee.getEmployeeID() + "...DOJ is ....." + employee.getDoj(), "info");
                                 super.setLeavePolicyObject(leavePolicyObject);
                                 Reporter("Leave Type is" + leavePolicyObject.getLeave_Type(), "Info");
@@ -104,7 +107,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                         }
                     }
                 }
-                serverDateInFormat.minusDays(1);
+                serverDateInFormat=serverDateInFormat.minusDays(1);
 
             }
             runTest = false;

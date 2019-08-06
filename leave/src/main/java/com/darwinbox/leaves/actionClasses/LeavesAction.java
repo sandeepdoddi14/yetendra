@@ -6968,7 +6968,7 @@ public class LeavesAction extends TestBase {
      *
      * @return boolean
      */
-    public boolean verifyEmployeeLeaveBalanceForWholeLeaveCycleForFourEdgeDays() {
+    public boolean  verifyEmployeeLeaveBalanceForWholeLeaveCycleForFourEdgeDays() {
         try {
             String result = "";
             int flag = 0;
