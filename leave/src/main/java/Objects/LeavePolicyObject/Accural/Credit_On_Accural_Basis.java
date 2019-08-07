@@ -1,5 +1,7 @@
 package Objects.LeavePolicyObject.Accural;
 
+import com.github.javafaker.Bool;
+
 public class Credit_On_Accural_Basis {
     private Boolean indicator=false;
     //Accural time frame
@@ -11,16 +13,17 @@ public class Credit_On_Accural_Basis {
     private Boolean endOfQuarter=false;
     private Boolean biAnnual=false;
 
-
-    private Accural_Basis_On_WorkingDays accural_basis_on_workingDays=new Accural_Basis_On_WorkingDays();
-
-    public Accural_Basis_On_WorkingDays getAccural_basis_on_workingDays() {
-        return accural_basis_on_workingDays;
+    public ConsiderWorkingDays getConsiderWorkingDays() {
+        return considerWorkingDays;
     }
 
-    public void setAccural_basis_on_workingDays(Accural_Basis_On_WorkingDays accural_basis_on_workingDays) {
-        this.accural_basis_on_workingDays = accural_basis_on_workingDays;
+    public void setConsiderWorkingDays(ConsiderWorkingDays considerWorkingDays) {
+        this.considerWorkingDays = considerWorkingDays;
     }
+
+    private ConsiderWorkingDays considerWorkingDays=new ConsiderWorkingDays();
+
+
 
     public LapseUnsedAfterCertainMonths getLapseUnsedAfterCertainMonths() {
         return lapseUnsedAfterCertainMonths;

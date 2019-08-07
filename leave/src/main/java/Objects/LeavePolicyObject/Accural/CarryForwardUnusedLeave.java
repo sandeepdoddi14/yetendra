@@ -1,5 +1,7 @@
 package Objects.LeavePolicyObject.Accural;
 
+import com.github.javafaker.Bool;
+
 public class CarryForwardUnusedLeave {
     public boolean indicator=false;
     public boolean carryForwardAllUnusedLeave=false;

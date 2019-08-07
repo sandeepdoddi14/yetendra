@@ -60,19 +60,19 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
             new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
             while (doj.isAfter(LocalDate.parse(firstDayOfCycle))) {
                 try{
-                if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
-                }
+                    if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                       // employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                    }
                 }
                 catch (Exception e){
                     try {
                         if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                            employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                           // employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
                         }
                     }
                     catch(Exception e1){
                         if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                            employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                           // employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
                         }
                     }
                 }
@@ -95,7 +95,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                     serverChangedDate = serverDateInFormat.toString();
                     new DateTimeHelper().changeServerDate(driver, serverDateInFormat.toString());
                     for (LeavePolicyObject leavePolicyObject : leaveBalancePolicies) {
-                        for (Employee employee : employees) {
+                      /*  for (Employee employee : employees) {
                             if (LocalDate.parse(employee.getDoj()).isBefore(serverDateInFormat)) {
                                super.setEmployee(employee);
                                 Reporter("Employee is" + employee.getEmployeeID() + "...DOJ is ....." + employee.getDoj(), "info");
@@ -111,7 +111,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                                     Reporter("FAILED || actual leave balance and expected are not same","Fail");
 
                             }
-                        }
+                      *///  }
                     }
                 }
                 serverDateInFormat=serverDateInFormat.minusDays(1);
