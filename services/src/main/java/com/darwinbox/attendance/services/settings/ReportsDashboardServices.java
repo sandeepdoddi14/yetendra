@@ -277,16 +277,15 @@ public class ReportsDashboardServices extends Services {
         log.info("Response: " + response);
         JSONObject obj = new JSONObject(response);
         Reporter("Coloumn is : " + obj.getJSONArray("cols").getString(14), "INFO");
-<<<<<<< HEAD
 
         Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(0).toList().get(14), "INFO");
 
-=======
- for(int i=0;i<=25;i++){
-        Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(i).toList().get(14), "INFO");
-}
->>>>>>> Attendance Reports
+         for(int i=0;i<=25;i++){
+                Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(i).toList().get(14), "INFO");
+        }
+
     }
+
     public void getReportDatewiseAttendanceStatus(Reports reports) {
 
         String url = getData("@@url") + "/reports/ShowRoster";
