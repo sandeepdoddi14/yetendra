@@ -122,7 +122,7 @@ public class TestForFinalDurationFullDayDeduction extends TestBase {
             atb.validateHoliday(isholiday, status, this);
             atb.validateWeekoff(isWeekoff, status, this);
 
-            boolean proceed = workDuration.getProceed(workDuration, day);
+            boolean proceed = workDuration.getProceedOnNoLeave(workDuration, day);
 
             if (proceed) {
                 atb.validateLeave(!workDuration.isApprovalRequired(), false, status, leaveName, this);

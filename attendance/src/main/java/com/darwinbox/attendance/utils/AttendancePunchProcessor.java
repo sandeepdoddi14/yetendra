@@ -17,10 +17,12 @@ public class AttendancePunchProcessor {
 
     public static void main(String[] args) throws Exception {
 
-        String n[] = new String [] {"1","2","3","5","6"};
+        String n[] = new String [] {"1","2","7","6"};
+       //  String n[] = new String [] { "1" , "2" , "3" , "5" , "6" };
 
         for ( int i = 0;i<n.length; i++ ) {
             String s = n[i];
+
             for (int j = 0; j < n.length; j++) {
                 if ( i == j || s.contains(n[j])) continue;
                 String s1 = s + n[j];
@@ -30,17 +32,15 @@ public class AttendancePunchProcessor {
             for (int l = 0; l < n.length; l++) {
                 if ( i == l || j== l || k ==l || s2.contains(n[l])) continue;
                 String s3 = s2 + n[l];
-            for (int m = 0; m < n.length; m++) {
-                if ( i == m || j== m || k == m || l==m || s3.contains(n[m])) continue;
-                String s4 = s3 + n[m];
-                System.out.println(s4+"47");
-            }
-            }
-            }
-            }
+                System.out.println(s3+"345");
 
-
-
+//            for (int m = 0; m < n.length; m++) {
+//               if ( i == m || j== m || k == m || l==m || s3.contains(n[m])) continue;
+//                 String s4 = s3 + n[m];
+//            }
+            }
+            }
+            }
         }
 
 

@@ -51,7 +51,7 @@ public class UtilityHelper {
 		Properties prop = new Properties();
 		try {
 			prop.load(ResourceHelper.getResourcePathInputStream("/src/main/resources/"+ filename +".properties"));
-			return prop.getProperty(key);
+			return prop.getProperty(key,"no");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return "";
@@ -131,7 +131,7 @@ public class UtilityHelper {
 		
 		File dir = new File(resultsDir);
 		if (!dir.exists()) {
-			dir.mkdir();
+			dir.mkdirs();
 			System.out.println(resultsDir);
 		}
 	}

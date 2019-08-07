@@ -121,7 +121,7 @@ public class TestForLateByHalfDayDeduction extends TestBase {
             atb.validateHoliday(isholiday, status, this);
             atb.validateWeekoff(isWeekoff, status, this);
 
-            boolean proceed = lateDuration.getProceed(lateDuration, day);
+            boolean proceed = lateDuration.getProceedOnNoLeave(lateDuration, day);
 
             if (proceed) {
                 atb.validateLeave(!lateDuration.isApprovalRequired(), true, status, leaveName, this);
