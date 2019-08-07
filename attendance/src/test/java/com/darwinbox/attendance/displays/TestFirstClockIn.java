@@ -50,7 +50,7 @@ public class TestFirstClockIn extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testClockIn(Map<String, String> testData) throws InterruptedException {
 
         try {
@@ -110,7 +110,7 @@ public class TestFirstClockIn extends TestBase {
             long attPage = dateHelper.parseTime(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", userEnd), "HH:mm:ss"));
 
             if (start == attPage)
-                Reporter("Recorded In Time is as expected " + userEnd, "PASS");
+                Reporter("Recorded In Time is as expected " +userEnd, "PASS");
             else {
                 Reporter("Recorded In Time is not as expected " + userEnd, "FAIL");
                 Reporter("Expected is " + start + " Actual is " + attPage, "INFO");

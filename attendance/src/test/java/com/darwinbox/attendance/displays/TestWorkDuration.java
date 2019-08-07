@@ -48,7 +48,7 @@ public class TestWorkDuration extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testTotalWorkDuration(Map<String, String> testData) throws InterruptedException {
 
         try {

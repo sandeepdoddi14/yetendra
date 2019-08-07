@@ -1,16 +1,12 @@
 package com.darwinbox.attendance.services.settings;
 
 import com.darwinbox.attendance.objects.RegularisationReason;
-import com.darwinbox.attendance.objects.Shift;
 import com.darwinbox.attendance.services.Services;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,23 +31,61 @@ public class AttendanceRegularisationServices extends Services {
     public List<RegularisationReason> getAllReasons() {
 
         JSONArray reasons = getRegularisationReasons();
+        Map<String, String> data = new HashMap<>();
+
 
         List<RegularisationReason> reasonList = new ArrayList<>();
 
         for (Object reason : reasons) {
 
             JSONArray arrObj = new JSONArray(reason);
+            log.info("done");
 
-            String name = arrObj.getString(1);
-            String limit = arrObj.getString(2);
-            String id = arrObj.getString(3).split("reference_id=\"")[1].split("\"")[0].trim();
+            RegularisationReason regularisationReason=new RegularisationReason();
 
-            RegularisationReason reasonObj = new RegularisationReason();
-            //reasonObj.setCount();
+            regularisationReason.setName(arrObj.getString(1));
+            regularisationReason.setCount(arrObj.getString(2));
+            regularisationReason.setId(arrObj.getString(3).split("reference_id=\"")[1].split("\"")[0].trim());
 
+            reasonList.add(regularisationReason);
 
         }
-        return null;
+
+        return reasonList;
     }
 
+    public void createReasons(RegularisationReason reasonObj){
+
+        String url = getData("@@url") + "/attendance/AttendanceRegulariseReasons/editreason";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        doPost(url, headers, mapToFormData(reasonObj.toMap()));
+
+    }
+
+    public void deleteReasons(RegularisationReason reasonObj){
+
+        String url = getData("@@url") + "/attendance/AttendanceRegulariseReasons/editreason";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        Map<String, String> body = new HashMap<>();
+        body.put("id",reasonObj.getId());
+        body.put("mode","delete");
+
+        doGet(url, headers);
+    }
+
+
+    public void editReasons(RegularisationReason reasonObj){
+
+        String url = getData("@@url") + "/attendance/AttendanceRegulariseReasons/editreason";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        doPost(url, headers, mapToFormData(reasonObj.getMap()));
+
+
+    }
 }

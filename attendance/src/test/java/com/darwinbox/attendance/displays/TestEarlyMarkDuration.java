@@ -46,7 +46,7 @@ public class TestEarlyMarkDuration extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testEarlymark(Map<String, String> testData) throws InterruptedException {
 
         try {
@@ -111,9 +111,9 @@ public class TestEarlyMarkDuration extends TestBase {
 
             long res = graceTimeOut*60-outTimeuserEnd;
 
-            if (attPage == res) {
+            if (attPage == res)
                 Reporter("Early out duration is as expected " + userEndEarlyBy, "PASS");
-            } else {
+             else {
                 Reporter("Early out duration is not as expected " + userEndEarlyBy, "FAIL");
                 Reporter("Expected is " + outTime + " Actual is " + attPage, "INFO");
             }

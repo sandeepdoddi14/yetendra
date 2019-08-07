@@ -163,4 +163,30 @@ private String freezeDate;
 
 }
 
+
+
+    public boolean combinationsLHW(AttendanceSettingsPage attendanceSettingsPage, DAYS day){
+
+        boolean isbothLH = day.equals(DAYS.LEAVE) || day.equals(DAYS.HOLIDAY);
+        boolean isbothLW = day.equals(DAYS.LEAVE) || day.equals(DAYS.WEEKOFF);
+        boolean isbothWH = day.equals(DAYS.WEEKOFF) || day.equals(DAYS.HOLIDAY);
+
+        boolean isAll = day.equals(DAYS.LHW);
+        boolean empty = day.equals(DAYS.EMPTY);
+
+        boolean isLeave = day.equals(DAYS.LEAVE) || isbothLH || isbothLW;
+        boolean isHoliday = day.equals(DAYS.HOLIDAY) || isbothLH || isbothWH;
+        boolean isWeekoff = day.equals(DAYS.WEEKOFF) || isbothLW || isbothWH;
+
+        boolean proceed = ( isAll
+                ||( isHoliday && attendanceSettingsPage.isHolidayDays() )
+                ||( isWeekoff && attendanceSettingsPage.isWeeklyoffDays() )
+                ||(isLeave && attendanceSettingsPage.isLeaveDays())
+                || empty);
+
+        return proceed;
+    }
+
+    public enum DAYS {WEEKOFF, HOLIDAY, LEAVE, LHW, EMPTY, LH, LW, WH}
+
 }

@@ -783,8 +783,7 @@ public class DateTimeHelper {
 
 	}
 
-
-    public List<Date> getDatesForNextNDays(Date date, int n) {
+	public List<Date> getDatesForNextNDays(Date date, int n) {
 
 		List<Date> dates = new ArrayList<>();
 
@@ -794,9 +793,9 @@ public class DateTimeHelper {
 		}
 
 		return dates;
-    }
+	}
 
-    public Date getByPayCycle(boolean isPayCycle, Date date) {
+	public Date getByPayCycle(boolean isPayCycle, Date date) {
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -805,5 +804,27 @@ public class DateTimeHelper {
 
 		return cal.getTime();
 
-    }
+	}
+
+	public Date getFirstDateOfNextMonth(Date date) {
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+
+		cal.set(Calendar.DAY_OF_MONTH,1);
+		cal.add(Calendar.MONTH, 1);
+
+		return cal.getTime();
+	}
+
+	public Date getFirstDateOfPreviousMonth(Date date){
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+
+		cal.set(Calendar.DAY_OF_MONTH,1);
+		cal.add(Calendar.MONTH, -1);
+
+		return cal.getTime();
+	}
+
 }

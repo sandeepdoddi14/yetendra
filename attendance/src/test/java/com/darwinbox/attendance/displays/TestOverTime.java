@@ -39,7 +39,7 @@ public class TestOverTime extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Absent,LeaveDeduction", retryAnalyzer = TestBase.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class,enabled = false,groups = "Absent,LeaveDeduction", retryAnalyzer = TestBase.class)
     public void testClockInReminder(Map<String, String> testData) {
 
         String title = "Test Flag with Break Duration ";

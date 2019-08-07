@@ -47,7 +47,7 @@ public class TestLateMarkDuration extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testlatemark(Map<String, String> testData) throws InterruptedException {
 
         try {
@@ -112,9 +112,9 @@ public class TestLateMarkDuration extends TestBase {
             long inTimeuserEnd = dateHelper.parseTime(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", inTimeDisplay), "HH:mm:ss"));
             long res = inTimeuserEnd - (graceTimeIn*60);
 
-            if (attPage == res) {
+            if (attPage == res)
                 Reporter("Late By duration is as expected " + userEndLateBy, "PASS");
-            } else {
+             else {
                 Reporter("Late By duration is not as expected " + userEndLateBy, "FAIL");
                 Reporter("Expected is " + inTime + " Actual is " + attPage, "INFO");
             }

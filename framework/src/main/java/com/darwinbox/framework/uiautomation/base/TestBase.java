@@ -69,6 +69,8 @@ public class TestBase implements IRetryAnalyzer {
 	public static Markup strcode = MarkupHelper.createCodeBlock("text");
 	public static String WriteResultToExcel = "No";
 
+	public static int counter = 0;
+
 
 	@BeforeSuite
 	public void initSuite() {
@@ -134,6 +136,7 @@ public class TestBase implements IRetryAnalyzer {
 			}
 		}
 		try {
+			counter = 0;
 			setUpDriver(BrowserType.valueOf(config.getBrowser().toUpperCase()));
 			log.info(config.getBrowser());
 			driver.manage().window().maximize();
@@ -283,14 +286,17 @@ public class TestBase implements IRetryAnalyzer {
 			driver.manage().deleteAllCookies();
 			driver.get(data.get("@@url"));
 			driver.manage().deleteAllCookies();
+			counter++;
+			if ( counter == 500 ) {
+				reinit();
+				gotoHomePage();
+			}
 		} catch (Exception e) {
 			log.info(" Driver object exception. Creating new session and closing existing one");
 			reinit();
 			gotoHomePage();
 		}
 	}
-
-
 
 	@AfterSuite
 	public void closeBrowser() {
@@ -301,8 +307,6 @@ public class TestBase implements IRetryAnalyzer {
 			log.info("browser closed");
 		}
 	}
-
-
 
 	public void getresult(ITestResult result) {
 		try {
