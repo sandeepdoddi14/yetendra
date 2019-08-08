@@ -35,7 +35,9 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 public class LeaveAccuralBase extends  LeaveBase {
 
     public static String serverChangedDate=null;
-    static String DateOfJoining = "";
+
+    //manual employee data
+    public  static String DateOfJoining = "";
     public static String  EmployeeId=null;
 
     static LeavePolicyObject leavePolicyObject=null;
@@ -438,11 +440,18 @@ public class LeaveAccuralBase extends  LeaveBase {
 
                 }
 
-                if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator){
-                    if(leavePolicyObject.getCredit_on_pro_rata_basis().calculateFromJoiningDate)
+                if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator) {
+                    if (leavePolicyObject.getCredit_on_pro_rata_basis().calculateFromJoiningDate)
                         LeaveCalBeginningDate = DOJ;
-                    if(leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
+                    if (leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
+                    {
+                        if(leavePolicyObject.getProbation_period_before_leave_validity().custom)
+                        {
+                            LeaveCalBeginningDate=LocalDate.parse(Leave_Probation_End_Date).plusMonths(leavePolicyObject.getProbation_period_before_leave_validity().customMonths).toString();
+                        }
+                        else
                         LeaveCalBeginningDate = Leave_Probation_End_Date;
+                    }
                 }
                 else{
                     LeaveCalBeginningDate = leaveCycleStartDate.toString();
@@ -488,21 +497,23 @@ public class LeaveAccuralBase extends  LeaveBase {
                         } else {
                             toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Quarter", leavePolicyObject.getLeave_cycle()).minusMonths(3).toString();
                         }
-                    } else if (leavePolicyObject.getCredit_on_accural_basis().getConsiderWorkingDays().indicator &&
+                    }
+
+                    else if (leavePolicyObject.getCredit_on_accural_basis().getConsiderWorkingDays().indicator &&
                             !leavePolicyObject.getCredit_on_accural_basis().getEndOfMonth() &&
                             !leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter() &&
                             leavePolicyObject.getCredit_on_accural_basis().getBiAnnual()) {
-                        if (LocalDate.parse(toDate).isEqual(getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()))) {
-                            toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).toString();
-                        } else {
-                            toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).minusMonths(6).toString();
-                        }
+                        //if (LocalDate.parse(toDate).isEqual(getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()))) {
+                           // toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).toString();
+                            toDate=leaveCycleEndDate.minusDays(1).toString();
+                        //} else {
+                          //  toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).minusMonths(6).toString();
+                        //}
                     }
                 }
 
                 if (leavePolicyObject.getCredit_on_accural_basis().getConsiderWorkingDays().indicator) {
-                    daysConsiderForCalculation = getServerOrLocalDate().minusYears(1)
-                            .lengthOfYear();
+                    daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
                 } else {
                     daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
                 }
@@ -569,6 +580,18 @@ public class LeaveAccuralBase extends  LeaveBase {
                     Leave_Probation_End_Date = LocalDate.parse(employee.getDoj()).minusDays(daysToSubtract).toString();
                 }
             }
+            if(employee==null & EmployeeId!=null){
+                if (leavePolicyObject.getProbation_period_before_leave_validity().custom
+                        && !leavePolicyObject.getProbation_period_before_leave_validity().probation)
+                {
+                    int custom_Months = Integer.valueOf(leavePolicyObject.getProbation_period_before_leave_validity().customMonths);
+                    if(LocalDate.parse(DateOfJoining).plusMonths(custom_Months).isAfter(getServerOrLocalDate()))
+
+                        return true;
+                    else
+                        return false;
+                }
+            }
             else {
 
                 flag = 0;
@@ -600,27 +623,8 @@ public class LeaveAccuralBase extends  LeaveBase {
 
     public LocalDate getLastDayOfBiannual(String DATEIN_YYYY_MM_DD_format, String leaveCycle) {
         try {
-            String[] arr = DATEIN_YYYY_MM_DD_format.split("-");
-            int year = Integer.parseInt(arr[0]);
-            LocalDate lastDayOfBiannual = null;
-            int biannualEndMonth = 0;
-            if (leaveCycle.equalsIgnoreCase("Calendar Year")) {
-                biannualEndMonth = 6;
-            } else if (leaveCycle.equalsIgnoreCase("Financial Year")) {
-                biannualEndMonth = 9;
-            }
+          return   leaveCycleEndDate;
 
-            LocalDate biannualEndDate = LocalDate.of(year, biannualEndMonth, 01).with(lastDayOfMonth());
-
-            if (biannualEndDate.isAfter(LocalDate.parse(DATEIN_YYYY_MM_DD_format))) {
-                lastDayOfBiannual = biannualEndDate;
-            } else if (biannualEndDate.isBefore(LocalDate.parse(DATEIN_YYYY_MM_DD_format))) {
-                lastDayOfBiannual = LocalDate.parse(new LeavesAction().getLastDayofLeaveCycle(leaveCycle));
-            } else {
-                lastDayOfBiannual = biannualEndDate;
-            }
-
-            return lastDayOfBiannual;
         } catch (Exception e) {
             Reporter("Exception while calculation last day of Biannual Half", "Error");
             throw new RuntimeException("Exception while calculation last day of Biannual Half");

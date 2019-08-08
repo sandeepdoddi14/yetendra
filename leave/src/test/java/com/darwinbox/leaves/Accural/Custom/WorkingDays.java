@@ -77,6 +77,7 @@ public class WorkingDays extends LeaveAccuralBase {
             {
                 leavesAction.removeEmployeeLeaveLogs();
                 changeEmployeeDOJ(DOJ);
+                DateOfJoining=DOJ.toString();
                 Reporter("DOJ is changed to "+DOJ.toString(),"Info");
                 if(workingDaysPolicy.getCredit_on_accural_basis().getConsiderWorkingDays().indicator)
                    expectedBalance= calculateLeaveBalanceAsPerEmployeeWorkingDays(DOJ.toString(),leaveCycleEndDate.minusDays(1).toString());
@@ -99,7 +100,7 @@ public class WorkingDays extends LeaveAccuralBase {
                 if(expectedBalance==actualBalance)
                 Reporter("PASSED |||| Expected and actual are same","Pass");
                 else
-                    Reporter("Failed |||| Expected and actual are same","Fail");
+                    Reporter("Failed |||| Expected and actual are not same","Fail");
             }
             DOJ=DOJ.minusDays(1);
         }
