@@ -134,7 +134,7 @@ public class TestForEarlyMarkHalfDayDeduction extends TestBase {
                 atb.validateHoliday(isholiday, status, this);
                 atb.validateWeekoff(isWeekoff, status, this);
 
-                boolean proceed = earlyMark.getProceed(earlyMark, day) && ( count >= earlyMark.getCount() );
+                boolean proceed = earlyMark.getProceedOnNoLeave(earlyMark, day) && ( count >= earlyMark.getCount() );
 
                 if (proceed) {
                     atb.validateLeave(!earlyMark.isApprovalRequired(), false, status, leaveName, this);

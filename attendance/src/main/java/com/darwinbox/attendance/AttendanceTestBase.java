@@ -372,9 +372,9 @@ public class AttendanceTestBase {
             }
             policy.setWorkDuration(workdurObj);
 
-            String sortOrder = data.get("SortOrder");
+            String sortOrder = data.getOrDefault("SortOrder","no");
 
-            if ( sortOrder != null && (!sortOrder.equalsIgnoreCase("no")) ) {
+            if (!sortOrder.equalsIgnoreCase("no"))  {
 
                 String finalStr = "";
                 String orderStr[] = sortOrder.split("|");

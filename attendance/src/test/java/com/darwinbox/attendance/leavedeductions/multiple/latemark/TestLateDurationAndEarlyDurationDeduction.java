@@ -1,10 +1,11 @@
-package com.darwinbox.attendance.leavedeductions.earlyduration.fullday;
+package com.darwinbox.attendance.leavedeductions.multiple.latemark;
 
 import com.darwinbox.attendance.AttendanceTestBase;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Shift;
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.leavedeductions.EarlyDuration;
+import com.darwinbox.attendance.objects.policy.leavedeductions.LateDuration;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.attendance.services.EmployeeServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
@@ -17,10 +18,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
-public class TestForEarlyByFullDayDeduction extends TestBase {
+public class TestLateDurationAndEarlyDurationDeduction extends TestBase {
 
     public static Employee employee = null;
     public static Date date;
@@ -43,11 +46,10 @@ public class TestForEarlyByFullDayDeduction extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "EarlyDuration,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testForEarlyDurationFullDayDeduction(Map<String, String> testData) {
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateDuration,EarlyDuration,LeaveDeduction", retryAnalyzer = TestBase.class)
+    public void testForLateDurationAndEarlyDuration(Map<String, String> testData) {
 
-        String title = " With no leave Applied ";
-        boolean isHalf = false;
+        String title = " With Late Duration and Early Duration ";
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
@@ -65,71 +67,41 @@ public class TestForEarlyByFullDayDeduction extends TestBase {
 
         Reporter("Employee created " + employee.getUserID(), "INFO");
 
-        String leaveName = testData.get("Leave Name");
-        String leaveToApply = testData.get("ApplyLeave");
-
+        LateDuration lateDuration = policy.getLateDuration();
         EarlyDuration earlyDuration = policy.getEarlyDuration();
+
+        if (lateDuration == null) {
+            Reporter("LateDuration deduction is disabled ", "FAIL");
+            return;
+        }
 
         if (earlyDuration == null) {
             Reporter("EarlyDuration deduction is disabled ", "FAIL");
             return;
         }
 
-        title += " >> Attendance Policy ";
-
-        title += earlyDuration.isWeekoff() ? " >> WeeklyOff " : "";
-        title += earlyDuration.isHoliday() ? " >> Holiday " : "";
-
-        if ((!earlyDuration.isWeekoff()) && (!earlyDuration.isHoliday())) {
-            title += " >> Empty ";
-        }
+        List<LeaveDeductionsBase> list = new ArrayList<>();
+        list.add(lateDuration);
+        list.add(earlyDuration);
 
         Reporter(" Test Scenario  : " + title, "INFO");
 
-        for (LeaveDeductionsBase.DAYSTATUS day : LeaveDeductionsBase.DAYSTATUS.values()) {
+        date = dateHelper.getNextDate(date);
 
-            date = dateHelper.getNextDate(date);
+        Map<String,String> body = atb.createEntry(employee.getEmployeeID(),policy,shift,list,date,false);
+        atb.importBackdated(body);
 
-            String temp = " >> Status ";
+        String date_test = " >> Date :" + body.get("UserAttendanceImportBack[2][1]");
+        String status = atb.getAttendanceStatus(employee.getMongoID(), date);
 
-            boolean isboth = day.equals(LeaveDeductionsBase.DAYSTATUS.WH);
-            boolean isholiday = day.equals(LeaveDeductionsBase.DAYSTATUS.HOLIDAY) || isboth;
-            boolean isWeekoff = day.equals(LeaveDeductionsBase.DAYSTATUS.WEEKOFF) || isboth;
+        Reporter(" Actual Status " + date_test + " " + status.replaceAll("\\<.*?>", ""), "INFO");
 
-            temp += isWeekoff ? " >> WeeklyOff " : "";
-            temp += isholiday ? " >> Holiday " : "";
-
-            if ((!isWeekoff) && (!isholiday)) {
-                temp += " >> Empty ";
-            }
-
-            if (isholiday) {
-                atb.createHoliday(date);
-            }
-
-            Map<String, String> body = earlyDuration.getEarlyDuration(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift, date, isHalf, isWeekoff);
-            atb.importBackdated(body);
-
-            String date_test = " >> Date :" + body.get("UserAttendanceImportBack[2][1]");
-            temp += date_test;
-
-            String status = atb.getAttendanceStatus(employee.getMongoID(), date);
-
-            Reporter(" Day Status " + temp, "INFO");
-            Reporter(" Actual Status " + date_test + " " + status.replaceAll("\\<.*?>", ""), "INFO");
-
-            atb.validateHoliday(isholiday, status, this);
-            atb.validateWeekoff(isWeekoff, status, this);
-
-            boolean proceed = earlyDuration.getProceedOnNoLeave(earlyDuration, day);
-
-            if (proceed) {
-                atb.validateLeave(!earlyDuration.isApprovalRequired(), false, status, leaveName, this);
-            } else {
-                atb.validateNoLeave(status, leaveName, this);
-            }
-            validateDate();
+        for ( LeaveDeductionsBase ldbase : list) {
+            atb.validateLeave(!ldbase.isApprovalRequired(),true,status,atb.getLeaveNameById(ldbase.getLeaveId()),this);
         }
+
+        validateDate();
+
     }
 
     private void validateDate() {

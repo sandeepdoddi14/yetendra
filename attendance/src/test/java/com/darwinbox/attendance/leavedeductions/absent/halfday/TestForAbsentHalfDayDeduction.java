@@ -118,7 +118,7 @@ public class TestForAbsentHalfDayDeduction extends TestBase {
             atb.validateHoliday(isholiday, status, this);
             atb.validateWeekoff(isWeekoff, status, this);
 
-            boolean proceed = absent.getProceed(absent, day);
+            boolean proceed = absent.getProceedOnNoLeave(absent, day);
 
             if (proceed) {
                 atb.validateLeave(!absent.isApprovalRequired(), true, status, leaveName, this);

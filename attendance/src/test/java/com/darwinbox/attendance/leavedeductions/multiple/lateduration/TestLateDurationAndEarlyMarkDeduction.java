@@ -6,6 +6,7 @@ import com.darwinbox.attendance.objects.Shift;
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.leavedeductions.EarlyMark;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LateDuration;
+import com.darwinbox.attendance.objects.policy.leavedeductions.LateMark;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.attendance.services.EmployeeServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
@@ -46,10 +47,10 @@ public class TestLateDurationAndEarlyMarkDeduction extends TestBase {
         dateHelper = new DateTimeHelper();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateDuration,EarlyDuration,LeaveDeduction", retryAnalyzer = TestBase.class)
-    public void testForLateDurationAndEarlyMark(Map<String, String> testData) {
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "LateDuration,LateMark,LeaveDeduction", retryAnalyzer = TestBase.class)
+    public void testForLateDurationAndLateMark(Map<String, String> testData) {
 
-        String title = " With Late Duration and Early Mark ";
+        String title = " With Late Duration and Late Mark ";
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
@@ -68,7 +69,7 @@ public class TestLateDurationAndEarlyMarkDeduction extends TestBase {
         Reporter("Employee created " + employee.getUserID(), "INFO");
 
         LateDuration lateDuration = policy.getLateDuration();
-        EarlyMark earlyMark = policy.getEarlyMark();
+        LateMark earlyMark = policy.getLateMark();
 
         if (lateDuration == null) {
             Reporter("LateDuration deduction is disabled ", "FAIL");
@@ -76,7 +77,7 @@ public class TestLateDurationAndEarlyMarkDeduction extends TestBase {
         }
 
         if (earlyMark == null) {
-            Reporter("EarlyMark deduction is disabled ", "FAIL");
+            Reporter("LateMark deduction is disabled ", "FAIL");
             return;
         }
 
