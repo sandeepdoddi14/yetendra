@@ -41,8 +41,8 @@ public class LeaveAccuralBase extends  LeaveBase {
     public static String  EmployeeId=null;
 
     static LeavePolicyObject leavePolicyObject=null;
-    static LocalDate leaveCycleStartDate=null;
-    static LocalDate leaveCycleEndDate=null;
+    public static LocalDate leaveCycleStartDate=null;
+    public static LocalDate leaveCycleEndDate=null;
     static String Leave_Probation_End_Date=null;
     static String LeaveCalBeginningDate=null;
 
@@ -54,8 +54,8 @@ public class LeaveAccuralBase extends  LeaveBase {
 
     public void setLeavePolicyObject(LeavePolicyObject leavePolicyObject){
         this.leavePolicyObject=leavePolicyObject;
-        this.leaveCycleStartDate=LocalDate.parse(getFirstDayofLeaveCycle(leavePolicyObject.getLeave_cycle().toString()));
-        this.leaveCycleEndDate=LocalDate.parse(getLastDayofLeaveCycle(leavePolicyObject.getLeave_cycle().toString()));
+        //this.leaveCycleStartDate=LocalDate.parse(getFirstDayofLeaveCycle(leavePolicyObject.getLeave_cycle().toString()));
+        //this.leaveCycleEndDate=LocalDate.parse(getLastDayofLeaveCycle(leavePolicyObject.getLeave_cycle().toString()));
     }
 
     public LeavePolicyObject getWorkingDaysPolicy(Map<String,String> testData){
