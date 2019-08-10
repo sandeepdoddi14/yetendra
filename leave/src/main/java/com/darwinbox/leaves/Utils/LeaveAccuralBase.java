@@ -46,7 +46,7 @@ public class LeaveAccuralBase extends  LeaveBase {
     static String Leave_Probation_End_Date=null;
     static String LeaveCalBeginningDate=null;
 
-    static Employee employee=null;
+   public  static Employee employee=null;
 
     DateTimeHelper objDateTimeHelper= new DateTimeHelper();
 
@@ -1564,6 +1564,40 @@ public class LeaveAccuralBase extends  LeaveBase {
             return LocalDate.now();
     }
 
+
+    /**
+     * This method gets employees deActivation leave balance shown in front end
+     *
+     * @param leaveType
+     * @param deactivationDate
+     * @return Leave Balance
+     * @author shikhar
+     */
+    public double getEmployeesFrontEndDeactivationLeaveBalance(String leaveType, String deactivationDate) {
+        try {
+            double actualLeaveBalance = 0;
+            if (UtilityHelper.getProperty("config", "Work.with.APIs").equalsIgnoreCase("No")) {
+                String applicationURL = data.get("@@url");
+                String URL = applicationURL + "emailtemplate/Employeeleaved?id=" + employee.getEmployeeID() + "&leave=" + leaveType
+                        + "&date=" + deactivationDate;
+                driver.navigate().to(URL);
+                String frontEndLeaveBalance = driver.findElement(By.xpath("//body")).getText();
+                if (frontEndLeaveBalance.isEmpty()) {
+                    Reporter("Front End Leave balance is empty/ May be Leave Type is deleted", "Error");
+                    throw new RuntimeException("Front End Leave balance is empty/ May be Leave Type is deleted");
+                }
+                actualLeaveBalance = Double.valueOf(frontEndLeaveBalance);
+            } else if (UtilityHelper.getProperty("config", "Work.with.APIs").equalsIgnoreCase("Yes")) {
+                actualLeaveBalance = getEmployeesFrontEndDeactivationLeaveBalanceUsingAPIs(leaveType, deactivationDate);
+            }
+            return actualLeaveBalance;
+        } catch (Exception e) {
+            Reporter("Exception while getting front end leave balance for the employee", "Error");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
     public double getMonthDiffFromFirstDayOfQuarter(String date) {
         try {
             Period age=Period.between(leaveCycleStartDate,LocalDate.parse(date));
@@ -1573,6 +1607,48 @@ public class LeaveAccuralBase extends  LeaveBase {
             throw new RuntimeException();
         }
     }
+
+
+    /**
+     * This method gets employees leave balance shown in front end
+     *
+     * @param leaveType
+     * @param deactivationDate
+     * @return Leave Balance
+     * @author shikhar
+     */
+    public double getEmployeesFrontEndDeactivationLeaveBalanceUsingAPIs(String leaveType, String deactivationDate) {
+        try {
+            String applicationURL = data.get("@@url");
+            String URL = applicationURL + "Mobileapi/Employeeleaved";
+            RestAssured.baseURI = URL;
+
+            RequestSpecification request = RestAssured.given();
+
+            JSONObject params = new JSONObject();
+            //params.put("token", authToken);
+            params.put("id", employee.getEmployeeID());
+            params.put("leave", leaveType);
+            params.put("date", deactivationDate);
+
+            request.body(params.toString());
+
+            Response response = request.post();
+
+            String frontEndLeaveBalance = response.body().asString().trim();
+            if (frontEndLeaveBalance.isEmpty()) {
+                Reporter("Front End Leave balance is empty/ May be Leave Type is deleted", "Error");
+                throw new RuntimeException("Front End Leave balance is empty/ May be Leave Type is deleted");
+            }
+            double actualLeaveBalance = Double.valueOf(frontEndLeaveBalance);
+            return actualLeaveBalance;
+        } catch (Exception e) {
+            Reporter("Exception while getting front end leave balance for the employee", "Error");
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
 
 
 

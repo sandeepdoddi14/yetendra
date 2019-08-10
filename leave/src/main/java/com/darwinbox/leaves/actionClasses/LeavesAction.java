@@ -1487,7 +1487,7 @@ public class LeavesAction extends TestBase {
     /**
      * This method verifies leaves balance for whole leave cycle of the employee
      *
-     * @return boolean
+     * @return boolean;
      */
     public boolean verifyEffectiveDateDeactivationLeaveBalanceAsCustomDate(String effectiveDate,
                                                                            String[] deactivationDateArray) {
