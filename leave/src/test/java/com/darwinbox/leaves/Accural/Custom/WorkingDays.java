@@ -64,8 +64,8 @@ public class WorkingDays extends LeaveAccuralBase {
         Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
 
 
-        leaveCycleStartDate=LocalDate.parse("2018-11-01");
-        leaveCycleEndDate = LocalDate.parse("2019-10-31");
+        leaveCycleStartDate=LocalDate.parse("2018-10-01");
+        leaveCycleEndDate = LocalDate.parse("2019-09-30");
 
         new DateTimeHelper().changeServerDate(driver,leaveCycleEndDate.toString());
         serverChangedDate=leaveCycleEndDate.toString();
