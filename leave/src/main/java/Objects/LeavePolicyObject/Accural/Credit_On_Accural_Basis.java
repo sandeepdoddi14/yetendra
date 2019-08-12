@@ -42,10 +42,10 @@ public class Credit_On_Accural_Basis {
 
     public void setIndicator(Boolean indicator) {
         this.indicator = indicator;
-        if(this.indicator=true){
+        /*if(this.indicator=true){
             this.month=true;
             this.beginOfMonth=true;
-        }
+        }*/
     }
 
     public Boolean getMonth() {

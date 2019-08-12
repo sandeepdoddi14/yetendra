@@ -482,6 +482,9 @@ public class DateTimeHelper {
 	 */
 	public LocalDate getLastDayOfQuarter(String DATEIN_YYYY_MM_DD_format) {
 
+
+
+		LocalDate.parse("2019-10-30").minusMonths(LocalDate.parse("2018-11-01").getMonthValue()).getMonthValue();
 		String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
 		int year = Integer.parseInt(arr[0]);
 

@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -513,6 +514,8 @@ public class LeaveAccuralBase extends  LeaveBase {
                 }
 
                 if (leavePolicyObject.getCredit_on_accural_basis().getConsiderWorkingDays().indicator) {
+                    //cahnge the logic
+                    //calculate the number of days from start date to end date
                     daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
                 } else {
                     daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
@@ -609,7 +612,7 @@ public class LeaveAccuralBase extends  LeaveBase {
             if (monthQuarterBiannual.equalsIgnoreCase("Month")) {
                 return LocalDate.parse(date).withDayOfMonth(LocalDate.parse(date).lengthOfMonth());
             } else if (monthQuarterBiannual.equalsIgnoreCase("Quarter")) {
-                return objDateTimeHelper.getLastDayOfQuarter(date);
+                return getLastDayOfQuarter(date);
             } else if (monthQuarterBiannual.equalsIgnoreCase("Biannual")) {
                 return getLastDayOfBiannual(date, leaveCycle);
             } else {
@@ -1647,6 +1650,53 @@ public class LeaveAccuralBase extends  LeaveBase {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * This method will return last Day of Quarter in Local Date format
+     *
+     * @param DATEIN_YYYY_MM_DD_format
+     * @return Local Date
+     */
+    public LocalDate getLastDayOfQuarter(String DATEIN_YYYY_MM_DD_format) {
+
+
+        int monthFar=LocalDate.parse(DATEIN_YYYY_MM_DD_format).minusMonths(leaveCycleStartDate.getMonthValue()).getMonthValue();
+        if(monthFar<3)
+            return leaveCycleStartDate.plusMonths(3).minusDays(1);
+
+        if(monthFar>3 && monthFar<6)
+            return leaveCycleStartDate.plusMonths(6).minusDays(1);
+
+
+
+        if(monthFar>6 && monthFar<9)
+            return leaveCycleStartDate.plusMonths(9).minusDays(1);
+
+
+        if(monthFar>9 && monthFar<12)
+            return leaveCycleStartDate.plusMonths(12).minusDays(1);
+       /* LocalDate.parse("2019-10-30").minusMonths(LocalDate.parse("2018-11-01").getMonthValue()).getMonthValue()
+        String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
+        int year = Integer.parseInt(arr[0]);
+
+        int DOJQuarter = LocalDate.parse(DATEIN_YYYY_MM_DD_format).get(IsoFields.QUARTER_OF_YEAR);
+        int quarterMonth = 0;
+
+        if (DOJQuarter == 1) {
+            quarterMonth = 3;
+        } else if (DOJQuarter == 2) {
+            quarterMonth = 6;
+        } else if (DOJQuarter == 3) {
+            quarterMonth = 9;
+        } else if (DOJQuarter == 4) {
+            quarterMonth = 12;
+        }*/ else {
+            throw new RuntimeException("DOJ is not correct");
+        }
+
+       // LocalDate lastDate = LocalDate.of(year, quarterMonth, 01).with(lastDayOfMonth());
+       // return lastDate;
     }
 
 
