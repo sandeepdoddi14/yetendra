@@ -65,12 +65,12 @@ public class Deactivation extends LeaveAccuralBase {
             //creating 48 employess at leave cycle start date
         while (employeeCount > 0) {
             try {
-                employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", "random", "no"));
+                employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
             } catch (Exception e) {
                 try {
-                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", "random", "no"));
+                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
                 } catch (Exception e1) {
-                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", "random", "no"));
+                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
                 }
             }
         }
