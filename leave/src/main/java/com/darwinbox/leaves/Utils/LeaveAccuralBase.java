@@ -49,6 +49,8 @@ public class LeaveAccuralBase extends  LeaveBase {
 
    public  static Employee employee=null;
 
+   public Boolean deActiavation=false;
+
     DateTimeHelper objDateTimeHelper= new DateTimeHelper();
 
     static double ExpectedLeaveBalance = 0;
@@ -943,8 +945,8 @@ public class LeaveAccuralBase extends  LeaveBase {
      */
     public double calculateLeaveBalance(String DOJ,String toDate) {
         try {
-            String leaveCycleStartDate = "2019-08-01";
-            String leaveCycleEndDate = "2020-07-31";
+            //String leaveCycleStartDate = "2019-08-01";
+            //String leaveCycleEndDate = "2020-07-31";
             double midJoinigYesLeaves = 0;
             double perMonthLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12);
             double perMonthOrQuarterLeaves = 0;
@@ -958,12 +960,12 @@ public class LeaveAccuralBase extends  LeaveBase {
                 ExpectedLeaveBalance = 0;
             } else if (checkDOJisUnderLeaveProbationPeriod() == false) {
                 Leave_Probation_End_Date = DOJ;
-                if ((LocalDate.parse(DOJ)).isBefore(LocalDate.parse(leaveCycleStartDate))) {
-                    DOJ = leaveCycleStartDate;
+                if ((LocalDate.parse(DOJ)).isBefore(leaveCycleStartDate)) {
+                    DOJ = leaveCycleStartDate.toString();
                 }
 
-                if ((LocalDate.parse(Leave_Probation_End_Date)).isBefore(LocalDate.parse(leaveCycleStartDate))) {
-                    Leave_Probation_End_Date = leaveCycleStartDate;
+                if ((LocalDate.parse(Leave_Probation_End_Date)).isBefore(leaveCycleStartDate)) {
+                    Leave_Probation_End_Date = leaveCycleStartDate.toString();
                 }
 
                 /*
@@ -971,8 +973,8 @@ public class LeaveAccuralBase extends  LeaveBase {
                  */
                 if (!leavePolicyObject.getCredit_on_pro_rata_basis().indicator)
                 {
-                    leavesCalculationStartDate = leaveCycleStartDate;
-                    LeaveCalBeginningDate = leaveCycleStartDate;
+                    leavesCalculationStartDate = leaveCycleStartDate.toString();
+                    LeaveCalBeginningDate = leaveCycleStartDate.toString();
                     if (!leavePolicyObject.getCredit_on_accural_basis().getIndicator() ||
                             leavePolicyObject.getCredit_on_accural_basis().getConsiderWorkingDays().indicator) {
                         perMonthOrQuarterLeaves = perMonthLeaves;
@@ -1008,7 +1010,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                     if (!leavePolicyObject.getCredit_on_accural_basis().getIndicator() || leavePolicyObject.getCredit_on_accural_basis().getConsiderWorkingDays().indicator) {
                         perMonthOrQuarterLeaves = perMonthLeaves;
                         MonthOrQuarterDifference = objDateTimeHelper
-                                .getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, leaveCycleEndDate);
+                                .getMonthDifferenceBetweenTwoDates(LeaveCalBeginningDate, leaveCycleEndDate.toString());
                         if (MonthOrQuarterDifference < 0) {
                             MonthOrQuarterDifference = -MonthOrQuarterDifference;
                         }
@@ -1091,8 +1093,8 @@ public class LeaveAccuralBase extends  LeaveBase {
                         perMonthOrQuarterLeaves = perMonthLeaves;
                         String DOJBiannualHalf = checkBiannualHalfOfDate(LeaveCalBeginningDate); //This checks DOJ is in which binannual half
                         String currentDateBiannualHalf = checkBiannualHalfOfDate(
-                                leaveCycleEndDate); //This checks current date is in which binannual half
-                        midYearEndDate = LocalDate.parse(leaveCycleEndDate).minusMonths(6).toString(); //Calculate biannual end date
+                                leaveCycleEndDate.toString()); //This checks current date is in which binannual half
+                        midYearEndDate = LocalDate.parse(leaveCycleEndDate.toString()).minusMonths(6).toString(); //Calculate biannual end date
                         String biannualEndDate = "";
                         /*
                        Below code assigns biannualEndDate as per biannual half
@@ -1100,7 +1102,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                         if (DOJBiannualHalf.equalsIgnoreCase("First")) {
                             biannualEndDate = midYearEndDate;
                         } else if (DOJBiannualHalf.equalsIgnoreCase("Second")) {
-                            biannualEndDate = leaveCycleEndDate;
+                            biannualEndDate = leaveCycleEndDate.toString();
                         }
                         /*
                         Below code calculates month difference between leave calculation start date and biannual end date
@@ -1140,6 +1142,20 @@ public class LeaveAccuralBase extends  LeaveBase {
                  */
                 ExpectedLeaveBalance = (((perMonthOrQuarterLeaves) * (MonthOrQuarterDifference))
                         - (leavesDiffFromFirstDayOfQuarter) - (midJoinigYesLeaves) + biannualLeave);
+
+                if(deActiavation)
+                {
+                    if(LocalDate.parse(toDate).getDayOfMonth()<=15){
+                        //add +1 for current month
+                      int  months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths()+1;
+                      ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
+                    }
+                    else{
+                        int  months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
+                        ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
+                    }
+                }
+
             }
             double ExpectedLeaveBalanceRoundOff = Math.round(ExpectedLeaveBalance * 100.0) / 100.0;
 
@@ -1581,8 +1597,13 @@ public class LeaveAccuralBase extends  LeaveBase {
             double actualLeaveBalance = 0;
             if (UtilityHelper.getProperty("config", "Work.with.APIs").equalsIgnoreCase("No")) {
                 String applicationURL = data.get("@@url");
-                String URL = applicationURL + "/emailtemplate/Employeeleaved?id=" + employee.getEmployeeID() + "&leave=" + leaveType
+                String URL=null;
+                if(employee!=null)
+                URL = applicationURL + "/emailtemplate/Employeeleaved?id=" + employee.getEmployeeID() + "&leave=" + leaveType
                         + "&date=" + deactivationDate;
+                else
+                    URL = applicationURL + "/emailtemplate/Employeeleaved?id=" + EmployeeId + "&leave=" + leaveType
+                            + "&date=" + deactivationDate;
                 driver.navigate().to(URL);
                 String frontEndLeaveBalance = driver.findElement(By.xpath("//body")).getText();
                 if (frontEndLeaveBalance.isEmpty()) {

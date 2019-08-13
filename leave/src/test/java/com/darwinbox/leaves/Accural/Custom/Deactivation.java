@@ -57,14 +57,14 @@ public class Deactivation extends LeaveAccuralBase {
             leaveCycleStartDate = LocalDate.parse("2019-01-01");
             leaveCycleEndDate = LocalDate.parse("2019-12-31");
 
-            LocalDate doj = leaveCycleEndDate;
+            //LocalDate doj = leaveCycleEndDate;
 
             new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
 
 
 
             //creating 48 employess at leave cycle start date
-        while (employeeCount > 0) {
+       /* while (employeeCount > 0) {
             try {
                 employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
             } catch (Exception e) {
@@ -75,8 +75,10 @@ public class Deactivation extends LeaveAccuralBase {
                 }
             }
             employeeCount=  employeeCount-1;
-        }
+        } */
 
+       super.EmployeeId="Y1565698199674";
+       super.DateOfJoining=leaveCycleStartDate.toString();
 
         new DateTimeHelper().changeServerDate(driver, leaveCycleEndDate.toString());
         serverChangedDate = leaveCycleEndDate.toString();
@@ -90,9 +92,17 @@ public class Deactivation extends LeaveAccuralBase {
 
             while (!serverDateInFormat.isBefore(leaveCycleStartDate)) {
                 if (new LeavesAction().iterationDateFourTimesPerMonth(serverDateInFormat) == true) {
-                    super.employee=employees.get(employeeCount);
-                    Reporter("Employee is----"+employees.get(employeeCount).getEmployeeID(),"info");
-                    expecetedLeaveBalance=calculateLeaveBalance(doj.toString(),serverDateInFormat.toString());
+                  //  super.employee=employees.get(employeeCount);
+                  //  Reporter("Employee is----"+employees.get(employeeCount).getEmployeeID(),"info");
+
+                    new DateTimeHelper().changeServerDate(driver,serverDateInFormat.toString());
+                    //removing month if deactivation date is less than or equals 15
+
+
+                     super.deActiavation=true;
+
+                   
+                    expecetedLeaveBalance=calculateLeaveBalance("2019-01-01",serverDateInFormat.toString());
                     Reporter("Expected Leave Balance is --"+expecetedLeaveBalance,"Info");
 
 
@@ -103,7 +113,7 @@ public class Deactivation extends LeaveAccuralBase {
                         Reporter("Passed |||| actual and expected are same","Pass");
                     else
                         Reporter("Failed |||| actual and expected are not same","Fail");
-                    employeeCount=employeeCount+1;
+                    //employeeCount=employeeCount+1;
 
                 }
                  serverDateInFormat=serverDateInFormat.minusDays(1);
