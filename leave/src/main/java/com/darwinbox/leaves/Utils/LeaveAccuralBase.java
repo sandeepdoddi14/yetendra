@@ -1581,7 +1581,7 @@ public class LeaveAccuralBase extends  LeaveBase {
             double actualLeaveBalance = 0;
             if (UtilityHelper.getProperty("config", "Work.with.APIs").equalsIgnoreCase("No")) {
                 String applicationURL = data.get("@@url");
-                String URL = applicationURL + "emailtemplate/Employeeleaved?id=" + employee.getEmployeeID() + "&leave=" + leaveType
+                String URL = applicationURL + "/emailtemplate/Employeeleaved?id=" + employee.getEmployeeID() + "&leave=" + leaveType
                         + "&date=" + deactivationDate;
                 driver.navigate().to(URL);
                 String frontEndLeaveBalance = driver.findElement(By.xpath("//body")).getText();

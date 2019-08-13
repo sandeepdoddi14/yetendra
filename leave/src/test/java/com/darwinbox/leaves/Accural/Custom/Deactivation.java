@@ -27,6 +27,7 @@ public class Deactivation extends LeaveAccuralBase {
     LoginPage loginpage = null;
     CommonAction commonAction = null;
     Boolean runTest = true;
+    static int employeeCount=48;
 
     static LocalDate serverDateInFormat=null;
 
@@ -60,7 +61,7 @@ public class Deactivation extends LeaveAccuralBase {
 
             new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
 
-            int employeeCount = 48;
+
 
             //creating 48 employess at leave cycle start date
         while (employeeCount > 0) {
@@ -73,6 +74,7 @@ public class Deactivation extends LeaveAccuralBase {
                     employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
                 }
             }
+            employeeCount=  employeeCount-1;
         }
 
 
@@ -98,7 +100,9 @@ public class Deactivation extends LeaveAccuralBase {
                     Reporter("Actual Leave Balance is ---"+actualLeaveBalance,"Info");
 
                     employeeCount=employeeCount+1;
+
                 }
+                 serverDateInFormat=serverDateInFormat.minusDays(1);
 
 
             }
