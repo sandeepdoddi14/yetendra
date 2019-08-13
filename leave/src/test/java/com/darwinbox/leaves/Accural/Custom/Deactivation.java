@@ -99,6 +99,10 @@ public class Deactivation extends LeaveAccuralBase {
                     actualLeaveBalance=getEmployeesFrontEndDeactivationLeaveBalance(deactivationLeaveBalance.getLeave_Type(),serverDateInFormat.toString());
                     Reporter("Actual Leave Balance is ---"+actualLeaveBalance,"Info");
 
+                    if(expecetedLeaveBalance==actualLeaveBalance)
+                        Reporter("Passed |||| actual and expected are same","Pass");
+                    else
+                        Reporter("Failed |||| actual and expected are not same","Fail");
                     employeeCount=employeeCount+1;
 
                 }
