@@ -1145,12 +1145,21 @@ public class LeaveAccuralBase extends  LeaveBase {
 
                 if(deActiavation)
                 {
+                    if(leavePolicyObject.getCredit_on_accural_basis().getIndicator()){
+                        ExpectedLeaveBalance = 12;
+                    }
                     if(LocalDate.parse(toDate).getDayOfMonth()<=15){
                         //add +1 for current month
-                      int  months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths()+1;
+                     int  months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths()+1;
                       ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
+                      if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator){
+                          if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th)
+                              ExpectedLeaveBalance = ExpectedLeaveBalance + 0.5;
+                          if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
+                              ExpectedLeaveBalance = ExpectedLeaveBalance + perMonthLeaves;
+                      }
                     }
-                    else{
+                    else {
                         int  months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
                         ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
                     }
