@@ -69,6 +69,7 @@ public class Deactivation extends LeaveAccuralBase {
 
 
             }
+        }
             //creating 48 employess at leave cycle start date
        /* while (employeeCount > 0) {
             try {
@@ -131,4 +132,4 @@ public class Deactivation extends LeaveAccuralBase {
 
         }
     }
-}
+
