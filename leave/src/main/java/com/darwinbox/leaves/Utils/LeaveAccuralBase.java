@@ -1146,7 +1146,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                 if(deActiavation)
                 {
                     if(leavePolicyObject.getCredit_on_accural_basis().getIndicator()){
-                        ExpectedLeaveBalance = 12;
+                        ExpectedLeaveBalance = leavePolicyObject.getMaximum_leave_allowed_per_year();
                     }
                     if(LocalDate.parse(toDate).getDayOfMonth()<=15){
                         //add +1 for current month
@@ -1179,6 +1179,9 @@ public class LeaveAccuralBase extends  LeaveBase {
             throw new RuntimeException();
         }
     }
+
+
+
 
     /**
      * This method calculate and returns whether Date falls in First or Second

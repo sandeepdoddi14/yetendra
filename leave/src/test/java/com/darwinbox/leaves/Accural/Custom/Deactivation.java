@@ -54,8 +54,8 @@ public class Deactivation extends LeaveAccuralBase {
             LeavePolicyObject  deactivationLeaveBalance=getLeaveBalancePolicy(testData);
             super.setLeavePolicyObject(deactivationLeaveBalance);
 
-            leaveCycleStartDate = LocalDate.parse("2019-01-01");
-            leaveCycleEndDate = LocalDate.parse("2019-12-31");
+            leaveCycleStartDate = LocalDate.parse("2018-11-01");
+            leaveCycleEndDate = LocalDate.parse("2019-10-31");
 
             //LocalDate doj = leaveCycleEndDate;
 
@@ -102,7 +102,7 @@ public class Deactivation extends LeaveAccuralBase {
                      super.deActiavation=true;
 
                    
-                    expecetedLeaveBalance=calculateLeaveBalance("2019-01-01",serverDateInFormat.toString());
+                    expecetedLeaveBalance=calculateLeaveBalance("2018-11-01",serverDateInFormat.toString());
                     Reporter("Expected Leave Balance is --"+expecetedLeaveBalance,"Info");
 
 
