@@ -10,6 +10,7 @@ import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
+import jdk.vm.ci.meta.Local;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -53,12 +54,12 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
         if (runTest) {
             List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies();
 
-            String firstDayOfCycle = "2019-08-01";
-            String lastDayOfCycle = "2020-07-31";
-            LocalDate doj = LocalDate.parse(lastDayOfCycle);
+            leaveCycleStartDate = LocalDate.parse("2019-08-01");
+            leaveCycleEndDate = LocalDate.parse("2020-07-31");
+            LocalDate doj = leaveCycleEndDate;
 
             new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
-            while (doj.isAfter(LocalDate.parse(firstDayOfCycle))) {
+            while (doj.isAfter(leaveCycleStartDate)) {
                 try{
                     if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
                        employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
@@ -81,8 +82,8 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
             }
 
 
-            serverChangedDate = lastDayOfCycle;
-            new DateTimeHelper().changeServerDate(driver, lastDayOfCycle);
+            serverChangedDate = leaveCycleEndDate.toString();
+            new DateTimeHelper().changeServerDate(driver, leaveCycleEndDate.toString());
 
 
             serverDateInFormat  = LocalDate.parse(serverChangedDate);
@@ -90,7 +91,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
             double actualLeaveBalance=0.0D;
             double expecetedLeaveBalance=0.0D;
 
-            while (serverDateInFormat.isAfter(LocalDate.parse(firstDayOfCycle))) {
+            while (serverDateInFormat.isAfter(leaveCycleStartDate)) {
                 if (new LeavesAction().iterationDateFourTimesPerMonth(serverDateInFormat) == true) {
                     serverChangedDate = serverDateInFormat.toString();
                     new DateTimeHelper().changeServerDate(driver, serverDateInFormat.toString());
