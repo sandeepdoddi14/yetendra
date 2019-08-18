@@ -111,12 +111,12 @@ public class Deactivation extends LeaveAccuralBase {
             double expecetedLeaveBalance = 0.0D;
 
 
-            leavesAction.setEmployeeID(employee.getEmployeeID());
+           // leavesAction.setEmployeeID(employee.getEmployeeID());
             while (!serverDateInFormat.isBefore(leaveCycleStartDate)) {
                 if (new LeavesAction().iterationDateFourTimesPerMonth(serverDateInFormat) == true) {
                     //  super.employee=employees.get(employeeCount);
                     //  Reporter("Employee is----"+employees.get(employeeCount).getEmployeeID(),"info");
-                    leavesAction.removeEmployeeLeaveLogs();
+                  //  leavesAction.removeEmployeeLeaveLogs();
                     new DateTimeHelper().changeServerDate(driver, serverDateInFormat.toString());
                     //removing month if deactivation date is less than or equals 15
                     super.serverChangedDate = serverDateInFormat.toString();
