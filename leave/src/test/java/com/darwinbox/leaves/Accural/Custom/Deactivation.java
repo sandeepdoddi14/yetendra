@@ -1,6 +1,7 @@
 package com.darwinbox.leaves.Accural.Custom;
 
 import Objects.Employee;
+import Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
 import Objects.LeavePolicyObject.LeavePolicyObject;
 import Service.EmployeeServices;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
@@ -29,6 +30,8 @@ public class Deactivation extends LeaveAccuralBase {
 
     static LocalDate serverDateInFormat = null;
 
+    LeavesAction leavesAction=new LeavesAction();
+
 
     @BeforeMethod
     public void initializeObjects() {
@@ -50,6 +53,16 @@ public class Deactivation extends LeaveAccuralBase {
     public void verifyDeactivationBalance(Map<String, String> testData) {
 
         LeavePolicyObject deactivationLeaveBalance = getLeaveBalancePolicy(testData);
+
+        //making default to begin of month for calculation
+        if(deactivationLeaveBalance.getCredit_on_accural_basis().getIndicator()){
+            Credit_On_Accural_Basis credit_on_accural_basis=deactivationLeaveBalance.getCredit_on_accural_basis();
+            credit_on_accural_basis.setMonthlyAccuralSetting(true,true,false);
+            credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+            credit_on_accural_basis.setBiAnnual(false);
+            deactivationLeaveBalance.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
+
         super.setLeavePolicyObject(deactivationLeaveBalance);
 
         leaveCycleStartDate = LocalDate.parse("2018-09-01");
@@ -98,11 +111,12 @@ public class Deactivation extends LeaveAccuralBase {
             double expecetedLeaveBalance = 0.0D;
 
 
+            leavesAction.setEmployeeID(employee.getEmployeeID());
             while (!serverDateInFormat.isBefore(leaveCycleStartDate)) {
                 if (new LeavesAction().iterationDateFourTimesPerMonth(serverDateInFormat) == true) {
                     //  super.employee=employees.get(employeeCount);
                     //  Reporter("Employee is----"+employees.get(employeeCount).getEmployeeID(),"info");
-
+                    leavesAction.removeEmployeeLeaveLogs();
                     new DateTimeHelper().changeServerDate(driver, serverDateInFormat.toString());
                     //removing month if deactivation date is less than or equals 15
                     super.serverChangedDate = serverDateInFormat.toString();
