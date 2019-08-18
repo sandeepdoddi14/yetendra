@@ -1157,17 +1157,22 @@ public class LeaveAccuralBase extends  LeaveBase {
                         //add +1 for current month
                     // if(!leavePolicyObject.getCredit_on_accural_basis().getEndOfMonth())
                         if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator())
-                      months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths()+1;
+                      months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
                      //else
                        //  months=Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
                       ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
                       if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator){
                           if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th)
-                              ExpectedLeaveBalance = ExpectedLeaveBalance + 0.5;
+                              ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves/2;
                           else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
-                              ExpectedLeaveBalance = ExpectedLeaveBalance + perMonthLeaves;
-                          else
+                              ExpectedLeaveBalance = ExpectedLeaveBalance;
+                          else if(!leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th
+                          && !leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
                               ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves;
+                      }
+                      else{
+                          //verify this condition once
+                          ExpectedLeaveBalance =ExpectedLeaveBalance -perMonthLeaves;
                       }
                     }
                     else {
