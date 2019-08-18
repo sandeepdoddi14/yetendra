@@ -105,12 +105,11 @@ public class Deactivation extends LeaveAccuralBase {
 
                     new DateTimeHelper().changeServerDate(driver, serverDateInFormat.toString());
                     //removing month if deactivation date is less than or equals 15
-
-
+                    super.serverChangedDate = serverDateInFormat.toString();
                     super.deActiavation = true;
 
 
-                    expecetedLeaveBalance = calculateLeaveBalance("2018-11-01", serverDateInFormat.toString());
+                    expecetedLeaveBalance = calculateLeaveBalance(employee.getDoj(), serverDateInFormat.toString());
                     Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 

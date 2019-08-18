@@ -597,10 +597,6 @@ public class LeaveAccuralBase extends  LeaveBase {
                         return false;
                 }
             }
-            else {
-
-                flag = 0;
-            }
 
             return flag > 0;
         } catch (Exception e) {
@@ -991,7 +987,15 @@ public class LeaveAccuralBase extends  LeaveBase {
                         LeaveCalBeginningDate = DOJ;
 
                     if(leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
-                        LeaveCalBeginningDate = Leave_Probation_End_Date;
+                    {
+                        if (leavePolicyObject.getProbation_period_before_leave_validity().custom)
+                            LeaveCalBeginningDate = LocalDate.parse(DOJ).plusMonths(leavePolicyObject.getProbation_period_before_leave_validity().customMonths).toString();
+                        else if(leavePolicyObject.getProbation_period_before_leave_validity().probation)
+                            LeaveCalBeginningDate = Leave_Probation_End_Date;
+
+                        else
+                            LeaveCalBeginningDate = Leave_Probation_End_Date;
+                    }
 
                 }
 
@@ -1146,21 +1150,30 @@ public class LeaveAccuralBase extends  LeaveBase {
                 if(deActiavation)
                 {
                     if(leavePolicyObject.getCredit_on_accural_basis().getIndicator()){
-                        ExpectedLeaveBalance = leavePolicyObject.getMaximum_leave_allowed_per_year();
+                     //   ExpectedLeaveBalance = leavePolicyObject.getMaximum_leave_allowed_per_year();
                     }
                     if(LocalDate.parse(toDate).getDayOfMonth()<=15){
+                        int  months=0;
                         //add +1 for current month
-                     int  months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths()+1;
+                    // if(!leavePolicyObject.getCredit_on_accural_basis().getEndOfMonth())
+                        if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator())
+                      months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths()+1;
+                     //else
+                       //  months=Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
                       ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
                       if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator){
                           if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th)
                               ExpectedLeaveBalance = ExpectedLeaveBalance + 0.5;
-                          if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
+                          else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
                               ExpectedLeaveBalance = ExpectedLeaveBalance + perMonthLeaves;
+                          else
+                              ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves;
                       }
                     }
                     else {
-                        int  months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
+                        int months=0;
+                        if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator())
+                         months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
                         ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
                     }
                 }
