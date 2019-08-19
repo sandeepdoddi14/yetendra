@@ -1096,7 +1096,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                         perMonthOrQuarterLeaves = perMonthLeaves;
                         String DOJBiannualHalf = checkBiannualHalfOfDate(LeaveCalBeginningDate); //This checks DOJ is in which binannual half
                         String currentDateBiannualHalf = checkBiannualHalfOfDate(
-                                leaveCycleEndDate.toString()); //This checks current date is in which binannual half
+                                getServerOrLocalDate().toString()); //This checks current date is in which binannual half
                         midYearEndDate = LocalDate.parse(leaveCycleEndDate.toString()).minusMonths(6).toString(); //Calculate biannual end date
                         String biannualEndDate = "";
                         /*
@@ -1111,7 +1111,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                         Below code calculates month difference between leave calculation start date and biannual end date
                          */
                         MonthOrQuarterDifference = objDateTimeHelper
-                                .getMonthDifferenceBetweenTwoDates(biannualEndDate, leavesCalculationStartDate);
+                                .getMonthDifferenceBetweenTwoDates(leavesCalculationStartDate, biannualEndDate);
 
                         /*
                         Below logic calculates whether to credit Halfl  year leave based on DOJ and Current date biannual half
@@ -1228,9 +1228,9 @@ public class LeaveAccuralBase extends  LeaveBase {
         try {
             String biannualHalf = "";
             String employeeConfirmationdate = LocalDate.parse(DATEIN_YYYY_MM_DD_format).toString();
-            String leaveCycleEndDate = getLastDayofLeaveCycle(leavePolicyObject.getLeave_cycle());
-            double monthsDiff = objDateTimeHelper.getMonthDifferenceBetweenTwoDates(leaveCycleEndDate,
-                    employeeConfirmationdate);
+
+            double monthsDiff = objDateTimeHelper.getMonthDifferenceBetweenTwoDates(employeeConfirmationdate.toString(),
+                    leaveCycleEndDate.toString());
 
             if (monthsDiff >= 6) {
                 biannualHalf = "First";

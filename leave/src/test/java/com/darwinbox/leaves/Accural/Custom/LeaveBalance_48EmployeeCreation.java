@@ -106,7 +106,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                                 Reporter("Actual Leave Balance  is  ..." + actualLeaveBalance, "Info");
                                 expecetedLeaveBalance=calculateLeaveBalance(employee.getDoj(), getServerOrLocalDate().toString());
                                 Reporter("Expected Leave Balance is " + expecetedLeaveBalance, "Info");
-                                if(actualLeaveBalance==expecetedLeaveBalance)
+                                   if(actualLeaveBalance==expecetedLeaveBalance)
                                     Reporter("Passed || actual leave balance and expected are same","Pass");
                                 else
                                     Reporter("FAILED || actual leave balance and expected are not same","Fail");
