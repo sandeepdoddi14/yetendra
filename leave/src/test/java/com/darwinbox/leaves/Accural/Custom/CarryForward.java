@@ -4,6 +4,7 @@ import Objects.Employee;
 import Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
 import Objects.LeavePolicyObject.LeavePolicyObject;
 import Service.EmployeeServices;
+import Service.LeaveBalanceAPI;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -19,7 +20,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 
-public class Deactivation extends LeaveAccuralBase {
+public class CarryForward extends LeaveAccuralBase {
 
     Employee employee = new Employee();
 
@@ -29,6 +30,9 @@ public class Deactivation extends LeaveAccuralBase {
 
 
     static LocalDate serverDateInFormat = null;
+    LocalDate doj=null;
+
+    LeavesAction leavesAction = null;
 
 
 
@@ -39,6 +43,7 @@ public class Deactivation extends LeaveAccuralBase {
 
         loginpage.loginToApplication();
         commonAction.changeApplicationAccessMode("Admin");
+        leavesAction= new LeavesAction(driver);
 
     }
 
@@ -49,35 +54,35 @@ public class Deactivation extends LeaveAccuralBase {
 
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
-    public void verifyDeactivationBalance(Map<String, String> testData) {
+    public void verifyCarryForwardBalance(Map<String, String> testData) {
 
-        LeavePolicyObject deactivationLeaveBalance = getLeaveBalancePolicy(testData);
-
+        LeavePolicyObject carryForwardBalance = getCarryForwardPolicy(testData);
+        super.carryForward=true;
         //making default to begin of month for calculation
-        if(deactivationLeaveBalance.getCredit_on_accural_basis().getIndicator()){
-            Credit_On_Accural_Basis credit_on_accural_basis=deactivationLeaveBalance.getCredit_on_accural_basis();
+        if(carryForwardBalance.getCredit_on_accural_basis().getIndicator()){
+            Credit_On_Accural_Basis credit_on_accural_basis=carryForwardBalance.getCredit_on_accural_basis();
             credit_on_accural_basis.setMonthlyAccuralSetting(true,true,false);
             credit_on_accural_basis.setQuarterlyAccural(false,false,false);
             credit_on_accural_basis.setBiAnnual(false);
-            deactivationLeaveBalance.setCredit_on_accural_basis(credit_on_accural_basis);
+            carryForwardBalance.setCredit_on_accural_basis(credit_on_accural_basis);
         }
 
-        super.setLeavePolicyObject(deactivationLeaveBalance);
+        super.setLeavePolicyObject(carryForwardBalance);
 
-        leaveCycleStartDate = LocalDate.parse("2018-11-01");
-        leaveCycleEndDate = LocalDate.parse("2019-10-31");
+        leaveCycleStartDate = LocalDate.parse("2019-03-01");
+        leaveCycleEndDate = LocalDate.parse("2020-02-29");
 
 
 
         new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
 
         try {
-            employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
+            employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleEndDate.toString(), "no"));
         } catch (Exception e) {
             try {
-                employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
+                employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleEndDate.toString(), "no"));
             } catch (Exception e1) {
-                employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
+                employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleEndDate.toString(), "no"));
 
 
             }
@@ -86,30 +91,29 @@ public class Deactivation extends LeaveAccuralBase {
             super.employee = employee;
 
 
-            new DateTimeHelper().changeServerDate(driver, leaveCycleEndDate.toString());
-            serverChangedDate = leaveCycleEndDate.toString();
-
-
+            new DateTimeHelper().changeServerDate(driver, leaveCycleEndDate.plusDays(1).toString());
+            serverChangedDate = leaveCycleEndDate.plusDays(1).toString();
             serverDateInFormat = LocalDate.parse(serverChangedDate);
 
             double actualLeaveBalance = 0.0D;
             double expecetedLeaveBalance = 0.0D;
 
+            doj= LocalDate.parse(employee.getDoj());
+            leavesAction.setEmployeeID(employee.getEmployeeID());
+            while (!doj.isBefore(leaveCycleStartDate)) {
+                if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+
+                    changeEmployeeDOJ(doj,employee);
 
 
-            while (!serverDateInFormat.isBefore(leaveCycleStartDate)) {
-                if (new LeavesAction().iterationDateFourTimesPerMonth(serverDateInFormat) == true) {
-                    new DateTimeHelper().changeServerDate(driver, serverDateInFormat.toString());
-
-                    super.serverChangedDate = serverDateInFormat.toString();
-                    super.deActiavation = true;
-
-
-                    expecetedLeaveBalance = calculateLeaveBalance(employee.getDoj(), serverDateInFormat.toString());
+                    expecetedLeaveBalance = calculateLeaveBalance(doj.toString(), serverDateInFormat.toString());
                     Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
-                    actualLeaveBalance = getEmployeesFrontEndDeactivationLeaveBalance(deactivationLeaveBalance.getLeave_Type(), serverDateInFormat.toString());
+                    //leavesAction.removeEmployeeCarryForwardLeaveLogs();
+                    leavesAction.runCarryFrowardCronByEndPointURL();
+
+                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(),carryForwardBalance.getLeave_Type()).getCarryForwardBalance();
                     Reporter("Actual Leave Balance is ---" + actualLeaveBalance, "Info");
 
                     if (expecetedLeaveBalance == actualLeaveBalance)
@@ -119,7 +123,7 @@ public class Deactivation extends LeaveAccuralBase {
 
 
                 }
-                serverDateInFormat = serverDateInFormat.minusDays(1);
+                doj = doj.minusDays(1);
             }
 
 

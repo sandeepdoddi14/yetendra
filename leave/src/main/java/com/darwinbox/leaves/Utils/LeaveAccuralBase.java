@@ -50,6 +50,7 @@ public class LeaveAccuralBase extends  LeaveBase {
    public  static Employee employee=null;
 
    public Boolean deActiavation=false;
+   public Boolean carryForward=false;
 
     DateTimeHelper objDateTimeHelper= new DateTimeHelper();
 
@@ -941,8 +942,6 @@ public class LeaveAccuralBase extends  LeaveBase {
      */
     public double calculateLeaveBalance(String DOJ,String toDate) {
         try {
-            //String leaveCycleStartDate = "2019-08-01";
-            //String leaveCycleEndDate = "2020-07-31";
             double midJoinigYesLeaves = 0;
             double perMonthLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12);
             double perMonthOrQuarterLeaves = 0;
@@ -1149,18 +1148,12 @@ public class LeaveAccuralBase extends  LeaveBase {
 
                 if(deActiavation)
                 {
-                    if(leavePolicyObject.getCredit_on_accural_basis().getIndicator()){
-                     //   ExpectedLeaveBalance = leavePolicyObject.getMaximum_leave_allowed_per_year();
-                    }
+
                     if(LocalDate.parse(toDate).getDayOfMonth()<=15){
                         int  months=0;
-                        //add +1 for current month
-                    // if(!leavePolicyObject.getCredit_on_accural_basis().getEndOfMonth())
                         if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator())
-                      months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
-                     //else
-                       //  months=Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
-                      ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
+                         months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
+                       ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
                       if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator){
                           if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th)
                               ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves/2;
@@ -1171,7 +1164,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                               ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves;
                       }
                       else{
-                          //verify this condition once
+
                           ExpectedLeaveBalance =ExpectedLeaveBalance -perMonthLeaves;
                       }
                     }
@@ -1180,6 +1173,29 @@ public class LeaveAccuralBase extends  LeaveBase {
                         if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator())
                          months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
                         ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
+                    }
+                }
+
+
+                if(carryForward)
+                {
+                    if (leavePolicyObject.getCarryForwardUnusedLeave().indicator)
+                    {
+                       if(leavePolicyObject.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
+                        ExpectedLeaveBalance = ExpectedLeaveBalance;
+                    } else if (leavePolicyObject.getCarryForwardUnusedLeave().fixed) {
+                        double fixedValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().fixedValue);
+                        if (fixedValue > ExpectedLeaveBalance) {
+                            ExpectedLeaveBalance = ExpectedLeaveBalance;
+                        } else if (fixedValue <= ExpectedLeaveBalance) {
+                            ExpectedLeaveBalance = fixedValue;
+                        }
+                    } else if (leavePolicyObject.getCarryForwardUnusedLeave().percentage) {
+                        double percentageValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().percentageValue);
+                        ExpectedLeaveBalance = ((ExpectedLeaveBalance * percentageValue) / 100);
+                    } else {
+                        throw new RuntimeException("Parameters provided to calculate carry forward balance are not proper.");
+                    }
                     }
                 }
 

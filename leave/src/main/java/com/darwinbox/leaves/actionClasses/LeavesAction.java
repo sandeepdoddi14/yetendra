@@ -1203,7 +1203,7 @@ public class LeavesAction extends TestBase {
     public boolean runCarryFrowardCronByEndPointURL() {
              double actualLeaveBalance = 0;
             String applicationURL = data.get("@@url");
-            String URL = UtilityHelper.getProperty("allAPIRepository", "Run.Cron.API") + "CarryforwardLeavesnew"+"&type=2&eno="+EMPID;
+            String URL = UtilityHelper.getProperty("allAPIRepository", "Run.Cron.API") + "CarryforwardLeavesnew"+"&type=4&eno="+EMPID;
             objUtil.getHTMLTextFromAPI(driver, URL);
             String frontEndLeaveBalance = driver.findElement(By.xpath("//body")).getText();
             if (frontEndLeaveBalance.isEmpty()) {
