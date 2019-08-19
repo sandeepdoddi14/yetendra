@@ -106,7 +106,7 @@ public class CarryForward extends LeaveAccuralBase {
                     changeEmployeeDOJ(doj,employee);
 
 
-                    expecetedLeaveBalance = calculateLeaveBalance(doj.toString(), serverDateInFormat.toString());
+                    expecetedLeaveBalance = calculateLeaveBalance(doj.toString(), leaveCycleEndDate.toString());
                     Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
