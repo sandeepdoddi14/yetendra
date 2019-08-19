@@ -66,7 +66,7 @@ public class Deactivation extends LeaveAccuralBase {
         super.setLeavePolicyObject(deactivationLeaveBalance);
 
         leaveCycleStartDate = LocalDate.parse("2018-10-01");
-        leaveCycleEndDate = LocalDate.parse("2019-09-31");
+        leaveCycleEndDate = LocalDate.parse("2019-09-30");
 
         //LocalDate doj = leaveCycleEndDate;
 
