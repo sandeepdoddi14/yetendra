@@ -945,7 +945,7 @@ public class LeaveAccuralBase extends  LeaveBase {
             double midJoinigYesLeaves = 0;
             double perMonthLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12);
             double perMonthOrQuarterLeaves = 0;
-            double MonthOrQuarterDifference = 0;
+            double  MonthOrQuarterDifference = 0;
             double leavesDiffFromFirstDayOfQuarter = 0;
             String leavesCalculationStartDate = "";
             String midYearEndDate;
@@ -1082,9 +1082,9 @@ public class LeaveAccuralBase extends  LeaveBase {
                         MonthOrQuarterDifference = objDateTimeHelper
                                 .getQuarterDiffFromCurrentDate(serverChangedDate,leavesCalculationStartDate);
 
-                        if(leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter())
-                            leavesDiffFromFirstDayOfQuarter = 0;
-                        else
+                       // if(leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter())
+                        //    leavesDiffFromFirstDayOfQuarter = 0;
+                       // else
                             leavesDiffFromFirstDayOfQuarter = ((perMonthLeaves)
                                     * getMonthDiffFromFirstDayOfQuarter(leavesCalculationStartDate));
                     }
