@@ -78,8 +78,15 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                            employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
                         }}
                         catch (Exception e2){
-                            if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                                employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                            try {
+                                if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                                }
+                            }catch(Exception e3){
+                                if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                                }
+
                             }
                         }
                     }
@@ -99,7 +106,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
             double expecetedLeaveBalance=0.0D;
 
 
-            String s="sa";
+
             while (serverDateInFormat.isAfter(leaveCycleStartDate)) {
                 if (new LeavesAction().iterationDateFourTimesPerMonth(serverDateInFormat) == true) {
                     serverChangedDate = serverDateInFormat.toString();
@@ -111,6 +118,8 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                                 Reporter("Employee is" + employee.getEmployeeID() + "...DOJ is ....." + employee.getDoj(), "info");
                                 super.setLeavePolicyObject(leavePolicyObject);
                                 Reporter("Leave Type is" + leavePolicyObject.getLeave_Type(), "Info");
+                                Reporter("Server Date is" + serverDateInFormat.toString(), "Info");
+
                                 actualLeaveBalance= new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
                                 Reporter("Actual Leave Balance  is  ..." + actualLeaveBalance, "Info");
                                 expecetedLeaveBalance=calculateLeaveBalance(employee.getDoj(), getServerOrLocalDate().toString());

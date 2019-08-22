@@ -67,7 +67,15 @@ public class CarryForward extends LeaveAccuralBase {
             carryForwardBalance.setCredit_on_accural_basis(credit_on_accural_basis);
         }
 
-        super.setLeavePolicyObject(carryForwardBalance);
+        //leave validity also needs to be set to zero for carry forward
+        if(carryForwardBalance.getProbation_period_before_leave_validity().custom)
+            carryForwardBalance.getProbation_period_before_leave_validity().customMonths=0;
+
+        //if(carryForwardBalance.getProbation_period_before_leave_validity().probation)
+            ///carryForwardBalance.getProbation_period_before_leave_validity()
+
+
+            super.setLeavePolicyObject(carryForwardBalance);
 
         leaveCycleStartDate = LocalDate.parse("2019-03-01");
         leaveCycleEndDate = LocalDate.parse("2020-02-29");
@@ -104,6 +112,7 @@ public class CarryForward extends LeaveAccuralBase {
                 if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
 
                     changeEmployeeDOJ(doj,employee);
+                    employee.setDoj(doj.toString());
 
 
                     expecetedLeaveBalance = calculateLeaveBalance(doj.toString(), leaveCycleEndDate.toString());
