@@ -2023,7 +2023,8 @@ public class LeavesAction extends TestBase {
     }
 
     /**
-     * This method calculate and returns whether Date falls in First or Second
+     * This method
+     * and returns whether Date falls in First or Second
      * Biannual Half
      *
      * @param DATEIN_YYYY_MM_DD_format

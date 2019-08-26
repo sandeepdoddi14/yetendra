@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 
-public class CarryForward extends LeaveAccuralBase {
+public class Tenure extends LeaveAccuralBase {
 
     Employee employee = new Employee();
 
@@ -78,8 +78,8 @@ public class CarryForward extends LeaveAccuralBase {
 
             super.setLeavePolicyObject(carryForwardBalance);
 
-        leaveCycleStartDate = LocalDate.parse("2019-10-01");
-        leaveCycleEndDate = LocalDate.parse("2020-09-30");
+        leaveCycleStartDate = LocalDate.parse("2019-03-01");
+        leaveCycleEndDate = LocalDate.parse("2020-02-29");
 
 
 
