@@ -68,7 +68,8 @@ public class CarryForward extends LeaveAccuralBase {
         }
 
         //leave validity also needs to be set to zero for carry forward
-        if(carryForwardBalance.getProbation_period_before_leave_validity().custom)
+        if(carryForwardBalance.getProbation_period_before_leave_validity().custom &&
+            !carryForwardBalance.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
             carryForwardBalance.getProbation_period_before_leave_validity().customMonths=0;
 
         //if(carryForwardBalance.getProbation_period_before_leave_validity().probation)
