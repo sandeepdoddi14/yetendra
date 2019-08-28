@@ -78,8 +78,8 @@ public class CarryForward extends LeaveAccuralBase {
 
             super.setLeavePolicyObject(carryForwardBalance);
 
-        leaveCycleStartDate = LocalDate.parse("2019-10-01");
-        leaveCycleEndDate = LocalDate.parse("2020-09-30");
+        leaveCycleStartDate = LocalDate.parse("2019-05-01");
+        leaveCycleEndDate = LocalDate.parse("2020-04-30");
 
 
 
