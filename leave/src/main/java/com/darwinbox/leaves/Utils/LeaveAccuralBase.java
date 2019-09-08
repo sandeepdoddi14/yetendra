@@ -36,6 +36,7 @@ import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
 public class LeaveAccuralBase extends  LeaveBase {
 
     public static String serverChangedDate=null;
+    public static LocalDate  serverDateInFormat=null;
 
     //manual employee data
     public  static String DateOfJoining = "";
@@ -173,6 +174,90 @@ public class LeaveAccuralBase extends  LeaveBase {
 
         return  leaveBalancePolicy;
     }
+
+    public LeavePolicyObject getTenureBalancePolicy(Map<String,String> testData){
+
+        LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
+        leaveBalancePolicy.setAssignment_Type("company wise");
+        leaveBalancePolicy.setGroup_Company("Working Days (DO NOT TOUCH)");
+        leaveBalancePolicy.setLeave_Type(testData.get("Leave_Type"));
+        leaveBalancePolicy.setDescription("AutomationCreatedLeavePolicy");
+        leaveBalancePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Max_Leaves_Allowed_Per_Year").replace(".0","")));
+        leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
+        leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
+
+        ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
+        probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
+        probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+        //if(probationPeriodForLeaveValidity.probation)
+        //employeeProbation=testData.get("Employee Probation Period");
+        if(probationPeriodForLeaveValidity.custom)
+            probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
+
+        leaveBalancePolicy.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+
+
+        if(testData.get("Pro rata").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Pro_Rata_Basis pro_rata_basis= new Credit_On_Pro_Rata_Basis();
+            pro_rata_basis.indicator=true;
+            pro_rata_basis.calculateFromJoiningDate=testData.get("From Joining date").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.calculateAfterProbationPeriod=testData.get("After Probation period").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditHalfMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Half Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditfullMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Full Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+
+            leaveBalancePolicy.setCredit_on_pro_rata_basis(pro_rata_basis);
+        }
+
+        if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+            credit_on_accural_basis.setIndicator(true);
+
+            if(!testData.get("Monthly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setMonthlyAccuralSetting(false,false,false);
+            else
+                credit_on_accural_basis.setMonthlyAccuralSetting(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            if(!testData.get("Quarterly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+            else
+                credit_on_accural_basis.setQuarterlyAccural(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes")?true:false);
+
+
+
+            leaveBalancePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
+        if(testData.get("Credit On Tenure Basis").equalsIgnoreCase("yes")){
+            TenureBasis tenureBasis = new TenureBasis();
+            tenureBasis.indicator=true;
+            for(String fromYear: testData.get("Credit From Year").split(",")){
+                tenureBasis.fromYear.add(Integer.parseInt(fromYear));
+            }
+
+            for(String toYear: testData.get("Credit To Year").split(",")){
+                tenureBasis.toYear.add(Integer.parseInt(toYear));
+            }
+
+
+            for(String leaves: testData.get("Credit No of Leaves").split(",")){
+                tenureBasis.noOfLeaves.add(Integer.parseInt(leaves.trim()));
+            }
+
+            leaveBalancePolicy.setTenureBasis(tenureBasis);
+
+        }
+
+
+
+
+        List<NameValuePair> request=leaveBalancePolicy.createRequest();
+
+        new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
+
+        return  leaveBalancePolicy;
+    }
+
 
 
     public Boolean setEmployeeId(String employeeId){
@@ -943,7 +1028,7 @@ public class LeaveAccuralBase extends  LeaveBase {
     public double calculateLeaveBalance(String DOJ,String toDate) {
         try {
             double midJoinigYesLeaves = 0;
-            double perMonthLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12);
+            double perMonthLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12.0);
             double perMonthOrQuarterLeaves = 0;
             double  MonthOrQuarterDifference = 0;
             double leavesDiffFromFirstDayOfQuarter = 0;
@@ -1068,7 +1153,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                     This function calculates month leave balance
                      */
                     if (leavePolicyObject.getCredit_on_accural_basis().getMonth()) {
-                        perMonthOrQuarterLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12);
+                        perMonthOrQuarterLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12.0);
                         MonthOrQuarterDifference = objDateTimeHelper
                                 .getMonthDifferenceFromCurrentDate(leavesCalculationStartDate,toDate);
                         leavesDiffFromFirstDayOfQuarter = 0;
@@ -1078,7 +1163,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                      */
                     else if (leavePolicyObject.getCredit_on_accural_basis().getQuarter())
                     {
-                        perMonthOrQuarterLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 4);
+                        perMonthOrQuarterLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 4.0);
                         MonthOrQuarterDifference = objDateTimeHelper
                                 .getQuarterDiffFromCurrentDate(serverChangedDate,leavesCalculationStartDate);
 
