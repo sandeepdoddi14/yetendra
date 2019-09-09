@@ -5,6 +5,7 @@ import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Reports;
 import com.darwinbox.attendance.objects.Shift;
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
+import com.darwinbox.attendance.objects.policy.leavedeductions.Absent;
 import com.darwinbox.attendance.pages.settings.AttendanceImportPage;
 import com.darwinbox.attendance.pages.settings.DisplaySettingsPage;
 import com.darwinbox.attendance.services.EmployeeServices;
@@ -22,7 +23,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 
-public class TestAttendanceSummary extends TestBase {
+public class TestAttendanceAbsentSummary extends TestBase {
 
     LoginPage loginPage;
     ReportsDashboardServices reportsDashboardServices;
@@ -55,7 +56,7 @@ public class TestAttendanceSummary extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettings.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -65,7 +66,7 @@ public class TestAttendanceSummary extends TestBase {
 
         atb.assignPolicyAndShift(employee.getUserID(), employee.getDoj(), shift, policy, weekoffId);
         Reporter("Employee created " + employee.getUserID(), "INFO");
-        Date date = dateTimeHelper.getPreviousDate(new Date());
+        Date date = dateTimeHelper.getFirstDateOfPreviousMonth(new Date());
         String inTimeDate = dateTimeHelper.formatDateTo(date, "dd-MM-yyyy");
         String inTime = dateTimeHelper.parseTime(shift.getStartTime());
         String outTimeDate = shift.isOverNightShift() ? dateTimeHelper.formatDateTo(new Date(), "dd-MM-yyyy") : inTimeDate;
@@ -85,7 +86,6 @@ public class TestAttendanceSummary extends TestBase {
         attendanceImportPage.setBreakDuration(breakTime);
 
         atb.importBackdated(attendanceImportPage.getWorkDuration());
-
         String leaveToApply = testData.get("ApplyLeave");
         boolean isFirst = false;
         boolean isSecond = true;
@@ -93,17 +93,31 @@ public class TestAttendanceSummary extends TestBase {
 
         String leaveid = atb.getLeaveId(leaveToApply);
         atb.applyLeave(date, employee, leaveid, isFirst, isSecond, isApproved);
-        Reporter("Leave applied for date " + dateTimeHelper.formatDateTo(date, "dd-MM-yyyy"), "INFO");
+        Reporter("Leave applied for date "+dateTimeHelper.formatDateTo(date,"dd-MM-yyyy"),"INFO");
 
-        log.info(" check "+reportsDashboardServices.diffBetweenDates(reportsDashboardServices.getFirstDateOfCurrentMonth(),dateTimeHelper.getNextDate(date)));
+
+        Absent absent = new Absent();
+        Map<String, String> body = absent.getAbsent(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift.getShiftName(), dateTimeHelper.addDays(date, 1), true);
+        atb.importBackdated(body);
+
+        atb.createHoliday(dateTimeHelper.addDays(date, 2));
+
+      // Reporter(" The expected count is : "+reportsDashboardServices.diffBetweenDates(reportsDashboardServices.getFirstDateOfCurrentMonth(),dateTimeHelper.getNextDate(date)),"INFO");
 
         reports.setReportType("opt_roster_10");
         reports.setModule("opt_main_roster_1");
         reports.setReportFilter(employee.getUserID());
         reports.setSubCriteria(String.valueOf(Reports.employeeTypes.activeEmployees));
         reports.setMonthAndYear(dateTimeHelper.formatDateTo(date, "YYYY-MM"));
-        reportsDashboardServices.getReportAttendanceSummary(reports);
+        Object a= reportsDashboardServices.getReportAttendanceSummary(reports);
 
+      int b= (int) reportsDashboardServices.diffBetweenDates(date,dateTimeHelper.getLastDateOfPreviousMonth());
+
+        if(a.equals(b)){
+            Reporter("Absent Summary Report is as expected","PASS");
+        }else
+            Reporter("Absent Summary Report is NOT as expected","FAIL");
+    }
 
     }
-}
+

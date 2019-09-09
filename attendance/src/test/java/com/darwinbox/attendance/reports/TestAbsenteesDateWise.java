@@ -55,7 +55,7 @@ public class TestAbsenteesDateWise extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettings.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -64,7 +64,7 @@ public class TestAbsenteesDateWise extends TestBase {
         Employee employee = employeeServices.createAnEmployee(policy.getPolicyInfo().getCompanyID().length() == 0);
         atb.assignPolicyAndShift(employee.getUserID(), employee.getDoj(), shift, policy, weekoffId);
         Reporter("Employee created " + employee.getUserID(), "INFO");
-        Date date = dateTimeHelper.getPreviousDate(new Date());
+        Date date = dateTimeHelper.getFirstDateOfPreviousMonth(new Date());
         String inTimeDate = dateTimeHelper.formatDateTo(date,"dd-MM-yyyy");
         String inTime = dateTimeHelper.parseTime(shift.getStartTime());
         String outTimeDate = shift.isOverNightShift() ? dateTimeHelper.formatDateTo(new Date(),"dd-MM-yyyy") : inTimeDate;
@@ -99,9 +99,13 @@ public class TestAbsenteesDateWise extends TestBase {
         reports.setReportFilter(employee.getUserID());
         reports.setSubCriteria(String.valueOf(Reports.employeeTypes.activeEmployees));
         reports.setMonthAndYear(dateTimeHelper.formatDateTo(date, "YYYY-MM"));
-        reportsDashboardServices.getReportAbsenteesDateWise(reports);
+      Object a=  reportsDashboardServices.getReportAbsenteesDateWise(reports);
 
-
+     Date date1=  dateTimeHelper.getLastDateOfPreviousMonth();
+     if(a.equals(dateTimeHelper.formatDateTo(date1,"dd-MMM-yyyy"))){
+         Reporter("Absentees Datewise Report is as expected","PASS");
+     }else
+         Reporter("Absentees Datewise Report is NOT as expected","FAIL");
     }
 
     }

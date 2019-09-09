@@ -1,6 +1,10 @@
 package com.darwinbox.attendance;
 
 import com.darwinbox.attendance.objects.*;
+import com.darwinbox.attendance.objects.overTime.HolidayOption;
+import com.darwinbox.attendance.objects.overTime.OverTimePolicy;
+import com.darwinbox.attendance.objects.overTime.WeekDayOption;
+import com.darwinbox.attendance.objects.overTime.WeekendOption;
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.leavedeductions.*;
 import com.darwinbox.attendance.objects.policy.others.*;
@@ -12,10 +16,7 @@ import com.darwinbox.attendance.services.RequestServices;
 import com.darwinbox.attendance.services.apply.AttendanceImport;
 import com.darwinbox.attendance.services.apply.AttendanceRequestServices;
 import com.darwinbox.attendance.services.apply.LeaveApply;
-import com.darwinbox.attendance.services.settings.AttendancePolicyService;
-import com.darwinbox.attendance.services.settings.HolidayService;
-import com.darwinbox.attendance.services.settings.LeaveSettings;
-import com.darwinbox.attendance.services.settings.ShiftsServices;
+import com.darwinbox.attendance.services.settings.*;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.base.TestBase;
@@ -99,8 +100,9 @@ public class AttendanceTestBase {
         getWeeklyOffs();
         //createIPRestrictions();
         // createRegularizeReason();
-
+       // createOTPolicy();
     }
+
 
     private void deleteHolidays() {
         HolidayService srvc = new HolidayService();
@@ -204,6 +206,42 @@ public class AttendanceTestBase {
 
         }
 
+    }
+
+    public OverTimePolicy createOTPolicy() {
+
+        List<Map<String, String>> OTpolicyData = readDatafromSheet("OTPolicy");
+        List<Map<String, String>> weekday = readDatafromSheet("weekDayOption");
+        List<Map<String, String>> weekend = readDatafromSheet("weekendOption");
+        List<Map<String, String>> holiday = readDatafromSheet("holidayOption");
+
+        OverTimePolicy overTimePolicy = null;
+        for (Map<String, String> mapdata : OTpolicyData) {
+
+            overTimePolicy = new OverTimePolicy();
+            OverTimePolicyService overTimePolicyService = new OverTimePolicyService();
+
+            WeekDayOption weekDayOption = new WeekDayOption();
+            Map<String, String> weekDayData = weekday.get(0);
+            weekDayOption.toObject(weekDayData);
+            overTimePolicy.setWeekDay(weekDayOption);
+
+            WeekendOption weekendOption = new WeekendOption();
+            Map<String, String> weekendEndData = weekend.get(0);
+            weekendOption.toObject(weekendEndData);
+            overTimePolicy.setWeekoff(weekendOption);
+
+            HolidayOption holidayOption = new HolidayOption();
+            Map<String, String> holidayData = holiday.get(0);
+            holidayOption.toObject(holidayData);
+            overTimePolicy.setHoliday(holidayOption);
+
+            overTimePolicy.toObject(mapdata);
+           // overTimePolicy.toMap();
+            overTimePolicyService.createSettings(overTimePolicy);
+
+        }
+        return overTimePolicy;
     }
 
     private void createAttendancePolicies() {

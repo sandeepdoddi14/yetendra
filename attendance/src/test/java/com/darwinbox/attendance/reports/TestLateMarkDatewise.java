@@ -54,7 +54,7 @@ public class TestLateMarkDatewise extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettingsEarlyOutAndLateMark.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));

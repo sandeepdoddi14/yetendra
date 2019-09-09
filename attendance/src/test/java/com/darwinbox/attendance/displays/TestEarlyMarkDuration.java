@@ -56,7 +56,7 @@ public class TestEarlyMarkDuration extends TestBase {
         }
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("DisplaySettingsFields.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -100,23 +100,29 @@ public class TestEarlyMarkDuration extends TestBase {
         if (isDisplayed && (check != isDisplayed)) {
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
-            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM")+" present");
 
             String userEndEarlyBy = displaySettingsPage.verifyColoumnValue(date, testData.get("header"));
-            long attPage= dateHelper.parseTime(userEndEarlyBy);
+            long attPage= dateHelper.parseTimeInMinutes(userEndEarlyBy);
 
             String outTimeDisplay = displaySettingsPage.verifyColoumnValue(date,"Time Out");
             Reporter("Out Time from system is " + outTimeDisplay, "INFO");
-            long outTimeuserEnd = dateHelper.parseTime(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", outTimeDisplay), "HH:mm:ss"));
+            long outTimeuserEnd = dateHelper.parseTimeIntoSeconds(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", outTimeDisplay), "HH:mm:ss"));
+            long outgraceTime = dateHelper.parseTimeIntoSeconds(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", "05:45:00 PM"), "HH:mm:ss"));
+            //long res = graceTimeOut*60-outTimeuserEnd;
 
-            long res = graceTimeOut*60-outTimeuserEnd;
 
-            if (attPage == res)
-                Reporter("Early out duration is as expected " + userEndEarlyBy, "PASS");
-             else {
-                Reporter("Early out duration is not as expected " + userEndEarlyBy, "FAIL");
-                Reporter("Expected is " + outTime + " Actual is " + attPage, "INFO");
+            if (shift.isOverNightShift()) {
+                outgraceTime= dateHelper.parseTimeIntoSeconds("06:45:00");
+            }
+            long res = outgraceTime-outTimeuserEnd;
+
+                if (attPage == res)
+                    Reporter("Early out duration is as expected " + userEndEarlyBy, "PASS");
+                else {
+                    Reporter("Early out duration is not as expected " + userEndEarlyBy, "FAIL");
+                    Reporter("Expected is " + outTime + " Actual is " + attPage, "INFO");
+                }
             }
         }
     }
-}

@@ -61,13 +61,13 @@ public class TestFinalWorkDuration extends TestBase {
         }
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("DisplaySettingsFields.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
         String weekoffId = atb.getWeeklyOff("None");
         DisplayFlags displayFlags = policy.getDisplayFlags();
-
+        Thread.sleep(3000);
         Employee employee = empService.createAnEmployee(policy.getPolicyInfo().getCompanyID().length() == 0);
         atb.assignPolicyAndShift(employee.getUserID(), employee.getDoj(), shift, policy, weekoffId);
         Reporter("Employee created " + employee.getUserID(), "INFO");
@@ -100,25 +100,25 @@ public class TestFinalWorkDuration extends TestBase {
 
         if ( isDisplayed && ( check != isDisplayed) ) {
 
-            long start = dateHelper.parseTime(inTime);
-            long end = dateHelper.parseTime(outTime);
-            long breakDur = dateHelper.parseTime(breakTime);
+            long start = dateHelper.parseTimeIntoSeconds(inTime);
+            long end = dateHelper.parseTimeIntoSeconds(outTime);
+            long breakDur = dateHelper.parseTimeIntoSeconds(breakTime);
 
             long totalDur = end - start;
 
             if (shift.isOverNightShift()) {
-                totalDur += 86400;
+                totalDur = (end+43200) - (start-43200);
             }
             long finalDur=totalDur-breakDur;
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
-            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM")+" present");
 
             String userEnd =   displaySettingsPage.verifyColoumnValue(date,testData.get("header"));
             Reporter("Final Work Duration from system is "+userEnd,"INFO");
+            long attPage= dateHelper.parseTimeIntoSeconds(userEnd);
 
-            long attPage= dateHelper.parseTime(userEnd);
-
+            Thread.sleep(2000);
             if ( finalDur == attPage)
                 Reporter("Final Work Duration is as expected "+userEnd,"PASS");
             else {

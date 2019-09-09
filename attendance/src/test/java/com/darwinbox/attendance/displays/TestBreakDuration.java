@@ -56,7 +56,7 @@ public class TestBreakDuration extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("DisplaySettingsFields.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -99,7 +99,7 @@ public class TestBreakDuration extends TestBase {
             long breakDur = dateHelper.parseTime(breakTime);
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
-            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM")+" present");
             sleep(3000);
             String userEnd =displaySettingsPage.verifyColoumnValue(date,testData.get("header"));
             Reporter("Break Duration from system is "+userEnd,"INFO");

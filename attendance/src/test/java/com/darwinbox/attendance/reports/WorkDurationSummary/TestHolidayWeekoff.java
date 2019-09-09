@@ -61,12 +61,12 @@ public class TestHolidayWeekoff extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
-    public void testDateWiseAttendanceStatus(Map<String, String> testData) throws Exception {
+    public void testWorkDuration(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettings.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
         String weekoffId = atb.getWeeklyOff("All");
@@ -88,16 +88,17 @@ public class TestHolidayWeekoff extends TestBase {
         isHoliday = dayStatus.contains("Holiday");
 
         if (isLeaves) {
-            atb.applyLeave(dateTimeHelper.addDays(date1, 1), employee, leaveid, false, false, true);
-            atb.applyLeave(dateTimeHelper.addDays(date1, 2), employee, "unpaid", false, false, true);
-            atb.applyLeave(dateTimeHelper.addDays(date1, 3), employee, leaveid, true, false, true);
-            atb.applyLeave(dateTimeHelper.addDays(date1, 4), employee, "unpaid", true, false, true);
-            atb.applyLeave(dateTimeHelper.addDays(date1, 5), employee, leaveid, true, false, true);
+            date1 = dateTimeHelper.getFirstDateOfNextMonth(date);
+            atb.applyLeave(date1, employee, leaveid, false, false, true);
+            atb.applyLeave(dateTimeHelper.addDays(date1, 1), employee, "unpaid", false, false, true);
+            atb.applyLeave(dateTimeHelper.addDays(date1, 2), employee, leaveid, true, false, true);
+            atb.applyLeave(dateTimeHelper.addDays(date1, 3), employee, "unpaid", true, false, true);
+            atb.applyLeave(dateTimeHelper.addDays(date1, 4), employee, leaveid, true, false, true);
+            atb.applyLeave(dateTimeHelper.addDays(date1, 4), employee, leaveid, false, true, true);
+            atb.applyLeave(dateTimeHelper.addDays(date1, 5), employee, "unpaid", true, false, true);
             atb.applyLeave(dateTimeHelper.addDays(date1, 5), employee, leaveid, false, true, true);
-            atb.applyLeave(dateTimeHelper.addDays(date1, 6), employee, "unpaid", true, false, true);
-            atb.applyLeave(dateTimeHelper.addDays(date1, 6), employee, leaveid, false, true, true);
             Reporter("Created Leaves", "INFO");
-          }
+        }
         if (isHoliday) {
             for (int i = 1; i <= 6; i++) {
                 atb.createHoliday(dateTimeHelper.addDays(date1, i));

@@ -785,6 +785,48 @@ public class DateTimeHelper {
 		return  (hrs + mins*60)*60 +secs;
 
 	}
+	public Long parseTimeInMinutes(String time){
+
+		String timeSplit[]=time.split(":");
+
+		long hrs = Long.parseLong(timeSplit[0]);
+		long mins = Long.parseLong(timeSplit[1]);
+		long secs = Long.parseLong(timeSplit[2]);
+
+		return  (hrs*60) + mins +(secs);
+
+	}
+	public Long parseTimeFromHHMMFormat(String time){
+
+		String timeSplit[]=time.split(":");
+
+		long hrs = Long.parseLong(timeSplit[0]);
+		long mins = Long.parseLong(timeSplit[1]);
+
+		return  (hrs + mins*60)*60;
+
+	}
+	public Long parseTimeFromMMSSFormat(String time){
+
+		String timeSplit[]=time.split(":");
+
+		long mins = Long.parseLong(timeSplit[0]);
+		long secs = Long.parseLong(timeSplit[1]);
+
+		return  (mins*60)*60 +secs;
+
+	}
+	public Long parseTimeIntoSeconds(String time){
+
+		String timeSplit[]=time.split(":");
+
+		long hrs = Long.parseLong(timeSplit[0]);
+		long mins = Long.parseLong(timeSplit[1]);
+		long secs = Long.parseLong(timeSplit[2]);
+
+		return  (secs) + (60*mins) + (3600*hrs);
+
+	}
 
 	public List<Date> getDatesForNextNDays(Date date, int n) {
 
@@ -826,6 +868,15 @@ public class DateTimeHelper {
 
 		cal.set(Calendar.DAY_OF_MONTH,1);
 		cal.add(Calendar.MONTH, -1);
+
+		return cal.getTime();
+	}
+	public Date getLastDateOfPreviousMonth() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH, -1);
+
+		int max = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		cal.set(Calendar.DAY_OF_MONTH, max);
 
 		return cal.getTime();
 	}

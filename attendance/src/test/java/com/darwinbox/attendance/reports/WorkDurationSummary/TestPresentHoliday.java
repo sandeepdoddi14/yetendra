@@ -62,12 +62,12 @@ public class TestPresentHoliday extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
-    public void testDateWiseAttendanceStatus(Map<String, String> testData) throws Exception {
+    public void testWorkDuration(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettings.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
         String weekoffId = atb.getWeeklyOff("All");
@@ -97,26 +97,27 @@ public class TestPresentHoliday extends TestBase {
             atb.applyLeave(dateTimeHelper.addDays(date1, 5), employee, "unpaid", true, false, true);
             atb.applyLeave(dateTimeHelper.addDays(date1, 5), employee, leaveid, false, true, true);
             Reporter("Created Leaves", "INFO");
-            }
-        Date  date2=dateTimeHelper.getFirstDateOfNextMonth(date);
+        }
         if (isHoliday) {
+            date1 = dateTimeHelper.getFirstDateOfNextMonth(date);
             for (int i = 1; i <= 6; i++) {
-                atb.createHoliday(date2);
-                date2=dateTimeHelper.getNextDate(date2);
+                atb.createHoliday(date1);
+                date1 = dateTimeHelper.getNextDate(date1);
             }
             Reporter("Holidays Created", "INFO");
         }
 
-        for (int j = 1; j <= 6; j++) {
+        long totalDuration = 0;
+        if (isPresent) {
 
             WorkDuration wd = new WorkDuration();
             wd.setWdhrs_fullday("8");
             Absent absent = new Absent();
             Map<String, String> body = new HashMap<>();
 
-            if (isPresent) {
-               /* body = wd.getWorkDuration(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift, dateTimeHelper.addDays(date1, j), false, false, isWeekoff);
-*/
+            date1 = dateTimeHelper.getFirstDateOfNextMonth(date);
+            for (int j = 1; j <= 6; j++) {
+
                 AttendanceImportPage attendanceImportPage = new AttendanceImportPage();
                 attendanceImportPage.setEmployeeId(employee.getEmployeeID());
                 attendanceImportPage.setShitDate(date1);
@@ -127,21 +128,43 @@ public class TestPresentHoliday extends TestBase {
                 attendanceImportPage.setShiftName(shift.getShiftName());
                 attendanceImportPage.setWeekoff(false);
                 attendanceImportPage.setPolicyName(policy.getPolicyInfo().getPolicyName());
-                attendanceImportPage.setBreakDuration(dateTimeHelper.parseTime(new Random().nextInt(60)));
-                long totalDur=0;
-                 atb.importBackdated(attendanceImportPage.getWorkDuration());
-                 date1= dateTimeHelper.getNextDate(date1);
-                  Reporter("Assignments are-"+attendanceImportPage.getBreakDuration()+"--"+attendanceImportPage.getInTime()+"--"+attendanceImportPage.getOutTime(),"INFO");
-                long start = dateTimeHelper.parseTime(attendanceImportPage.getInTime());
-                long end = dateTimeHelper.parseTime(attendanceImportPage.getOutTime());
-                totalDur = end - start;
-                long totalDuration=+totalDur;
-                Reporter((totalDuration)/60+"-Average","INFO");
+                attendanceImportPage.setBreakDuration("00:00:00");
+                atb.importBackdated(attendanceImportPage.getWorkDuration());
+                Reporter("Assignments are-" + attendanceImportPage.getBreakDuration() + "--" + attendanceImportPage.getInTime() + "--" + attendanceImportPage.getOutTime(), "INFO");
+                date1 = dateTimeHelper.getNextDate(date1);
 
-            } else {
+                String starHours = dateTimeHelper.parseTime(shift.getStartTime());
+                String endHours = dateTimeHelper.parseTime(shift.getEndTime());
+
+                long start = dateTimeHelper.parseTimeIntoSeconds(starHours);
+                long end = dateTimeHelper.parseTimeIntoSeconds(endHours);
+                long totalDur = end - start;
+                totalDuration = totalDur + totalDuration;
+
+            }
+            Reporter(dateTimeHelper.parseTime((int) (totalDuration / 60)) + "-Average of days ", "INFO");
+
+        } else {
+            date1 = dateTimeHelper.getFirstDateOfNextMonth(date);
+            Absent absent = new Absent();
+            Map<String, String> body = new HashMap<>();
+            for (int j = 1; j <= 6; j++) {
                 body = absent.getAbsent(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift.getShiftName(), dateTimeHelper.addDays(date1, j), isWeekoff);
                 atb.importBackdated(body);
+                date1 = dateTimeHelper.getNextDate(date1);
             }
+        }
+        //try removing break duration and check duration reflected on each day
+        if (isWeekoff) {
+            date1 = dateTimeHelper.getFirstDateOfNextMonth(date);
+            for (int j = 1; j <= 6; j++) {
+                Absent absent = new Absent();
+                Map<String, String> body = absent.getAbsent(employee.getEmployeeID(), policy.getPolicyInfo().getPolicyName(), shift.getShiftName(), date1, isWeekoff);
+                atb.importBackdated(body);
+                date1 = dateTimeHelper.getNextDate(date1);
+
+            }
+            Reporter("WeekOff Created", "INFO");
         }
 
 
@@ -162,9 +185,8 @@ public class TestPresentHoliday extends TestBase {
 
             Reporter("Work Duration not considered for- Leaves? " + isLeaveSetting + " Holiday? " + isHolidaySetting + " WeekOff? " + isWeekOffSetting, "INFO");
 
-               if(isHolidaySetting){
+               if(isHolidaySetting)
                      Reporter("WorkDuration is 0","INFO");
-               }else
 
             reports.setReportType("opt_roster_18");
             reports.setModule("opt_main_roster_1");

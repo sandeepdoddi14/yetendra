@@ -45,7 +45,6 @@ public class DisplaySettingsPage extends TestBase {
         try {
             objGenericHelper.navigateTo("/attendance/index/index/view/list");
             objWaitHelper.waitForPageToLoad();
-            log.info("Attendance Page is loaded");
             return true;
         } catch (Exception e) {
             return false;
@@ -55,13 +54,29 @@ public class DisplaySettingsPage extends TestBase {
         try {
             objGenericHelper.navigateTo("/attendance/index/index/view/list/id/"+Id);
             objWaitHelper.waitForPageToLoad();
-            log.info("Attendance Page is loaded for employee "+Id);
+            Reporter("Attendance Page is loaded for employee "+Id,"INFO");
             return true;
         } catch (Exception e) {
             return false;
         }
     }
+    public boolean navigateToLeavesPage(String Id) {
+        try {
+            objGenericHelper.navigateTo("/leaves/user/index/id/"+Id);
+            objWaitHelper.waitForPageToLoad();
+            Reporter("Leaves Page is loaded for employee "+Id,"INFO");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    @FindBy(xpath = "//div[@id='compoff']//div[@class='fle1']/p")
+    public WebElement compoff;
 
+    public String getCompoffBalance(){
+
+         return compoff.getText();
+    }
     public boolean headersDisplay(String header) throws InterruptedException{
 
            try {
@@ -176,8 +191,10 @@ sleep(2000);
     public boolean checkPolicies() throws InterruptedException{
 
         List<WebElement> elements = driver.findElements(By.xpath("//a[@class='site-color text-underline']"));
-        for (int i = 1; i <= elements.size() ; i++) {
-sleep(2000);
+       // for (int i = 1; i <= elements.size() ; i++) {
+        for (int i = 1; i < elements.size() ; i++) {
+
+            sleep(2000);
             WebElement policy= driver.findElement(By.xpath("//a[@class='site-color text-underline']["+i+"]"));
 
             policy.click();

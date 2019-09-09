@@ -34,4 +34,8 @@ public class CronServices extends Services {
         String cron_name = "AttendanceDesktopToSqlToMongoNew";
         runCron(cron_name);
     }
+    public void runCompoffPolicyCron() {
+        String cron_name = "compoffdaily";
+        runCron(cron_name);
+    }
 }

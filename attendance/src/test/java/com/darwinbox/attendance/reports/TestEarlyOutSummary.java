@@ -54,11 +54,12 @@ public class TestEarlyOutSummary extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettingsEarlyOutAndLateMark.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
         String weekoffId = atb.getWeeklyOff("None");
+        Shift secondShift = atb.getShift(testData.get("Shift Name Second"));
 
         List<Employee> emp=new ArrayList<>();
         List<String> empIDs = new ArrayList<>();
@@ -101,18 +102,18 @@ public class TestEarlyOutSummary extends TestBase {
             }
             else {
 
-                shift.setOverNightShift(true);
-                shift.setStartTime("22:00");
-                shift.setEndTime("05:00");
+                secondShift.setOverNightShift(true);
+                secondShift.setStartTime("22:00");
+                secondShift.setEndTime("05:00");
 
-                long graceTimeIn = shift.getStartTime() + policy.getPolicyInfo().getGraceTimeIn();
-                long graceTimeOut = shift.getEndTime() - policy.getPolicyInfo().getGraceTimeOut();
+                long graceTimeIn = secondShift.getStartTime() + policy.getPolicyInfo().getGraceTimeIn();
+                long graceTimeOut = secondShift.getEndTime() - policy.getPolicyInfo().getGraceTimeOut();
 
                 Date date = dateTimeHelper.getPreviousDate(new Date());
                 Date date1= dateTimeHelper.addDays(date,-3);
                 String inTimeDate = dateTimeHelper.formatDateTo(date1, "dd-MM-yyyy");
                 String inTime = dateTimeHelper.parseTime((int) graceTimeIn + 1);
-                String outTimeDate = shift.isOverNightShift() ? dateTimeHelper.formatDateTo(dateTimeHelper.getNextDate(date1), "dd-MM-yyyy") : inTimeDate;
+                String outTimeDate = secondShift.isOverNightShift() ? dateTimeHelper.formatDateTo(dateTimeHelper.getNextDate(date1), "dd-MM-yyyy") : inTimeDate;
                 String outTime = dateTimeHelper.parseTime((int) graceTimeOut - 1);
                 String breakTime = dateTimeHelper.parseTime(new Random().nextInt(60));
 
@@ -123,7 +124,7 @@ public class TestEarlyOutSummary extends TestBase {
                 attendanceImportPage.setInTime(inTime);
                 attendanceImportPage.setOutTimeDate(outTimeDate);
                 attendanceImportPage.setOutTime(outTime);
-                attendanceImportPage.setShiftName(shift.getShiftName());
+                attendanceImportPage.setShiftName(secondShift.getShiftName());
                 attendanceImportPage.setWeekoff(false);
                 attendanceImportPage.setPolicyName(policy.getPolicyInfo().getPolicyName());
                 attendanceImportPage.setBreakDuration(breakTime);

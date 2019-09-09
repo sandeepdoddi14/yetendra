@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 public class TestAttendanceAssignments extends TestBase {
@@ -55,7 +56,7 @@ public class TestAttendanceAssignments extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettings.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -92,7 +93,15 @@ public class TestAttendanceAssignments extends TestBase {
         reports.setSubCriteria(String.valueOf(Reports.employeeTypes.activeEmployees));
         reports.setFromDate(dateTimeHelper.formatDateTo(dateTimeHelper.addDays(date,-5),"dd-MM-yyyy"));
         reports.setToDate(dateTimeHelper.formatDateTo(new Date(),"dd-MM-yyyy"));
-        reportsDashboardServices.getReportAttendanceAssignments(reports);
+
+      Object a= reportsDashboardServices.getReportAttendanceAssignments(reports);
+      String b=  testData.get("Shift Name");
+
+     if(a.toString().equalsIgnoreCase(b)){
+         Reporter("Attendance Assignments Report is as expected","PASS");
+     }else{
+         Reporter("Attendance Assignments Report is NOT as expected","PASS");
+     }
 
     }
 }

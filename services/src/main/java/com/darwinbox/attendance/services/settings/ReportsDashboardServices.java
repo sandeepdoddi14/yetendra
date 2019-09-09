@@ -1,18 +1,11 @@
 package com.darwinbox.attendance.services.settings;
 
-import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Reports;
 import com.darwinbox.attendance.services.Services;
-import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ReportsDashboardServices extends Services {
 
@@ -115,12 +108,12 @@ public class ReportsDashboardServices extends Services {
 
 
     }
-        public void getReportAbsenteesDateWise(Reports reports){
+        public Object getReportAbsenteesDateWise(Reports reports){
 
         String url = getData("@@url") + "/reports/ShowRoster";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
-
+            Object a = new Object();
         String response=  doPost(url, headers, mapToFormData(reports.toMap("month")));
         waitForUpdate(3);
         log.info("Response: " + response);
@@ -130,16 +123,20 @@ public class ReportsDashboardServices extends Services {
                 JSONObject obj = new JSONObject(response);
                 Reporter("Coloumn is : " + obj.getJSONArray("cols").getString(0), "INFO");
                 Reporter("Report value : " + obj.getJSONArray("update").getJSONArray((i-1)).toList().get(0), "INFO");
+               a=  obj.getJSONArray("update").getJSONArray((i-1)).toList().get(0);
+
             }
         }catch (Exception e){
         }
+     return a;
     }
 
-    public void getReportAttendanceSummary(Reports reports){
+    public Object getReportAttendanceSummary(Reports reports){
 
         String url = getData("@@url") + "/reports/ShowRoster";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
+        Object a = new Object();
 
         String response=  doPost(url, headers, mapToFormData(reports.toMap("month")));
         log.info("Response: " + response);
@@ -148,13 +145,13 @@ public class ReportsDashboardServices extends Services {
             JSONObject obj = new JSONObject(response);
             Reporter("Coloumn is : "+obj.getJSONArray("cols").getString(4),"INFO");
             Reporter("Report value : "+obj.getJSONArray("update").getJSONArray(0).toList().get(4),"INFO");
-
+            a=obj.getJSONArray("update").getJSONArray(0).toList().get(4);
         }catch (Exception e){
             Reporter(""+e,"ERROR");
         }
-
+        return a;
     }
-    public void getReportLocationSummary(Reports reports){
+    public Object getReportLocationSummary(Reports reports){
 
         String url = getData("@@url") + "/reports/ShowRoster";
         Map headers = new HashMap();
@@ -163,16 +160,20 @@ public class ReportsDashboardServices extends Services {
         String response=  doPost(url, headers, mapToFormData(reports.toMap("month")));
         log.info("Response: " + response);
 
-        try {
-            JSONObject obj = new JSONObject(response);
+        Object[] a = null;
+        Object b=a;
+
+        JSONObject obj = new JSONObject(response);
             for(int i=4;i<=6;i++) {
                 Reporter("Coloumn is : " + obj.getJSONArray("cols").getString(i), "INFO");
                 Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(0).toList().get(i), "INFO");
-            }
-        }catch (Exception e){
-            Reporter(""+e,"ERROR");
-        }
 
+            }
+            for(int i=6;i<=8;i++) {
+                b = obj.getJSONArray("update").getJSONArray(0).toList().get(i);
+                return b;
+            }
+            return a;
     }
 
 
@@ -187,7 +188,7 @@ public class ReportsDashboardServices extends Services {
         return cal.getTime();
     }
 
-    public void getReportAttendanceAssignments(Reports reports){
+    public Object getReportAttendanceAssignments(Reports reports){
 
         String url = getData("@@url") + "/reports/ShowRoster";
         Map headers = new HashMap();
@@ -195,8 +196,10 @@ public class ReportsDashboardServices extends Services {
 
         String response=  doPost(url, headers, mapToFormData(reports.toMap("custom")));
         log.info("Response: " + response);
+         Object[] a = null;
+         Object b=a;
 
-        try {
+
             JSONObject obj = new JSONObject(response);
             Reporter("Coloumn is : "+obj.getJSONArray("cols").getString(6),"INFO");
             Reporter("Report value : "+obj.getJSONArray("update").getJSONArray(0).toList().get(6),"INFO");
@@ -207,12 +210,13 @@ public class ReportsDashboardServices extends Services {
             Reporter("Coloumn is : "+obj.getJSONArray("cols").getString(8),"INFO");
             Reporter("Report value : "+obj.getJSONArray("update").getJSONArray(0).toList().get(8),"INFO");
 
-
-        }catch (Exception e){
-            Reporter(""+e,"ERROR");
-        }
-
+           for(int i=6;i<=8;i++) {
+               b = obj.getJSONArray("update").getJSONArray(0).toList().get(i).toString();
+               return b;
+           }
+           return a;
     }
+
     public void getReportCompleteAttendanceSummary(Reports reports){
 
         String url = getData("@@url") + "/reports/ShowRoster";
@@ -284,6 +288,9 @@ public class ReportsDashboardServices extends Services {
                 Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(i).toList().get(14), "INFO");
         }
 
+ for(int i=0;i<=25;i++){
+        Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(i).toList().get(14), "INFO");
+}
     }
 
     public void getReportDatewiseAttendanceStatus(Reports reports) {
@@ -299,6 +306,9 @@ public class ReportsDashboardServices extends Services {
 
         Reporter("Coloumn is : " + obj.getJSONArray("cols").getString(32), "INFO");
         Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(0).toList().get(32), "INFO");
+
+        Reporter("Coloumn is : " + obj.getJSONArray("cols").getString(34), "INFO");
+        Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(0).toList().get(34), "INFO");
 
         Reporter("Coloumn is : " + obj.getJSONArray("cols").getString(35), "INFO");
         Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(0).toList().get(35), "INFO");
@@ -331,11 +341,12 @@ public class ReportsDashboardServices extends Services {
 
     }
 
-    public void getReportShiftsRoster(Reports reports) {
+    public Object getReportShiftsRoster(Reports reports) {
 
         String url = getData("@@url") + "/reports/ShowRoster";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
+        Object a = new Object();
 
         String response = doPost(url, headers, mapToFormData(reports.toMap("month")));
         log.info("Response: " + response);
@@ -346,7 +357,8 @@ public class ReportsDashboardServices extends Services {
 
         Reporter("Coloumn is : " + obj.getJSONArray("cols").getString(13), "INFO");
         Reporter("Report value : " + obj.getJSONArray("update").getJSONArray(0).toList().get(13), "INFO");
-
+        a=obj.getJSONArray("update").getJSONArray(0).toList().get(13);
+        return a;
     }
     }
 

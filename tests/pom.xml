@@ -40,6 +40,7 @@
         <module>../attendance</module>
         <module>../mobile</module>
         <module>../leave</module>
+        <module>../recruitment</module>
     </modules>
 
     <build>

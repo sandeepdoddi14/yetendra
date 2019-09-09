@@ -57,7 +57,7 @@ public class TestLateMarkDuration extends TestBase {
         }
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("DisplaySettingsFields.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -101,17 +101,18 @@ public class TestLateMarkDuration extends TestBase {
 
             Reporter("Time In assigned is "+inTime,"INFO");
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
-            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM")+" present");
 
             String userEndLateBy = displaySettingsPage.verifyColoumnValue(date, testData.get("header"));
             Reporter("Late Mark from system is " + userEndLateBy, "INFO");
-            long attPage = dateHelper.parseTime(userEndLateBy);
+            long attPage = dateHelper.parseTimeInMinutes(userEndLateBy);
 
             String inTimeDisplay = displaySettingsPage.verifyColoumnValue(date, "Time In");
             Reporter("Time In from system is " + inTimeDisplay, "INFO");
-            long inTimeuserEnd = dateHelper.parseTime(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", inTimeDisplay), "HH:mm:ss"));
-            long res = inTimeuserEnd - (graceTimeIn*60);
+            long inTimeuserEnd = dateHelper.parseTimeInMinutes(dateHelper.formatDateTo(dateHelper.formatStringToDate("hh:mm:ss aa", inTimeDisplay), "HH:mm:ss"));
 
+            long res = inTimeuserEnd - graceTimeIn;
+            sleep(3000);
             if (attPage == res)
                 Reporter("Late By duration is as expected " + userEndLateBy, "PASS");
              else {

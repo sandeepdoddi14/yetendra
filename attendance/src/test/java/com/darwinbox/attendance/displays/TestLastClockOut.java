@@ -56,7 +56,7 @@ public class TestLastClockOut  extends TestBase {
         }
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("DisplaySettingsFields.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -98,7 +98,7 @@ public class TestLastClockOut  extends TestBase {
             long end = dateHelper.parseTime(outTime);
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
-            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM")+" present");
 
             String userEnd = displaySettingsPage.verifyColoumnValue(date, testData.get("header"));
             Reporter("Recorded out time from system is " + userEnd, "INFO");

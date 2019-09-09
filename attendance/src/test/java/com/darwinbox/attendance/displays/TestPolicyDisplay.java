@@ -67,7 +67,7 @@ public class TestPolicyDisplay extends TestBase {
         attendanceSettingsServices.createSettings(attendanceSettingsPage);
         Reporter("Selected policies to hide","INFO");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("Settings.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
 
         Employee employee = empService.createAnEmployee(policy.getPolicyInfo().getCompanyID().length() == 0);

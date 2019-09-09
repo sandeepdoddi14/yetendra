@@ -56,7 +56,7 @@ public class TestShiftsRoster extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("ReportSettingsShiftsRoster.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -112,7 +112,13 @@ public class TestShiftsRoster extends TestBase {
         reports.setReportFilter(employee.getUserID());
         reports.setSubCriteria(String.valueOf(Reports.employeeTypes.activeEmployees));
         reports.setMonthAndYear(dateTimeHelper.formatDateTo(date, "YYYY-MM"));
-        reportsDashboardServices.getReportShiftsRoster(reports);
+        Object a= reportsDashboardServices.getReportShiftsRoster(reports);
+        String b=testData.get("Shift Name Second");
+        if(a.toString().equalsIgnoreCase(b)){
+            Reporter("Shifts Roster Report is as expected","PASS");
+        }else
+            Reporter("Shifts Roster Report is NOT as expected","FAIL");
+    }
     }
 
-    }
+

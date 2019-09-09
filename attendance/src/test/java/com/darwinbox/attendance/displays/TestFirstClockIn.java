@@ -60,7 +60,7 @@ public class TestFirstClockIn extends TestBase {
         }
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("DisplaySettingsFields.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -102,7 +102,7 @@ public class TestFirstClockIn extends TestBase {
             long start = dateHelper.parseTime(inTime);
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
-            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM")+" present");
 
             String userEnd = displaySettingsPage.verifyColoumnValue(date, testData.get("header"));
             Reporter("Recorded In Time from system is " + userEnd, "INFO");

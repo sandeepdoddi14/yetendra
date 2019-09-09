@@ -5,6 +5,7 @@ import com.darwinbox.attendance.objects.AttendanceSettingsPage;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Shift;
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
+import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.attendance.objects.policy.others.DisplayFlags;
 import com.darwinbox.attendance.pages.settings.AttendanceImportPage;
 import com.darwinbox.attendance.pages.settings.DisplaySettingsPage;
@@ -58,13 +59,13 @@ public class TestWorkDuration extends TestBase {
         }
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("DisplaySettingsFields.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
         String weekoffId = atb.getWeeklyOff("None");
         DisplayFlags displayFlags = policy.getDisplayFlags();
-
+        Thread.sleep(2000);
         Employee employee = empService.createAnEmployee(policy.getPolicyInfo().getCompanyID().length() == 0);
         atb.assignPolicyAndShift(employee.getUserID(), employee.getDoj(), shift, policy, weekoffId);
         Reporter("Employee created " + employee.getUserID(), "INFO");
@@ -97,21 +98,21 @@ public class TestWorkDuration extends TestBase {
 
         if (isDisplayed && (check != isDisplayed)) {
 
-            long start = dateHelper.parseTime(inTime);
-            long end = dateHelper.parseTime(outTime);
+            long start = dateHelper.parseTimeIntoSeconds(inTime);
+            long end = dateHelper.parseTimeIntoSeconds(outTime);
             long totalDur = end - start;
 
             if (shift.isOverNightShift()) {
-                totalDur += 86400;
+                totalDur = (end+43200) - (start-43200);
             }
 
             displaySettingsPage.selectMonth(dateHelper.formatDateTo(date, "YYYY-MMM"));
-            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM"));
+            displaySettingsPage.searchByDate(dateHelper.formatDateTo(date, "dd MMM")+" present");
 
             String userEnd = displaySettingsPage.verifyColoumnValue(date, testData.get("header"));
-            long attPage = dateHelper.parseTime(userEnd);
+            long attPage = dateHelper.parseTimeIntoSeconds(userEnd);
             Reporter("Total Work Duration from system is " + userEnd, "INFO");
-
+            Thread.sleep(2000);
             if (totalDur == attPage)
                 Reporter("Total Work Duration is as expected " + userEnd, "PASS");
             else{

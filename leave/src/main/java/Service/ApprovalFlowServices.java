@@ -53,7 +53,7 @@ public class ApprovalFlowServices extends Service {
         if (!data.containsKey(name))
             return null;
 
-        String url = getData("@@url") + "/settings/getApprovalFlow";
+        String url = getData("@@url") + "/settings/getApprovalFlowID";
 
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
