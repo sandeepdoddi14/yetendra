@@ -3,6 +3,7 @@ package com.darwinbox.recruitment.services;
 import com.darwinbox.attendance.services.Services;
 import com.darwinbox.recruitment.objects.CandidateTags;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -37,8 +38,9 @@ public class CandidateTagsService extends Services {
         return objResponse.getJSONArray("aaData");
     }
 
-    public String getCandidateTagIDByName(String name){
+    public CandidateTags getCandidateTagByName(String name){
 
+        CandidateTags candidateTags = new CandidateTags();
         String url = getData("@@url") + "/settings/GetCandidateDesisioningList";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
@@ -47,28 +49,26 @@ public class CandidateTagsService extends Services {
         JSONObject objResponse = new JSONObject(response);
 
         JSONArray arr = objResponse.getJSONArray("aaData");
-        String id = null;
 
         for (Object obj : arr) {
 
             JSONArray objarr = (JSONArray) obj;
-            String reason = objarr.getString(0);
-            String type = objarr.getString(1);
+            candidateTags.setCandidateDecisionReason(objarr.getString(0));
+            //candidateTags.setCandidateDecisionType(CandidateTags.candidateDecisionType.valueOf(objarr.getString(1)));
+            candidateTags.setID(objarr.getString(2));
 
-            id = objarr.getString(2);
-
-           if(name.equalsIgnoreCase(reason)){
+           if(name.equalsIgnoreCase(candidateTags.getCandidateDecisionReason())){
 
                Pattern p = Pattern.compile("id=\"\\w+\"");
-               Matcher m = p.matcher(id);
+               Matcher m = p.matcher(candidateTags.getID());
 
                if (m.find()){
-                   id = StringUtils.substringsBetween(m.group(0), "\"", "\"")[0];
+                   candidateTags.setID(StringUtils.substringsBetween(m.group(0), "\"", "\"")[0]);
                }
                break;
            }
         }
-        return id;
+        return candidateTags;
 
     }
 
@@ -79,41 +79,38 @@ public class CandidateTagsService extends Services {
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
-        body.put("RecruitmentCandidateDescision[id]", getCandidateTagIDByName(candidateTags.getCandidateDecisionReason()));
+        body.put("RecruitmentCandidateDescision[id]", candidateTags.getID());
         body.put("old_value",candidateTags.getCandidateDecisionReason());
+        body.put("tag_decisioning","none");
 
-        if(candidateTags.getCandidateDecisionType().contentEquals("5"))
+        if(candidateTags.getCandidateDecisionType().equals(CandidateTags.candidateDecisionType.CUSTOMTAGS))
              body.put("tag_decisioning","change");
-        else
-            body.put("tag_decisioning","none");
+
 
         body.putAll(candidateTags.toMap());
         doPost(url, headers, mapToFormData(body));
 
     }
 
-    public void deleteCandidateTag(String ID){
+    public void deleteCandidateTag(CandidateTags candidateTag){
 
-        CandidateTags candidateTags = new CandidateTags();
         String url = getData("@@url") + "/settings/EditCandidateDecisioning";
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
         Map<String, String> body = new HashMap<>();
 
-        if(candidateTags.getCandidateDecisionType().contentEquals("5")){
+        body.put("resource",candidateTag.getID());
+        body.put("action","delete");
+
+        if(candidateTag.getCandidateDecisionType().equals(CandidateTags.candidateDecisionType.CUSTOMTAGS)){
             url = getData("@@url") + "/settings/editCandidateDecisioning";
             body.put("old_value","");
-            body.put("resource",getCandidateTagIDByName(ID));
-            body.put("action","delete");
-            body.put("tag_decisioning",""); //none or delete
-        }else{
-            body.put("resource",getCandidateTagIDByName(ID));
-            body.put("action","delete");
+            body.put("tag_decisioning","none"); //or delete
         }
-
         doPost(url, headers, mapToFormData(body));
     }
 
+    }
 
-}
+

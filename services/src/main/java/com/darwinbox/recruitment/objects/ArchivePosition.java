@@ -37,7 +37,6 @@ public class ArchivePosition {
 
         setArchiveName("Archive reason1->done by automation");
         setArchiveDescription("created by automation");
-
     }
 
     public Map<String,String> toMap() {

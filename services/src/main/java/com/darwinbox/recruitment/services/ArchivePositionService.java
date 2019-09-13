@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -40,28 +41,29 @@ public class ArchivePositionService extends Services {
         return objResponse.getJSONArray("aaData");
     }
 
-    public String getArchivePositionIDByName(String reason){
+    public ArchivePosition getArchivePositionIDByName(String reason){
 
+        ArchivePosition archivePosition = new ArchivePosition();
         JSONArray arr = getAllArchivePositions();
-        String id = null;
 
         for (Object obj : arr) {
 
             JSONArray objarr = (JSONArray) obj;
-            String name = objarr.getString(0);
-            String desc = objarr.getString(1);
 
-            if(reason.equalsIgnoreCase(name)){
+            archivePosition.setArchiveName(objarr.getString(0));
+            archivePosition.setArchiveDescription(objarr.getString(1));
+
+            if(reason.equalsIgnoreCase(archivePosition.getArchiveName())){
 
                 Pattern p = Pattern.compile("id=\"\\w+\"");
-                Matcher m = p.matcher(desc);
+                Matcher m = p.matcher(archivePosition.getID());
                 if (m.find()){
-                    id = StringUtils.substringsBetween(m.group(0), "\"", "\"")[0];
+                    archivePosition.setID(StringUtils.substringsBetween(m.group(0), "\"", "\"")[0]);
                 }
                 break;
             }
         }
-        return id;
+        return archivePosition;
     }
 
     public void editArchivePosition(ArchivePosition archivePosition){
@@ -71,21 +73,21 @@ public class ArchivePositionService extends Services {
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
-        body.put("RecruitmentArchieveReason[id]",getArchivePositionIDByName(archivePosition.getArchiveName()));
+        body.put("RecruitmentArchieveReason[id]",archivePosition.getID());
         body.putAll(archivePosition.toMap());
 
         doPost(url, headers, mapToFormData(body));
 
     }
 
-    public void deleteArchivePosition(String ID){
+    public void deleteArchivePosition(ArchivePosition archivePosition){
 
         Map<String, String> body = new HashMap<>();
         String url = getData("@@url") + "/settings/EditArchieverec";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
-        body.put("resource",getArchivePositionIDByName(ID));
+        body.put("resource",archivePosition.getID());
         body.put("mode","delete");
 
         doPost(url, headers, mapToFormData(body));
