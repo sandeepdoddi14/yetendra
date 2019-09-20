@@ -9,6 +9,15 @@ import java.util.Map;
 public class JobPortals {
 
     private String portalName;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getPortalName() {
         return portalName;
@@ -20,7 +29,7 @@ public class JobPortals {
 
     public void toObject(Map<String, String> body) {
 
-             setPortalName("");
+             setPortalName(body.get("portalName"));
     }
 
     public Map<String, String> toMap() {

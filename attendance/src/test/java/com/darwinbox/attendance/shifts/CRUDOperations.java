@@ -49,17 +49,7 @@ public class CRUDOperations extends TestBase {
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
-        candidateTagsService.getAllCandidateTags();
-        candidateTags.toObject(testData);
-        candidateTagsService.editCandidateTag(candidateTags);
-        candidateTagsService.createCandidateTags(candidateTags);
 
-        archivePosition.toObject(testData);
-        archivePositionService.getArchivePositionIDByName("reason");
-
-        candidateTagsService.getCandidateTagIDByName("delete check");
-        candidateTags.toObject(testData);
-        candidateTagsService.editCandidateTag(candidateTags);
 
     }
 

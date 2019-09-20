@@ -59,9 +59,9 @@ public class Recruiters extends Services {
 
     public void toObject(Map<String, String> body) {
 
-        setRecruiterName("");
-        setRecruiterEmail("");
-        setRecruiterPassword("");
+        setRecruiterName(body.get("RecruiterName"));
+        setRecruiterEmail(body.get("RecruiterEmail"));
+        setRecruiterPassword(body.get("RecruiterPassword"));
         List<String> data = new ArrayList<>();
         setAllowedOpenings(data);
 
@@ -81,7 +81,5 @@ public class Recruiters extends Services {
         }
         list.addAll(mapToFormData(body));
         return list;
-
-        //RecruitmentRecruiters[id] for edit/delete
     }
 }

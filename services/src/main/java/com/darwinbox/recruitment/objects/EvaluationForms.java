@@ -1,13 +1,15 @@
 package com.darwinbox.recruitment.objects;
 
+import com.darwinbox.attendance.services.Services;
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EvaluationForms {
+public class EvaluationForms extends Services {
 
 
     private String evaluationName;
@@ -15,7 +17,23 @@ public class EvaluationForms {
     private List<String> unitOfMeasure;
     private List<String> weight;
     private String overallRating;
+    private String id;
+    private String version;
 
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
     public String getEvaluationName() {
         return evaluationName;
     }
@@ -58,13 +76,21 @@ public class EvaluationForms {
 
     public void toObject(Map<String, String> body) {
 
-        setEvaluationName("");
-        setOverallRating("");
+        setEvaluationName(body.get("Name"));
+        setOverallRating(body.get("Overall rating"));
 
-        List<String> data = new ArrayList<>();
-        setAssessment(data);
-        setUnitOfMeasure(data);
-        setWeight(data);
+        List<String> assess = new ArrayList<>();
+        assess.add(body.get("assessment"));
+        setAssessment(assess);
+
+        List<String> unit = new ArrayList<>();
+        unit.add(body.get("unit of measure"));
+        setUnitOfMeasure(unit);
+
+        List<String> weight = new ArrayList<>();
+        weight.add(body.get("weight"));
+        //weight.add(body.get("weightSet2"));
+        setWeight(weight);
 
     }
 
@@ -74,14 +100,41 @@ public class EvaluationForms {
         List<NameValuePair> list = new ArrayList<>();
 
         body.put("mode","create");
-        body.put("RecruitmentEvaluation[name]","");
-        body.put("RecruitmentEvaluation[overall_measure_type]","");
+        body.put("RecruitmentEvaluation[name]",getEvaluationName());
 
-        body.put("Recruitment_set[assessment][]","");
-        body.put("Recruitment_set[measure][]","");
-        body.put("Recruitment_set[weight][]","");
+        for (String assessment  : getAssessment()) {
+            list.add(new BasicNameValuePair("Recruitment_set[assessment][]",assessment));
+        }
+        for (String measure  : getUnitOfMeasure()) {
+            list.add(new BasicNameValuePair("Recruitment_set[measure][]",measure));
+        }
+        for (String weigh  : getWeight()) {
+            list.add(new BasicNameValuePair("Recruitment_set[weight][]",weigh));
+        }
 
+        body.put("RecruitmentEvaluation[overall_measure_type]",getOverallRating());
 
+        list.addAll(mapToFormData(body)) ;
+        return list;
+    }
+
+    public List<NameValuePair> toEdit(String set) {
+
+        Map<String, String> body = new HashMap<>();
+        List<NameValuePair> list = new ArrayList<>();
+
+        body.put("RecruitmentEvaluation[name]",getEvaluationName());
+        body.put("RecruitmentEvaluation[overall_measure_type]",getOverallRating());
+
+        for (String assessment  : getAssessment()) {
+            list.add(new BasicNameValuePair("Recruitment_set["+set+"][assessment]",assessment));
+        }
+        for (String measure  : getUnitOfMeasure()) {
+            list.add(new BasicNameValuePair("Recruitment_set["+set+"][measure]",measure));
+        }
+        for (String weigh  : getWeight()) {
+            list.add(new BasicNameValuePair("Recruitment_set["+set+"][weight]",weigh));
+        }
         return list;
     }
 }

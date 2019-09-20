@@ -35,8 +35,8 @@ public class ArchivePosition {
 
     public void toObject(Map<String, String> body) {
 
-        setArchiveName("Archive reason1->done by automation");
-        setArchiveDescription("created by automation");
+        setArchiveName(body.get("ArchiveName"));
+        setArchiveDescription(body.get("ArchiveDescription"));
     }
 
     public Map<String,String> toMap() {

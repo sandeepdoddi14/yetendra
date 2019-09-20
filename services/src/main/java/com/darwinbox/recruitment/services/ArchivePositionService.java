@@ -29,8 +29,6 @@ public class ArchivePositionService extends Services {
 
     public JSONArray getAllArchivePositions() {
 
-        Map<String, String> data = new HashMap<>();
-
         String url = getData("@@url") + "/settings/GetArchieveReason";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");

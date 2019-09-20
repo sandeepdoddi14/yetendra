@@ -36,9 +36,55 @@ public class RecruitmentSettings extends Services {
         private boolean blockIJPtab;
         private boolean blockRefertab;
 
-        private String calenderService; //enum
-        private String startTAT; //enum
-        private String endTAT;   //enum
+        public enum  startTAT{
+               DUMMY,
+               REQUISITIONCREATIONDATE,
+               REQUISITIONAPPROVALDATE,
+               HIRINGLEADASSIGNMENTDATE,
+               CANDIDATEAPPLICATIONDATE;
+       }
+        public static startTAT startTAT;
+        public RecruitmentSettings.startTAT getStartTAT() {
+                return startTAT;
+        }
+
+        public void setStartTAT(RecruitmentSettings.startTAT startTAT) {
+                this.startTAT = startTAT;
+        }
+
+        public enum endTAT{
+                DUMMY,
+                OFFERDATE,
+                OFFERACCEPTANCEDATE,
+                ADDEDASPENDINGEMPLOYEE,
+                EMPLOYEEACTIVATION;
+        }
+        public static endTAT endTAT;
+        public RecruitmentSettings.endTAT getEndTAT() {
+                return endTAT;
+        }
+
+        public void setEndTAT(RecruitmentSettings.endTAT endTAT) {
+                this.endTAT = endTAT;
+        }
+
+        public enum calenderService{
+                GOOGLE("g"),
+                OFFICE365("o");
+                public final String s;
+                calenderService(String s) {
+                 this.s = s;
+                }
+        }
+        public static calenderService calenderService;
+
+        public RecruitmentSettings.calenderService getCalenderService() {
+                return calenderService;
+        }
+
+        public void setCalenderService(RecruitmentSettings.calenderService calenderService) {
+                this.calenderService = calenderService;
+        }
 
         public List<String> getHiringLead() {
                 return hiringLead;
@@ -187,29 +233,6 @@ public class RecruitmentSettings extends Services {
                 this.blockRefertab = blockRefertab;
         }
 
-        public String getCalenderService() {
-                return calenderService;
-        }
-
-        public void setCalenderService(String calenderService) {
-                this.calenderService = calenderService;
-        }
-
-        public String getStartTAT() {
-                return startTAT;
-        }
-
-        public void setStartTAT(String startTAT) {
-                this.startTAT = startTAT;
-        }
-
-        public String getEndTAT() {
-                return endTAT;
-        }
-
-        public void setEndTAT(String endTAT) {
-                this.endTAT = endTAT;
-        }
 
         public List<NameValuePair> toMap() {
 
@@ -245,13 +268,49 @@ public class RecruitmentSettings extends Services {
                 body.put("RecruitmentAddingUser[block_ijp]",LeaveDeductionsBase.parseToPHP(isBlockIJPtab()));
                 body.put("RecruitmentAddingUser[block_refer]",LeaveDeductionsBase.parseToPHP(isBlockRefertab()));
 
-                body.put("RecruitmentAddingUser[recruitment_calendar_service]",""); //enum?
-                body.put("RecruitmentAddingUser[tat_start]","");
-                body.put("RecruitmentAddingUser[tat_end]","");
+                body.put("RecruitmentAddingUser[recruitment_calendar_service]",""+getCalenderService().s);
+                body.put("RecruitmentAddingUser[tat_start]",""+getStartTAT().ordinal());
+                body.put("RecruitmentAddingUser[tat_end]",""+getEndTAT().ordinal());
 
                 list.addAll(mapToFormData(body));
                 return list;
         }
 
+        public void toObject(Map<String,String> body){
+
+                List<String> data = new ArrayList<>();
+                data.add(body.get("HiringLeadID"));
+                setHiringLead(data);
+
+                setAadharCard(LeaveDeductionsBase.getFilter(body,"AadharCard","true"));
+                setPanCard(LeaveDeductionsBase.getFilter(body,"PanCard","true"));
+                setEmail(LeaveDeductionsBase.getFilter(body,"Email","true"));
+                setContactNumber(LeaveDeductionsBase.getFilter(body,"ContactNumber","true"));
+
+                setDaysBeforeReapplication(body.get("DaysBeforeReapplication"));
+                setAllowdaysBeforeReapplicaton(LeaveDeductionsBase.getFilter(body,"IsDaysBeforeReapplicationAllowed","true"));
+                setDaysBeforeReapplicationIJP(body.get("IJPDaysBeforeReapplication"));
+                setAllowdaysBeforeReapplicatonIJP(LeaveDeductionsBase.getFilter(body,"IJPDaysBeforeReapplicationAllowed","true"));
+
+                setWebsiteLink(body.get("websiteLink"));
+
+                List<String> data1 = new ArrayList<>();
+                data1.add(body.get("requisitionrole"));
+               // data1.add("5b89185a19546");
+                setRequisitionRole(data1);
+
+                setShowRecuitmentStartDate(LeaveDeductionsBase.getFilter(body,"IsRecStartDate","true"));
+                setShowExperienceRange(LeaveDeductionsBase.getFilter(body,"IsExperienceRange","true"));
+                setShowSalaryRange(LeaveDeductionsBase.getFilter(body,"IsSalaryRange","true"));
+                setShowCommentsOrInstructions(LeaveDeductionsBase.getFilter(body,"IsComments","true"));
+                setShowAssetRequirements(LeaveDeductionsBase.getFilter(body,"IsAssetRequirements","true"));
+
+                setBlockIJPtab(LeaveDeductionsBase.getFilter(body,"IsblockIJP","true"));
+                setBlockRefertab(LeaveDeductionsBase.getFilter(body,"IsBlockRefererTab","true"));
+
+                setCalenderService(calenderService.valueOf(body.get("CalenderSettings")));
+                setStartTAT(RecruitmentSettings.startTAT.valueOf(body.get("startTAT")));
+                setEndTAT(RecruitmentSettings.endTAT.valueOf(body.get("endTAT")));
+        }
 
         }

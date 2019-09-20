@@ -52,11 +52,9 @@ public class CandidateTags {
 
     public void toObject(Map<String, String> body) {
 
-        /*setCandidateDecisionType(candidateDecisionType.valueOf(body.get("CandidateType")));
-        setCandidateDecisionReason(body.get("CandidateReason"));*/
+        setCandidateDecisionType(candidateDecisionType.valueOf(body.get("CandidateType")));
+        setCandidateDecisionReason(body.get("CandidateReason"));
 
-        setCandidateDecisionType(candidateDecisionType.valueOf("ONHOLD"));
-        setCandidateDecisionReason("check enum");
     }
     public Map<String,String> toMap() {
 
