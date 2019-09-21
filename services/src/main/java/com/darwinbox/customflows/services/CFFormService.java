@@ -1,17 +1,19 @@
 package com.darwinbox.customflows.services;
 
 import com.darwinbox.attendance.services.Services;
+import com.darwinbox.customflows.objects.forms.CFForm;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 
-public class CFFormService extends Services{
+public class CFFormService extends Services {
 
 
 
     // get url data
-    public HashMap<String, String> getAllCFFomsdata(){
+    public HashMap<String, String> getAllCFFoms(){
 
         HashMap<String, String> cfCFFormsdata = new HashMap<>();
         String url = getData("@@url") + "/settings/getcustomworkflowformevaluationdata";
@@ -37,4 +39,44 @@ public class CFFormService extends Services{
 
         return cfCFFormsdata;
     }
+
+    /**
+     * method is used to create a Form can be used in Custom Flows
+     * @param cfFrom
+     */
+    public void createCFForm(CFForm cfFrom){
+
+        String url = getData("@@url") + "/settings/customworkflow/create";
+
+        Map headers = new HashMap();
+        headers.put("x-requested-with", "XMLHttpRequest");
+
+        String response = doPost(url, headers, cfFrom.toMap());
+        waitForUpdate(3);
+        if (!response.contains("Custom workflow Form created successfully.")) {
+            throw new RuntimeException(" Error in creating Form for Custom Workflow. ");
+        }
+
+    }
+
+    /**
+     * method is used to update a Form can be used in Custom Flows
+     * @param cfFrom
+     */
+    public void updateCFForm(CFForm cfFrom){
+
+
+
+    }
+
+    /**
+     * method is used to delete a Form in Custom Flows
+     * @param cfFrom
+     */
+    public void deleteCFForm(CFForm cfFrom){
+
+
+    }
+
+
 }

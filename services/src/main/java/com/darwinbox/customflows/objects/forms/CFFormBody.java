@@ -11,7 +11,7 @@ public class CFFormBody {
     private boolean isMandatory;
     private boolean isLineBreak;
     private FieldType fieldType;
-    private List<String> fieldValues;
+    private List<String> fieldValues = new ArrayList<>();
 
     enum FieldType {
         TEXT_FIELD("textfield"),
@@ -74,6 +74,26 @@ public class CFFormBody {
         this.fieldValues = fieldValues;
     }
 
+
+    // from Excel to Java Object
+    public void toObject(Map<String, String> data) {
+        //
+
+        setFieldName(data.get("FieldName"));
+        setFieldType(FieldType.valueOf(data.get("FieldType").toUpperCase().replace(" ", "_")));
+
+        String values[] = data.getOrDefault("Values","").split(",");
+        for ( String value : values)
+        fieldValues.add(value);
+
+        setMandatory(data.getOrDefault("Mandatory","no").equalsIgnoreCase("no"));
+        setLineBreak(data.getOrDefault("LineBreak","no").equalsIgnoreCase("no"));
+
+    }
+
+
+
+
     public Map<String, String> toMap(int order) {
 
         Map<String, String> body = new HashMap<>();
@@ -87,7 +107,7 @@ public class CFFormBody {
         String valueBody = "";
 
         for (String value : values ) {
-            valueBody =  ","  + valueBody + value  ;
+            valueBody =  ","   + value + valueBody ;
         }
 
         if (valueBody.length() != 1)

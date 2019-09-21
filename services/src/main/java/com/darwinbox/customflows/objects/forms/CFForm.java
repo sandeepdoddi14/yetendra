@@ -6,12 +6,12 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.util.*;
 
-public class CFForm extends Services{
+public class CFForm extends Services {
 
-    private String  name;
-    private String  description;
-    private String  id = "";
-    private List<CFFormBody> formBody = new ArrayList<>();
+    private String name;
+    private String description;
+    private String id = "";
+    private List<CFFormBody> cfFormBodyList = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -37,8 +37,27 @@ public class CFForm extends Services{
         this.id = id;
     }
 
+    public void add(CFFormBody formBody){
+        cfFormBodyList.add(formBody);
+    }
+    /**
+     * to make excel values to CFForm java object
+     */
 
-     public List<NameValuePair> toMapObject(){
+    public void toObject(Map<String, String> data) {
+
+        setName(data.get("Name"));
+        setDescription(data.get("Description"));
+
+    }
+
+
+    /**
+     * this method used to set (java object) values to web application
+     *
+     * @return
+     */
+    public List<NameValuePair> toMap() {
 
         List<NameValuePair> formData = new ArrayList<>();
 
@@ -47,9 +66,9 @@ public class CFForm extends Services{
         formData.add(new BasicNameValuePair("CutomWorkflowFormEvaluation[description]", getDescription()));
 
         int count = 0;
-        for (CFFormBody form : formBody) {
-            count ++;
-           formData.addAll(formData.size(), mapToFormData(form.toMap(count)));
+        for (CFFormBody fmbody : cfFormBodyList) {
+            count++;
+            formData.addAll(formData.size(), mapToFormData(fmbody.toMap(count)));
         }
 
         return formData;

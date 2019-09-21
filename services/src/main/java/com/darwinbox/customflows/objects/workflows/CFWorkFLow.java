@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CFWorkFLow {
+public class CFWorkFLow extends Services {
   private String name;
   private String description;
   private boolean isSeries;
@@ -63,7 +63,7 @@ public class CFWorkFLow {
     int count = 0;
     for (CFWorkflowBody formBody : wfFormBody) {
       count ++;
-      //formData.addAll(formData.size(), Services.mapToFormData(formBody.toMap(count)));
+      //formData.addAll(formData.size(), mapToFormData(formBody.toMap(count)));
     }
 
     return formData;

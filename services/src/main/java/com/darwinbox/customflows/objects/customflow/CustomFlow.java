@@ -1,5 +1,6 @@
 package com.darwinbox.customflows.objects.customflow;
 
+import com.darwinbox.attendance.services.Services;
 import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlowBody;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -7,7 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomFlow {
+public class CustomFlow extends Services{
 
     private String name;
     private String description;

@@ -44,11 +44,8 @@ public class CFWorkFLowService extends Services{
 
     public static void main(String[] args){
 
-        //String str = "\"Absconding Workflow\",\"6.0\",\"<a id=\\\"5d7b6fd0dd756\\\" class=\\\"circle-btn close-text edit-reimb clicker\\\"><i class=\\\"fa fa-edit\\\"><\\/i><\\/a><a id=\\\"5d7b6fd0dd756\\\" class=\\\"circle-btn close-text delete-reimb\\\"><i class=\\\"fa fa-trash\\\"><\\/i><\\/a>\"";
-
-        //String resourcePath = UtilityHelper.getProperty("CFWorkflow.properties", "getwfURL");
-      CustomFlowService cfs = new CustomFlowService();
+        CustomFlowService cfs = new CustomFlowService();
         System.out.println("<=============================>");
-       cfs.getAllCustomFlows();
+        cfs.getAllCustomFlows();
     }
 }

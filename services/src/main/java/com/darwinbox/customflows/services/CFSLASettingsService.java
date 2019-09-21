@@ -56,7 +56,7 @@ public class CFSLASettingsService extends Services {
      * method used to update SLA Setting using Service call
      * @param cfSLASetting
      */
-    public void updateSLASetting(CFSLASettings cfSLASetting){
+    public void updateSLASettings(CFSLASettings cfSLASetting){
 
         Map<String, String> body = new HashMap<>();
         String url = getData("@@url") + "/settings/editsla";
@@ -64,7 +64,7 @@ public class CFSLASettingsService extends Services {
         headers.put("X-Requested-With", "XMLHttpRequest");
 
         body.put("SlaSetting[id]",cfSLASetting.getId());
-        body.put("SlaSetting[descriptions]", cfSLASetting.getDesription());
+        body.put("SlaSetting[descriptions]", cfSLASetting.getDescription());
         body.put("SlaSetting[sla_duration]", cfSLASetting.getSlaDuration());
         body.put("SlaSetting[sla_breach_output]", cfSLASetting.getSlaBreachOutput());
 
@@ -77,7 +77,7 @@ public class CFSLASettingsService extends Services {
      * methos used to delete the SLA Setting using service call
      * @param cfSLASetting
      */
-    public void deleteArchivePosition(CFSLASettings cfSLASetting){
+    public void deleteSLASettings(CFSLASettings cfSLASetting){
 
         Map<String, String> body = new HashMap<>();
         String url = getData("@@url") + "/settings/editsla";

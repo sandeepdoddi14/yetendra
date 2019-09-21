@@ -1,8 +1,12 @@
 package com.darwinbox.customflows.objects;
 
 import com.darwinbox.customflows.objects.forms.CFFormBody;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CFSkipSettings {
 
@@ -25,7 +29,6 @@ public class CFSkipSettings {
     public void setId(String id) {
         this.id = id;
     }
-
 
 
     public String getName() {
@@ -101,9 +104,55 @@ public class CFSkipSettings {
     }
 
 
+    /**
+     * from excel data values to CFSkipSettings java object
+     */
+    public void toObject(Map<String, String> data) {
+
+        boolean isAssigeeInit = Boolean.valueOf(data.get("Assignee is initiator"));
+        boolean isAssigeeSubject = Boolean.valueOf(data.get("Assignee is subject"));
+        boolean isEarlierRespondent = Boolean.valueOf(data.get("Assignee is any earlier respondent"));
+        boolean isAssigeeSelectedRole = Boolean.valueOf(data.get("Assignee is seleted role"));
+        boolean isInitiatorSelectedRole = Boolean.valueOf(data.get("Initiator is Selected role"));
+        boolean isNoAssigee = Boolean.valueOf(data.get("No Assignee"));
+
+        setName(data.get("Name"));
+        setDescription(data.get("Description"));
+
+        setAssgineeInitiator(isAssigeeInit);
+        setAssgineeEarlierRespondent(isEarlierRespondent);
+        setAssgineeSelectedRole(isAssigeeSelectedRole);
+        setNoAssignee(isNoAssigee);
+        setAssgineeSubject(isAssigeeSubject);
+        setInitiatorSelectedRole(isInitiatorSelectedRole);
+
+        setSkipOutput(data.get("Skip Output"));
+
+    }
+
+    /**
+     * this method used to set (java object) values to web application
+     *
+     * @return
+     */
+    public List<NameValuePair> toMap() {
+
+        List<NameValuePair> formData = new ArrayList<>();
+
+        formData.add(new BasicNameValuePair("id", getId()));
+
+        formData.add(new BasicNameValuePair("SkipSetting[name]", getName()));
+        formData.add(new BasicNameValuePair("SkipSetting[descriptions]", getDescription()));
+
+//        formData.add(new BasicNameValuePair("SkipSetting[skip_conditions][]", getDescription()));
+//        formData.add(new BasicNameValuePair("SkipSetting[skip_conditions][]", getDescription()));
+//        formData.add(new BasicNameValuePair(" SkipSetting[skip_roles][]", getDescription()));
+//        formData.add(new BasicNameValuePair(" SkipSetting[skip_roles][]", getDescription()));
+//        formData.add(new BasicNameValuePair("SkipSetting[initiator_skip_roles][]", getDescription()));
+        formData.add(new BasicNameValuePair("SkipSetting[skip_output][]", getSkipOutput()));
 
 
-
-
-
+        return formData;
+    }
 }
+
