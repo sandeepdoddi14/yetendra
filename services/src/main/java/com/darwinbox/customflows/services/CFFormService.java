@@ -11,9 +11,8 @@ import java.util.Map;
 public class CFFormService extends Services {
 
 
-
     // get url data
-    public HashMap<String, String> getAllCFFoms(){
+    public HashMap<String, String> getAllCFFoms() {
 
         HashMap<String, String> cfCFFormsdata = new HashMap<>();
         String url = getData("@@url") + "/settings/getcustomworkflowformevaluationdata";
@@ -33,7 +32,7 @@ public class CFFormService extends Services {
             cfFormName = data.getString(0);
             cfFormVersion = data.getString(1);
             cfFormID = data.getString(2).split("\" class")[0].substring(7);
-            cfCFFormsdata.put(cfFormName+"_"+cfFormVersion, cfFormID);
+            cfCFFormsdata.put(cfFormName + "_" + cfFormVersion, cfFormID);
 
         }
 
@@ -42,9 +41,10 @@ public class CFFormService extends Services {
 
     /**
      * method is used to create a Form can be used in Custom Flows
+     *
      * @param cfFrom
      */
-    public void createCFForm(CFForm cfFrom){
+    public void createCFForm(CFForm cfFrom) {
 
         String url = getData("@@url") + "/settings/customworkflow/create";
 
@@ -61,24 +61,25 @@ public class CFFormService extends Services {
 
     /**
      * method is used to update a Form can be used in Custom Flows
+     *
      * @param cfFrom
      */
-    public void updateCFForm(CFForm cfFrom){
-
+    public void updateCFForm(CFForm cfFrom) {
 
 
     }
 
     /**
      * method is used to delete a Form in Custom Flows
+     *
      * @param cfFrom
      */
-    public void deleteCFForm(CFForm cfFrom){
+    public void deleteCFForm(CFForm cfFrom) {
 
 
     }
 
-    public String getFormbyName(String expFormName){
+    public String getFormbyName(String expFormName) {
 
         HashMap<String, String> cfFormsDataMap = getAllCFFoms();
         String cfFormID = "";

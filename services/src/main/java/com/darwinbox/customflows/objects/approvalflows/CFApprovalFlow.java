@@ -60,7 +60,7 @@ public class CFApprovalFlow extends Services {
 
         int count = 0;
         for (CFApprovalFlowBody fmbody : cfApprovalFlowBodyList) {
-            formData.addAll(formData.size(), mapToFormData(fmbody.toMap(count)));
+            formData.addAll(formData.size(), (fmbody.toMap(count)));
             count++;
         }
 

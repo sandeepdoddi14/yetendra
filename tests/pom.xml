@@ -41,6 +41,7 @@
         <module>../mobile</module>
         <module>../leave</module>
         <module>../recruitment</module>
+        <module>../customflows</module>
     </modules>
 
     <build>

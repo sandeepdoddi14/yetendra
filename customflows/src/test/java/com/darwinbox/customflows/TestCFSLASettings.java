@@ -17,9 +17,6 @@ public class TestCFSLASettings extends TestBase {
 
 
     LoginPage loginPage;
-//    CandidateTags candidateTags;
-//    CandidateTagsService candidateTagsService;
-
 
     @BeforeClass
     public void beforeClass() {
@@ -30,8 +27,6 @@ public class TestCFSLASettings extends TestBase {
     @BeforeTest
     public void initializeObjects() {
         loginPage = new LoginPage(driver);
-
-
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
@@ -39,8 +34,6 @@ public class TestCFSLASettings extends TestBase {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
-
-        //candidateTagsService.getAllCandidateTags();
 
 
     }

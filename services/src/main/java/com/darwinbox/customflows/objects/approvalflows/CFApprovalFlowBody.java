@@ -4,6 +4,8 @@ import com.darwinbox.customflows.services.CFFormService;
 import com.darwinbox.customflows.services.CFSLASettingsService;
 import com.darwinbox.customflows.services.CFSkipSettingsService;
 import  com.darwinbox.customflows.objects.forms.CFFormBody.FieldType;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -158,9 +160,10 @@ public class CFApprovalFlowBody {
     }
 
 
-    public Map<String, String> toMap(int lineItem) {
+    public List<NameValuePair> toMap(int lineItem) {
 
-        Map<String, String> body = new HashMap<>();
+        List<NameValuePair> formData = new ArrayList<>();
+
         String order = "";
         if (lineItem < 1 ){
             order = "";
@@ -170,18 +173,18 @@ public class CFApprovalFlowBody {
 
         if (getApproverRoles().size() >= 1) {
             for (String aprrover : approverRoles)
-                body.put("ApprovalFlowset[role][" + lineItem + "][]", aprrover);
+                formData.add(new BasicNameValuePair("ApprovalFlowset[role][" + lineItem + "][]", aprrover));
         }
         if (getVisibilityRoles().size() >= 1) {
             for (String visiblityUser : visibilityRoles)
-                body.put("ApprovalFlowset[visibility][" + lineItem+ "][]", visiblityUser);
+                formData.add(new BasicNameValuePair("ApprovalFlowset[visibility][" + lineItem+ "][]", visiblityUser));
         }
 
 
         if (action.startsWith("form_") || action.length() == 0) {
-            body.put("ApprovalFlowset[action][" + order + "]", action);
-            body.put("ApprovalFlowset[options][" + order + "]", "");
-            body.put("ApprovalFlowset[title][" + order + "]", "");
+            formData.add(new BasicNameValuePair("ApprovalFlowset[action][" + order + "]", action));
+            formData.add(new BasicNameValuePair("ApprovalFlowset[options][" + order + "]", ""));
+            formData.add(new BasicNameValuePair("ApprovalFlowset[title][" + order + "]", ""));
         } else {
             List<String> values = getFieldValues();
             if (values.size() >= 1) {
@@ -193,21 +196,16 @@ public class CFApprovalFlowBody {
 
                 if (valueBody.length() != 1)
                     valueBody = valueBody.substring(1);
-                body.put("ApprovalFlowset[title][" + order + "]", getAction());
-                body.put("ApprovalFlowset[action][" + order + "]", fieldType.getType());
-                body.put("ApprovalFlowset[options][" + order + "]", valueBody);
+                formData.add(new BasicNameValuePair("ApprovalFlowset[title][" + order + "]", getAction()));
+                formData.add(new BasicNameValuePair("ApprovalFlowset[action][" + order + "]", fieldType.getType()));
+                formData.add(new BasicNameValuePair("ApprovalFlowset[options][" + order + "]", valueBody));
             }
         }
+        formData.add(new BasicNameValuePair("ApprovalFlowset[ini_sub_src_tar][" + order + "]", getApprovalContext().equalsIgnoreCase("Subject") ? "1": "3"));
+        formData.add(new BasicNameValuePair("ApprovalFlowset[skip_id][" + order + "]", getSkipSettingName()));
+        formData.add(new BasicNameValuePair("ApprovalFlowset[sla_id][" + order + "]", getSlaSettingName()));
 
-
-
-            body.put("ApprovalFlowset[ini_sub_src_tar][" + order + "]", "1");
-            body.put("ApprovalFlowset[skip_id][" + order + "]", getSkipSettingName());
-            body.put("ApprovalFlowset[sla_id][" + order + "]", getSlaSettingName());
-
-
-
-        return body;
+        return formData;
     }
 
 }

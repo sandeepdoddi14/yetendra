@@ -53,10 +53,10 @@ public class CFApprovalFlowService extends Services {
         headers.put("x-requested-with", "XMLHttpRequest");
 
         String response = doPost(url, headers, cfAF.toMap());
-        waitForUpdate(3);
+       /* waitForUpdate(3);
         if (!response.contains("Form created successfully.")) {
             throw new RuntimeException(" Error in creating Approval Flow for Custom Workflow. ");
-        }
+        }*/
 
     }
 

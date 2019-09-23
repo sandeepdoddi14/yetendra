@@ -13,13 +13,6 @@ public class CFWorkflowBody {
     private int assignee;
     private int noOfDays;
 
-    public static void main(String[] args) {
-
-        // int input[] = {2,2,3,4,4,4,5,5,5};
-
-
-    }
-
     public String getStageName() {
         return stageName;
     }

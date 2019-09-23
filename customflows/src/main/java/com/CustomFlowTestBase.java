@@ -46,7 +46,7 @@ public class CustomFlowTestBase {
 
     private void loadData() {
 
-        createCFForm();
+        //createCFForm();
         //createCFSkipSettings();
         //createCFSLASettings();
         //createCFApprovalFlow();
@@ -86,7 +86,7 @@ public class CustomFlowTestBase {
 
             CFFormService srvc = new CFFormService();
             srvc.createCFForm(cfForm);
-            //System.out.println("please stop here");
+
 
         }
 
@@ -146,7 +146,6 @@ public class CustomFlowTestBase {
             cfApprovalFlowBodyList.add(cfAFBody);
         }
 
-
         //with all values in CFApprovalFlowBody excel sheet create a java object
         for (Map<String, String> data : cfApprovalFlowDataList) {
             CFApprovalFlow cfApprovalFlow = new CFApprovalFlow();
@@ -158,12 +157,10 @@ public class CustomFlowTestBase {
 
             for (String value : objectTypes) {
                 int index = Integer.parseInt(value) - 1;
-
                 cfApprovalFlow.add(cfApprovalFlowBodyList.get(index));
             }
 
             cfApprovalFlowList.add(cfApprovalFlow);
-            //System.out.println("please stop here");
             CFApprovalFlowService cfAfSrv = new CFApprovalFlowService();
             cfAfSrv.createCFApprovalFlow(cfApprovalFlow);
 
