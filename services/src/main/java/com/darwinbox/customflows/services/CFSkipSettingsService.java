@@ -3,11 +3,15 @@ package com.darwinbox.customflows.services;
 import com.darwinbox.attendance.services.Services;
 import com.darwinbox.customflows.objects.CFSLASettings;
 import com.darwinbox.customflows.objects.CFSkipSettings;
+import com.darwinbox.recruitment.objects.CandidateTags;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CFSkipSettingsService extends Services {
 
@@ -44,11 +48,8 @@ public class CFSkipSettingsService extends Services {
     public void createCFSkipSettings(CFSkipSettings cfSkipSettings){
 
         String url = getData("@@url") + "/settings/editskip";
+        doPost(url, null,cfSkipSettings.toMap());
 
-        Map<String, String> body = new HashMap<>();
-
-        //body.putAll(cfSkipSettings.toMap());
-        doPost(url, null,mapToFormData(body));
     }
 
     /**
@@ -80,7 +81,7 @@ public class CFSkipSettingsService extends Services {
      * methos used to delete the Skip Setting using service call
      * @param cfSkipSettings
      */
-    public void deleteArchivePosition(CFSkipSettings cfSkipSettings){
+    public void deleteSkipSettings(CFSkipSettings cfSkipSettings){
 
         Map<String, String> body = new HashMap<>();
         String url = getData("@@url") + "/settings/editskip";
@@ -93,4 +94,22 @@ public class CFSkipSettingsService extends Services {
         doPost(url, headers, mapToFormData(body));
 
     }
+
+    public String getSkipSettingByName(String expSkipName){
+
+        HashMap<String, String> skipSettingsDatMap = getAllCFSkipSettings();
+        String skipSettingID = "";
+
+        for (Map.Entry<String, String> entry1 : skipSettingsDatMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("_")[0];
+            if (expSkipName.equalsIgnoreCase(actualKey)) {
+                skipSettingID = entry1.getValue();
+                break;
+            }
+        }
+        return skipSettingID;
+    }
+
+
 }

@@ -61,7 +61,6 @@ public class TestBase implements IRetryAnalyzer {
 	public static Map<String, String> data = new HashMap<>();
 	public static List<Map<String, String>> dataItem = new ArrayList<>();
 
-
 	public static int dataCounter = 0;
 	public static int currentData = 0;
 	private static int retryCnt=0,maxRetryCnt;

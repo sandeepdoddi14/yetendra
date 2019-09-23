@@ -7,6 +7,8 @@ import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlowBody;
 import com.darwinbox.customflows.objects.forms.CFForm;
 import com.darwinbox.customflows.objects.forms.CFFormBody;
 import com.darwinbox.customflows.services.CFFormService;
+import com.darwinbox.customflows.services.CFSLASettingsService;
+import com.darwinbox.customflows.services.CFSkipSettingsService;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 
@@ -43,14 +45,10 @@ public class CustomFlowTestBase {
 
     private void loadData() {
 
-        createCFForm();
-
-        // load all methods which are dependent inoder for requisition with cusotmflow
-
-        // create CfForm with Formbody;
-        // Create SLA;
-        // Create Skip;
-        // create ApprovalFlow;
+        //createCFForm();
+        //createCFSkipSettings();
+        //createCFSLASettings();
+        createCFApprovalFlow();
         // then create Cusotm flow using above ;
 
     }
@@ -69,8 +67,6 @@ public class CustomFlowTestBase {
             cfFormBody.toObject(data);
             cfFormBodyList.add(cfFormBody);
         }
-
-
         //with all values in CFFormBody excel sheet create a java object
         for (Map<String, String> data : cfFormDataList) {
             CFForm cfForm = new CFForm() ;
@@ -99,6 +95,7 @@ public class CustomFlowTestBase {
 
     public void createCFSLASettings(){
 
+        CFSLASettingsService srvc = new CFSLASettingsService();
         List<CFSLASettings> cfSLASettingsList = new ArrayList<>();
         List<Map<String, String>> cfSlaSettingsData = readDatafromSheet("SLASettings");
         //with all values in CFFormbody excel sheet create a java object
@@ -107,12 +104,16 @@ public class CustomFlowTestBase {
             cfSla.toObject(data);
             cfSLASettingsList.add(cfSla);
         }
+        for (CFSLASettings cfSlaSetting : cfSLASettingsList){
+            srvc.createCFSLASettings(cfSlaSetting);
+        }
+
     }
 
     public void createCFSkipSettings(){
 
         List<CFSkipSettings> cfSkipSettingsList = new ArrayList<>();
-
+        CFSkipSettingsService srvc = new CFSkipSettingsService();
         List<Map<String, String>> cfSkipSettingsData = readDatafromSheet("SkipSettings");
         //with all values in CFFormbody excel sheet create a java object
         for (Map<String, String> data : cfSkipSettingsData) {
@@ -120,6 +121,12 @@ public class CustomFlowTestBase {
             cfSkip.toObject(data);
             cfSkipSettingsList.add(cfSkip);
         }
+
+        for (CFSkipSettings cfSkipSetting : cfSkipSettingsList){
+            srvc.createCFSkipSettings(cfSkipSetting);
+        }
+
+
 
     }
 

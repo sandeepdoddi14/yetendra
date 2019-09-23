@@ -32,21 +32,7 @@ public class CFApprovalFlow extends Services {
         this.id = id;
     }
 
-    public List<NameValuePair> toObject(){
 
-        List<NameValuePair> formData = new ArrayList<>();
-
-        formData.add(new BasicNameValuePair("id", getId()));
-        formData.add(new BasicNameValuePair("CustomApprovalFlow[name]", getName()));
-
-        int count = 0;
-        for (CFApprovalFlowBody fmbody : cfApprovalFlowBodyList) {
-            count ++;
-            //formData.addAll(formData.size(), mapToFormData(fmbody.toMap(count)));
-        }
-
-        return formData;
-    }
 
 
     public void add(CFApprovalFlowBody cfApprovalFlowBody){
@@ -57,7 +43,31 @@ public class CFApprovalFlow extends Services {
 
         setName(data.get("Name"));
 
-
     }
+
+    /**
+     * this method used to set (java object) values to web application
+     *
+     * @return
+     */
+    public List<NameValuePair> toMap() {
+
+        List<NameValuePair> formData = new ArrayList<>();
+
+        formData.add(new BasicNameValuePair("id", getId()));
+        formData.add(new BasicNameValuePair("CutomWorkflowFormEvaluation[name]", getName()));
+
+
+        int count = 0;
+        for (CFApprovalFlowBody fmbody : cfApprovalFlowBodyList) {
+            count++;
+            formData.addAll(formData.size(), mapToFormData(fmbody.toMap(count)));
+        }
+
+        return formData;
+    }
+
+
+
 
 }

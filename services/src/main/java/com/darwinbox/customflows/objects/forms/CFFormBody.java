@@ -118,14 +118,4 @@ public class CFFormBody {
         return body;
     }
 
-    public static void main(String[] args) {
-
-//        CFFormBody cfFormBody = new CFFormBody();
-//
-//        cfFormBody.setFieldValues(new ArrayList<>());
-//
-//        cfFormBody.getFieldValues();
-
-
-    }
 }

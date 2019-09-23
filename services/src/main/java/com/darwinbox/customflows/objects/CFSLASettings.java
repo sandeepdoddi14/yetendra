@@ -85,7 +85,7 @@ public class CFSLASettings {
         formData.add(new BasicNameValuePair("SlaSetting[name]", getName()));
         formData.add(new BasicNameValuePair("SlaSetting[descriptions]", getDescription()));
         formData.add(new BasicNameValuePair("SlaSetting[sla_duration]", getSlaDuration()));
-        formData.add(new BasicNameValuePair("SlaSetting[sla_breach_output]", getSlaBreachOutput()));
+        formData.add(new BasicNameValuePair("SlaSetting[sla_breach_output]", ( getSlaBreachOutput().equalsIgnoreCase("Approve") ? "1": "2")));
 
         return formData;
     }

@@ -45,11 +45,7 @@ public class CFSLASettingsService extends Services {
     public void createCFSLASettings(CFSLASettings cfSLASettings){
 
         String url = getData("@@url") + "/settings/editsla";
-
-        Map<String, String> body = new HashMap<>();
-
-        //body.putAll(cfSLASettings.toMap());
-        doPost(url, null,mapToFormData(body));
+        doPost(url, null,cfSLASettings.toMap());
     }
 
     /**
@@ -89,6 +85,21 @@ public class CFSLASettingsService extends Services {
 
         doPost(url, headers, mapToFormData(body));
 
+    }
+
+    public String getSlaSettingByName(String expSlaName){
+
+        HashMap<String, String> slaSettingsDatMap = getAllCFSLASettings();
+        String slaSettingID = "";
+        for (Map.Entry<String, String> entry1 : slaSettingsDatMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("_")[0];
+            if (expSlaName.equalsIgnoreCase(actualKey)) {
+                slaSettingID = entry1.getValue();
+                break;
+            }
+        }
+        return slaSettingID;
     }
 
 }

@@ -53,7 +53,7 @@ public class CFFormService extends Services {
 
         String response = doPost(url, headers, cfFrom.toMap());
         waitForUpdate(3);
-        if (!response.contains("Custom workflow Form created successfully.")) {
+        if (!response.contains("Form created successfully.")) {
             throw new RuntimeException(" Error in creating Form for Custom Workflow. ");
         }
 
@@ -78,5 +78,20 @@ public class CFFormService extends Services {
 
     }
 
+    public String getFormbyName(String expFormName){
+
+        HashMap<String, String> cfFormsDataMap = getAllCFFoms();
+        String cfFormID = "";
+
+        for (Map.Entry<String, String> entry1 : cfFormsDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("_")[0];
+            if (expFormName.equalsIgnoreCase(actualKey)) {
+                cfFormID = entry1.getValue();
+                break;
+            }
+        }
+        return cfFormID;
+    }
 
 }
