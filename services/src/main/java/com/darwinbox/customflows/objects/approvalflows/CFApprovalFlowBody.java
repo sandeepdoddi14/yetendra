@@ -1,11 +1,9 @@
 package com.darwinbox.customflows.objects.approvalflows;
 
-import com.darwinbox.customflows.objects.CFSkipSettings;
 import com.darwinbox.customflows.services.CFFormService;
 import com.darwinbox.customflows.services.CFSLASettingsService;
 import com.darwinbox.customflows.services.CFSkipSettingsService;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
+import  com.darwinbox.customflows.objects.forms.CFFormBody.FieldType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,13 +14,12 @@ public class CFApprovalFlowBody {
 
 
     String action;
-    String actionValues;
+
+    FieldType fieldType;
     String approvalContext;
     List<String> visibilityRoles;
-
     String skipSettingName;
     String slaSettingName;
-
     List<String> approverRoles;
     private List<String> fieldValues = new ArrayList<>();
     private List<CFApprovalFlowBody> cfApprovalFlowBodyList = new ArrayList<>();
@@ -90,27 +87,20 @@ public class CFApprovalFlowBody {
         String action = data.get("Action");
 
         if (action.startsWith("form:")) {
-
-            // get form id
-            String formName = action.split(":")[0];
+            String formName = action.split(":")[1];
             String formID = fmService.getFormbyName(formName);
-
+            setAction("form_"+formID);
         } else if (action.length() == 0) {
-
-            // no action
+            setAction("");
         } else {
+            setAction(data.get("Title"));
+            fieldType = (FieldType.valueOf(data.get("Action").toUpperCase().replace(" ", "_")));
+            String values[] = data.getOrDefault("Values", "").split(",");
+            for (String value : values)
+                fieldValues.add(value);
 
-            //action = fieldname
-            // values = data.get("values")
-            /* setFieldType(CFFormBody.FieldType.valueOf(data.get("FieldType").toUpperCase().replace(" ", "_")));
+            setFieldValues(fieldValues);
 
-        String values[] = data.getOrDefault("Values","").split(",");
-        for ( String value : values)
-            fieldValues.add(value);
-
-        setMandatory(data.getOrDefault("Mandatory","no").equalsIgnoreCase("no"));
-        setLineBreak(data.getOrDefault("LineBreak","no").equalsIgnoreCase("no"));
-        */
 
         }
 
@@ -158,7 +148,7 @@ public class CFApprovalFlowBody {
         String skipID = "";
         if (skipSettingName != "") {
             CFSkipSettingsService cfSkipSrv = new CFSkipSettingsService();
-            slaID = cfSkipSrv.getSkipSettingByName(skipSettingName);
+            skipID = cfSkipSrv.getSkipSettingByName(skipSettingName);
             setSkipSettingName(skipID);
         } else {
             setSkipSettingName("No Skip");
@@ -168,52 +158,53 @@ public class CFApprovalFlowBody {
     }
 
 
-    public Map<String, String> toMap(int order) {
+    public Map<String, String> toMap(int lineItem) {
 
         Map<String, String> body = new HashMap<>();
-        //List<NameValuePair> formData = new ArrayList<>();
+        String order = "";
+        if (lineItem < 1 ){
+            order = "";
+        }else{
+            order = order+lineItem;
+        }
 
         if (getApproverRoles().size() >= 1) {
             for (String aprrover : approverRoles)
-                body.put("ApprovalFlowset[role][" + order + "][]", aprrover);
+                body.put("ApprovalFlowset[role][" + lineItem + "][]", aprrover);
         }
         if (getVisibilityRoles().size() >= 1) {
             for (String visiblityUser : visibilityRoles)
-                body.put("ApprovalFlowset[visibility][" + order + "][]", visiblityUser);
+                body.put("ApprovalFlowset[visibility][" + lineItem+ "][]", visiblityUser);
         }
 
 
-        //write condition if action values are there then
-        List<String> values = getFieldValues();
-        if (values.size() >= 1) {
-            String valueBody = "";
-
-            for (String value : values) {
-                valueBody = "," + value + valueBody;
-            }
-
-            if (valueBody.length() != 1)
-                valueBody = valueBody.substring(1);
-
-            body.put("ApprovalFlowset[options][" + order + "]", valueBody);
-        }
-
-        if (order == 0) {
-            body.put("ApprovalFlowset[title][]", "");
-            body.put("ApprovalFlowset[action][]", "");
-            body.put("ApprovalFlowset[options][]", "");
-            body.put("ApprovalFlowset[ini_sub_src_tar][]", "");
-            body.put("ApprovalFlowset[skip_id][]", "");
-            body.put("ApprovalFlowset[sla_id][]", "");
-        } else {
-            body.put("ApprovalFlowset[title][" + order + "]", "");
-            body.put("ApprovalFlowset[action][" + order + "]", "");
+        if (action.startsWith("form_") || action.length() == 0) {
+            body.put("ApprovalFlowset[action][" + order + "]", action);
             body.put("ApprovalFlowset[options][" + order + "]", "");
-            body.put("ApprovalFlowset[ini_sub_src_tar][" + order + "]", "");
-            body.put("ApprovalFlowset[skip_id][" + order + "]", "");
-            body.put("ApprovalFlowset[sla_id][" + order + "]", "");
+            body.put("ApprovalFlowset[title][" + order + "]", "");
+        } else {
+            List<String> values = getFieldValues();
+            if (values.size() >= 1) {
+                String valueBody = "";
 
+                for (String value : values) {
+                    valueBody = "," + value + valueBody;
+                }
+
+                if (valueBody.length() != 1)
+                    valueBody = valueBody.substring(1);
+                body.put("ApprovalFlowset[title][" + order + "]", getAction());
+                body.put("ApprovalFlowset[action][" + order + "]", fieldType.getType());
+                body.put("ApprovalFlowset[options][" + order + "]", valueBody);
+            }
         }
+
+
+
+            body.put("ApprovalFlowset[ini_sub_src_tar][" + order + "]", "1");
+            body.put("ApprovalFlowset[skip_id][" + order + "]", getSkipSettingName());
+            body.put("ApprovalFlowset[sla_id][" + order + "]", getSlaSettingName());
+
 
 
         return body;

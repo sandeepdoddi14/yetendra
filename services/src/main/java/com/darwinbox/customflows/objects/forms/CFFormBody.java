@@ -13,7 +13,7 @@ public class CFFormBody {
     private FieldType fieldType;
     private List<String> fieldValues = new ArrayList<>();
 
-    enum FieldType {
+    public enum FieldType {
         TEXT_FIELD("textfield"),
         TEXT_AREA("textarea"),
         DATE("date"),

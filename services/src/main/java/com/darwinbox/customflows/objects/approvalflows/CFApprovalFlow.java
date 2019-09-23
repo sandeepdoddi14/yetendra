@@ -55,13 +55,13 @@ public class CFApprovalFlow extends Services {
         List<NameValuePair> formData = new ArrayList<>();
 
         formData.add(new BasicNameValuePair("id", getId()));
-        formData.add(new BasicNameValuePair("CutomWorkflowFormEvaluation[name]", getName()));
+        formData.add(new BasicNameValuePair("CustomApprovalFlow[name]", getName()));
 
 
         int count = 0;
         for (CFApprovalFlowBody fmbody : cfApprovalFlowBodyList) {
-            count++;
             formData.addAll(formData.size(), mapToFormData(fmbody.toMap(count)));
+            count++;
         }
 
         return formData;

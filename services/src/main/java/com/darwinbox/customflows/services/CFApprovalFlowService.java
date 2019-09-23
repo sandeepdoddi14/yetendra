@@ -1,10 +1,13 @@
 package com.darwinbox.customflows.services;
 
 import com.darwinbox.attendance.services.Services;
+import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlow;
+import com.darwinbox.customflows.objects.forms.CFForm;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +41,23 @@ public class CFApprovalFlowService extends Services {
 
         return cfApprovalflowData;
     }
+    /**
+     * method is used to create a Form can be used in Custom Flows
+     * @param cfAF
+     */
+    public void createCFApprovalFlow(CFApprovalFlow cfAF){
 
+        String url = getData("@@url") + "/settings/customworkflow/createapprovalflow";
+
+        Map headers = new HashMap();
+        headers.put("x-requested-with", "XMLHttpRequest");
+
+        String response = doPost(url, headers, cfAF.toMap());
+        waitForUpdate(3);
+        if (!response.contains("Form created successfully.")) {
+            throw new RuntimeException(" Error in creating Approval Flow for Custom Workflow. ");
+        }
+
+    }
 
 }

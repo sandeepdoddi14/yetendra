@@ -6,6 +6,7 @@ import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlow;
 import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlowBody;
 import com.darwinbox.customflows.objects.forms.CFForm;
 import com.darwinbox.customflows.objects.forms.CFFormBody;
+import com.darwinbox.customflows.services.CFApprovalFlowService;
 import com.darwinbox.customflows.services.CFFormService;
 import com.darwinbox.customflows.services.CFSLASettingsService;
 import com.darwinbox.customflows.services.CFSkipSettingsService;
@@ -45,10 +46,10 @@ public class CustomFlowTestBase {
 
     private void loadData() {
 
-        //createCFForm();
+        createCFForm();
         //createCFSkipSettings();
         //createCFSLASettings();
-        createCFApprovalFlow();
+        //createCFApprovalFlow();
         // then create Cusotm flow using above ;
 
     }
@@ -152,7 +153,7 @@ public class CustomFlowTestBase {
             cfApprovalFlow.toObject(data);
 
             //form body field types will be set here
-            String bodyObjects = data.get("Body");
+            String bodyObjects = data.get("AFBody");
             String[] objectTypes = bodyObjects.split(",");
 
             for (String value : objectTypes) {
@@ -163,6 +164,8 @@ public class CustomFlowTestBase {
 
             cfApprovalFlowList.add(cfApprovalFlow);
             //System.out.println("please stop here");
+            CFApprovalFlowService cfAfSrv = new CFApprovalFlowService();
+            cfAfSrv.createCFApprovalFlow(cfApprovalFlow);
 
         }
     }
@@ -186,17 +189,5 @@ public class CustomFlowTestBase {
         ExcelReader reader = new ExcelReader();
         reader.setFilenameAndSheetName(excelDetails);
         return reader.getExcelData();
-    }
-
-    public static void main(String[] args){
-
-        //TestBase.datapath = "E:\\Automation\\Automation_Project\\customflows\\";
-
-        //CustomFlowTestBase cftb = CustomFlowTestBase.getObject();
-        //cftb.createCFForm();
-        //cftb.createCFSLASettings();
-        //cftb.createCFSkipSettings();
-        //cftb.createCFApprovalFlow();
-
     }
 }
