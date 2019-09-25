@@ -1,6 +1,10 @@
 package com.darwinbox.customflows.objects.workflows;
+import  com.darwinbox.customflows.objects.forms.CFFormBody.FieldType;
+import com.darwinbox.customflows.objects.forms.CFFormBody;
+import com.darwinbox.customflows.services.CFFormService;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 
-import javax.lang.model.util.Elements;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +13,57 @@ import java.util.Map;
 public class CFWorkflowBody {
 
     private String stageName;
-    private String action;
-    private int assignee;
-    private int noOfDays;
+    private String action="0";
+    private String assignee;
+    private String noOfDays;
+    private String SelectWhen;
+
+    private SelectDay selectDay;
+
+
+
+    FieldType fieldType;
+    private List<String> fieldValues = new ArrayList<>();
+    private List<CFWorkflowBody> cfWorkflowBodyList = new ArrayList<>();
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public String getNoOfDays() {
+        return noOfDays;
+    }
+
+    public void setNoOfDays(String noOfDays) {
+        this.noOfDays = noOfDays;
+    }
+    public String getSelectWhen() {
+        return SelectWhen;
+    }
+
+    public void setSelectWhen(String selectWhen) {
+        SelectWhen = selectWhen;
+    }
+
+
+    enum SelectDay {
+        DUMMY,
+        EFFECTIVE_DATE ,
+        APPROVAL_DATE,
+        TRIGGER_DATE
+    }
+
+    public SelectDay getSelectDay() {
+        return selectDay;
+    }
+
+    public void setSelectDay(SelectDay selectDay) {
+        this.selectDay = selectDay;
+    }
 
     public String getStageName() {
         return stageName;
@@ -29,69 +81,90 @@ public class CFWorkflowBody {
         this.action = action;
     }
 
-    public int getAssignee() {
-        return assignee;
+    public List<String> getFieldValues() {
+        return fieldValues;
     }
 
-    public void setAssignee(int assignee) {
-        this.assignee = assignee;
-    }
-
-    public int getNoOfDays() {
-        return noOfDays;
-    }
-
-    public void setNoOfDays(int noOfDays) {
-        this.noOfDays = noOfDays;
+    public void setFieldValues(List<String> fieldValues) {
+        this.fieldValues = fieldValues;
     }
 
 
-    enum SelectWhen {
-        Before,
-        After
-    }
+    public void toObject(Map<String, String> data){
 
+        setStageName(data.get("Stage Name"));
 
-    enum SelectDay {
-        EffectiveDate,
-        ApprovalDate,
-        TriggerDate
-    }
+        CFFormService fmService = new CFFormService();
 
+        String action = data.get("Action");
 
-    /**
-     * Making Custom Workflow Bdy to add it to WF
-     * @param order
-     * @return
-     */
-    public Map<String, String> toMap(int order) {
+        if (action.startsWith("form:")) {
+            String formName = action.split(":")[1];
+            String formID = fmService.getFormbyName(formName);
+            setAction("form_"+formID);
+        } else if (action.length() == 0) {
+            setAction("0");
+        } else {
+            setAction(data.get("Title"));
+            fieldType = (CFFormBody.FieldType.valueOf(data.get("Action").toUpperCase().replace(" ", "_")));
+            String values[] = data.getOrDefault("Values", "").split(",");
+            for (String value : values)
+                fieldValues.add(value);
 
-        Map<String, String> body = new HashMap<>();
+            setFieldValues(fieldValues);
 
-        body.put("", "");
-        body.put("CustomWorkFlow_set[stage_name][]", "");
-        body.put("CustomWorkFlow_set[title][]", "");
-        body.put("CustomWorkFlow_set[action][]", "");
-        body.put("CustomWorkFlow_set[options][]", "");
-        body.put("CustomWorkFlow_set[role][]", "");
-        body.put("CustomWorkFlow_set[	][]", "");
-        body.put("CustomWorkFlow_set[trigger_point_before_after][]", "");
-        body.put("CustomWorkFlow_set[trigger_point_particular][]", "");
-
-        //change below logic as per requirement
-        List<String> values = new ArrayList<>();
-        String valueBody = "";
-
-        for (String value : values) {
-            valueBody = "," + valueBody + value;
         }
 
-        if (valueBody.length() != 1)
-            valueBody = valueBody.substring(1);
+        setAssignee(data.get("Assignee"));
+        setNoOfDays(data.getOrDefault("No Of Days",""));
+        setSelectWhen(data.get("Select When"));
+        setSelectDay(SelectDay.valueOf(data.get("Select Day").replace(" ","_").toUpperCase()));
 
-        body.put("CustomWorkFlow_set[options][]", valueBody);
 
-        return body;
+
+    }
+
+
+     /**
+     * Making Custom Workflow Bdy to add it to WF
+     * @param stageOrder
+     * @return
+     */
+    public List<NameValuePair> toMap(int stageOrder) {
+
+        List<NameValuePair> formData = new ArrayList<>();
+
+        formData.add(new BasicNameValuePair("CustomWorkFlow_set[stage_name][]", getStageName()));
+        if (action.startsWith("form_") ) {
+            formData.add(new BasicNameValuePair("CustomWorkFlow_set[action][]", getAction()));
+            formData.add(new BasicNameValuePair("CustomWorkFlow_set[options][]", ""));
+            formData.add(new BasicNameValuePair("CustomWorkFlow_set[title][]", ""));
+        } else if (action.equalsIgnoreCase("0") ) {
+            formData.add(new BasicNameValuePair("CustomWorkFlow_set[action][]", "0"));
+            formData.add(new BasicNameValuePair("CustomWorkFlow_set[options][]", ""));
+            formData.add(new BasicNameValuePair("CustomWorkFlow_set[title][]", ""));
+        } else {
+            List<String> values = getFieldValues();
+            if (values.size() >= 1) {
+                String valueBody = "";
+
+                for (String value : values) {
+                    valueBody = "," + value + valueBody;
+                }
+
+                if (valueBody.length() != 1)
+                    valueBody = valueBody.substring(1);
+                formData.add(new BasicNameValuePair("CustomWorkFlow_set[title][]", getAction()));
+                formData.add(new BasicNameValuePair("CustomWorkFlow_set[action][]", fieldType.getType()));
+                formData.add(new BasicNameValuePair("CustomWorkFlow_set[options][]", valueBody));
+            }
+        }
+        formData.add(new BasicNameValuePair("CustomWorkFlow_set[role][]", getAssignee()));
+        formData.add(new BasicNameValuePair("CustomWorkFlow_set[trigger_point_before_after][]", getSelectWhen().equalsIgnoreCase("Before") ? "1": "2"));
+        formData.add(new BasicNameValuePair("CustomWorkFlow_set[trigger_point_days][]", getNoOfDays()));
+        formData.add(new BasicNameValuePair("CustomWorkFlow_set[trigger_point_particular][]", selectDay.ordinal()+""));
+
+        return formData;
     }
 
 }

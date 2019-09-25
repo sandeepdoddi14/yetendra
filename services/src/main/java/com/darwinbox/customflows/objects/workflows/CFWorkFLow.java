@@ -1,6 +1,7 @@
 package com.darwinbox.customflows.objects.workflows;
 
 import com.darwinbox.attendance.services.Services;
+import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlowBody;
 import com.darwinbox.customflows.objects.forms.CFFormBody;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -13,10 +14,13 @@ import java.util.Map;
 public class CFWorkFLow extends Services {
   private String name;
   private String description;
-  private boolean isSeries;
+
+
+  private boolean isSeriesSet;
   private String id = "";
 
-  private List<CFWorkflowBody> wfFormBody = new ArrayList<>();
+  private List<CFWorkflowBody> cfWFBodyList = new ArrayList<>();
+
 
   public String getName() {
     return name;
@@ -34,13 +38,7 @@ public class CFWorkFLow extends Services {
     this.description = description;
   }
 
-  public boolean isSeries() {
-    return isSeries;
-  }
 
-  public void setSeries(boolean series) {
-    isSeries = series;
-  }
 
   public String getId() {
     return id;
@@ -50,20 +48,40 @@ public class CFWorkFLow extends Services {
     this.id = id;
   }
 
+  public boolean isSeriesSet() {
+    return isSeriesSet;
+  }
 
-  public List<NameValuePair> toMapObject(){
+  public void setSeriesSet(boolean seriesSet) {
+    isSeriesSet = seriesSet;
+  }
+
+  public void add(CFWorkflowBody cfWFBody){
+    cfWFBodyList.add(cfWFBody);
+  }
+  public void toObject(Map<String, String> data) {
+
+    setName(data.get("Name"));
+    boolean series = (data.getOrDefault("Is Series","yes").equalsIgnoreCase("yes"));
+    setSeriesSet(series);
+    setDescription(data.get("Description").toString());
+
+  }
+
+  public List<NameValuePair> toMap(){
 
     List<NameValuePair> formData = new ArrayList<>();
 
     formData.add(new BasicNameValuePair("id", getId()));
     formData.add(new BasicNameValuePair("CustomWorkFlowForm[name]", getName()));
     formData.add(new BasicNameValuePair("CustomWorkFlowForm[description]", getDescription()));
-    //Need to add 'Is Series' checkbox value
-    //formData.add(new BasicNameValuePair("CustomWorkFlowForm[is_series]", isSeries()));
+    if(isSeriesSet)formData.add(new BasicNameValuePair("CustomWorkFlowForm[is_series]", (isSeriesSet() ? "1" : "0")));
+
+
     int count = 0;
-    for (CFWorkflowBody formBody : wfFormBody) {
-      count ++;
-      //formData.addAll(formData.size(), mapToFormData(formBody.toMap(count)));
+    for (CFWorkflowBody formBody : cfWFBodyList) {
+       formData.addAll(formData.size(),(formBody.toMap(count)));
+       count ++;
     }
 
     return formData;
