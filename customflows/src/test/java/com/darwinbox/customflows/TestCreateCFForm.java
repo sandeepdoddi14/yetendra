@@ -33,8 +33,8 @@ public class TestCreateCFForm extends TestBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
     public void createSlaSettingsTest(Map<String, String> testData) throws Exception {
 
-       // Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
-       // Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
+        //Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
+        //Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
         CustomFlowTestBase.getObject();
 

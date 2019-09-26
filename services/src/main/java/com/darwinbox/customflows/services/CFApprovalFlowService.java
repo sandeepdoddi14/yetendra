@@ -60,4 +60,38 @@ public class CFApprovalFlowService extends Services {
 
     }
 
+    public String getcfApprovalFlowByName(String expcfAFName){
+
+        HashMap<String, String> cfAFDataMap = getAllCFApprovalflows();
+        String cfAFID = "";
+
+        for (Map.Entry<String, String> entry1 : cfAFDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("_")[0];
+            if (expcfAFName.equalsIgnoreCase(actualKey)) {
+                cfAFID = entry1.getValue();
+                break;
+            }
+        }
+        return cfAFID;
+    }
+
+    public String getcfApprovalFlowByName(String expcfAFName, String version){
+
+        HashMap<String, String> cfAFDataMap = getAllCFApprovalflows();
+        String cfAFID = "";
+
+        for (Map.Entry<String, String> entry1 : cfAFDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("_")[0];
+            String actVerstion = key.split("_")[1];
+            if (expcfAFName.equalsIgnoreCase(actualKey) && version.equalsIgnoreCase(actVerstion)) {
+                cfAFID = entry1.getValue();
+                break;
+            }
+        }
+        return cfAFID;
+    }
+
+
 }

@@ -62,5 +62,21 @@ public class CFWorkFLowService extends Services{
 
     }
 
+    public String getcfWorkFlowByName(String expcfWFName){
+
+        HashMap<String, String> cfWFDataMap = getAllCFWorkflows();
+        String cfWFID = "";
+
+        for (Map.Entry<String, String> entry1 : cfWFDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("_")[0];
+            if (expcfWFName.equalsIgnoreCase(actualKey)) {
+                cfWFID = entry1.getValue();
+                break;
+            }
+        }
+        return cfWFID;
+    }
+
 
 }

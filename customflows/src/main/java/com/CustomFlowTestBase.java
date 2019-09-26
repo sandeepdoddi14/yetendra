@@ -4,6 +4,8 @@ import com.darwinbox.customflows.objects.CFSLASettings;
 import com.darwinbox.customflows.objects.CFSkipSettings;
 import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlow;
 import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlowBody;
+import com.darwinbox.customflows.objects.customflow.CustomFlow;
+import com.darwinbox.customflows.objects.customflow.CustomFlowBody;
 import com.darwinbox.customflows.objects.forms.CFForm;
 import com.darwinbox.customflows.objects.forms.CFFormBody;
 import com.darwinbox.customflows.objects.workflows.CFWorkFLow;
@@ -48,7 +50,8 @@ public class CustomFlowTestBase {
         //createCFSkipSettings();
         //createCFSLASettings();
         //createCFApprovalFlow();
-         createCFWorkflow();
+        // createCFWorkflow();
+        createCustomFlow();
         // then create Cusotm flow using above ;
 
     }
@@ -200,13 +203,45 @@ public class CustomFlowTestBase {
         }
     }
 
+
     public void createCustomFlow() {
 
+        List<Map<String, String>> customflowDataList = readDatafromSheet("CustomFlow");
+        List<Map<String, String>> customflowBodyDataList = readDatafromSheet("CustomFlowBody");
+
+        List<CustomFlowBody> customflowBodyList = new ArrayList<>();
+        List<CustomFlow> customflowList = new ArrayList<>();
+
+
+        //with all values in CFWorkflowBody excel sheet create a java object
+        for (Map<String, String> data : customflowBodyDataList) {
+            CustomFlowBody cfBody = new CustomFlowBody();
+            cfBody.toObject(data);
+            customflowBodyList.add(cfBody);
+        }
+
+        //with all values in CFWorkFlow excel sheet create a java object
+        for (Map<String, String> data : customflowDataList) {
+            CustomFlow customFlow = new CustomFlow();
+            customFlow.toObject(data);
+
+            //form body field types will be set here
+            String bodyObjects = data.get("CF Body");
+            String[] objectTypes = bodyObjects.split(",");
+
+            for (String value : objectTypes) {
+                int index = Integer.parseInt(value) - 1;
+                customFlow.add(customflowBodyList.get(index));
+            }
+
+            customflowList.add(customFlow);
+            CustomFlowService customFlowSrv = new CustomFlowService();
+            customFlowSrv.createCustomFlow(customFlow);
+
+        }
+
     }
 
-    public void createCustomFLow(String forModule) {
-
-    }
 
 
     private List<Map<String, String>> readDatafromSheet(String sheetname) {

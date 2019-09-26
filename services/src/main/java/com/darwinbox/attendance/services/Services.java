@@ -247,4 +247,94 @@ public class Services extends TestBase {
     }
 
 
+    /**
+     * Added below methods from Leave/ service class
+     */
+      // TODO : later please clean up Service class in Leaves or Services Class in Attendance
+
+ /*
+    gets grades
+     */
+    public HashMap<String, String> getGrades() {
+        String url = data.get("@@url") + "/settings/GetGrades";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+        int i = 0;
+        HashMap<String, String> ids = new HashMap();
+        while (i < arr.length()) {
+            //Pattern p = Pattern.compile("id=\"\\w+\"");
+            String grade_name = arr.getJSONArray(i).getString(0);
+            String value = arr.getJSONArray(i).getString(2).substring(7, 20);
+
+            //  if (m.find()) {
+            ids.put(grade_name, value);
+            //  } else {
+            //    ids.put(arr.getJSONArray(i).getString(0), "");
+            // }
+            i++;
+        }
+        return ids;
+    }
+
+    /*
+   gets grades and bamds
+    */
+    public HashMap<String, String> getGradeAndBand() {
+        String url = data.get("@@url") + "/settings/GetGrades";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+        int i = 0;
+        HashMap<String, String> ids = new HashMap();
+        while (i < arr.length()) {
+            //Pattern p = Pattern.compile("id=\"\\w+\"");
+            String grade_name = arr.getJSONArray(i).getString(0);
+            String band = arr.getJSONArray(i).getString(1);
+
+            //  if (m.find()) {
+            ids.put(grade_name, band);
+            //  } else {
+            //    ids.put(arr.getJSONArray(i).getString(0), "");
+            // }
+            i++;
+        }
+        return ids;
+    }
+
+
+    /*
+    gets bands
+     */
+    public HashMap<String, String> getBands() {
+        String url = data.get("@@url") + "/settings/GetBands";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+        int i = 0;
+        HashMap<String, String> ids = new HashMap();
+        while (i < arr.length()) {
+            //Pattern p = Pattern.compile("id=\"\\w+\"");
+            String grade_name = arr.getJSONArray(i).getString(0);
+            String value = arr.getJSONArray(i).getString(1).substring(7, 20);
+
+            //  if (m.find()) {
+            ids.put(grade_name, value);
+            //  } else {
+            //    ids.put(arr.getJSONArray(i).getString(0), "");
+            // }
+            i++;
+        }
+        return ids;
+    }
+
 }

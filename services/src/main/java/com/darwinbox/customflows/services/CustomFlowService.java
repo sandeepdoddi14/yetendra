@@ -1,11 +1,13 @@
 package com.darwinbox.customflows.services;
 
 import com.darwinbox.attendance.services.Services;
+import com.darwinbox.customflows.objects.customflow.CustomFlow;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CustomFlowService extends Services {
 
@@ -33,5 +35,22 @@ public class CustomFlowService extends Services {
         return customFlowData;
     }
 
+    /**
+     * method is used to create a Form can be used in Custom Flows
+     * @param customFlow
+     */
+    public void createCustomFlow(CustomFlow customFlow){
 
+        String url = getData("@@url") + "/settings/customworkflow/createcustomflow";
+
+        Map headers = new HashMap();
+        headers.put("x-requested-with", "XMLHttpRequest");
+
+        String response = doPost(url, headers, customFlow.toMap());
+       /* waitForUpdate(3);
+        if (!response.contains("Form created successfully.")) {
+            throw new RuntimeException(" Error in creating Approval Flow for Custom Workflow. ");
+        }*/
+
+    }
 }
