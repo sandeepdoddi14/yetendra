@@ -2,8 +2,6 @@ package com.darwinbox.attendance.services.settings;
 
 import com.darwinbox.attendance.objects.overTime.OverTimePolicy;
 import com.darwinbox.attendance.services.Services;
-import com.gargoylesoftware.htmlunit.html.HTMLParser;
-import org.jsoup.Jsoup;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,11 +27,7 @@ public class OverTimePolicyService extends Services {
 
         String policy_id = null;
         String url = getData("@@url") + "/compoff/editcompoff";
-
-        //parse through html data
-        log.info(HTMLParser.getFactory("id"));
-
-        return  policy_id;
+        return  null;
 
     }
 

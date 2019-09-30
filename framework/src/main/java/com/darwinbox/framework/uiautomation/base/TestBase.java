@@ -21,8 +21,7 @@ import org.openqa.selenium.NoSuchSessionException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+// import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
 import org.testng.Reporter;
@@ -32,7 +31,6 @@ import org.testng.annotations.*;
 import com.darwinbox.framework.uiautomation.configuration.browser.BrowserType;
 import com.darwinbox.framework.uiautomation.configuration.browser.ChromeBrowser;
 import com.darwinbox.framework.uiautomation.configuration.browser.FirefoxBrowser;
-import com.darwinbox.framework.uiautomation.configuration.browser.HtmlUnitBrowser;
 import com.darwinbox.framework.uiautomation.configuration.browser.IExploreBrowser;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -212,13 +210,9 @@ public class TestBase implements IRetryAnalyzer {
 					FirefoxBrowser firefox = FirefoxBrowser.class.newInstance();
 					return firefox.getFirefoxDriver(firefox.getFirefoxCapabilities());
 
-				case HTMLUNIT:
-					HtmlUnitBrowser htmlUnit = HtmlUnitBrowser.class.newInstance();
-					return htmlUnit.getHtmlUnitDriver(htmlUnit.getHtmlUnitDriverCapabilities());
-
 				case IEXPLORE:
 					IExploreBrowser iExplore = IExploreBrowser.class.newInstance();
-					return iExplore.getIExplorerDriver(iExplore.getIExplorerCapabilities());
+					return iExplore.getIExplorerDriver();
 				default:
 					throw new Exception(" Driver Not Found : " + bType);
 			}
@@ -336,11 +330,6 @@ public class TestBase implements IRetryAnalyzer {
 	}
 
 	public String takeScreenShot(String name) throws IOException {
-
-		if (driver instanceof HtmlUnitDriver) {
-			log.fatal("HtmlUnitDriver Cannot take the ScreenShot");
-			return "";
-		}
 
 		File destDir = new File(ResourceHelper.getResourcePath("screenshots/") + DateTimeHelper.getCurrentLocalDateAndTime());
 		if (!destDir.exists())
