@@ -5,10 +5,13 @@ import com.darwinbox.customflows.objects.CFSLASettings;
 import com.darwinbox.customflows.objects.CFSkipSettings;
 import com.darwinbox.recruitment.objects.CandidateTags;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +38,7 @@ public class CFSkipSettingsService extends Services {
             cf_skipName = data.getString(0);
             cf_skipVersion = data.getString(1);
             cf_skipID = data.getString(2).split("\" class")[0].substring(7);
-            cfskipSettingsData.put(cf_skipName + "_" + cf_skipVersion, cf_skipID);
+            cfskipSettingsData.put(cf_skipName + "#" + cf_skipVersion, cf_skipID);
         }
 
         return cfskipSettingsData;
@@ -62,17 +65,9 @@ public class CFSkipSettingsService extends Services {
         String url = getData("@@url") + "/settings/editskip";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
-
-        body.put("SkipSetting[name]","");
-        body.put("SkipSetting[descriptions]","");
-        body.put("SkipSetting[skip_conditions][]", "");
-        body.put("SkipSetting[skip_conditions][]", "");
-        body.put("SkipSetting[skip_roles][]", "");
-        body.put("SkipSetting[initiator_skip_roles][]","");
-        body.put("SkipSetting[initiator_skip_roles][]", "");
-        body.put("SkipSetting[skip_output]", "");
-
-        //body.putAll(cfSLASetting.toMap());
+        List<NameValuePair> obj = cfSkipSettings.toMap();
+        obj.add(new BasicNameValuePair("SkipSetting[id]",cfSkipSettings.getId()));
+        String response = doPost(url, headers, obj);
         doPost(url, headers, mapToFormData(body));
 
     }
@@ -87,10 +82,8 @@ public class CFSkipSettingsService extends Services {
         String url = getData("@@url") + "/settings/editskip";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
-
         body.put("resource",cfSkipSettings.getId());
         body.put("mode","delete");
-
         doPost(url, headers, mapToFormData(body));
 
     }
@@ -98,11 +91,11 @@ public class CFSkipSettingsService extends Services {
     public String getSkipSettingByName(String expSkipName){
 
         HashMap<String, String> skipSettingsDatMap = getAllCFSkipSettings();
-        String skipSettingID = "";
+        String skipSettingID = null;
 
         for (Map.Entry<String, String> entry1 : skipSettingsDatMap.entrySet()) {
             String key = entry1.getKey();
-            String actualKey = key.split("_")[0];
+            String actualKey = key.split("#")[0];
             if (expSkipName.equalsIgnoreCase(actualKey)) {
                 skipSettingID = entry1.getValue();
                 break;
@@ -110,6 +103,24 @@ public class CFSkipSettingsService extends Services {
         }
         return skipSettingID;
     }
+
+    public String getSkipSettingByName(String expSkipSettingName, String version){
+
+        HashMap<String, String> cfSkipSettingDataMap = getAllCFSkipSettings();
+        String cfSkipSettingID = null;
+
+        for (Map.Entry<String, String> entry1 : cfSkipSettingDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("#")[0];
+            String actVerstion = key.split("#")[1];
+            if (expSkipSettingName.equalsIgnoreCase(actualKey) && version.equalsIgnoreCase(actVerstion)) {
+                cfSkipSettingID = entry1.getValue();
+                break;
+            }
+        }
+        return cfSkipSettingID;
+    }
+
 
 
 }

@@ -337,4 +337,27 @@ public class Services extends TestBase {
         return ids;
     }
 
+
+    public HashMap<String, String> getUserAssignments() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        JSONObject response = new JSONObject(doGet(getData("@@url") + "/settings/getAssignment", headers));
+
+        JSONArray arr = response.getJSONArray("aaData");
+        int i = 0;
+        HashMap<String, String> ids = new HashMap();
+        while (i < arr.length()) {
+            Pattern p = Pattern.compile("id=\"\\w+\"");
+            Matcher m = p.matcher(arr.getJSONArray(i).getString(1));
+            if (m.find()) {
+                ids.put(arr.getJSONArray(i).getString(0), StringUtils.substringsBetween(m.group(0), "\"", "\"")[0]);
+            } else {
+                ids.put(arr.getJSONArray(i).getString(0), "");
+            }
+            i++;
+        }
+        return ids;
+    }
+
+
 }

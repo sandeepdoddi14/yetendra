@@ -5,10 +5,13 @@ import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlow;
 import com.darwinbox.customflows.objects.workflows.CFWorkFLow;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +38,7 @@ public class CFWorkFLowService extends Services{
             cf_wfName = data.getString(0);
             cf_wfVersion =  data.getString(1);
             cf_wfID = data.getString(2).split("\" class")[0].substring(7);
-            cfWorkflowData.put(cf_wfName + "_" + cf_wfVersion, cf_wfID);
+            cfWorkflowData.put(cf_wfName + "#" + cf_wfVersion, cf_wfID);
         }
 
 
@@ -62,14 +65,41 @@ public class CFWorkFLowService extends Services{
 
     }
 
+    public void updateCFWorkFlow(CFWorkFLow cfWorkFlow){
+
+        String url = getData("@@url") + "/settings/EditCustomWorkFLowevaluation";
+        Map headers = new HashMap();
+        headers.put("x-requested-with", "XMLHttpRequest");
+        List<NameValuePair> obj = cfWorkFlow.toMap();
+        obj.add(new BasicNameValuePair("reimb_id",cfWorkFlow.getId()));
+        obj.add(new BasicNameValuePair("mode","edit"));
+        String response = doPost(url, headers, obj);
+    }
+
+    /**
+     * method is used to delete a WorkFlow in Custom Flows
+     *
+     * @param cfWorkFlow
+     */
+    public void deleteCFWorkFlow(CFWorkFLow cfWorkFlow) {
+        Map<String, String> body = new HashMap<>();
+        String url = getData("@@url") + "/settings/EditCustomWorkFlowevaluation";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        body.put("resource",cfWorkFlow.getId());
+        body.put("mode","delete");
+        doPost(url, headers, mapToFormData(body));
+
+    }
+
     public String getcfWorkFlowByName(String expcfWFName){
 
         HashMap<String, String> cfWFDataMap = getAllCFWorkflows();
-        String cfWFID = "";
+        String cfWFID = null;
 
         for (Map.Entry<String, String> entry1 : cfWFDataMap.entrySet()) {
             String key = entry1.getKey();
-            String actualKey = key.split("_")[0];
+            String actualKey = key.split("#")[0];
             if (expcfWFName.equalsIgnoreCase(actualKey)) {
                 cfWFID = entry1.getValue();
                 break;
@@ -78,5 +108,21 @@ public class CFWorkFLowService extends Services{
         return cfWFID;
     }
 
+    public String getcfWorkFlowByName(String expcfWFName, String version){
+
+        HashMap<String, String> cfWFDataMap = getAllCFWorkflows();
+        String cfWFID = null;
+
+        for (Map.Entry<String, String> entry1 : cfWFDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("#")[0];
+            String actVerstion = key.split("#")[1];
+            if (expcfWFName.equalsIgnoreCase(actualKey) && version.equalsIgnoreCase(actVerstion)) {
+                cfWFID = entry1.getValue();
+                break;
+            }
+        }
+        return cfWFID;
+    }
 
 }
