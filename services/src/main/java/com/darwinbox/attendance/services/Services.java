@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 public class Services extends TestBase {
 
     public String doGet(String url, Map<String, String> headers) {
+
         try {
 
             CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -40,7 +41,6 @@ public class Services extends TestBase {
                 }
             }
 
-            request.addHeader("Cookie", getCookies());
             HttpResponse result = httpClient.execute(request);
             return EntityUtils.toString(result.getEntity(), "UTF-8");
         } catch (Exception e) {

@@ -2,6 +2,8 @@ package com.darwinbox.attendance.shifts;
 
 import com.darwinbox.attendance.objects.Reports;
 import com.darwinbox.attendance.services.settings.ReportsDashboardServices;
+import com.darwinbox.core.location.objects.LocationType;
+import com.darwinbox.core.location.services.LocationTypeServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.base.TestBase;
@@ -15,6 +17,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 public class CRUDOperations extends TestBase {
@@ -48,6 +51,24 @@ public class CRUDOperations extends TestBase {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
+
+        LocationTypeServices srvc = new LocationTypeServices();
+
+        LocationType lty = new LocationType();
+        lty.setLocationType(null);
+        srvc.createLocationType(lty);
+
+        List<LocationType> ly = srvc.getAllLocationTypes();
+
+        lty.setLocationType("Harsha");
+        lty.setId(ly.get(2).getId());
+
+        srvc.updateLocationType(lty);
+
+        srvc.deleteLocationType(lty);
+
+
+
 
 
 
