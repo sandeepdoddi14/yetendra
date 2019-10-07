@@ -56,11 +56,11 @@ public class CustomFlowBody {
 
     public void toObject(Map<String, String> data) {
 
-        String cfAFName = data.get("Approval Flow");
+        String cfAFName = data.get("Approval Flow_Version");
         String cfAFID = "";
         if(cfAFName!="") {
-            String version = cfAFName.split("_")[1];
-            cfAFName = cfAFName.split("_")[0];
+            String version = cfAFName.split("#")[1];
+            cfAFName = cfAFName.split("#")[0];
             CFApprovalFlowService cfAFsrv = new CFApprovalFlowService();
             cfAFID = cfAFsrv.getcfApprovalFlowByName(cfAFName, version);
         }
@@ -76,7 +76,7 @@ public class CustomFlowBody {
 
         List<NameValuePair> formData = new ArrayList<>();
 
-        formData.add(new BasicNameValuePair("CustomFlowset[trigger_type]", triggerType.ordinal()+""));
+        formData.add(new BasicNameValuePair("CustomFlowset[trigger_type][]", triggerType.ordinal()+""));
         formData.add(new BasicNameValuePair("CustomFlowset[role][]",getInitiator()));
         formData.add(new BasicNameValuePair("CustomFlowset[approval_flow][]",getApprovalFlow()));
 

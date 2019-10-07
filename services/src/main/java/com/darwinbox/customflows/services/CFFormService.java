@@ -2,10 +2,14 @@ package com.darwinbox.customflows.services;
 
 import com.darwinbox.attendance.services.Services;
 import com.darwinbox.customflows.objects.forms.CFForm;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.testng.SkipException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CFFormService extends Services {
@@ -32,7 +36,7 @@ public class CFFormService extends Services {
             cfFormName = data.getString(0);
             cfFormVersion = data.getString(1);
             cfFormID = data.getString(2).split("\" class")[0].substring(7);
-            cfCFFormsdata.put(cfFormName + "_" + cfFormVersion, cfFormID);
+            cfCFFormsdata.put(cfFormName + "#" + cfFormVersion, cfFormID);
 
         }
 
@@ -52,10 +56,38 @@ public class CFFormService extends Services {
         headers.put("x-requested-with", "XMLHttpRequest");
 
         String response = doPost(url, headers, cfFrom.toMap());
+
         waitForUpdate(3);
         if (!response.contains("Form created successfully.")) {
             throw new RuntimeException(" Error in creating Form for Custom Workflow. ");
         }
+
+       /* boolean isFormExist = false;
+        String formName = data.get("Name");
+        HashMap<String, String> cfFormsDataMap = getAllCFFoms();
+
+        for (Map.Entry<String, String> entry1 : cfFormsDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("#")[0];
+            if (formName.equalsIgnoreCase(actualKey)) {
+                isFormExist = true;
+                break;
+            }
+        }
+
+        if (!isFormExist) {
+            String response = doPost(url, headers, cfFrom.toMap());
+
+            waitForUpdate(3);
+            if (!response.contains("Form created successfully.")) {
+                throw new RuntimeException(" Error in creating Form for Custom Workflow. ");
+            }
+        } else {
+
+            Reporter("Form Already exist", "Fail" );
+            //throw SkipException("Form Already exist with Same Name.");
+        }*/
+
 
     }
 
@@ -66,6 +98,13 @@ public class CFFormService extends Services {
      */
     public void updateCFForm(CFForm cfFrom) {
 
+        String url = getData("@@url") + "/settings/EditCutomWorkflowFormEvaluation";
+        Map headers = new HashMap();
+        headers.put("x-requested-with", "XMLHttpRequest");
+        List<NameValuePair> obj = cfFrom.toMap();
+        obj.add(new BasicNameValuePair("reimb_id",cfFrom.getId()));
+        obj.add(new BasicNameValuePair("mode","edit"));
+        String response = doPost(url, headers, obj);
 
     }
 
@@ -75,6 +114,13 @@ public class CFFormService extends Services {
      * @param cfFrom
      */
     public void deleteCFForm(CFForm cfFrom) {
+        Map<String, String> body = new HashMap<>();
+        String url = getData("@@url") + "/settings/editcutomworkflowformevaluation";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        body.put("resource",cfFrom.getId());
+        body.put("mode","delete");
+        doPost(url, headers, mapToFormData(body));
 
 
     }
@@ -82,11 +128,11 @@ public class CFFormService extends Services {
     public String getFormbyName(String expFormName) {
 
         HashMap<String, String> cfFormsDataMap = getAllCFFoms();
-        String cfFormID = "";
+        String cfFormID = null;
 
         for (Map.Entry<String, String> entry1 : cfFormsDataMap.entrySet()) {
             String key = entry1.getKey();
-            String actualKey = key.split("_")[0];
+            String actualKey = key.split("#")[0];
             if (expFormName.equalsIgnoreCase(actualKey)) {
                 cfFormID = entry1.getValue();
                 break;
@@ -94,5 +140,25 @@ public class CFFormService extends Services {
         }
         return cfFormID;
     }
+
+    public String getcfFormName(String expcfFormName, String version) {
+
+        HashMap<String, String> cfFormDataMap = getAllCFFoms();
+        String cfFormID = null;
+
+        for (Map.Entry<String, String> entry1 : cfFormDataMap.entrySet()) {
+            String key = entry1.getKey();
+            String actualKey = key.split("#")[0];
+            String actVerstion = key.split("#")[1];
+            if (expcfFormName.equalsIgnoreCase(actualKey) && version.equalsIgnoreCase(actVerstion)) {
+                cfFormID = entry1.getValue();
+                break;
+            }
+        }
+        return cfFormID;
+    }
+
+
+
 
 }

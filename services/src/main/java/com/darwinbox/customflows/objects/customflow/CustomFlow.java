@@ -215,9 +215,9 @@ public class CustomFlow extends Services {
         List<NameValuePair> formData = new ArrayList<>();
 
         formData.add(new BasicNameValuePair("id", getId()));
+        formData.add(new BasicNameValuePair("CustomFlow[for]", cfFor.ordinal()+""));
         formData.add(new BasicNameValuePair("CustomFlow[name]", getName()));
         formData.add(new BasicNameValuePair("CustomFlow[description]", getDescription()));
-        formData.add(new BasicNameValuePair("CustomFlow[for]", getCfFor().toString()));
 
         if(getCompanyName().equalsIgnoreCase("ALL")){
             formData.add(new BasicNameValuePair("CustomFlow[parent_company_id]", "all"));
@@ -227,6 +227,13 @@ public class CustomFlow extends Services {
         else{
             formData.add(new BasicNameValuePair("CustomFlow[parent_company_id]", groupCompanyMongoId));
         }
+
+        formData.add(new BasicNameValuePair("CustomFlow[triggering_event]", triggerEvent.ordinal()+""));
+        formData.add(new BasicNameValuePair("CustomFlow[event_type]", eventType.ordinal()+""));
+        formData.add(new BasicNameValuePair("CustomFlow[intra_inter_company]", "0"));
+        formData.add(new BasicNameValuePair("CustomFlow[or_and]", getRestricCondition().equalsIgnoreCase("OR") ? "0": "1"));
+        formData.add(new BasicNameValuePair("CustomFlow[workflow_form]",""));
+        formData.add(new BasicNameValuePair("CustomFlow[retirement_before_days]", ""));
 
         // get applicable category short names from Excel sheet
         List<String> applicabilityList = getApplicableToList();
@@ -254,6 +261,7 @@ public class CustomFlow extends Services {
         HashMap empTypes = getEmployeeTypes();
         HashMap grades = getGrades();
         HashMap bands = getBands();
+        HashMap assignments = getUserAssignments();
 
 
         for (String applicable : ApplicableCategories) {
@@ -295,20 +303,17 @@ public class CustomFlow extends Services {
                     break;
                 case "DESG":
                     formData.add(new BasicNameValuePair("CustomFlow[assign_to][]", "DESG_" + id));
-                    break;
+                    break;*/
                 case "assignment":
+                    valuesList = new ArrayList<String>(assignments.values());
+                    randomIndex = new Random().nextInt(valuesList.size());
+                    id = valuesList.get(randomIndex);
                     formData.add(new BasicNameValuePair("CustomFlow[assign_to][]", "assignment_" + id));
-                */
-
-
+                    break;
             }
         }
-        formData.add(new BasicNameValuePair("CustomFlow[for]", cfFor.ordinal()+""));
-        formData.add(new BasicNameValuePair("CustomFlow[triggering_event]", triggerEvent.ordinal()+""));
-        formData.add(new BasicNameValuePair("CustomFlow[event_type]", eventType.ordinal()+""));
-        formData.add(new BasicNameValuePair("CustomFlow[intra_inter_company]", "0"));
-        formData.add(new BasicNameValuePair("CustomFlow[or_and]", getRestricCondition().equalsIgnoreCase("OR") ? "0": "1"));
-        formData.add(new BasicNameValuePair("CustomFlow[workflow_form]",""));
+
+
         if (getEmailToList().size() >= 1) {
             for (String emailUser : emailToList)
                 formData.add(new BasicNameValuePair("CustomFlow[email_to][]", emailUser));
@@ -316,12 +321,15 @@ public class CustomFlow extends Services {
 
         int count = 0;
         for (CustomFlowBody formBody : customFlowBodyList) {
-            count++;
             formData.addAll(formData.size(), (formBody.toMap(count)));
+            count++;
         }
 
         return formData;
     }
+
+
+
 
 
 

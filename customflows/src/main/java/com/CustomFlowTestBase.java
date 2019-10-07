@@ -20,6 +20,29 @@ public class CustomFlowTestBase {
     private static HashMap<String, CustomFlowTestBase> obj;
     private String fileName;
 
+    List<CFForm> cfFormList = new ArrayList<>();
+    List<CFFormBody> cfFormBodyList = new ArrayList<>();
+
+    List<CFApprovalFlow> cfApprovalFlowList = new ArrayList<>();
+    List<CFApprovalFlowBody> cfApprovalFlowBodyList = new ArrayList<>();
+
+    List<CFWorkFLow> cfWorkflowList = new ArrayList<>();
+    List<CFWorkflowBody> cfWorkflowBodyList = new ArrayList<>();
+
+    List<CustomFlowBody> customflowBodyList = new ArrayList<>();
+    List<CustomFlow> customflowList = new ArrayList<>();
+
+    List<CFSkipSettings> cfSkipSettingsList = new ArrayList<>();
+    List<CFSLASettings> cfSLASettingsList = new ArrayList<>();
+
+    CFFormService cfFormsrvc = new CFFormService();
+    CFSLASettingsService cfSLAsrvc = new CFSLASettingsService();
+    CFSkipSettingsService cfSkipsrvc = new CFSkipSettingsService();
+    CFApprovalFlowService cfAfSrv = new CFApprovalFlowService();
+    CFWorkFLowService cfWFSrv = new CFWorkFLowService();
+    CustomFlowService customFlowSrv = new CustomFlowService();
+
+
     private CustomFlowTestBase(String fileName) {
         this.fileName = fileName;
     }
@@ -46,13 +69,12 @@ public class CustomFlowTestBase {
 
     private void loadData() {
 
-        //createCFForm();
-        //createCFSkipSettings();
-        //createCFSLASettings();
-        //createCFApprovalFlow();
-        // createCFWorkflow();
+        createCFForm();
+        createCFSkipSettings();
+        createCFSLASettings();
+        createCFApprovalFlow();
+        createCFWorkflow();
         createCustomFlow();
-        // then create Cusotm flow using above ;
 
     }
 
@@ -61,35 +83,40 @@ public class CustomFlowTestBase {
         List<Map<String, String>> cfFormDataList = readDatafromSheet("CFForm");
         List<Map<String, String>> cfFormBodyDataList = readDatafromSheet("CFFormBody");
 
-        List<CFFormBody> cfFormBodyList = new ArrayList<>();
-        List<CFForm> cfFormList = new ArrayList<>();
-
-        //with all values in CFFormBody excel sheet create a java object
+       //with all values in CFFormBody excel sheet create a java object
         for (Map<String, String> data : cfFormBodyDataList) {
             CFFormBody cfFormBody = new CFFormBody();
             cfFormBody.toObject(data);
             cfFormBodyList.add(cfFormBody);
         }
+
+
         //with all values in CFFormBody excel sheet create a java object
         for (Map<String, String> data : cfFormDataList) {
             CFForm cfForm = new CFForm();
             cfForm.toObject(data);
 
-            //form body field types will be set here
-            String bodyObjects = data.get("Body");
-            String[] objectTypes = bodyObjects.split(",");
+            String id =  cfFormsrvc.getcfFormName(data.get("Name").trim(),"1.0");
 
-            for (String value : objectTypes) {
-                int index = Integer.parseInt(value) - 1;
-                cfForm.add(cfFormBodyList.get(index));
+            if ( id == null ) {
+
+                String bodyObjects = data.get("Body");
+                String[] objectTypes = bodyObjects.split(",");
+
+                for (String value : objectTypes) {
+                    int index = Integer.parseInt(value) - 1;
+                    cfForm.add(cfFormBodyList.get(index));
+                }
+                cfFormsrvc.createCFForm(cfForm);
+                id =  cfFormsrvc.getcfFormName(data.get("Name"),"1.0");
+                cfForm.setId(id);
+            }
+            else{
+                cfForm.setId(id);
+                cfFormsrvc.updateCFForm(cfForm);
             }
 
             cfFormList.add(cfForm);
-
-            CFFormService srvc = new CFFormService();
-            srvc.createCFForm(cfForm);
-
-
         }
 
 
@@ -97,25 +124,34 @@ public class CustomFlowTestBase {
 
     public void createCFSLASettings() {
 
-        CFSLASettingsService srvc = new CFSLASettingsService();
-        List<CFSLASettings> cfSLASettingsList = new ArrayList<>();
         List<Map<String, String>> cfSlaSettingsData = readDatafromSheet("SLASettings");
         //with all values in CFFormbody excel sheet create a java object
+
         for (Map<String, String> data : cfSlaSettingsData) {
             CFSLASettings cfSla = new CFSLASettings();
             cfSla.toObject(data);
             cfSLASettingsList.add(cfSla);
         }
         for (CFSLASettings cfSlaSetting : cfSLASettingsList) {
-            srvc.createCFSLASettings(cfSlaSetting);
+            String id = cfSLAsrvc.getSLASettingByName(cfSlaSetting.getName(), "1.0");
+            if (id == null){
+
+                cfSLAsrvc.createCFSLASettings(cfSlaSetting);
+                id = cfSLAsrvc.getSLASettingByName(cfSlaSetting.getName(), "1.0");
+                cfSlaSetting.setId(id);
+            }
+            else{
+                cfSlaSetting.setId(id);
+                cfSLAsrvc.updateCFSLASettings(cfSlaSetting);
+            }
+
+
         }
 
     }
 
     public void createCFSkipSettings() {
 
-        List<CFSkipSettings> cfSkipSettingsList = new ArrayList<>();
-        CFSkipSettingsService srvc = new CFSkipSettingsService();
         List<Map<String, String>> cfSkipSettingsData = readDatafromSheet("SkipSettings");
         //with all values in CFFormbody excel sheet create a java object
         for (Map<String, String> data : cfSkipSettingsData) {
@@ -125,7 +161,19 @@ public class CustomFlowTestBase {
         }
 
         for (CFSkipSettings cfSkipSetting : cfSkipSettingsList) {
-            srvc.createCFSkipSettings(cfSkipSetting);
+
+            String id = cfSkipsrvc.getSkipSettingByName(cfSkipSetting.getName(), "1.0");
+            if (id == null){
+
+                cfSkipsrvc.createCFSkipSettings(cfSkipSetting);
+                id = cfSkipsrvc.getSkipSettingByName(cfSkipSetting.getName(), "1.0");
+                cfSkipSetting.setId(id);
+            }
+            else{
+                cfSkipSetting.setId(id);
+                cfSkipsrvc.updateSkipSettings(cfSkipSetting);
+            }
+
         }
 
     }
@@ -134,10 +182,6 @@ public class CustomFlowTestBase {
 
         List<Map<String, String>> cfApprovalFlowDataList = readDatafromSheet("CFApprovalFlow");
         List<Map<String, String>> cfApprovalFlowBodyDataList = readDatafromSheet("CFApprovalFlowBody");
-
-        List<CFApprovalFlowBody> cfApprovalFlowBodyList = new ArrayList<>();
-        List<CFApprovalFlow> cfApprovalFlowList = new ArrayList<>();
-
         //with all values in CFFormBody excel sheet create a java object
         for (Map<String, String> data : cfApprovalFlowBodyDataList) {
             CFApprovalFlowBody cfAFBody = new CFApprovalFlowBody();
@@ -150,19 +194,25 @@ public class CustomFlowTestBase {
             CFApprovalFlow cfApprovalFlow = new CFApprovalFlow();
             cfApprovalFlow.toObject(data);
 
-            //form body field types will be set here
-            String bodyObjects = data.get("AFBody");
-            String[] objectTypes = bodyObjects.split(",");
+            String id =  cfAfSrv.getcfApprovalFlowByName(data.get("Name").trim(),"1.0");
+            if ( id == null ) {
+                //form body field types will be set here
+                String bodyObjects = data.get("AFBody");
+                String[] objectTypes = bodyObjects.split(",");
 
-            for (String value : objectTypes) {
-                int index = Integer.parseInt(value) - 1;
-                cfApprovalFlow.add(cfApprovalFlowBodyList.get(index));
+                for (String value : objectTypes) {
+                    int index = Integer.parseInt(value) - 1;
+                    cfApprovalFlow.add(cfApprovalFlowBodyList.get(index));
+                }
+                cfAfSrv.createCFApprovalFlow(cfApprovalFlow);
+                id = cfAfSrv.getcfApprovalFlowByName(data.get("Name").trim(),"1.0");
+                cfApprovalFlow.setId(id);
             }
-
+            else{
+                cfApprovalFlow.setId(id);
+                cfAfSrv.updateCFApprovalFlow(cfApprovalFlow);
+            }
             cfApprovalFlowList.add(cfApprovalFlow);
-            CFApprovalFlowService cfAfSrv = new CFApprovalFlowService();
-            cfAfSrv.createCFApprovalFlow(cfApprovalFlow);
-
         }
     }
 
@@ -171,9 +221,6 @@ public class CustomFlowTestBase {
 
         List<Map<String, String>> cfWorkflowDataList = readDatafromSheet("CFWorkFlow");
         List<Map<String, String>> cfWorkFlowBodyDataList = readDatafromSheet("CFWorkFlowBody");
-
-        List<CFWorkflowBody> cfWorkflowBodyList = new ArrayList<>();
-        List<CFWorkFLow> cfWorkflowList = new ArrayList<>();
 
         //with all values in CFWorkflowBody excel sheet create a java object
         for (Map<String, String> data : cfWorkFlowBodyDataList) {
@@ -187,18 +234,27 @@ public class CustomFlowTestBase {
             CFWorkFLow cfWorkFlow = new CFWorkFLow();
             cfWorkFlow.toObject(data);
 
-            //form body field types will be set here
-            String bodyObjects = data.get("WF Body");
-            String[] objectTypes = bodyObjects.split(",");
+            String id =  cfWFSrv.getcfWorkFlowByName(data.get("Name").trim(),"1.0");
+            if ( id == null ) {
+                //form body field types will be set here
+                String bodyObjects = data.get("WF Body");
+                String[] objectTypes = bodyObjects.split(",");
 
-            for (String value : objectTypes) {
-                int index = Integer.parseInt(value) - 1;
-                cfWorkFlow.add(cfWorkflowBodyList.get(index));
+                for (String value : objectTypes) {
+                    int index = Integer.parseInt(value) - 1;
+                    cfWorkFlow.add(cfWorkflowBodyList.get(index));
+                }
+                cfWFSrv.createCFWorkflow(cfWorkFlow);
+                id =  cfWFSrv.getcfWorkFlowByName(data.get("Name").trim(),"1.0");
+                cfWorkFlow.setId(id);
+
             }
-
+            else{
+                cfWorkFlow.setId(id);
+                cfWFSrv.updateCFWorkFlow(cfWorkFlow);
+            }
             cfWorkflowList.add(cfWorkFlow);
-            CFWorkFLowService cfWFSrv = new CFWorkFLowService();
-            cfWFSrv.createCFWorkflow(cfWorkFlow);
+
 
         }
     }
@@ -209,19 +265,16 @@ public class CustomFlowTestBase {
         List<Map<String, String>> customflowDataList = readDatafromSheet("CustomFlow");
         List<Map<String, String>> customflowBodyDataList = readDatafromSheet("CustomFlowBody");
 
-        List<CustomFlowBody> customflowBodyList = new ArrayList<>();
-        List<CustomFlow> customflowList = new ArrayList<>();
-
-
-        //with all values in CFWorkflowBody excel sheet create a java object
+        //with all values in CustomflowBody excel sheet create a java object
         for (Map<String, String> data : customflowBodyDataList) {
             CustomFlowBody cfBody = new CustomFlowBody();
             cfBody.toObject(data);
             customflowBodyList.add(cfBody);
         }
 
-        //with all values in CFWorkFlow excel sheet create a java object
+        //with all values in Customflow  excel sheet create a java object
         for (Map<String, String> data : customflowDataList) {
+
             CustomFlow customFlow = new CustomFlow();
             customFlow.toObject(data);
 
@@ -234,10 +287,20 @@ public class CustomFlowTestBase {
                 customFlow.add(customflowBodyList.get(index));
             }
 
-            customflowList.add(customFlow);
-            CustomFlowService customFlowSrv = new CustomFlowService();
-            customFlowSrv.createCustomFlow(customFlow);
 
+            String id = customFlowSrv.getCustomFlowDetails(data.get("Name"),data.get("For"), data.get("WorkFlow"));
+
+            if ( id == null ) {
+                customFlowSrv.createCustomFlow(customFlow);
+                id = customFlowSrv.getCustomFlowDetails(data.get("Name"),data.get("For"), data.get("WorkFlow"));
+                customFlow.setId(id);
+            }
+
+            else {
+                customFlow.setId(id);
+                customFlowSrv.updateCustomFlow(customFlow);
+            }
+            customflowList.add(customFlow);
         }
 
     }
