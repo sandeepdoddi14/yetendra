@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.Map;
 
-public class TestCreateReimbUnits extends TestBase {
+public class TestDeleteReimbUnits extends TestBase {
 
     LoginPage loginPage;
     ReimbUnits reimbUnits;
@@ -34,18 +34,11 @@ public class TestCreateReimbUnits extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns" , dataProviderClass = TestDataProvider.class)
-    public void CreateReimbUnitActions(Map<String, String> testData) throws Exception
-    {
-        Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User is unable to login to application as Admin");
-        Assert.assertTrue(loginPage.switchToAdmin(), "Switch to admin unsuccessful");
+    public void DeleteReimbUnitActions(Map<String, String> testData) throws Exception {
 
-        reimbUnits.toObject(testData);
-        reimbUnitService.createReimbUnit(reimbUnits);
-       String  expected = reimbUnits.getUnitType();
-        String actual = reimbUnitService.getReimbUnitByName(testData.get("Unit Type")).getUnitType();
+        reimbUnitService.deleteReimbUnit(reimbUnits);
+        Map map = reimbUnitService.getAllReimbUnits();
+        Assert.assertEquals(map.get(reimbUnits.getId()), reimbUnits, "Reimbursement unit has been deleted successfully");
 
-        Assert.assertEquals(expected, actual, "Reimbursement unit has been created successfully");
-
-        }
-        }
-
+    }
+    }

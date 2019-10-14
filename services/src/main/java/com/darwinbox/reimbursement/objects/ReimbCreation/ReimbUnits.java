@@ -13,17 +13,18 @@ public class ReimbUnits {
     private String unitType;
     private String unitLabel;
     private String unitDesc;
+    private String id;
+
+    public String getId() {  return id; }
+    public void setId(String id) {   this.id = id; }
 
     public String getUnitType() {    return unitType;  }
-
     public void setUnitType(String unitType) { this.unitType = unitType;  }
 
     public String getUnitLabel() {  return unitLabel;  }
-
     public void setUnitLabel(String unitLabel) {    this.unitLabel = unitLabel;   }
 
     public String getUnitDesc() {  return unitDesc;  }
-
     public void setUnitDesc(String unitDesc) { this.unitDesc = unitDesc; }
 
     public void toObject(Map<String,String> data)
@@ -36,6 +37,7 @@ public class ReimbUnits {
     public List<NameValuePair> toMap()
     {
         List<NameValuePair> formdata = new ArrayList<>();
+        formdata.add(new BasicNameValuePair("yt0", "SAVE"));
         formdata.add(new BasicNameValuePair("TenantReimbursementUnits[unit_name]", getUnitType()));
         formdata.add(new BasicNameValuePair("TenantReimbursementUnits[label]", getUnitLabel()));
         formdata.add(new BasicNameValuePair("TenantReimbursementUnits[unit_desc]" , getUnitDesc()));
