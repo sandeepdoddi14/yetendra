@@ -311,7 +311,7 @@ public class Services extends TestBase {
 
     /*
     gets bands
-     */
+     *//*
     public HashMap<String, String> getBands() {
         String url = data.get("@@url") + "/settings/GetBands";
 
@@ -335,6 +335,6 @@ public class Services extends TestBase {
             i++;
         }
         return ids;
-    }
+    }*/
 
 }
