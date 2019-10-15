@@ -41,9 +41,7 @@ public class ReimbUnitService extends Services {
 
         String response = doPost(url, headers, reimbUnits.toMap());
         waitForUpdate(3);
-        /*if (!response.contains("Reimbursement unit has been added successfully.")) {
-            throw new RuntimeException(" Error in creating Reimbursement unit. ");
-        }*/
+
     }
 
     public ReimbUnits getReimbUnitByName(String reUnitName)
