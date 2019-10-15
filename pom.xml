@@ -16,6 +16,7 @@
         <module>framework</module>
         <module>services</module>
         <module>tests</module>
+
     </modules>
 
 </project>

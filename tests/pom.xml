@@ -42,6 +42,7 @@
         <module>../leave</module>
         <module>../recruitment</module>
         <module>../customflows</module>
+        <module>../reimbursement</module>
     </modules>
 
     <build>
