@@ -87,6 +87,7 @@ public class ReimbFormBody {
     public void setAutocalculate(boolean autocalculate) {
         this.autocalculate = autocalculate;
     }
+
     public List<String> getFieldValues() {
         return fieldValues;
     }
@@ -94,8 +95,6 @@ public class ReimbFormBody {
     public void setFieldValues(List<String> fieldValues) {
         this.fieldValues = fieldValues;
     }
-
-
 
 
 }

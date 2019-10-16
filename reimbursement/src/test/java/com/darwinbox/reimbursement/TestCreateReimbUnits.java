@@ -14,28 +14,24 @@ import org.testng.annotations.Test;
 import java.util.Date;
 import java.util.Map;
 
-public class TestCreateReimbUnits extends TestBase
-{
+public class TestCreateReimbUnits extends TestBase {
     LoginPage loginPage;
     ReimbUnitService reimbUnitService;
 
     @BeforeClass
-    public void BeforeClass()
-    {
+    public void BeforeClass() {
         ms.getDataFromMasterSheet(this.getClass().getName());
         super.beforeClass();
     }
 
     @BeforeTest
-    public void initializeObjects()
-    {
+    public void initializeObjects() {
         loginPage = new LoginPage(driver);
         reimbUnitService = new ReimbUnitService();
     }
 
-    @Test(dataProvider = "TestRuns" , dataProviderClass = TestDataProvider.class)
-    public void CreateReimbUnitActions(Map<String, String> testData) throws Exception
-    {
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    public void CreateReimbUnitActions(Map<String, String> testData) throws Exception {
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "User is unable to login to application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to admin unsuccessful");
 
@@ -44,19 +40,18 @@ public class TestCreateReimbUnits extends TestBase
         ReimbUnits reimbUnits = new ReimbUnits();
         reimbUnits.toObject(testData);
 
-        Map map = reimbUnitService.getAllReimbUnits();
+        Map allReimbUnits = reimbUnitService.getAllReimbUnits();
 
-        if(map.containsKey(reimbUnits.getUnitType())) {
+        if (allReimbUnits.containsKey(reimbUnits.getUnitType())) {
             unitname = "Default_Create_" + new DateTimeHelper().formatDateTo(new Date(), "YYYYMMdd_HHmmss");
             reimbUnits.setUnitType(unitname);
         }
 
         reimbUnitService.createReimbUnit(reimbUnits);
+        String uname = reimbUnitService.getReimbUnitByName(unitname).getUnitType();
+        Reporter("Reimbursement unit created by the name: "+uname, "INFO");
 
-
-        String actual = reimbUnitService.getReimbUnitByName(unitname).getUnitType();
-
-        Assert.assertEquals(unitname, actual, "Reimbursement unit has been created successfully");
-        }
-        }
+        Assert.assertEquals(unitname, uname, "Reimbursement unit has been created successfully");
+    }
+}
 
