@@ -1,5 +1,9 @@
 package com.darwinbox.core.employee.objects;
 
+import com.darwinbox.core.Services;
+import com.darwinbox.core.services.BusinessUnitServices;
+
+import java.security.Provider;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -82,17 +86,18 @@ public class Department {
 
 
 
-    public Map<String,String> toMap(){
+    public Map<String,String> toMap() {
 
-        Map<String,String> data = new HashMap<>();
+        Map<String, String> data = new HashMap<>();
 
-        data.put("UserDepartments[department_name]",getDepartmentName());
+        data.put("UserDepartments[department_name]", getDepartmentName());
         data.put("UserDepartments[department_email]", getDepartmentEmail());
-        //get parent comany id
-        data.put("UserDepartments[parent_company_id]","");
 
-        data.put("UserDepartments[business_unit_id]", "");
-        data.put("UserDepartments[parent_department]","");
+        data.put("UserDepartments[parent_company_id]", new Services().getGroupCompanyIds().get(getGroupCompany()));
+
+        data.put("UserDepartments[business_unit_id]", new BusinessUnitServices().getBusinessUnits().get(getBusinessUnit()));
+        //YTD
+        data.put("UserDepartments[parent_department]", "");
         data.put("UserDepartments[departments_hod]", "");
         data.put("employee_search", "");
         data.put("UserDepartments[performance_hod]", "");
@@ -100,4 +105,5 @@ public class Department {
 
         return data;
     }
+
 }
