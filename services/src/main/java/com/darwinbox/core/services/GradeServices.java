@@ -21,7 +21,7 @@ public class GradeServices extends Services {
     }
 
 
-    public void createService(Grade grade) {
+    public void createGrade(Grade grade) {
 
         Map<String, String> body = getDefaultforBand();
 
