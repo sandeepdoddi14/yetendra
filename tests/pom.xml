@@ -43,6 +43,7 @@
         <module>../recruitment</module>
         <module>../customflows</module>
         <module>../reimbursement</module>
+        <module>../core</module>
     </modules>
 
     <build>

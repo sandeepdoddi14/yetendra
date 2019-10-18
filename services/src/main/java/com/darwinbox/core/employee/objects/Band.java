@@ -39,6 +39,8 @@ public class Band {
 
         Map<String,String> data = new HashMap<>();
 
+
+        data.put("yt0","SAVE");
         data.put("UserBand[band_name]",getBandName());
 
         if(getDescription()!=null)

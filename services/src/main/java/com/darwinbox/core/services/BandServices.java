@@ -1,6 +1,7 @@
 package com.darwinbox.core.services;
 import com.darwinbox.core.Services;
 import com.darwinbox.core.employee.objects.Band;
+import com.darwinbox.core.employee.objects.BusinessUnit;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,7 +33,11 @@ public class BandServices extends Services {
         Map headers = new HashMap();
         headers.put("x-requested-with", "XMLHttpRequest");
 
-        doPost(url, headers, mapToFormData(body));
+
+            doPost(url, headers, mapToFormData(body));
+            Reporter("Band Created Successfully "+band.getBandName(),"Info");
+
+
 
     }
 
@@ -41,19 +46,22 @@ public class BandServices extends Services {
         body.putAll(band.toMap());
 
 
-        HashMap<String,String> bands=getBands();
-        String  id=bands.get(band.getBandName());
+       // HashMap<String,String> bands=getBands();
+        //String  id=bands.get(band.getBandName());
 
-        if(id!=null){
-            body.put("UserBand[id]",id);
-        }
-        else
-            throw new RuntimeException("There is no band to update Band Name="+band.getBandName());
+        //if(id!=null){
+            body.put("UserBand[id]",band.getId());
+        //}
+        //else
+          //  throw new RuntimeException("There is no band to update Band Name="+band.getBandName());
+
+        //*/
 
         String url = getData("@@url") + "/settings/editBands";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
         doPost(url, headers, mapToFormData(body));
+        Reporter("Band updated successfuuly"+band.getBandName(),"info");
     }
 
     /*
@@ -82,6 +90,52 @@ public class BandServices extends Services {
             i++;
         }
         return ids;
+    }
+
+
+    /***YTD****/
+
+    public Band getBand(Band band){
+
+        String url = data.get("@@url") + "/settings/editBands";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+
+        HashMap<String,String>  body = new HashMap<>();
+
+        body.put("resource",getBands().get(band.getBandName()));
+        body.put("mode","open");
+
+        String response=doPost(url,headers,mapToFormData(body));
+
+
+        JSONObject obj= new JSONObject(response);
+            obj.getJSONArray("update");
+        return null;
+
+
+    }
+
+    public void deleteBand(Band band){
+
+        String bandID=getBands().get(band.getBandName());
+
+        String url = getData("@@url") + "/settings/editBands";
+
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        HashMap<String,String> body= new HashMap();
+
+        body.put("resource",bandID);
+        body.put("mode","delete");
+
+
+       doPost(url,headers,mapToFormData(body));
+
+       Reporter("Band deleted Successfully"+band.getBandName(),"Info");
     }
 
 
