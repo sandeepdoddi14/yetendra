@@ -34,57 +34,44 @@ public class ReimbUnitService extends Services {
     }
 
     public void createReimbUnit(ReimbUnits reimbUnits) {
-        String url = getData("@@url")+ "/settings/reimbursement/reimbunits";
+        String url = getData("@@url") + "/settings/reimbursement/reimbunits";
 
         Map headers = new HashMap<>();
         headers.put("x-requested-with", "XMLHttpRequest");
 
-        String response = doPost(url, headers, reimbUnits.toMap());
-        waitForUpdate(3);
-        /*if (!response.contains("Reimbursement unit has been added successfully.")) {
-            throw new RuntimeException(" Error in creating Reimbursement unit. ");
-        }*/
+        doPost(url, headers, reimbUnits.toMap());
     }
 
-    public ReimbUnits getReimbUnitByName(String reUnitName)
-    {
-        Map<String,String> allReimbData= getAllReimbUnits();
-        ReimbUnits reimbUnits = new ReimbUnits();
-
-      for(Map.Entry<String, String> reEntry : allReimbData.entrySet())
-        {
+    public ReimbUnits getReimbUnitByName(String reUnitName) {
+        Map<String, String> allReimbData = getAllReimbUnits();
+        ReimbUnits reimbUnits = null;
+        for (Map.Entry<String, String> reEntry : allReimbData.entrySet()) {
             String reimbType = reEntry.getKey();
-            if(reUnitName.equalsIgnoreCase(reimbType))
-            {
-                reimbUnits.setId(reEntry.getValue());
+            if (reUnitName.equalsIgnoreCase(reimbType)) {
+                reimbUnits = new ReimbUnits();
                 reimbUnits.setUnitType(reEntry.getKey());
+                reimbUnits.setId(reEntry.getValue());
                 break;
             }
         }
-
-        return  reimbUnits;
+        return reimbUnits;
     }
 
-    public void updateReimbUnit(ReimbUnits reimbUnits) {
-        String url = getData("@@url") + "/settings/editreimbursementunit";
+    public String updateReimbUnit(ReimbUnits reimbUnits) {
+        String url = getData("@@url") + "/settings/EditReimbursementunit";
 
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
         List<NameValuePair> obj = reimbUnits.toMap();
-        obj.add(new BasicNameValuePair("reimb_id",reimbUnits.getId()));
-        obj.add(new BasicNameValuePair("mode","edit"));
+        obj.add(new BasicNameValuePair("TenantReimbursementUnits[id]", reimbUnits.getId()));
 
         String response = doPost(url, headers, obj);
         waitForUpdate(3);
-
-        if (!response.contains("Reimbursement Unit has been updated!"))
-        {
-            throw new RuntimeException(" Error in updating Reimbursement unit. ");
-        }
+        return response;
     }
 
-    public void deleteReimbUnit(ReimbUnits reimbUnits) {
+    public String deleteReimbUnit(ReimbUnits reimbUnits) {
         String url = getData("@@url") + "/settings/editreimbursementunit";
 
         Map<String, String> body = new HashMap<>();
@@ -92,14 +79,11 @@ public class ReimbUnitService extends Services {
         headers.put("X-Requested-With", "XMLHttpRequest");
 
         List<NameValuePair> obj = reimbUnits.toMap();
-        body.put("resource",reimbUnits.getId());
-        body.put("mode","delete");
+        body.put("resource", reimbUnits.getId());
+        body.put("mode", "delete");
 
-        String response =doPost(url, headers, mapToFormData(body));
-        waitForUpdate(3);
-        if (!response.contains("Reimbursement Unit has been deleted successfully."))
-        {
-            throw new RuntimeException(" Error in deleting Reimbursement unit. ");
-        }
+        String response = doPost(url, headers, mapToFormData(body));
+        return response;
+
     }
 }
