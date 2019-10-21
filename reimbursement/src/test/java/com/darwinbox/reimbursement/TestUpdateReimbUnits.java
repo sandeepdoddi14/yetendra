@@ -50,12 +50,12 @@ public class TestUpdateReimbUnits extends TestBase {
 
         reimbUnitService.createReimbUnit(reimbUnits);
         reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
-        Reporter("Reimbursement unit created by the name: "+reimbUnits.getUnitType(), "INFO");
+        Reporter("Reimbursement unit created by the name: " + reimbUnits.getUnitType(), "INFO");
 
-        reimbUnits.setUnitType(unitType+"_updated");
-        String response= reimbUnitService.updateReimbUnit(reimbUnits);
-        Reporter("Reimbursement: "+reimbUnits.getUnitType() + " has been updated to :" + reimbUnits.getUnitType() ,"INFO");
-        Assert.assertTrue(response.contains("Reimbursement Unit has been updated!"),"Error in updating Reimbursement unit." );
+        reimbUnits.setUnitType(unitType + "_updated");
+        String response = reimbUnitService.updateReimbUnit(reimbUnits);
+        Reporter("Reimbursement: " + reimbUnits.getUnitType() + " has been updated to :" + reimbUnits.getUnitType(), "INFO");
+        Assert.assertTrue(response.contains("Reimbursement Unit has been updated!"), "Error in updating Reimbursement unit.");
 
         reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
         Assert.assertNull(reimbUnits, "Reimbursement unit has been updated successfully");

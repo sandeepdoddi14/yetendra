@@ -47,7 +47,7 @@ public class ReimbUnitService extends Services {
     public ReimbUnits getReimbUnitIdByName(String reunitType) {
         Map<String, String> allReimbData = getAllReimbUnits();
         ReimbUnits reimbUnits = null;
-        if(allReimbData.containsKey(reunitType)) {
+        if (allReimbData.containsKey(reunitType)) {
             reimbUnits = new ReimbUnits();
             reimbUnits.setUnitType(reunitType);
             reimbUnits.setId(allReimbData.get(reunitType));

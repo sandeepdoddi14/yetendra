@@ -56,12 +56,12 @@ public class TestValidateDuplicateReimbUnits extends TestBase {
         reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
 
         reimbUnitService.createReimbUnit(reimbUnits);
-        Reporter("Reimbursement unit created by the name: " + unitType+" again", "INFO");
+        Reporter("Reimbursement unit created by the name: " + unitType + " again", "INFO");
         reimbUnitService.deleteReimbUnit(reimbUnits);
         Reporter("Reimbursement units deleted by the name: " + unitType, "INFO");
 
         reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
-        Assert.assertNull(reimbUnits,"Reimbursement unit has been duplicated");
+        Assert.assertNull(reimbUnits, "Reimbursement unit has been duplicated");
 
     }
 }
