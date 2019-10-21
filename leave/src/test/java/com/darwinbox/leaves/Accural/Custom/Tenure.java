@@ -67,8 +67,8 @@ public class Tenure extends LeaveAccuralBase {
         Reporter("Leave Type is"+tenureLeaveBalancePolicy.getLeave_Type(),"Info");
 
         //always start from previous year
-        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2018-08-01");
-        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2019-07-31");
+        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2018-07-01");
+        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2019-08-31");
 
         leaveCycleStartDate = firstLeaveCycleStartDate;
         leaveCycleEndDate = firstLeaveCyclceEndDate;
@@ -171,24 +171,24 @@ public class Tenure extends LeaveAccuralBase {
         changeServerDate(afterFirstAnniveryDate.toString());
 
          double afterfirstAniverseryBalance=calculateLeaveBalance(leaveCycleStartDate.toString(),afterFirstAnniveryDate.toString());
-         if(!tenureLeaveBalancePolicy.getCredit_on_accural_basis().getIndicator()){
+             if(!tenureLeaveBalancePolicy.getCredit_on_accural_basis().getIndicator()){
 
-            afterfirstAniverseryBalance=(afterfirstAniverseryBalance/12.0)*aferMonths;
+                afterfirstAniverseryBalance=(afterfirstAniverseryBalance/12.0)*aferMonths;
 
-         }
-        if(tenureLeaveBalancePolicy.getCredit_on_accural_basis().getBeginOfQuarter())
-        {
-            afterfirstAniverseryBalance=afterfirstAniverseryBalance/3.0;
-        }
+             }
+            if(tenureLeaveBalancePolicy.getCredit_on_accural_basis().getBeginOfQuarter())
+            {
+                afterfirstAniverseryBalance=afterfirstAniverseryBalance/3.0;
+            }
 
-        if(tenureLeaveBalancePolicy.getCredit_on_accural_basis().getEndOfQuarter())
-        {
-            firstDeactivagtionBalance=0.0D;
-            afterfirstAniverseryBalance=0.0D;
-        }
-        if(tenureLeaveBalancePolicy.getCredit_on_accural_basis().getBiAnnual()){
-            afterfirstAniverseryBalance = (afterfirstAniverseryBalance/6.0)*4.0;
-        }
+            if(tenureLeaveBalancePolicy.getCredit_on_accural_basis().getEndOfQuarter())
+            {
+                firstDeactivagtionBalance=0.0D;
+                afterfirstAniverseryBalance=0.0D;
+            }
+            if(tenureLeaveBalancePolicy.getCredit_on_accural_basis().getBiAnnual()){
+                afterfirstAniverseryBalance = (afterfirstAniverseryBalance/6.0)*4.0;
+            }
 
 
         double actualafterfirstAniverseryBalance = new LeaveBalanceAPI(employee.getEmployeeID(),tenureLeaveBalancePolicy.getLeave_Type()).getBalance();

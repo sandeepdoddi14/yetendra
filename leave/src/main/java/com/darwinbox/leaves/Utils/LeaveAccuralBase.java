@@ -260,6 +260,78 @@ public class LeaveAccuralBase extends  LeaveBase {
 
 
 
+    public LeavePolicyObject getMultipleAllotmentLeavePolicy(Map<String,String> testData){
+
+        LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
+        leaveBalancePolicy.setAssignment_Type("company wise");
+        leaveBalancePolicy.setGroup_Company("Working Days (DO NOT TOUCH)");
+        leaveBalancePolicy.setLeave_Type(testData.get("Leave_Type"));
+        leaveBalancePolicy.setDescription("AutomationCreatedLeavePolicy");
+        leaveBalancePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Max_Leaves_Allowed_Per_Year").replace(".0","")));
+        leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
+        leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
+
+        ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
+        probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
+        probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+        //if(probationPeriodForLeaveValidity.probation)
+        //employeeProbation=testData.get("Employee Probation Period");
+        if(probationPeriodForLeaveValidity.custom)
+            probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
+
+        leaveBalancePolicy.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+
+
+        if(testData.get("Pro rata").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Pro_Rata_Basis pro_rata_basis= new Credit_On_Pro_Rata_Basis();
+            pro_rata_basis.indicator=true;
+            pro_rata_basis.calculateFromJoiningDate=testData.get("From Joining date").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.calculateAfterProbationPeriod=testData.get("After Probation period").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditHalfMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Half Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditfullMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Full Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+
+            leaveBalancePolicy.setCredit_on_pro_rata_basis(pro_rata_basis);
+        }
+
+        if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+            credit_on_accural_basis.setIndicator(true);
+
+            if(!testData.get("Monthly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setMonthlyAccuralSetting(false,false,false);
+            else
+                credit_on_accural_basis.setMonthlyAccuralSetting(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            if(!testData.get("Quarterly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+            else
+                credit_on_accural_basis.setQuarterlyAccural(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes")?true:false);
+
+
+
+            leaveBalancePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
+
+
+
+        if(testData.get("Use Multiple allotment restrictions").equalsIgnoreCase("yes"))
+        {
+            leaveBalancePolicy.getMultipleAllotment().indicator=true;
+            leaveBalancePolicy.getMultipleAllotment().restrictCondition=testData.get("Multiple Allotment Restrictions");
+            leaveBalancePolicy.getMultipleAllotment().maximumAllowedPerYear=testData.get("Alloted Leaves");
+            
+        }
+
+        List<NameValuePair> request=leaveBalancePolicy.createRequest();
+
+        new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
+
+        return  leaveBalancePolicy;
+    }
+
+
     public Boolean setEmployeeId(String employeeId){
         this.EmployeeId=employeeId;
         return  true;
@@ -629,6 +701,10 @@ public class LeaveAccuralBase extends  LeaveBase {
     public boolean checkDOJisUnderLeaveProbationPeriod() {
         try {
             String todaysDate = getServerOrLocalDate().toString();
+            String probationDays=null;
+            if(employee.getProbation()!=null && employee.getProbation()!="no"){
+                probationDays="180";
+            }
 
             int flag = 0;
 
@@ -645,9 +721,14 @@ public class LeaveAccuralBase extends  LeaveBase {
                 }
 
                 if (!leavePolicyObject.getProbation_period_before_leave_validity().custom
-                        && leavePolicyObject.getProbation_period_before_leave_validity().probation) {
+                        && leavePolicyObject.getProbation_period_before_leave_validity().probation
+                        ) {
                     double daysDiff = objDateTimeHelper.getDaysDifferenceBetweenTwoDates(employee.getDoj(), todaysDate);
-                    double Employee_probation_period_Int = Double.valueOf(employee.getProbation());
+                    double Employee_probation_period_Int=0.0D;
+                    if(employee.getProbation()!="no")
+                     Employee_probation_period_Int = Double.valueOf(probationDays);
+                    else
+                        Employee_probation_period_Int = 0;
 
                     if (daysDiff < Employee_probation_period_Int) {
                         flag++;
@@ -658,10 +739,12 @@ public class LeaveAccuralBase extends  LeaveBase {
 
                 }
 
-                if (employee.getProbation() != null && !employee.getProbation().equalsIgnoreCase("no")) {
+                if (employee.getProbation() != null && !employee.getProbation().equalsIgnoreCase("no")
+                    && leavePolicyObject.getProbation_period_before_leave_validity().probation
+                    && leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod) {
 
                     double daysDiff1 = objDateTimeHelper.getDaysDifferenceBetweenTwoDates(employee.getDoj(), todaysDate);
-                    double Employee_probation_period_Int1 = Double.valueOf(employee.getProbation());
+                    double Employee_probation_period_Int1 = Double.valueOf(probationDays);
                     if (daysDiff1 < Employee_probation_period_Int1) {
                         flag++;
                     }
@@ -990,7 +1073,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                     }
 
                     /*
-                    Below code adds 1 to no. of months multipler if needs to begin of month or quarter scenaro
+                    Below code adds 1 to no. of months multiple if needs to begin of month or quarter scenaro
                      */
                     if ((leavePolicyObject.getCredit_on_accural_basis().getMonth() || leavePolicyObject.getCredit_on_accural_basis().getQuarter())
                             && !(leavePolicyObject.getCredit_on_accural_basis().getEndOfMonth() || leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter())

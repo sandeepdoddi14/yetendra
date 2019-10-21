@@ -52,6 +52,9 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
     public void verifyLeaveBalance(Map<String, String> testData) {
         if (runTest) {
+
+
+
             List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies();
 
             leaveCycleStartDate = LocalDate.parse("2019-08-01");
@@ -114,7 +117,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                     for (LeavePolicyObject leavePolicyObject : leaveBalancePolicies) {
                        for (Employee employee : employees) {
                             if (LocalDate.parse(employee.getDoj()).isBefore(serverDateInFormat)) {
-                               super.setEmployee(employee);
+                                super.setEmployee(employee);
                                 Reporter("Employee is" + employee.getEmployeeID() + "...DOJ is ....." + employee.getDoj(), "info");
                                 super.setLeavePolicyObject(leavePolicyObject);
                                 Reporter("Leave Type is" + leavePolicyObject.getLeave_Type(), "Info");

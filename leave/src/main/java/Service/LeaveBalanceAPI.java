@@ -35,6 +35,8 @@ public class LeaveBalanceAPI extends TestBase {
 
     public double getCarryForwardBalance(){return leaveBalnce().prevBalance;}
 
+    public double getTotalBalance(){return leaveBalnce().total;}
+
 }
 
 //mapper class to convert json to java object

@@ -54,6 +54,24 @@ public class LeaveAdmin extends Service {
         return new Service().doPost(applyLeaveUrl, headers, mapToFormData(body));
     }
 
+    public String applyEncashmentWithEmpSession(Employee e,String applyDate, String noOfLeaves, String leaveId) {
+        Map<String, String> request = new HashMap<>();
+        Map<String, String> body = applyLeaveWithDefaultValues();
+
+        request.put("user_id", e.getMongoID());
+        request.put("from_date", applyDate);
+        request.put("to_date", "");
+        request.put("leave_change", leaveId);
+        request.put("UserLeavesOther", "2");
+        request.put("leaves_encash",noOfLeaves);
+
+        body.putAll(request);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("Cookie", e.getPhpSessid());
+
+        return new Service().doPost(applyLeaveUrl, headers, mapToFormData(body));
+    }
 
     /*
     @Override halfDAY

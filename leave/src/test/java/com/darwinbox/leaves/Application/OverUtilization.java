@@ -89,7 +89,8 @@ public class OverUtilization extends LeaveBase {
         if(fromDate < 0)
             pastDatedLleave= true;
        // Integer toDate = Integer.parseInt(data.get("to_Date"));
-       LocalDate leaveStartDate= today.plusDays(fromDate);
+        //1.set to server change date------------change this
+       LocalDate leaveStartDate= today.minusDays(30).plusDays(fromDate);
         //leavesPage.
 
 
@@ -162,6 +163,11 @@ public class OverUtilization extends LeaveBase {
 
 
         employee = employeeServices.generateAnEmployee("no", "Working Days (DO NOT TOUCH)", "random", "no");
+
+
+        //2. change this such that it wont go for carry forward or leave cycle end date beyond
+        new DateTimeHelper().changeServerDate(driver,LocalDate.now().minusDays(30).toString());
+
         if (data.get("emp_WeeklyOff") != null & !data.get("emp_WeeklyOff").equalsIgnoreCase("")) {
             weeklyOff = data.get("emp_WeeklyOff");
             new Service().createWeeklyOff(weeklyOff);

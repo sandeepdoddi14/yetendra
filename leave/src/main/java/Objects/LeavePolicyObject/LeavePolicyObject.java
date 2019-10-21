@@ -1,10 +1,7 @@
 package Objects.LeavePolicyObject;
 
 import Objects.Employee;
-import Objects.LeavePolicyObject.Accural.CarryForwardUnusedLeave;
-import Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
-import Objects.LeavePolicyObject.Accural.Credit_On_Pro_Rata_Basis;
-import Objects.LeavePolicyObject.Accural.TenureBasis;
+import Objects.LeavePolicyObject.Accural.*;
 import Objects.LeavePolicyObject.Fields.*;
 import Service.EmployeeServices;
 import Service.*;
@@ -107,7 +104,25 @@ public class LeavePolicyObject extends LeaveBase {
 
     private CarryForwardUnusedLeave carryForwardUnusedLeave=new CarryForwardUnusedLeave();
 
+    public MultipleAllotment getMultipleAllotment() {
+        return multipleAllotment;
+    }
 
+    public void setMultipleAllotment(MultipleAllotment multipleAllotment) {
+        this.multipleAllotment = multipleAllotment;
+    }
+
+    private MultipleAllotment multipleAllotment= new MultipleAllotment();
+
+   private Encashment leaveEncashment=new Encashment();
+
+    public Encashment getLeaveEncashment() {
+        return leaveEncashment;
+    }
+
+    public void setLeaveEncashment(Encashment leaveEncashment) {
+        this.leaveEncashment = leaveEncashment;
+    }
 
     public LeavePolicyObject() {
 
@@ -456,6 +471,21 @@ public class LeavePolicyObject extends LeaveBase {
             this.OverUtilization.utlizeFromDropDown = data.get("LeavePolicy_OverUtilization").equalsIgnoreCase("") ? null : data.get("LeavePolicy_OverUtilization");
         }
 
+
+
+    }
+
+
+    public void setEncashmentData(Map<String,String> testData){
+        this.leaveEncashment.indicatoer=Boolean.parseBoolean(testData.get("Leave_Encashment"));
+
+
+        if(this.leaveEncashment.indicatoer){
+            this.leaveEncashment.encashAll=testData.get("Consider");
+            this.leaveEncashment.Encash_Min=Integer.parseInt(testData.get("Encash_Min"));
+            this.leaveEncashment.Encash_Max=Integer.parseInt(testData.get("Encash_Max"));
+            this.leaveEncashment.minLeaveBalance=Integer.parseInt(testData.get("Encash_MinLeaveBalLeft"));
+        }
     }
 
     public List<NameValuePair> createRequest() {
@@ -872,6 +902,26 @@ public class LeavePolicyObject extends LeaveBase {
             }
         }
 
+        if(this.leaveEncashment.indicatoer)
+        {
+            formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[status]","1"));
+
+            if(this.leaveEncashment.encashAll.equalsIgnoreCase("accured"))
+            formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[user_encash_type]","1"));
+
+            if(this.leaveEncashment.encashAll.equalsIgnoreCase("carryforward"))
+                formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[user_encash_type]","2"));
+
+            if(this.leaveEncashment.encashAll.equalsIgnoreCase("both"))
+                formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[user_encash_type]","0"));
+
+
+                    formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[minimum_encash_leaves]",this.leaveEncashment.Encash_Min+""));
+                    formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[remaining_balance]",this.leaveEncashment.minLeaveBalance+""));
+                    formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[user_encash_amount]",this.leaveEncashment.Encash_Max+""));
+                }
+
+
 
 
             if(this.getCarryForwardUnusedLeave().indicator) {
@@ -933,6 +983,21 @@ public class LeavePolicyObject extends LeaveBase {
                         formData.add(new BasicNameValuePair("LeavePolicyTenure[leaves_per_year]["+i+"][leaves]",this.getTenureBasis().noOfLeaves.get(i)+""));
                     }
                 }
+
+
+                if(this.getMultipleAllotment().indicator) {
+                    formData.add(new BasicNameValuePair("Leaves[use_multiple_allotment]", "1"));
+                    for (int i = 0; i < this.getMultipleAllotment().restrictCondition.split(",").length; i++) {
+                        String empType = this.getMultipleAllotment().restrictCondition.split(",")[i];
+                        String type = "TYP_" + new Service().getEmployeeTypes().get(empType);
+                        String maxAllowedPerYear=this.getMultipleAllotment().maximumAllowedPerYear.split(",")[i];
+                        formData.add(new BasicNameValuePair("Leaves[multiple_allotment_restriction][" + i + "][restriction][]", type));
+                        formData.add(new BasicNameValuePair("Leaves[multiple_allotment_restriction]["+i+"][maximumLeaves]",maxAllowedPerYear));
+                    }
+
+                }
+
+
 
 
 
