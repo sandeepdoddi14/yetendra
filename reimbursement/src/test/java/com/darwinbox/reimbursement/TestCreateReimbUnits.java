@@ -35,7 +35,7 @@ public class TestCreateReimbUnits extends TestBase {
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "User is unable to login to application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to admin unsuccessful");
 
-        String unitname = testData.get("Unit Type");
+        String unitType = testData.get("Unit Type");
 
         ReimbUnits reimbUnits = new ReimbUnits();
         reimbUnits.toObject(testData);
@@ -43,15 +43,15 @@ public class TestCreateReimbUnits extends TestBase {
         Map allReimbUnits = reimbUnitService.getAllReimbUnits();
 
         if (allReimbUnits.containsKey(reimbUnits.getUnitType())) {
-            unitname = "Default_Create_" + new DateTimeHelper().formatDateTo(new Date(), "YYYYMMdd_HHmmss");
-            reimbUnits.setUnitType(unitname);
+            unitType = "Default_Create_" + new DateTimeHelper().formatDateTo(new Date(), "YYYYMMdd_HHmmss");
+            reimbUnits.setUnitType(unitType);
         }
 
         reimbUnitService.createReimbUnit(reimbUnits);
-        String uname = reimbUnitService.getReimbUnitByName(unitname).getUnitType();
-        Reporter("Reimbursement unit created by the name: "+uname, "INFO");
-
-        Assert.assertEquals(unitname, uname, "Reimbursement unit has been created successfully");
+        String uname = reimbUnitService.getReimbUnitIdByName(unitType).getUnitType();
+        Assert.assertEquals(unitType, uname, "Reimbursement unit has been created successfully");
     }
 }
+
+
 

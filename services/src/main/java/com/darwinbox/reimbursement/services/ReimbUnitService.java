@@ -2,6 +2,7 @@ package com.darwinbox.reimbursement.services;
 
 import com.darwinbox.attendance.services.Services;
 import com.darwinbox.reimbursement.objects.ReimbCreation.ReimbUnits;
+import com.github.javafaker.Bool;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -40,19 +41,16 @@ public class ReimbUnitService extends Services {
         headers.put("x-requested-with", "XMLHttpRequest");
 
         doPost(url, headers, reimbUnits.toMap());
+
     }
 
-    public ReimbUnits getReimbUnitByName(String reUnitName) {
+    public ReimbUnits getReimbUnitIdByName(String reunitType) {
         Map<String, String> allReimbData = getAllReimbUnits();
         ReimbUnits reimbUnits = null;
-        for (Map.Entry<String, String> reEntry : allReimbData.entrySet()) {
-            String reimbType = reEntry.getKey();
-            if (reUnitName.equalsIgnoreCase(reimbType)) {
-                reimbUnits = new ReimbUnits();
-                reimbUnits.setUnitType(reEntry.getKey());
-                reimbUnits.setId(reEntry.getValue());
-                break;
-            }
+        if (allReimbData.containsKey(reunitType)) {
+            reimbUnits = new ReimbUnits();
+            reimbUnits.setUnitType(reunitType);
+            reimbUnits.setId(allReimbData.get(reunitType));
         }
         return reimbUnits;
     }
@@ -65,7 +63,6 @@ public class ReimbUnitService extends Services {
 
         List<NameValuePair> obj = reimbUnits.toMap();
         obj.add(new BasicNameValuePair("TenantReimbursementUnits[id]", reimbUnits.getId()));
-
         String response = doPost(url, headers, obj);
         waitForUpdate(3);
         return response;
