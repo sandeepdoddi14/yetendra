@@ -6,6 +6,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Grade {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     private String id;
 
     public String getGradeName() {
@@ -42,7 +50,7 @@ public class Grade {
 
         Map<String,String> data = new HashMap<>();
 
-        data.put("UserGrade[grade_name]",getBandName());
+        data.put("UserGrade[grade_name]",getGradeName());
 
         if(getDescription()!=null)
             data.put("UserGrade[descriptions]", getDescription());
