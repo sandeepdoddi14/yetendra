@@ -39,25 +39,26 @@ public class TestUpdateReimbUnits extends TestBase {
 
         ReimbUnits reimbUnits = new ReimbUnits();
         reimbUnits.toObject(testData);
-        String unitname = testData.get("Unit Type");
+        String unitType = testData.get("Unit Type");
 
         Map allReimbUnits = reimbUnitService.getAllReimbUnits();
 
         if (allReimbUnits.containsKey(reimbUnits.getUnitType())) {
-            unitname = "Default_Create_" + new DateTimeHelper().formatDateTo(new Date(), "YYYYMMdd_HHmmss");
-            reimbUnits.setUnitType(unitname);
+            unitType = "Default_Create_" + new DateTimeHelper().formatDateTo(new Date(), "YYYYMMdd_HHmmss");
+            reimbUnits.setUnitType(unitType);
         }
 
         reimbUnitService.createReimbUnit(reimbUnits);
-        reimbUnits = reimbUnitService.getReimbUnitByName(unitname);
+        reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
         Reporter("Reimbursement unit created by the name: "+reimbUnits.getUnitType(), "INFO");
 
+        reimbUnits.setUnitType(unitType+"_updated");
         String response= reimbUnitService.updateReimbUnit(reimbUnits);
         Reporter("Reimbursement: "+reimbUnits.getUnitType() + " has been updated to :" + reimbUnits.getUnitType() ,"INFO");
         Assert.assertTrue(response.contains("Reimbursement Unit has been updated!"),"Error in updating Reimbursement unit." );
 
-        reimbUnits = reimbUnitService.getReimbUnitByName(unitname);
-        Assert.assertNotNull(reimbUnits, "Reimbursement unit has been updated successfully");
+        reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
+        Assert.assertNull(reimbUnits, "Reimbursement unit has been updated successfully");
 
     }
 }

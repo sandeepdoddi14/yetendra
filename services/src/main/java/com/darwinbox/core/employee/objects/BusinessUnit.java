@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class BusinessUnit {
     private String id;
-    private  String businessUnitName;
+    private  String businessunitType;
     private String businessUnitAddress;
     private String groupCompany;
 
@@ -20,12 +20,12 @@ public class BusinessUnit {
         this.id = id;
     }
 
-    public String getBusinessUnitName() {
-        return businessUnitName;
+    public String getBusinessunitType() {
+        return businessunitType;
     }
 
-    public void setBusinessUnitName(String businessUnitName) {
-        this.businessUnitName = businessUnitName;
+    public void setBusinessunitType(String businessunitType) {
+        this.businessunitType = businessunitType;
     }
 
     public String getBusinessUnitAddress() {
@@ -49,7 +49,7 @@ public class BusinessUnit {
 
     public HashMap<String,String> toMap(){
         HashMap<String,String> body= new HashMap<>();
-        body.put("TenantBusinessUnitForm[unit_name]",getBusinessUnitName());
+        body.put("TenantBusinessUnitForm[unit_name]",getBusinessunitType());
 
         if(getBusinessUnitAddress()!=null)
         body.put("TenantBusinessUnitForm[unit_address]",getBusinessUnitAddress());

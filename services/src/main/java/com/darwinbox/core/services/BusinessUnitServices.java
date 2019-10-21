@@ -41,13 +41,13 @@ public class   BusinessUnitServices extends Services {
 
 
         HashMap<String,String> businessUnits=getBusinessUnits();
-        String  id=businessUnits.get(businessUnit.getBusinessUnitName());
+        String  id=businessUnits.get(businessUnit.getBusinessunitType());
 
         if(id!=null){
             body.put("TenantBusinessUnitForm[id]",id);
         }
         else
-            throw new RuntimeException("There is no band to update Business Unit="+businessUnit.getBusinessUnitName());
+            throw new RuntimeException("There is no band to update Business Unit="+businessUnit.getBusinessunitType());
 
         String url = getData("@@url") + "/settings/editBusinessunit";
         Map headers = new HashMap();
@@ -86,7 +86,7 @@ public class   BusinessUnitServices extends Services {
 
     public void deleteBusinessUnit(BusinessUnit businessUnit){
 
-        String businessUnitId=getBusinessUnits().get(businessUnit.getBusinessUnitName());
+        String businessUnitId=getBusinessUnits().get(businessUnit.getBusinessunitType());
 
         String url = getData("@@url") + "/settings/editbusinessunit";
 
