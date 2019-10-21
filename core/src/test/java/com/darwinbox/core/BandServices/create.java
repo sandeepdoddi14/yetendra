@@ -40,7 +40,7 @@ public class create extends TestBase {
             HashMap<String,String> bands=bandServices.getBands();
 
 
-        Assert.assertTrue(bands.get(band.getBandName())!=null,"Band Not Created Successfully");
+          Assert.assertTrue(bands.get(band.getBandName())!=null,"Band Not Created Successfully");
 
 
     }

@@ -1,14 +1,39 @@
 package com.darwinbox.core.employee.objects;
 
+import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.core.Services;
+import com.darwinbox.core.services.CostCenterServices;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class BusinessUnit {
     private String id;
     private  String businessUnitName;
     private String businessUnitAddress;
     private String groupCompany;
+    private String costCenter;
+
+    public List<Employee> getHeadOFBusniessUnits() {
+        return headOFBusniessUnits;
+    }
+
+    public void setHeadOFBusniessUnits(List<Employee> headOFBusniessUnits) {
+        this.headOFBusniessUnits = headOFBusniessUnits;
+    }
+
+    List<Employee> headOFBusniessUnits=new ArrayList<>();
+
+    public String getCostCenter() {
+        return costCenter;
+    }
+
+    public void setCostCenter(String costCenter) {
+        this.costCenter = costCenter;
+    }
+
+
 
 
 
@@ -55,9 +80,23 @@ public class BusinessUnit {
         body.put("TenantBusinessUnitForm[unit_address]",getBusinessUnitAddress());
 
 
-        body.put("TenantBusinessUnitForm[parent_company_id][]",new Services().getGroupCompanyIds().get(getGroupCompany()));
+        if(new Services().getGroupCompanyIds().get(getGroupCompany())==null)
+            body.put("TenantBusinessUnitForm[parent_company_id][]","");
+        else
+            body.put("TenantBusinessUnitForm[parent_company_id][]",new Services().getGroupCompanyIds().get(getGroupCompany()));
 
+        body.put("TenantBusinessUnitForm[cost_center]",new CostCenterServices().getCostCenters().get(getCostCenter()));
 
+        String heads="";
+        for (Employee employee: getHeadOFBusniessUnits())
+        {
+            heads = heads +"," + employee.getCandidateID();
+
+        }
+
+        if(heads.length()!=0)
+        heads = heads.substring(1);
+        body.put("TenantBusinessUnitForm[bu_heads]",heads);
 
         return  body;
     }
