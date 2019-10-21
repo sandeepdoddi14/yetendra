@@ -1,5 +1,6 @@
 package GradeServices;
 
+import com.darwinbox.core.employee.objects.Band;
 import com.darwinbox.core.employee.objects.Grade;
 import com.darwinbox.core.services.BandServices;
 import com.darwinbox.core.services.GradeServices;
@@ -11,13 +12,12 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
-import java.util.Set;
 
-public class create extends TestBase {
+public class update extends TestBase {
 
     GradeServices gradeServices = new GradeServices();
-
     Grade grade = null;
+
 
     @BeforeClass
     public void setup() throws Exception {
@@ -25,15 +25,14 @@ public class create extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
-    public void createGrade(HashMap<String, String> testData) throws  Exception{
+    public void updateBand(HashMap<String, String> testData) throws InterruptedException{
         LoginPage loginPage = new LoginPage(driver);
         loginPage.loginToApplication();
         loginPage.switchToAdmin();
 
-
         grade = new Grade();
-        grade.setGradeName(testData.get("GradeName"));
-        grade.setDescription(testData.get("Description"));
+        grade.setGradeName("updatedGrade");
+        grade.setDescription("Automation Created Description");
 
         Thread.sleep(200);
         String bandName=new BandServices().getBands().keySet().toArray()[0].toString();
@@ -42,10 +41,19 @@ public class create extends TestBase {
         gradeServices.createGrade(grade);
 
 
+
+        grade.setId(new GradeServices().getGrades().get(grade.getGradeName()));
+
+
+        grade.setGradeName(testData.get("GradeName"));
+        grade.setDescription(testData.get("Description"));
+
+        gradeServices.updateGrade(grade);
+
+
         HashMap<String, String> grades = gradeServices.getGrades();
 
-
-        Assert.assertTrue(grades.get(grade.getGradeName()) != null, "Grade Not Created Successfully");
+        Assert.assertTrue(gradeServices.getGrades().get(grade.getGradeName()) != null, "Grade Not Updated Successfully");
 
 
     }

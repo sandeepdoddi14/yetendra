@@ -1,7 +1,9 @@
-package com.darwinbox.core.BandServices;
+package GradeServices;
 
 import com.darwinbox.core.employee.objects.Band;
+import com.darwinbox.core.employee.objects.Grade;
 import com.darwinbox.core.services.BandServices;
+import com.darwinbox.core.services.GradeServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.base.TestBase;
@@ -11,10 +13,10 @@ import org.testng.annotations.Test;
 
 import java.util.HashMap;
 
-public class update extends TestBase {
+public class delete extends TestBase {
 
-    BandServices bandServices = new BandServices();
-    Band band = null;
+    GradeServices gradeServices = new GradeServices();
+    Grade grade = null;
 
 
     @BeforeClass
@@ -23,29 +25,20 @@ public class update extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
-    public void updateBand(HashMap<String, String> testData) {
+    public void deleteGrade(HashMap<String, String> testData) {
         LoginPage loginPage = new LoginPage(driver);
         loginPage.loginToApplication();
         loginPage.switchToAdmin();
-        band = new Band();
-        band.setBandName("updateBand");
-        band.setDescription("updateBand");
+        grade = new Grade();
 
-        bandServices.createBand(band);
+        grade.setGradeName(testData.get("GradeName"));
 
-        band.setId(new BandServices().getBands().get(band.getBandName()));
+        grade.setId(new GradeServices().getGrades().get(grade.getGradeName()));
 
-
-        band.setBandName(testData.get("BandName"));
-        band.setDescription(testData.get("Description"));
-
-        bandServices.updateBand(band);
+        gradeServices.deleteGrade(grade);
 
 
-        HashMap<String, String> bands = bandServices.getBands();
-
-
-        Assert.assertTrue(bands.get(band.getBandName()) != null, "Band Not Created Successfully");
+        Assert.assertTrue(gradeServices.getGrades().get(grade.getGradeName()) == null, "Grade Not Deleted Successfully"+grade.getGradeName());
 
 
     }

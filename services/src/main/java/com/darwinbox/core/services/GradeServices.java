@@ -38,18 +38,20 @@ public class GradeServices extends Services {
     }
 
     public void updateGrade(Grade grade) {
-        Map<String, String> body = getDefaultforBand();
+        Map<String,String> body= new HashMap<>();
+       /* Map<String, String> body = getDefaultforBand();
+       */
         body.putAll(grade.toMap());
-
+/*
 
         HashMap<String,String> grades=getGrades();
-        String  id=grades.get(grade.getGradeName());
+        String  id=grades.get(grade.getGradeName());*/
 
-        if(id!=null){
-            body.put("UserGrade[id]",id);
+        if(grade.getId()!=null){
+            body.put("UserGrade[id]",grade.getId());
         }
         else
-            throw new RuntimeException("There is no Grade to update Grade Name="+grade.getGradeName());
+            throw new RuntimeException("There is no Grade ID to update Grade Name="+grade.getGradeName());
 
         String url = getData("@@url") + "/settings/editGrades";
         Map headers = new HashMap();

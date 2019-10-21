@@ -359,5 +359,30 @@ public class Services extends TestBase {
         return ids;
     }
 
+    /*
+get job level info
+@@returns String--> JobLevelIDs
+ */
+    public HashMap<String, String> getJobLevelIDS() {
+        String url = data.get("@@url") + "/settings/getjoblevel";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+
+        int i = 0;
+        HashMap<String, String> ids = new HashMap<>();
+        while (i < arr.length()) {
+            String jobLevel = arr.getJSONArray(i).get(1).toString();
+            String grade = arr.getJSONArray(i).get(2).toString();
+            String jobLevelId = arr.getJSONArray(i).get(3).toString().substring(7, 20);
+            ids.put(jobLevel, jobLevelId);
+            i++;
+        }
+        return ids;
+    }
+
 
 }

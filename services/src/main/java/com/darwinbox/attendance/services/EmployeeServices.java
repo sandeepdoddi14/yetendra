@@ -180,7 +180,191 @@ public class EmployeeServices extends Services {
             return empIds;
         }
 
-        public Employee generateAnEmployee(boolean isParent, String gcName) {
+
+    public void generateRandomEmployees(String isParent, String gcName, int count) {
+        generateRandomEmployees(isParent, gcName, count, false,"random","no");
+    }
+
+    /**
+     * Generate employees using data fetched from specified company
+     *
+     * @param gcName   name of the company for which employees to be created
+     * @param isParent true if it is a parent company else false
+     * @param count    no of employees to be created
+     * @return list of employees that are generated
+     */
+    public List<Employee> generateRandomEmployees(String isParent, String gcName, int count, boolean isEmpObjectsReqd, String dateOfJoining, String probation) {
+
+        Employee employee = new Employee();
+        employee.setCompany(gcName);
+        List<Employee> empIds = new ArrayList<Employee>();
+        String id;
+        if (isParent.equalsIgnoreCase("yes")) {
+            id = "main";
+        } else {
+            id = getGroupCompanyIds().get(gcName);
+            if (id.isEmpty()) {
+                log.error("ERROR: Unable to fetch Group company ID for - " + gcName);
+                return null;
+            }
+        }
+        Faker f = new Faker();
+
+        HashMap<String, String> locMap = getOfficeLocations(id);
+        Object[] locations;
+        if (locMap == null) {
+            log.warn("Might need cron run for location");
+            locations = getOffices(gcName).values().toArray();
+        } else {
+            locations = getOfficeLocations(id).values().toArray();
+        }
+        Object[] empTypes = getEmployeeTypes().values().toArray();
+        if (locations.length == 0 || empTypes.length == 0) {
+            log.error("ERROR: Unable to fetch " + ((locations.length == 0) ? "locations" : "employee types"));
+            return null;
+        }
+
+        Object[] jobLevelIDS=getJobLevelIDS().values().toArray();
+        if (jobLevelIDS.length == 0) {
+            log.error("ERROR: Unable to fetch jobLevelIDS" );
+            return null;
+        }
+        JSONObject obj = getDesignations(id);
+        if (obj == null) {
+            log.error("ERROR: Unable to fetch Designations");
+            return null;
+        }
+        Object[] keys = obj.keySet().toArray();
+        for (int i = 0; i < count; i++) {
+
+            Calendar gc = Calendar.getInstance();
+//            gc.add(Calendar.DAY_OF_YEAR, - (new Random().nextInt(150) + 90));
+//            String doj = String.format("%d-%02d-%02d", gc.get(Calendar.YEAR), (gc.get(Calendar.MONTH) + 1), new Random().nextInt(25) + 1);
+
+            gc.add(Calendar.MONTH, -2);
+            String doj;
+            if(dateOfJoining.equalsIgnoreCase("random"))
+                doj= String.format("%d-%02d-%02d", gc.get(Calendar.YEAR), (gc.get(Calendar.MONTH) + 1), new Random().nextInt(15) + 10);
+            else
+                doj=dateOfJoining;
+            String empID = RandomStringUtils.randomAlphabetic(1).toUpperCase() + new Date().getTime();
+            JSONObject kv = obj.getJSONObject((String) keys[new Random().nextInt(keys.length)]);
+            Object[] designations = kv.keySet().toArray();
+
+            employee.setFirstName(f.name().firstName());
+            //Don't change LastName, made as Unique value, easy to fetch employee details
+//            employee.setLastName(empID);
+            employee.setLastName(f.name().lastName());
+            employee.setDoj(doj);
+            employee.setDob(new DateTimeHelper().getRandomDateBetween(1970, 1990));
+            employee.setEmailID(empID + "@yopmail.com");
+            employee.setGender(new Random().nextBoolean() ? "male" : "female");
+            employee.setCompanyID(id.equals("main") ? "" : id);
+            employee.setLocationID((String) locations[new Random().nextInt(locations.length)]);
+            employee.setDesignationID((String) designations[new Random().nextInt(designations.length)]);
+            employee.setEmployeeTypeID((String) empTypes[new Random().nextInt(empTypes.length)]);
+            employee.setSelfService("1");
+            employee.setCandidateID(empID);
+            employee.setJobLevel((String) jobLevelIDS[new Random().nextInt(jobLevelIDS.length)]);
+            if(probation!=null || probation!="no"){
+                employee.setProbation(probation);
+            }
+            addEmployee(employee);
+            if (isEmpObjectsReqd) {
+                empIds.add(employee);
+            }
+        }
+        return empIds;
+    }
+
+
+
+    public Employee generateAnEmployee(String isParent, String gcName, String dateOfJoining, String probation) {
+        List<Employee> emps = generateRandomEmployees(isParent, gcName, 1, true,dateOfJoining,probation);
+        if (emps.isEmpty()) {
+            throw new RuntimeException("Unable to create an employee");
+        }
+        String companyID = "";
+        if (!isParent.equalsIgnoreCase("yes")) {
+            companyID = getGroupCompanyIds().get(gcName);
+            if (companyID.isEmpty() || companyID == null) {
+                throw new RuntimeException("Unable to create an employee");
+            }
+        }
+        try {
+            Thread.sleep(5000);
+        } catch (Exception e) {
+
+        }
+        String userID = getUserIDOfPendingEmployees(emps.get(0), isParent, companyID);
+        emps.get(0).setUserID(userID);
+
+        activateEmployee(userID);
+
+        Map<String, String> userAndEmpIds = getUserIDAndEmpID(emps.get(0).getCandidateID());
+        emps.get(0).setUserID(userAndEmpIds.get("userID"));
+        emps.get(0).setEmployeeID(userAndEmpIds.get("employeeID"));
+
+        Map<String, String> ma = getEmpIDAndMongoID(emps.get(0).getEmployeeID());
+        emps.get(0).setMongoID(ma.get("userMongoID"));
+
+        resetPassword(emps.get(0),"123456");
+
+        return emps.get(0);
+    }
+
+    public String getUserIDOfPendingEmployees(Employee employee, String isParentCompany, String companyID) {
+
+        String reqURL = getData("@@url") + "/dashboard/GetEmployeesUserIdAdmin?term=" + employee.getCandidateID() + "&grpcompsend=" + (isParentCompany.equalsIgnoreCase("yes") ? "" : companyID);
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        headers.put("referer", getData("@@url") + "/employee/list/users/pending");
+        String resBody = doGet(reqURL, headers);
+        log.info("Response: " + resBody);
+        Reporter("Info -- Employee "+employee.getFirstName()+"  created Successfully","Info");
+        JSONObject response;
+        try{
+            response = new JSONObject(resBody);
+        }
+        catch (Exception e){
+            throw new RuntimeException("ERROR: Unable to find Pending Employee with CandidateID: " + employee.getCandidateID());
+        }
+        if (response == null) {
+            throw new RuntimeException("ERROR: Unable to find Pending Employee with CandidateID: " + employee.getCandidateID());
+        }
+        JSONObject ob = (JSONObject) response.get((String) (response.keySet().toArray())[0]);
+        String userID = ob.getString("id").replace("NAME_", "");
+        if (userID == null || userID.isEmpty()) {
+            throw new RuntimeException("ERROR: Unable to find UserID with CandidateID: " + employee.getCandidateID());
+        }
+        return userID;
+    }
+
+
+    public boolean resetPassword(Employee employee, String password) {
+        String actReqURL = data.get("@@url") + "/employee/resetPassword";
+        List<NameValuePair> formData = new ArrayList<>();
+        formData.add(new BasicNameValuePair("User[id]", employee.getUserID()));
+        formData.add(new BasicNameValuePair("UserChangePassword[newPassword]", password));
+        formData.add(new BasicNameValuePair("UserChangePassword[verifyNewPassword]", password));
+        formData.add(new BasicNameValuePair("UserChangePassword[notify_user]", "0"));
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        try {
+            JSONObject actResponse = new JSONObject(doPost(actReqURL, headers, formData));
+            if (actResponse != null && actResponse.getString("status").equals("success")) {
+                log.info("Success: " + actResponse.getString("message"));
+                employee.setPassword(password);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    public Employee generateAnEmployee(boolean isParent, String gcName) {
             List<Employee> emps = generateRandomEmployees(isParent, gcName, 1, true);
 
             String companyID = "";

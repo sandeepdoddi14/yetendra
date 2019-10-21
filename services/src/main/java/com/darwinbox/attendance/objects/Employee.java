@@ -26,6 +26,40 @@ public class Employee {
     private String password;
     private String phpSessid = null;
 
+    public String getProbation() {
+        return probation;
+    }
+
+    public void setProbation(String probation) {
+        this.probation = probation;
+    }
+
+    public String getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(String departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    private String probation;
+    private String departmentId="5c34d3481aeda";//hard coded
+
+
+    public void setPhpSessid(String phpSessid) {
+        this.phpSessid = phpSessid;
+    }
+
+    public String getJobLevel() {
+        return jobLevel;
+    }
+
+    public void setJobLevel(String jobLevel) {
+        this.jobLevel = jobLevel;
+    }
+
+    private String jobLevel;
+
     public String getFirstName() {
         return firstName;
     }
