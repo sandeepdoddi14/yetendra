@@ -15,6 +15,16 @@ public class BusinessUnit {
     private String groupCompany;
     private String costCenter;
 
+    public String getBusinessUnitName() {
+        return businessUnitName;
+    }
+
+    public void setBusinessUnitName(String businessUnitName) {
+        this.businessUnitName = businessUnitName;
+    }
+
+    private String businessUnitName;
+
     public List<Employee> getHeadOFBusniessUnits() {
         return headOFBusniessUnits;
     }
