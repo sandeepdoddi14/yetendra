@@ -22,10 +22,6 @@ import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,11 +74,13 @@ public class AttendanceTestBase {
 
         if (atb == null) {
             atb = new AttendanceTestBase(baseDateFile);
-            atb.loadData();
-            obj.put(baseDateFile, atb);
+//            atb.loadData();
+//            obj.put(baseDateFile, atb);
         }
 
-        atb.deleteHolidays();
+       atb.deleteHolidays();
+
+
 
         return atb;
     }
@@ -97,7 +95,7 @@ public class AttendanceTestBase {
         createLeaves();
         createShifts();
         createAttendancePolicies();
-        getWeeklyOffs();
+        createWeekOffs();
         //createIPRestrictions();
         // createRegularizeReason();
        // createOTPolicy();
@@ -105,8 +103,13 @@ public class AttendanceTestBase {
 
 
     private void deleteHolidays() {
-        HolidayService srvc = new HolidayService();
-        srvc.deleteHolidays();
+
+        Date date = helper.formatStringToDate("yyyy-MM-dd", "2019-06-01");
+        for ( int i = 0;i<10;i++) {
+            createHoliday(date);
+            date = helper.getNextDate(date);
+        }
+
     }
 
     private void createLeaves() {
@@ -459,7 +462,7 @@ public class AttendanceTestBase {
 
     }
 
-    private void getWeeklyOffs() {
+    private void createWeekOffs() {
 
         List<Map<String, String>> weekOffData = readDatafromSheet("WeeklyOff");
 

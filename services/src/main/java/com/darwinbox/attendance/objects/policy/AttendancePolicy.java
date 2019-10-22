@@ -17,10 +17,10 @@ public class AttendancePolicy implements Serializable {
     private LateEarly lateEarly;
     private EarlyDuration earlyDuration;
 
-    private PolicyInfo policyInfo;
-    private DisplayFlags displayFlags;
-    private RequestFlags reqFlags;
-    private RequestDays reqDays;
+    private PolicyInfo policyInfo = new PolicyInfo();
+    private DisplayFlags displayFlags = new DisplayFlags();
+    private RequestFlags reqFlags = new RequestFlags();
+    private RequestDays reqDays = new RequestDays();
 
     private BufferTime bufferTime;
     private AutoShift autoShift;

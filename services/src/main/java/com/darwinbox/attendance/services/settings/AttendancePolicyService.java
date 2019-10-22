@@ -188,7 +188,7 @@ public class AttendancePolicyService extends Services {
         return body;
     }
 
-    public void createAttendancePolicy(AttendancePolicy policy) {
+    public String createPolicy(AttendancePolicy policy) {
 
         Map<String, String> body = getDefaultforAttendance();
 
@@ -202,18 +202,51 @@ public class AttendancePolicyService extends Services {
 
         String response = doPost(url, headers, mapToFormData(body));
         waitForUpdate(3);
+        return response;
+    }
+
+    public void createAttendancePolicy(AttendancePolicy policy) {
+        String response = createPolicy(policy);
         if (!response.contains("Attendance policy created successfully.")) {
             throw new RuntimeException(" Error in creating attendance policy ");
         }
     }
 
-    public void updateAttendancePolicy(AttendancePolicy policy) {
+    public String updatePolicy(AttendancePolicy policy) {
         Map<String, String> body = getDefaultforAttendance();
         body.putAll(policy.getMap());
         String url = getData("@@url") + "/attendance/attendancePolicy/update";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
-        doPost(url, headers, mapToFormData(body));
+        String response = doPost(url, headers, mapToFormData(body));
+        return response;
+    }
+
+    public void updateAttendancePolicy(AttendancePolicy policy) {
+        String response = deletePolicy(policy);
+        if (!response.contains("Attendance policy deleted successfully.")) {
+            throw new RuntimeException(" Error in deleting attendance policy ");
+        }
+    }
+
+    public String deletePolicy(AttendancePolicy policy) {
+
+        String url = getData("@@url") + "/attendance/attendancePolicy/delete?id=" + policy.getPolicyInfo().getPolicyID();
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        String response = doGet(url, headers);
+
+        return response;
+    }
+
+
+    public void deleteAttendancePolicy(AttendancePolicy policy) {
+
+        String response = deletePolicy(policy);
+
+        if (!response.contains("Attendance Policy deleted successfully.")) {
+            throw new RuntimeException(" Error in deleting attendance policy ");
+        }
     }
 
 

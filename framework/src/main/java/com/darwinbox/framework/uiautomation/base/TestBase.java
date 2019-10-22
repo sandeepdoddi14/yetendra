@@ -72,8 +72,8 @@ public class TestBase implements IRetryAnalyzer {
 	@BeforeSuite
 	public void initSuite() {
 
-		datapath = System.getProperty("testdata");
-		respath = System.getProperty("resources");
+		datapath = System.getProperty("testdata",System.getProperty("user.dir")+File.separator);
+		respath = System.getProperty("resources",datapath + ".." + File.separator + "tests/src/main/resources");
 		config = (FileUtilsSerialized.readFromFile(datapath + "config"));
 
 		String sdft = new SimpleDateFormat("YYYYMMdd_HHmmss").format(new Date());
@@ -88,17 +88,7 @@ public class TestBase implements IRetryAnalyzer {
 		htmlReporter.loadXMLConfig(new File(respath+ "extent-config.xml"));
 
 		extent = new ExtentReports();
-		extent.attachReporter(htmlReporter);
-		extent.setSystemInfo("User Name", System.getProperty("user.name"));
-		extent.setSystemInfo("OS", System.getProperty("os.name"));
-		extent.setSystemInfo("Browser", config.getBrowser());
-		extent.setSystemInfo("Instance", config.getInstance());
-		extent.setReportUsesManualConfiguration(true);
 
-		htmlReporter = new ExtentHtmlReporter( resultsDir + File.separator + "TestReport" + sdft + ".html");
-		htmlReporter.setAppendExisting(true);
-		htmlReporter.config().setChartVisibilityOnOpen(true);
-		htmlReporter.loadXMLConfig(new File(respath + "extent-config.xml"));
 		extent.attachReporter(htmlReporter);
 		extent.setSystemInfo("User Name", System.getProperty("user.name"));
 		extent.setSystemInfo("OS", System.getProperty("os.name"));

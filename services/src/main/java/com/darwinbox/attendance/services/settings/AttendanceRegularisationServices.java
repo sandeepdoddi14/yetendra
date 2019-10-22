@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 public class AttendanceRegularisationServices extends Services {
 
     private JSONArray getRegularisationReasons() {
+
         String url = getData("@@url") + "/attendance/AttendanceRegulariseReasons/GetReasons";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");

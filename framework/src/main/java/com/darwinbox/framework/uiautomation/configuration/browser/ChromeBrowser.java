@@ -21,27 +21,26 @@ import com.darwinbox.framework.uiautomation.Utility.ResourceHelper;
  */
 public class ChromeBrowser {
 
-	public Capabilities getChromeCapabilities() {
+	public ChromeOptions getChromeCapabilities() {
+
 		ChromeOptions option = new ChromeOptions();
 		option.addArguments("start-maximized");
-		DesiredCapabilities chrome = DesiredCapabilities.chrome();
-		chrome.setJavascriptEnabled(true);
-		chrome.setCapability(ChromeOptions.CAPABILITY, option);
-		return chrome;
+
+		return option;
 	}
 
-	public WebDriver getChromeDriver(Capabilities cap) {
+	public WebDriver getChromeDriver(ChromeOptions chromeOptions) {
 		if (System.getProperty("os.name").contains("Mac")){
 			System.setProperty("webdriver.chrome.driver", TestBase.respath + "drivers/mac/chromedriver");
-			return new ChromeDriver(cap);
+			return new ChromeDriver(chromeOptions);
 		}
 		else if(System.getProperty("os.name").contains("Window")){
 			System.setProperty("webdriver.chrome.driver", TestBase.respath +"drivers/windows/chromedriver.exe");
-			return new ChromeDriver(cap);
+			return new ChromeDriver(chromeOptions);
 		}
 		else if(System.getProperty("os.name").contains("Linux")){
 			System.setProperty("webdriver.chrome.driver", TestBase.respath + "drivers/linux/chromedriver");
-			return new ChromeDriver(cap);
+			return new ChromeDriver(chromeOptions);
 		}
 		return null;
 	}

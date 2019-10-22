@@ -62,7 +62,7 @@ public class TestLeaveWeekoffHoliday extends TestBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, retryAnalyzer = TestBase.class)
     public void testWorkDuration(Map<String, String> testData) throws Exception {
 
-        Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
+        Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "User not Loggin to Application as Admin");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
         AttendanceTestBase atb = AttendanceTestBase.getObject("CommonSettings.xlsx");
