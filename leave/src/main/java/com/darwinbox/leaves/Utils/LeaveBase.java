@@ -65,6 +65,22 @@ public class LeaveBase extends TestBase {
         return leavePolicies;
     }
 
+    protected static List<LeavePolicyObject> getOverUtilizationPoliciesForHourly() {
+        List<Map<String, String>> excelData = readDatafromSheet("OverUtilizationPoliciesHourly");
+        List<LeavePolicyObject> leavePolicies = new ArrayList<>();
+
+        for (Map<String, String> data : excelData) {
+            LeavePolicyObject policyObject = new LeavePolicyObject();
+            policyObject.setFields(data);
+            List<NameValuePair> body = policyObject.createRequest();
+            new LeaveService().createLeaveForPolicy(body, policyObject);
+            leavePolicies.add(policyObject);
+        }
+
+        //return leavePolicies.stream().filter(x -> x.getLeave_Type().contains(policy)).findFirst().get();
+        return leavePolicies;
+    }
+
 
     protected static LeavePolicyObject getSandwitchLeavePolicy(String policyName) {
         List<Map<String, String>> excelData = readDatafromSheet("SandwitchPolicies");
@@ -258,6 +274,21 @@ public class LeaveBase extends TestBase {
             return new LeaveAdmin().applyLeaveWithEmpSession(e, fromDate.toString(), toDate.toString(), leaveID);
     }
     public String applyLeave(Employee e, LeavePolicyObject leavePolicyObject, LocalDate fromDate, LocalDate toDate) {
+        String leaveID = null;
+        if (leavePolicyObject.getLeave_Type().equalsIgnoreCase("unpaid")) {
+            leaveID = "unpaid";
+        } else if (leavePolicyObject.getLeave_Type().equalsIgnoreCase("unpaid")) {
+            leaveID = UtilityHelper.getProperty("", "");
+        } else {
+            leaveID = leaveService.getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId);
+        }
+
+
+
+        return new LeaveAdmin().ApplyLeave(e.getMongoID(), fromDate.toString(), toDate.toString(), leaveID);
+    }
+
+    public String applyLeaveHourly(Employee e, LeavePolicyObject leavePolicyObject, LocalDate fromDate, LocalDate toDate,int hours) {
         String leaveID = null;
         if (leavePolicyObject.getLeave_Type().equalsIgnoreCase("unpaid")) {
             leaveID = "unpaid";

@@ -36,6 +36,26 @@ public class LeaveAdmin extends Service {
         return new Service().doPost(applyLeaveUrl, headers, mapToFormData(body));
     }
 
+    /*
+  Admin Apply Leave on Behalf of employee - Hourly
+   */
+    public String ApplyLeaveHourly(String userId, String fromDate, String toDate, String leaveId,int noOfHours) {
+        Map<String, String> request = new HashMap<>();
+        Map<String, String> body = applyLeaveWithDefaultValues();
+
+        request.put("user_id", userId);
+        request.put("from_date", fromDate);
+        request.put("to_date", toDate);
+        request.put("leave_change", leaveId);
+        request.put("leave_hourly","1");
+        request.put("leave_hours",noOfHours+"");
+
+        body.putAll(request);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        return new Service().doPost(applyLeaveUrl, headers, mapToFormData(body));
+    }
+
     public String applyLeaveWithEmpSession(Employee e, String fromDate, String toDate, String leaveId) {
         Map<String, String> request = new HashMap<>();
         Map<String, String> body = applyLeaveWithDefaultValues();

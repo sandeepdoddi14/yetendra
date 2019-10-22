@@ -42,6 +42,16 @@ public class LeavePolicyObject extends LeaveBase {
     private String leave_Type = null;
     private String description;
 
+    public Boolean getHourlyLeave() {
+        return isHourlyLeave;
+    }
+
+    public void setHourlyLeave(Boolean hourlyLeave) {
+        isHourlyLeave = hourlyLeave;
+    }
+
+    private Boolean isHourlyLeave=false;
+
     public TenureBasis getTenureBasis() {
         return tenureBasis;
     }
@@ -406,6 +416,7 @@ public class LeavePolicyObject extends LeaveBase {
         this.setGroup_Company(data.get("Group_Company"));
         this.setLeave_Type(data.get("Leave_Type"));
         this.setDescription(data.get("Description"));
+        this.setHourlyLeave(Boolean.parseBoolean(data.get("HourlyLeave")));
         this.setMaximum_leave_allowed_per_year(Integer.parseInt(data.get("Maximum_leave_allowed_per_year")));
         this.restriction_Condition.AND_OR = data.get("Restriction_Condition");
         this.restriction_Condition.Restriction = data.get("Restriction_(Department,_Employee_Type_or_Location)");
@@ -526,6 +537,10 @@ public class LeavePolicyObject extends LeaveBase {
             formData.add(new BasicNameValuePair("Leaves[description]", this.description));
             Reporter("Description is   " + this.description, "Info");
         }
+
+        //set hourly leave
+        formData.removeIf(x->x.getName().contains("Leaves[is_hourly]"));
+        formData.add(new BasicNameValuePair("Leaves[is_hourly]",getHourlyLeave()?1+"":0+""));
 
         //Maximum Leave Allowed Per Year
         if (this.maximum_leave_allowed_per_year != 0) {
