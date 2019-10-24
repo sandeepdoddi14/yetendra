@@ -1,7 +1,7 @@
 package com.darwinbox.mobile.dataFetching.mobileData.attendance;
 
-//import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
-//import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
+import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
+import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
@@ -17,9 +17,9 @@ import org.openqa.selenium.support.PageFactory;
 import java.util.HashMap;
 
 public class MobileAttendanceView extends TestBase {
-//    LoginPage loginpage;
+    LoginPage loginpage;
     GenericHelper objgenhelper;
-//    HomePage homepage;
+    HomePage homepage;
     WaitHelper objWaitHelper;
     AttendanceViewPage attendanceViewPage;
     GenericMethodsInDataFetching genericMethodsInDataFetching;
@@ -28,10 +28,10 @@ public class MobileAttendanceView extends TestBase {
         this.driver = driver;
         PageFactory.initElements(driver, this);
         attendanceViewPage = PageFactory.initElements(driver, AttendanceViewPage.class);
-//        loginpage = PageFactory.initElements(driver, LoginPage.class);
+        loginpage = PageFactory.initElements(driver, LoginPage.class);
         objWaitHelper = PageFactory.initElements(driver, WaitHelper.class);
         objgenhelper = PageFactory.initElements(driver, GenericHelper.class);
-//        homepage = PageFactory.initElements(driver, HomePage.class);
+        homepage = PageFactory.initElements(driver, HomePage.class);
         genericMethodsInDataFetching = PageFactory.initElements(driver, GenericMethodsInDataFetching.class);
     }
 
