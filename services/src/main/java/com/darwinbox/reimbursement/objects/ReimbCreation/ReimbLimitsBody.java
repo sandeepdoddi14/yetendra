@@ -1,12 +1,16 @@
 package com.darwinbox.reimbursement.objects.ReimbCreation;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class ReimbFormBody {
+public class ReimbLimitsBody {
 
-    private List<String> band_grade_desig = new ArrayList<>();
-    private List<String> location = new ArrayList<>();
+    private String band_grade_desig ;
+    private String location ;
     private String uppercappu;
     private String uppercap;
     private String nooftimespermonth;
@@ -16,19 +20,19 @@ public class ReimbFormBody {
     private boolean autocalculate;
     private List<String> fieldValues = new ArrayList<>();
 
-    public List<String> getBand_grade_desig() {
+    public String getBand_grade_desig() {
         return band_grade_desig;
     }
 
-    public void setBand_grade_desig(List<String> band_grade_desig) {
+    public void setBand_grade_desig(String band_grade_desig) {
         this.band_grade_desig = band_grade_desig;
     }
 
-    public List<String> getLocation() {
+    public String getLocation() {
         return location;
     }
 
-    public void setLocation(List<String> location) {
+    public void setLocation(String location) {
         this.location = location;
     }
 
@@ -96,5 +100,21 @@ public class ReimbFormBody {
         this.fieldValues = fieldValues;
     }
 
+    public  void toObject(Map<String,String> data)
+    {
+        setBand_grade_desig(data.get("Band_grade_desig"));
+        setLocation(data.get("Location"));
+        setUppercap(data.get("Uppercappu"));
+    }
 
+    public List<NameValuePair> toMap()
+    {
+        List<NameValuePair> body = new ArrayList<>();
+        body.add(new BasicNameValuePair("Reimb_set[0][designation][]",getBand_grade_desig()));
+        body.add(new BasicNameValuePair("Reimb_set[0][location][]",getLocation()));
+        body.add(new BasicNameValuePair("Reimb_set[0][rupees]",getUppercap()));
+        body.add(new BasicNameValuePair("Reimb_set[0][upper_cap_unit]", getUppercappu()));
+
+        return  body;
+    }
 }

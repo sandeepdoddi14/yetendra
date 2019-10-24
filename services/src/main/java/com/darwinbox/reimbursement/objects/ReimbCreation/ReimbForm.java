@@ -5,30 +5,30 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReimbForm extends Services
-{
+public class ReimbForm extends Services {
     private String name;
     private String description;
     private String GrpCompany;
     private String units;
     private String approvalFlow;
-    private String id ="";
-
-    /*public List<String> getApplicableToList() {
-        return applicableToList; }
-    public void setApplicableToList(List<String> applicableToList) {
-        this.applicableToList = applicableToList; }*/
-    private List<String> currency = new ArrayList<>();
-
+    private String ledger;
+    private String id = "";
+    private String currency;
     private List<String> applicableToList = new ArrayList<>();
-    private List<ReimbFormBody> reimbFormBodyList = new ArrayList<>();
+    private List<ReimbLimitsBody> reimbLimitsBodyList = new ArrayList<>();
+
+    public enum currency {
+        RUPEE, DOLLAR, POUNDS, AED, EURO, PHP, SGD, IDR, HKD, AUD, BDT, VND, CNY, TWD, JPY, MYR, KRW, KHR
+    }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -36,61 +36,105 @@ public class ReimbForm extends Services
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public String getId() {   return id;  }
+    public String getGrpCompany() {
+        return GrpCompany;
+    }
+
+    public void setGrpCompany(String grpCompany) {
+        GrpCompany = grpCompany;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+    //unit IDs have to be mapped, check in services, ID is required from units page
+
+    public String getApprovalflow() {
+        return approvalFlow;
+    }
+
+    public void setApprovalflow(String approvalflow) {
+        this.approvalFlow = approvalflow;
+    }
+
+    public String getLedger() {
+        return ledger;
+    }
+
+    public void setLedger(String ledger) {
+        this.ledger = ledger;
+    }
+
+    public String getId() {
+        return id;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
 
-    public String getGrpCompany() {  return GrpCompany;   }
-    public void setGrpCompany(String grpCompany) { GrpCompany = grpCompany;  }
+    public String getCurrency() {
+        return currency;
+    }
 
-    public String getUnits() {    return units;   }
-    public void setUnits(String units) {  this.units = units;  }
-    //unit IDs have to be mapped, check in services, ID is required from units page
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 
-    public String getApprovalflow() {  return approvalFlow;  }
-    public void setApprovalflow(String approvalflow) {   this.approvalFlow = approvalflow;  }
-//make currency as Enum
-    public List<String> getCurrency() {  return currency;  }
-    public void setCurrency(List<String> currency) {   this.currency = currency;   }
+    public void add(String applicableTo) {
+        applicableToList.add(applicableTo);
+    }
 
-    public void add(String applicableTo){ applicableToList.add(applicableTo);   }
-    public void add(ReimbFormBody formBody){  reimbFormBodyList.add(formBody);  }
+    public void add(ReimbLimitsBody formBody) {
+        reimbLimitsBodyList.add(formBody);
+    }
 
-/*    //to convert excel values to ReimbForm java object
-    public void toObject(Map<String,String> data)
-    {
+    //to convert excel values to ReimbForm java object
+    public void toObject(Map<String, String> data) {
         setName(data.get("Name"));
         setDescription(data.get("Description"));
+        setApprovalflow(data.get("Applicable"));
+        setApprovalflow(data.get("Units"));
+        setApprovalflow(data.get("Approval_Flow"));
+        setApprovalflow(data.get("Ledger"));
+        setApprovalflow(data.get("TestCaseName"));
+        setApprovalflow(data.get("Test_Description"));
 
     }
-//check for Band method: all those fields which take MOngo ID as input
+    //check for Band method: all those fields which take MOngo ID as input
     //this method used to set (java object) values to web application
     //boolean values to be passed thru excel sheet
-
-    public List<NameValuePair> toMap()
-    {
-        //Map ReimbFormBody values directly
+    /**
+     * this method used to set (java object) values to web application
+     *
+     * @return
+     */
+    public Map<String,String> toMap() {
         List<String> applicableToList = new ArrayList<>();
-        List<NameValuePair> formData = new ArrayList<>();
 
-        formData.add(new BasicNameValuePair("id" , getId()));
-        formData.add(new BasicNameValuePair("TenantReimbursement[name]" , getName()));
-        formData.add(new BasicNameValuePair("TenantReimbursement[description]" , getDescription()));
-        *//*formData.add(new BasicNameValuePair("TenantReimbursement[currency_allowed]" , getCurrency()));
-        formdata.add(new BasicNameValuePair("TenantReimbursement[parent_company_id]" , getGrpCompany()));
-        formdata.add(new BasicNameValuePair("TenantReimbursement[applicable]", getApprovalflow()));
-        formdata.add(new BasicNameValuePair("TenantReimbursement[units]", getUnits()));
+        Map<String, String> body = new HashMap<>();
+        body.put("reimb_id", getId());
+        body.put("TenantReimbursement[name]", getName());
+        body.put("TenantReimbursement[description]", getDescription());
+        body.put("TenantReimbursement[currency_allowed]", getCurrency());
+        body.put("TenantReimbursement[parent_company_id]", getGrpCompany());
+        body.put("TenantReimbursement[approval_flow]", getApprovalflow());
+        body.put("TenantReimbursement[units]", getUnits());
+        body.put("TenantReimbursement[ledger]", getLedger());
 
-        int count=0;
-        for(String applicableTo : applicableToList){
-            count++;
-            formData.addAll(formData.size(),applicableTo))*//*
-        //try with Hashmapinstaed of list types here, for single values.
-        }
-        return formData*/;
+            //try with Hashmapinstaed of list types here, for single values.
+            //check for Dept, location, emp type, band, grade
+
+        return body;
     }
+}
+
