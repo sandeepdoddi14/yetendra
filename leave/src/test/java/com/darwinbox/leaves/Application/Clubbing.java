@@ -1,15 +1,16 @@
 package com.darwinbox.leaves.Application;
 
-import Objects.Employee;
-import Objects.LeavePolicyObject.LeavePolicyObject;
-import Service.EmployeeServices;
-import Service.LeaveAdmin;
-import Service.LeaveService;
-import Service.Service;
+
+import  com.darwinbox.attendance.objects.Employee;
+import com.darwinbox.attendance.services.EmployeeServices;
+import com.darwinbox.core.Services;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.LeaveAdmin;
+import com.darwinbox.leaves.Services.LeaveService;
 import com.darwinbox.leaves.Utils.ERROR_MESSAGES;
 import com.darwinbox.leaves.Utils.LeaveBase;
 import com.darwinbox.leaves.Utils.MapUtils;
@@ -27,7 +28,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
-public class Clubbing extends LeaveBase {
+public class Clubbing<Employee> extends LeaveBase {
 
     EmployeeServices employeeServices;
     LeaveService leaveService;
@@ -41,7 +42,7 @@ public class Clubbing extends LeaveBase {
     LoginPage loginpage;
     CommonAction commonAction;
 
-    Employee employee;
+    com.darwinbox.attendance.objects.Employee employee;
     String employeeProbation = null;
     String[] leaves = new String[]{"randomLeaveType1", "randomLeaveTyp2"};
     Clubbings clubbing = null;
@@ -243,7 +244,7 @@ public class Clubbing extends LeaveBase {
             }
             if (someLeave & leaveList == "diff") {
                 for (String leave : leaves) {
-                    String groupCompanyMongoId = new Service().getGroupCompanyIds().get("Working Days (DO NOT TOUCH)");
+                    String groupCompanyMongoId = new Services().getGroupCompanyIds().get("Working Days (DO NOT TOUCH)");
                     leavesList.add(new BasicNameValuePair("LeavePolicy_ClubbingOthers[clubbing_leaves_list][]", leaveService.getLeaveID(leave, leavePolicyObject.groupCompanyMongoId)));
 
                 }

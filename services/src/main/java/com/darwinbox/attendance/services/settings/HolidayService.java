@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class HolidayService extends Services {
 
     boolean first = true;
+/*
 
     public void createHoliday(List<Holiday> holidays) {
 
@@ -33,6 +34,25 @@ public class HolidayService extends Services {
 
     }
 
+*/
+
+    public String createHoliday(List<Holiday> holidays) {
+
+        String url = getData("@@url") + "/settings/updateholiday";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONArray arr = new JSONArray();
+        for ( Holiday holiday : holidays ){
+            arr.add(holiday.toService());
+        }
+
+        Map<String,String > data = new HashMap<String, String>();
+        data.put("holidays", arr.toJSONString());
+         return doPost(url, headers, mapToFormData(data));
+
+    }
+
     public String getHolidaysForUser(String userId) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("x-requested-with", "XMLHttpRequest");
@@ -46,6 +66,12 @@ public class HolidayService extends Services {
      createHoliday(Arrays.asList(holiday));
 
     }
+
+   /* public String createHoliday(Holiday holiday) {
+
+        return createHoliday(Arrays.asList(holiday));
+
+    }*/
 
     public void deleteHolidays() {
 

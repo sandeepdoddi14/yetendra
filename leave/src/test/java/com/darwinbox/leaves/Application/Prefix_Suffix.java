@@ -1,16 +1,20 @@
 package com.darwinbox.leaves.Application;
 
-import Objects.Employee;
-import Objects.Holiday;
-import Objects.LeavePolicyObject.Fields.CountInterveningHolidaysWeeklyOff;
-import Objects.LeavePolicyObject.Fields.PastDatedLeave;
-import Objects.LeavePolicyObject.Fields.PrefixSuffixSetting;
-import Objects.LeavePolicyObject.LeavePolicyObject;
-import Service.*;
+import com.darwinbox.attendance.objects.Employee;
+import com.darwinbox.attendance.objects.Holiday;
+import com.darwinbox.attendance.services.EmployeeServices;
+import com.darwinbox.attendance.services.settings.HolidayService;
+import com.darwinbox.core.Services;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.CountInterveningHolidaysWeeklyOff;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.PastDatedLeave;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.PrefixSuffixSetting;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.LeaveAdmin;
+import com.darwinbox.leaves.Services.LeaveService;
 import com.darwinbox.leaves.Utils.LeaveBase;
 import com.darwinbox.leaves.Utils.MapUtils;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
@@ -134,7 +138,7 @@ public class    Prefix_Suffix extends LeaveBase {
                 prefixWeeklyOffCount--;
             }
 
-            new Service().createWeeklyOff(String.join(",", prefixWeeklyOffDays));
+            new Services().createWeeklyOff(String.join(",", prefixWeeklyOffDays));
 
         }
 
@@ -144,7 +148,7 @@ public class    Prefix_Suffix extends LeaveBase {
             for (int i = 1; i <= suffixWeeklyOffCount; i++) {
                 suffixWeeklyOffDays.add(toDate.getDayOfWeek().plus(i).toString());
             }
-            new Service().createWeeklyOff(String.join(",", suffixWeeklyOffDays));
+            new Services().createWeeklyOff(String.join(",", suffixWeeklyOffDays));
 
         }
 
@@ -152,13 +156,13 @@ public class    Prefix_Suffix extends LeaveBase {
         employee = employeeServices.generateAnEmployee("no", "Working Days (DO NOT TOUCH)", "random", "no");
         if(isPrefixWeeklyOff)
         {
-            String weeklyOffID = new Service().getWeeklyOFFlist().get(String.join("And", prefixWeeklyOffDays));
+            String weeklyOffID = new Services().getWeeklyOFFlist().get(String.join("And", prefixWeeklyOffDays));
             employeeServices.createWeeklyOffForAnEmp(employee.getUserID(), weeklyOffID);
             employee.setWeeklyOff(prefixWeeklyOffDays);
         }
 
         if(isSuffixWeeklyOff && !prefixWeeklyOffDays.toString().equalsIgnoreCase(suffixWeeklyOffDays.toString())){
-            String weeklyOffID = new Service().getWeeklyOFFlist().get(String.join("And", suffixWeeklyOffDays));
+            String weeklyOffID = new Services().getWeeklyOFFlist().get(String.join("And", suffixWeeklyOffDays));
             employeeServices.createWeeklyOffForAnEmp(employee.getUserID(), weeklyOffID);
             employee.setWeeklyOff(suffixWeeklyOffDays);
 

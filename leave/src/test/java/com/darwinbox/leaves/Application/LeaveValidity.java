@@ -1,15 +1,16 @@
 package com.darwinbox.leaves.Application;
 
-import Objects.Employee;
-import Objects.LeavePolicyObject.LeavePolicyObject;
-import Service.EmployeeServices;
-import Service.LeaveAdmin;
-import Service.LeaveService;
-import Service.Service;
+
+import com.darwinbox.attendance.objects.Employee;
+import com.darwinbox.attendance.services.EmployeeServices;
+import com.darwinbox.core.Services;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.LeaveAdmin;
+import com.darwinbox.leaves.Services.LeaveService;
 import com.darwinbox.leaves.Utils.ERROR_MESSAGES;
 import com.darwinbox.leaves.Utils.LeaveBase;
 import com.darwinbox.leaves.Utils.MapUtils;
@@ -146,7 +147,7 @@ public class LeaveValidity extends LeaveBase {
             leaveService.createLeaveForPolicy(defaultBody, leavePolicyObject);
 
             String empDateOfJoining = null;
-            HashMap<String, String> probation = new Service().getProbations().get(employeeProbation);
+            HashMap<String, String> probation = new Services().getProbations().get(employeeProbation);
             String ProbationID = probation.values().toString().replace("[", "").replace("]", "");
             int probationDays = Integer.parseInt(probation.keySet().toString().replace("[", "").replace("]", ""));
             empDateOfJoining = LocalDate.now().minusDays(probationDays).plusDays(2).toString();

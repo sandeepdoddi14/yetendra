@@ -3,6 +3,8 @@ package com.darwinbox.attendance.objects;
 import com.darwinbox.attendance.services.DashboardServices;
 import com.darwinbox.attendance.services.LoginServices;
 
+import java.util.List;
+
 public class Employee {
 
     private String firstName;
@@ -24,15 +26,11 @@ public class Employee {
     private String employeeTypeID;
     private String gender;
     private String password;
-    private String phpSessid = null;
-
-    public String getProbation() {
-        return probation;
-    }
-
-    public void setProbation(String probation) {
-        this.probation = probation;
-    }
+    private String phpSessid;
+    private String jobLevel;
+    private Boolean isServingNoticePeriod=false;
+    private String probation;
+    private String departmentId="5c34d3481aeda";//hard coded
 
     public String getDepartmentId() {
         return departmentId;
@@ -42,23 +40,43 @@ public class Employee {
         this.departmentId = departmentId;
     }
 
-    private String probation;
-    private String departmentId="5c34d3481aeda";//hard coded
 
 
-    public void setPhpSessid(String phpSessid) {
-        this.phpSessid = phpSessid;
+    public Employee getL1Manager() {
+        return l1Manager;
     }
 
-    public String getJobLevel() {
-        return jobLevel;
+    public void setL1Manager(Employee l1Manager) {
+        this.l1Manager = l1Manager;
     }
 
-    public void setJobLevel(String jobLevel) {
-        this.jobLevel = jobLevel;
+    private Employee l1Manager=null;
+
+    public List<String> getWeeklyOff() {
+        return WeeklyOff;
     }
 
-    private String jobLevel;
+    public void setWeeklyOff(List<String> weeklyOff) {
+        WeeklyOff = weeklyOff;
+    }
+
+    private List<String> WeeklyOff;//to consider multiple days
+
+    public Boolean getServingNoticePeriod() {
+        return isServingNoticePeriod;
+    }
+
+    public void setServingNoticePeriod(Boolean servingNoticePeriod) {
+        isServingNoticePeriod = servingNoticePeriod;
+    }
+
+    public String getProbation() {
+        return probation;
+    }
+
+    public void setProbation(String probation) {
+        this.probation = probation;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -213,10 +231,21 @@ public class Employee {
     }
 
     public String getPhpSessid() {
-        if ( phpSessid == null && mongoID!=null)
-            phpSessid = new DashboardServices().doLogin(getEmailID(), getPassword());
+        if ( this.phpSessid == null)
+            this.phpSessid = new DashboardServices().doLogin(this.getEmailID(), this.getPassword());
+        return this.phpSessid;
+    }
 
-        return phpSessid;
+    public void setPhpSessid(String phpSessid) {
+        this.phpSessid = phpSessid;
+    }
+
+    public String getJobLevel() {
+        return jobLevel;
+    }
+
+    public void setJobLevel(String jobLevel) {
+        this.jobLevel = jobLevel;
     }
 
 }

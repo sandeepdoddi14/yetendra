@@ -1,12 +1,17 @@
 package com.darwinbox.leaves.Application;
 
-import Objects.Employee;
-import Objects.Holiday;
-import Objects.LeavePolicyObject.LeavePolicyObject;
-import Service.*;
+
+import com.darwinbox.attendance.objects.Employee;
+import com.darwinbox.attendance.objects.Holiday;
+import com.darwinbox.attendance.services.EmployeeServices;
+import com.darwinbox.attendance.services.settings.HolidayService;
+import com.darwinbox.core.Services;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.LeaveAdmin;
+import com.darwinbox.leaves.Services.LeaveService;
 import com.darwinbox.leaves.Utils.LeaveBase;
 import com.darwinbox.leaves.Utils.MapUtils;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
@@ -83,7 +88,7 @@ public class SandwitchLeaves extends LeaveBase {
             for (int i = 1; i <= noOfSandwitchLeaves; i++) {
                 weeklyOff.add(LocalDate.now().plusDays(noOfPrefixLeaves+i).toString());
             }
-            new Service().createWeeklyOff(String.join(",", weeklyOff));
+            new Services().createWeeklyOff(String.join(",", weeklyOff));
 
             employee.setWeeklyOff(weeklyOff);
 
@@ -126,7 +131,7 @@ public class SandwitchLeaves extends LeaveBase {
 
                 }
 
-                new Service().createWeeklyOff(String.join(",", postWeeklyOff));
+                new Services().createWeeklyOff(String.join(",", postWeeklyOff));
 
                 employee.setWeeklyOff(postWeeklyOff);
 

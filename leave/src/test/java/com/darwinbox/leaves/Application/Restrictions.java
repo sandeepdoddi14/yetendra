@@ -1,15 +1,16 @@
 package com.darwinbox.leaves.Application;
 
-import Objects.Employee;
-import Objects.LeavePolicyObject.LeavePolicyObject;
-import Service.EmployeeServices;
-import Service.LeaveAdmin;
-import Service.LeaveService;
-import Service.Service;
+
+import com.darwinbox.attendance.objects.Employee;
+import com.darwinbox.attendance.services.EmployeeServices;
+import com.darwinbox.attendance.services.Services;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.base.TestBase;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.LeaveAdmin;
+import com.darwinbox.leaves.Services.LeaveService;
 import com.darwinbox.leaves.Utils.MapUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -68,7 +69,7 @@ public class Restrictions extends TestBase {
             Map<String, String> request = leaveService.mandatoryFieldsToCreateLeave(leavePolicyObject);
             request.put("Leaves[p2_max_per_month]", leavePolicyObject.getMaximum_leave_allowed_per_month()+"");
             defaultBody.putAll(request);
-            List<NameValuePair> formdata = new Service().mapToFormData(defaultBody);
+            List<NameValuePair> formdata = new Services().mapToFormData(defaultBody);
 
 
             //Employee employee = employees.get(0);
@@ -77,16 +78,16 @@ public class Restrictions extends TestBase {
             String jobLevelID = employee.getJobLevel();
 
 
-            HashMap departments = new Service().getDepartments(leavePolicyObject.groupCompanyMongoId);
-            HashMap empTypes = new Service().getEmployeeTypes();
-            HashMap locations = new Service().getOfficeLocations(leavePolicyObject.groupCompanyMongoId);
-            HashMap grades = new Service().getGrades();
-            HashMap bands = new Service().getBands();
+            HashMap departments = new Services().getDepartments(leavePolicyObject.groupCompanyMongoId);
+            HashMap empTypes = new Services().getEmployeeTypes();
+            HashMap locations = new Services().getOfficeLocations(leavePolicyObject.groupCompanyMongoId);
+            HashMap grades = new Services().getGrades();
+            HashMap bands = new Services().getBands();
 
-            HashMap<String, HashMap<String, String>> jobLevelData = new Service().getJobLevel();
+            HashMap<String, HashMap<String, String>> jobLevelData = new Services().getJobLevel();
             String gradeOfEmp = jobLevelData.get(jobLevelID).keySet().toString().replace("[", "").replace("]", "");
 
-            HashMap<String, String> gradesWithBands = new Service().getGradeAndBand();
+            HashMap<String, String> gradesWithBands = new Services().getGradeAndBand();
             String bandofEmp = gradesWithBands.get(gradeOfEmp);
 
 

@@ -1,6 +1,7 @@
 package com.darwinbox.leaves.pageObjectRepo.settings;
 
-import Service.Service;
+
+import com.darwinbox.core.Services;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
@@ -372,7 +373,7 @@ public class LeavesPage extends TestBase {
         HashMap<String, String> h = new HashMap<>();
         h.put("x-requested-with", "XMLHttpRequest");
 
-        Service s = new Service();
+        Services s = new Services();
         String applicationUrl = data.get("@@url");
         return s.doGet(applicationUrl + "/settings/holidayslist?user_id=" + userId, h);
     }

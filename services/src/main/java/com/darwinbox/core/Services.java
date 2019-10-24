@@ -1,5 +1,6 @@
 package com.darwinbox.core;
 
+import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
@@ -22,6 +23,112 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Services extends TestBase {
+
+
+    public Map<String,String> getWeeklyOFFlist(){
+        String url=data.get("@@url")+UtilityHelper.getProperty("ServiceUrls","getWeeklyOffList");
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        String response=doGet(url,headers);
+        JSONObject obj = new JSONObject(response);
+        JSONArray arr = obj.getJSONArray("aaData");
+        int i = 0;
+        HashMap<String, String> ids = new HashMap();
+        while (i < arr.length()) {
+            ids.put(arr.getJSONArray(i).getString(0).split("/a>")[1],
+                    arr.getJSONArray(i).getString(2).substring(7,20));
+            i++;
+        }
+
+        return ids;
+    }
+
+
+
+    public Map<String,String> createWeeklyOffDeafultBody() {
+        Map<String, String> defaultBody = new HashMap<>();
+
+        defaultBody.put("WeeklyOffForm[weekly_off_name]", "");
+        defaultBody.put("WeeklyOffForm[description]", "automation generated weekly off");
+        defaultBody.put("WeeklyOffForm[non_working_days][day][6]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][frequency][6]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][day][0]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][frequency][0]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][day][1]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][frequency][1]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][day][2]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][frequency][2]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][day][3]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][frequency][3]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][day][4]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][frequency][4]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][day][5]", "0");
+        defaultBody.put("WeeklyOffForm[non_working_days][frequency][5]", "0");
+        defaultBody.put("AttendancePolicyForm[change_date]", "0");
+
+        return defaultBody;
+    }
+
+
+
+
+    public String createWeeklyOff(String days) {
+
+        String url = data.get("@@url") + UtilityHelper.getProperty("ServiceUrls", "createWeeklyOff");
+
+        Map<String, String> deafultBody = createWeeklyOffDeafultBody();
+
+
+        Map<String, String> request = new HashMap<>();
+        for (String day : days.split(",")) {
+            if (day.equalsIgnoreCase("monday")) {
+                request.put("WeeklyOffForm[non_working_days][day][1]", "1");
+                request.put("WeeklyOffForm[non_working_days][frequency][1]", "0");
+
+            }
+            if (day.equalsIgnoreCase("tuesday")) {
+                request.put("WeeklyOffForm[non_working_days][day][2]", "1");
+                request.put("WeeklyOffForm[non_working_days][frequency][2]", "0");
+
+            }
+            if (day.equalsIgnoreCase("wednesday")) {
+                request.put("WeeklyOffForm[non_working_days][day][3]", "1");
+                request.put("WeeklyOffForm[non_working_days][frequency][3]", "0");
+
+            }
+            if (day.equalsIgnoreCase("thursday")) {
+                request.put("WeeklyOffForm[non_working_days][day][4]", "1");
+                request.put("WeeklyOffForm[non_working_days][frequency][4]", "0");
+
+            }
+            if (day.equalsIgnoreCase("friday")) {
+                request.put("WeeklyOffForm[non_working_days][day][5]", "1");
+                request.put("WeeklyOffForm[non_working_days][frequency][5]", "0");
+
+            }
+            if (day.equalsIgnoreCase("saturday")) {
+                request.put("WeeklyOffForm[non_working_days][day][6]", "1");
+                request.put("WeeklyOffForm[non_working_days][frequency][6]", "0");
+
+            }
+            if (day.equalsIgnoreCase("sunday")) {
+                request.put("WeeklyOffForm[non_working_days][day][0]", "1");
+                request.put("WeeklyOffForm[non_working_days][frequency][0]", "0");
+
+            }
+        }
+        request.put("WeeklyOffForm[weekly_off_name]",days.replace(",","And"));
+
+        deafultBody.putAll(request);
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        return doPost(url, headers, mapToFormData(deafultBody));
+    }
+
+
 
     /*
  get job level info

@@ -1,6 +1,7 @@
 package com.darwinbox.leaves.LeaveSettings.Over_Utilization;
 
-import Service.Service;
+
+import com.darwinbox.core.Services;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.base.TestBase;
@@ -58,7 +59,7 @@ public class Verify_Accordion_ApplyMoreThanLeaveBal  extends TestBase {
     /*    List<NameValuePair>  nvp= new ArrayList<>();
         nvp.add(new BasicNameValuePair("id","5c51a767cc854"));*/
        // loginpage.empLoginToApplication();
-        Service s= new Service();
+        Services s= new Services();
         s.doPost(url,h,formData);
         System.out.println(s.doPost(url,h,formData));
         System.out.println("testing....");
