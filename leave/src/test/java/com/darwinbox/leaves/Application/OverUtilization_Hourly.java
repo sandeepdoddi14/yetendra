@@ -387,7 +387,7 @@ public class OverUtilization_Hourly extends LeaveBase {
         }*/
 
       //  else {
-            applyLeaveResponse = applyLeaveHourly(employee, leavePolicyObjectObjects.get(0), leaveStartDate, workingDays.get(workingDays.size() - 1),noOfHours);
+            applyLeaveResponse = new LeaveAdmin().ApplyLeaveHourly(employee.getMongoID(),leaveStartDate.toString(), workingDays.get(workingDays.size() - 1).toString(),leaveService.getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId),noOfHours);
       //  }
         Reporter("Response" + applyLeaveResponse, "Info");
 

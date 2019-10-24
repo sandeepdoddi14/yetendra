@@ -348,7 +348,7 @@ public class EmployeeServices extends Service {
         Map<String, String> ma = getEmpIDAndMongoID(emps.get(0).getEmployeeID());
         emps.get(0).setMongoID(ma.get("userMongoID"));
 
-        resetPassword(emps.get(0),"123456");
+        resetPassword(emps.get(0),"123456Aa!");
 
         return emps.get(0);
     }
@@ -382,7 +382,7 @@ public class EmployeeServices extends Service {
         Map<String, String> ma = getEmpIDAndMongoID(emps.get(0).getEmployeeID());
         emps.get(0).setMongoID(ma.get("userMongoID"));
 
-        resetPassword(emps.get(0),"123456");
+        resetPassword(emps.get(0),"123456Aa!");
 
         return emps.get(0);
     }
