@@ -141,8 +141,6 @@ public class TestFullDayAppliedAndPendingForLateMarkFullDayDeduction extends Tes
                 atb.validateNoLeave(status, leaveName, this);
 
             }
-
-            break;
         }
     }
 

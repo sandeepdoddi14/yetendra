@@ -1,4 +1,4 @@
-package com.darwinbox.attendance.policies;
+package com.darwinbox.attendance.crud.policies;
 
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.others.PolicyInfo;
@@ -8,7 +8,6 @@ import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
-import org.json.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
@@ -17,7 +16,7 @@ import org.testng.annotations.Test;
 import java.util.Date;
 import java.util.Map;
 
-public class CreatePolicyWithSameName extends TestBase {
+public class DeleteAttendancePolicy extends TestBase {
 
     LoginPage loginPage;
     GenericHelper genHelper;
@@ -35,9 +34,9 @@ public class CreatePolicyWithSameName extends TestBase {
     }
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "policies, crud", retryAnalyzer = TestBase.class)
-    public void testCreatePolicyWithSameName(Map<String, String> testData) {
+    public void testDeletePolicy(Map<String, String> testData) {
 
-        String title = " Test For Creating Attendance policy With Same Name ";
+        String title = " Test For Deleting Attendance policy With Same Name ";
         Reporter(title,"INFO");
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
@@ -62,19 +61,13 @@ public class CreatePolicyWithSameName extends TestBase {
         srvc.createAttendancePolicy(policy);
         Reporter("Attendance Policy Created Successfully", "PASS");
 
-        JSONObject response = new JSONObject(srvc.createPolicy(policy));
-        String errorMsg = response.getString("error").replaceAll("\\<.*?>","");
-
-        Assert.assertEquals(response.getString("status"),"failure","Failure is as expected");
-        Assert.assertEquals(response.getString("message"),"Please resolve the errors.","Message is as expected ");
-        Assert.assertTrue(errorMsg.contains(policy_name + " already exist."),"Message is as expected ");
-
-        Reporter("Unable to create policy with same name ","PASS");
-
         String policy_id  = srvc.getAttendancePolicyId(policy_name, compName);
         policy = srvc.getAttendancePolicy(policy_id);
         srvc.deleteAttendancePolicy(policy);
 
-        Reporter("Policy Deleted Successfully ","INFO");
+        policy_id  = srvc.getAttendancePolicyId(policy_name, compName);
+        Assert.assertNull(policy_id,"Policy Not Deleted Successfully ");
+
+        Reporter("Attendance Policy Deleted Successfully", "PASS");
     }
 }

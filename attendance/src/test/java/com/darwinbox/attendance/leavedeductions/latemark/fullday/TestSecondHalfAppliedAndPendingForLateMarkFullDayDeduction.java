@@ -155,8 +155,6 @@ public class TestSecondHalfAppliedAndPendingForLateMarkFullDayDeduction extends 
                     count = count % lateMark.getCount();
 
             }
-
-            break;
         }
     }
 

@@ -141,8 +141,6 @@ public class TestFullDayAppliedAndApprovedForLateMarkHalfDayDeduction extends Te
                 atb.validateNoLeave(status, leaveName, this);
 
             }
-
-            break;
         }
     }
 
