@@ -124,7 +124,20 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
                                 Reporter("Leave Type is" + leavePolicyObject.getLeave_Type(), "Info");
                                 Reporter("Server Date is" + serverDateInFormat.toString(), "Info");
 
-                                actualLeaveBalance= new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+
+                                //making sure it wont fail on exception bec of JSON PARSER
+                                try {
+                                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                }
+                                catch (Exception e){
+                                    try {
+                                        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                    }
+                                    catch (Exception e1){
+                                        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+
+                                    }
+                                }
                                 Reporter("Actual Leave Balance  is  ..." + actualLeaveBalance, "Info");
                                 expecetedLeaveBalance=calculateLeaveBalance(employee.getDoj(), getServerOrLocalDate().toString());
                                 Reporter("Expected Leave Balance is " + expecetedLeaveBalance, "Info");
