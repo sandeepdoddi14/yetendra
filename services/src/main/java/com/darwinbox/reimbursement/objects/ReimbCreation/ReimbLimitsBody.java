@@ -11,12 +11,12 @@ public class ReimbLimitsBody {
 
     private String band_grade_desig ;
     private String location ;
-    private String uppercappu;
-    private String uppercap;
-    private String nooftimespermonth;
-    private String maxamtpermonth;
-    private String dayspostexpense;
-    private String autoapprovallimit;
+    private float uppercappu;
+    private int uppercaponunits;
+    private int nooftimespermonth;
+    private float maxamtpermonth;
+    private int dayspostexpense;
+    private float autoapprovallimit;
     private boolean autocalculate;
     private List<String> fieldValues = new ArrayList<>();
 
@@ -36,51 +36,51 @@ public class ReimbLimitsBody {
         this.location = location;
     }
 
-    public String getUppercappu() {
+    public float getUppercappu() {
         return uppercappu;
     }
 
-    public void setUppercappu(String uppercappu) {
+    public void setUppercappu(float uppercappu) {
         this.uppercappu = uppercappu;
     }
 
-    public String getUppercap() {
-        return uppercap;
+    public int getUppercaponunits() {
+        return uppercaponunits;
     }
 
-    public void setUppercap(String uppercap) {
-        this.uppercap = uppercap;
+    public void setUppercaponunits(int uppercaponunits) {
+        this.uppercaponunits = uppercaponunits;
     }
 
-    public String getNooftimespermonth() {
+    public int getNooftimespermonth() {
         return nooftimespermonth;
     }
 
-    public void setNooftimespermonth(String nooftimespermonth) {
+    public void setNooftimespermonth(int nooftimespermonth) {
         this.nooftimespermonth = nooftimespermonth;
     }
 
-    public String getMaxamtpermonth() {
+    public float getMaxamtpermonth() {
         return maxamtpermonth;
     }
 
-    public void setMaxamtpermonth(String maxamtpermonth) {
+    public void setMaxamtpermonth(float maxamtpermonth) {
         this.maxamtpermonth = maxamtpermonth;
     }
 
-    public String getDayspostexpense() {
+    public int getDayspostexpense() {
         return dayspostexpense;
     }
 
-    public void setDayspostexpense(String dayspostexpense) {
+    public void setDayspostexpense(int dayspostexpense) {
         this.dayspostexpense = dayspostexpense;
     }
 
-    public String getAutoapprovallimit() {
+    public float getAutoapprovallimit() {
         return autoapprovallimit;
     }
 
-    public void setAutoapprovallimit(String autoapprovallimit) {
+    public void setAutoapprovallimit(float autoapprovallimit) {
         this.autoapprovallimit = autoapprovallimit;
     }
 
@@ -102,18 +102,29 @@ public class ReimbLimitsBody {
 
     public  void toObject(Map<String,String> data)
     {
-        setBand_grade_desig(data.get("Band_grade_desig"));
+        setBand_grade_desig(data.get("Band_grade_designation"));
         setLocation(data.get("Location"));
-        setUppercap(data.get("Uppercappu"));
+        setUppercappu(Float.parseFloat(data.get("UpperCapPerUnit")));
+        setUppercaponunits(Integer.parseInt(data.get("UpperCap")));
+        setNooftimespermonth(Integer.parseInt(data.get("NoOfTimesPerMonth")));
+        setMaxamtpermonth(Float.parseFloat("MaxAmountPerPerson"));
+        setDayspostexpense(Integer.parseInt("DaysPostExpense"));
+        setAutoapprovallimit(Float.parseFloat("AutoApprovalLimit"));
+        setAutocalculate(Boolean.parseBoolean("AutoCalculate"));
     }
 
-    public List<NameValuePair> toMap()
+    public List<NameValuePair> toMap(int count)
     {
         List<NameValuePair> body = new ArrayList<>();
-        body.add(new BasicNameValuePair("Reimb_set[0][designation][]",getBand_grade_desig()));
-        body.add(new BasicNameValuePair("Reimb_set[0][location][]",getLocation()));
-        body.add(new BasicNameValuePair("Reimb_set[0][rupees]",getUppercap()));
-        body.add(new BasicNameValuePair("Reimb_set[0][upper_cap_unit]", getUppercappu()));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][designation][]",getBand_grade_desig()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][location][]",getLocation()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][rupees]",getUppercappu()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][upper_cap_unit]", getUppercappu()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][number_of_times]",getNooftimespermonth()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][max_in_month]",getMaxamtpermonth()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][in_how_many_days]",getDayspostexpense()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][auto_cal_and_non_editable]",isAutocalculate()+""));
+        body.add(new BasicNameValuePair("Reimb_set["+count+"][auto_approval_limit]",getAutoapprovallimit()+""));
 
         return  body;
     }

@@ -21,6 +21,22 @@ public class ReimbForm extends Services {
     private List<String> applicableToList = new ArrayList<>();
     private List<ReimbLimitsBody> reimbLimitsBodyList = new ArrayList<>();
 
+    public List<String> getApplicableToList() {
+        return applicableToList;
+    }
+
+    public void setApplicableToList(List<String> applicableToList) {
+        this.applicableToList = applicableToList;
+    }
+
+    public List<ReimbLimitsBody> getReimbLimitsBodyList() {
+        return reimbLimitsBodyList;
+    }
+
+    public void setReimbLimitsBodyList(List<ReimbLimitsBody> reimbLimitsBodyList) {
+        this.reimbLimitsBodyList = reimbLimitsBodyList;
+    }
+
     public enum currency {
         RUPEE, DOLLAR, POUNDS, AED, EURO, PHP, SGD, IDR, HKD, AUD, BDT, VND, CNY, TWD, JPY, MYR, KRW, KHR
     }
@@ -106,9 +122,6 @@ public class ReimbForm extends Services {
         setApprovalflow(data.get("Units"));
         setApprovalflow(data.get("Approval_Flow"));
         setApprovalflow(data.get("Ledger"));
-        setApprovalflow(data.get("TestCaseName"));
-        setApprovalflow(data.get("Test_Description"));
-
     }
     //check for Band method: all those fields which take MOngo ID as input
     //this method used to set (java object) values to web application
@@ -118,22 +131,33 @@ public class ReimbForm extends Services {
      *
      * @return
      */
-    public Map<String,String> toMap() {
+    public List<NameValuePair> toMap() {
         List<String> applicableToList = new ArrayList<>();
+        List<NameValuePair> body = new ArrayList<>();
 
-        Map<String, String> body = new HashMap<>();
-        body.put("reimb_id", getId());
-        body.put("TenantReimbursement[name]", getName());
-        body.put("TenantReimbursement[description]", getDescription());
-        body.put("TenantReimbursement[currency_allowed]", getCurrency());
-        body.put("TenantReimbursement[parent_company_id]", getGrpCompany());
-        body.put("TenantReimbursement[approval_flow]", getApprovalflow());
-        body.put("TenantReimbursement[units]", getUnits());
-        body.put("TenantReimbursement[ledger]", getLedger());
+        body.add(new BasicNameValuePair("reimb_id", getId()));
+        body.add(new BasicNameValuePair("TenantReimbursement[name]", getName()));
+        body.add(new BasicNameValuePair("TenantReimbursement[description]", getDescription()));
+        body.add(new BasicNameValuePair("TenantReimbursement[currency_allowed]", getCurrency()));
+        body.add(new BasicNameValuePair("TenantReimbursement[parent_company_id]", getGrpCompany()));
+        body.add(new BasicNameValuePair("TenantReimbursement[approval_flow]", getApprovalflow()));
+        body.add(new BasicNameValuePair("TenantReimbursement[units]", getUnits()));
+        body.add(new BasicNameValuePair("TenantReimbursement[ledger]", getLedger()));
 
+        for(String applicableTo : getApplicableToList())
+        {
+            body.add(new BasicNameValuePair("TenantReimbursement[applicable][]",applicableTo));
+        }
+
+        int count=0;
+        for(ReimbLimitsBody reimbLimitsBody : reimbLimitsBodyList)
+        {
+
+            body.addAll(body.size(), reimbLimitsBody.toMap(count));
+            count++;
+        }
             //try with Hashmapinstaed of list types here, for single values.
             //check for Dept, location, emp type, band, grade
-
         return body;
     }
 }
