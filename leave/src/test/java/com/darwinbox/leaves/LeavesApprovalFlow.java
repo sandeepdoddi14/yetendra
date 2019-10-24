@@ -7,10 +7,10 @@ import Service.*;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
+
 import com.darwinbox.leaves.Utils.LeaveBase;
 import com.darwinbox.leaves.Utils.MapUtils;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
-import com.github.javafaker.Bool;
 import org.apache.http.NameValuePair;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
