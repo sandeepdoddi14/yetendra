@@ -38,6 +38,7 @@ public class GenericMethodsInDataFetching extends TestBase{
         loginResponse.put("mongo_id", response1.path("user_details.mongo_id"));
         return loginResponse;
     }
+
     public Response getPostResponse(String jsonBody, String api, String token, String user_id, String mongo_id)
     {
         String applicationURL = data.get("@@url");
@@ -68,6 +69,30 @@ public class GenericMethodsInDataFetching extends TestBase{
         Response response = request.post(applicationURL+api);
         return response;
     }
+
+    public HashMap loginResponse_mobile(String username, String password) {
+        RequestSpecification request = RestAssured.given();
+        request.header("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+
+        json.put("username", username);
+        json.put("password", password);
+
+        request.body(json.toString());
+        Response response = request.post(getData("@@url") + "/Mobileapi/auth");
+        int code = response.getStatusCode();
+
+        HashMap loginResponse = new HashMap();
+        loginResponse.put("token", response.path("token"));
+        loginResponse.put("user_id", response.path("user_id"));
+        loginResponse.put("tenant_id", response.path("tenant_id"));
+        loginResponse.put("expires", response.path("expires"));
+        loginResponse.put("is_manager", response.path("is_manager"));
+        loginResponse.put("status", response.path("status"));
+        loginResponse.put("message", response.path("message"));
+        return loginResponse;
+    }
+
 /*
 Return all the current month dates in the required format passed in parameters
 

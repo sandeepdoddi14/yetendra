@@ -6,7 +6,6 @@ import com.darwinbox.mobile.dataFetching.mobileData.attendance.MobileCheckInShow
 import com.darwinbox.mobile.dataFetching.webData.attendance.WebCheckInShow;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
-import org.testng.Reporter;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;

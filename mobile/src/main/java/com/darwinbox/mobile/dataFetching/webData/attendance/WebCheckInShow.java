@@ -3,9 +3,11 @@ package com.darwinbox.mobile.dataFetching.webData.attendance;
 
 import com.darwinbox.dashboard.pageObjectRepo.generic.HomePage;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
+import com.darwinbox.dashboard.pageObjectRepo.generic.MainMenuNavigationPage;
 import com.darwinbox.framework.uiautomation.base.TestBase;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
+import com.darwinbox.mobile.pages.attendance.AttendanceViewPage;
 import com.darwinbox.mobile.pages.attendance.CheckInShowPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
