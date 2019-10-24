@@ -27,6 +27,17 @@ public class EmployeeServices extends Services {
         return doPost(reqURL, headers, formData);
     }
 
+
+    public HashMap<String,String> getGenders(){
+        HashMap<String,String> genders=new HashMap<String,String>();
+        genders.put("For All","0");
+        genders.put("male","1");
+        genders.put("female","2");
+        genders.put("No Disclosure Only","3");
+        genders.put("others","other");
+        return  genders;
+    }
+
     public void addEmployee(Employee employee) {
         String reqURL = getData("@@url") + "/employee/add";
         List<NameValuePair> formData = new ArrayList<>();

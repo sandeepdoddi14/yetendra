@@ -23,6 +23,54 @@ import java.util.regex.Pattern;
 
 public class Services extends TestBase {
 
+    /*
+ get job level info
+ @@returns String--> JobLevelIDs
+  */
+    public HashMap<String, String> getJobLevelIDS() {
+        String url = data.get("@@url") + "/settings/getjoblevel";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+
+        int i = 0;
+        HashMap<String, String> ids = new HashMap<>();
+        while (i < arr.length()) {
+            String jobLevel = arr.getJSONArray(i).get(1).toString();
+            String grade = arr.getJSONArray(i).get(2).toString();
+            String jobLevelId = arr.getJSONArray(i).get(3).toString().substring(7, 20);
+            ids.put(jobLevel, jobLevelId);
+            i++;
+        }
+        return ids;
+    }
+
+    public HashMap<String, HashMap<String, String>> getProbations() {
+        String url = data.get("@@url") + "/settings/getProbation";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+
+        int i = 0;
+        HashMap<String, HashMap<String, String>> probationInfo = new HashMap<>();
+        while (i < arr.length()) {
+            String name = arr.getJSONArray(i).get(0).toString();
+            String value = arr.getJSONArray(i).get(1).toString();
+            String id = arr.getJSONArray(i).get(2).toString().substring(7, 20);
+            HashMap<String, String> ids = new HashMap();
+            ids.put(value, id);
+            probationInfo.put(name, ids);
+            i++;
+        }
+        return probationInfo;
+    }
+
     public String doGet(String url, Map<String, String> headers) {
 
         try {
