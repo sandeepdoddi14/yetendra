@@ -17,10 +17,7 @@ import org.apache.commons.configuration.SubnodeConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
-import org.openqa.selenium.NoSuchSessionException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 // import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.testng.IRetryAnalyzer;
 import org.testng.ITestResult;
@@ -525,6 +522,20 @@ public class TestBase implements IRetryAnalyzer {
 	 */
 	public String getData(String key) {
 		return data.get(key);
+	}
+
+
+	public void logoutFromSession() {
+		try{
+			driver.manage().deleteAllCookies();
+			driver.get(data.get("@@url"));
+			//driver.manage().addCookie(new Cookie("Cookie",sessionId,"automation.qa.darwinbox.io","/", new Date(),true));
+			//driver.manage().addCookie(new Cookie("Cookie",sessionId));
+			//driver.get(data.get("@@url"));
+		} catch (Exception e) {
+			log.info(" Driver object exception. Creating new session and closing existing one");
+			gotoHomePage();
+		}
 	}
 
 }

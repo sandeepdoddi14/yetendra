@@ -170,7 +170,7 @@ public class EmployeeServices extends Services {
         Map<String, String> ma = getEmpIDAndMongoID(emps.get(0).getEmployeeID());
         emps.get(0).setMongoID(ma.get("userMongoID"));
 
-        resetPassword(emps.get(0),"123456");
+        resetPassword(emps.get(0),"123456Aa!");
 
         return emps.get(0);
     }
@@ -262,7 +262,7 @@ public class EmployeeServices extends Services {
         employee.setEmployeeID(userAndEmpIds.get("employeeID"));
         Map<String, String> ma = getEmpIDAndMongoID(employee.getEmployeeID());
         employee.setMongoID(ma.get("userMongoID"));
-        employee.setPassword("123456");
+        employee.setPassword("123456Aa!");
         return employee;
     }
 
@@ -507,7 +507,7 @@ public class EmployeeServices extends Services {
         Map<String, String> ma = getEmpIDAndMongoID(emps.get(0).getEmployeeID());
         emps.get(0).setMongoID(ma.get("userMongoID"));
 
-        resetPassword(emps.get(0),"123456");
+        resetPassword(emps.get(0),"123456Aa!");
 
         return emps.get(0);
     }
@@ -608,7 +608,7 @@ public class EmployeeServices extends Services {
         if (!(actResponse != null && actResponse.getString("status").equals("success"))) {
             throw new RuntimeException("ERROR: Unable to Activate employee");
         }
-        resetPassword(userID, "123456");
+        resetPassword(userID, "123456Aa!");
     }
 
     public boolean resetPassword(String userID, String password) {

@@ -1,5 +1,3 @@
-package com.darwinbox.recruitment;
-
 import com.darwinbox.attendance.services.EmployeeServices;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -61,6 +59,9 @@ public class TestCRUD extends TestBase {
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessful ");
 
 
+
+
+
         candidateTagsService.getAllCandidateTags();
         candidateTags.toObject(testData);
         candidateTagsService.createCandidateTags(candidateTags);
@@ -81,7 +82,6 @@ public class TestCRUD extends TestBase {
 
         hiringWorkFlow.toObject(testData);
         hiringWorkFlowService.createSettings(hiringWorkFlow);
-
 
     }
     }
