@@ -70,8 +70,8 @@ public class   BusinessUnitServices extends Services {
         HashMap<String, String> ids = new HashMap();
         while (i < arr.length()) {
             //Pattern p = Pattern.compile("id=\"\\w+\"");
-            String grade_name = arr.getJSONArray(i).getString(0);
-            String value = arr.getJSONArray(i).getString(1).substring(7, 20);
+            String grade_name = arr.getJSONArray(i).getString(1);
+            String value = arr.getJSONArray(i).getString(3).substring(7, 20);
 
             //  if (m.find()) {
             ids.put(grade_name, value);

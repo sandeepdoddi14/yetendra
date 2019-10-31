@@ -75,8 +75,7 @@ public class CarryForward extends LeaveAccuralBase {
         //if(carryForwardBalance.getProbation_period_before_leave_validity().probation)
             ///carryForwardBalance.getProbation_period_before_leave_validity()
 
-
-            super.setLeavePolicyObject(carryForwardBalance);
+        super.setLeavePolicyObject(carryForwardBalance);
 
         leaveCycleStartDate = LocalDate.parse("2019-05-01");
         leaveCycleEndDate = LocalDate.parse("2020-04-30");
