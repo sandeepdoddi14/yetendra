@@ -96,8 +96,12 @@ public class TestLateDurationAndEarlyDurationDeduction extends TestBase {
 
         Reporter(" Actual Status " + date_test + " " + status.replaceAll("\\<.*?>", ""), "INFO");
 
+        boolean isFirst = true;
+
         for ( LeaveDeductionsBase ldbase : list) {
-            atb.validateLeave(!ldbase.isApprovalRequired(),true,status,atb.getLeaveNameById(ldbase.getLeaveId()),this);
+            if ( ldbase.isInDay() || isFirst )
+                atb.validateLeave(!ldbase.isApprovalRequired(),true,status,atb.getLeaveNameById(ldbase.getLeaveId()),this);
+            isFirst = false;
         }
 
         validateDate();
