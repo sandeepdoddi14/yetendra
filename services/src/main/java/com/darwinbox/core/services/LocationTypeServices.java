@@ -1,6 +1,6 @@
-package com.darwinbox.core.location.services;
+package com.darwinbox.core.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.core.location.objects.LocationType;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;

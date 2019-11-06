@@ -1,14 +1,10 @@
 package com.darwinbox.recruitment.objects;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
-import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
 import com.darwinbox.recruitment.services.RequisitionService;
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 
 import java.util.*;
 

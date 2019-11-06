@@ -65,7 +65,7 @@ public class LeaveBase extends TestBase {
             LeavePolicyObject policyObject = new LeavePolicyObject();
             policyObject.setFields(data);
             List<NameValuePair> body = policyObject.createRequest();
-            new LeaveService().createLeaveForPolicy(body, policyObject);
+            //new LeaveService().createLeaveForPolicy(body, policyObject);
             leavePolicies.add(policyObject);
         }
 

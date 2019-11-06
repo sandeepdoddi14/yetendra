@@ -1,7 +1,7 @@
 package com.darwinbox.recruitment.objects;
 
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 

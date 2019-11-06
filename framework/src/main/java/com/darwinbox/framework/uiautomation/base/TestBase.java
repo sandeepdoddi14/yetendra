@@ -63,6 +63,7 @@ public class TestBase implements IRetryAnalyzer {
 	public static Markup strcode = MarkupHelper.createCodeBlock("text");
 	public static String WriteResultToExcel = "No";
 
+	//gets count of tests when multiple test are used in testNG.xml
 	public static int counter = 0;
 
 
@@ -265,8 +266,11 @@ public class TestBase implements IRetryAnalyzer {
 		try{
 			driver.manage().deleteAllCookies();
 			driver.get(data.get("@@url"));
+			//Thread.sleep(4000);
 			driver.manage().deleteAllCookies();
 			counter++;
+
+			//reinvoking browwser for every 500 test count for more than 2 tests(classes)
 			if ( counter == 500 ) {
 				reinit();
 				gotoHomePage();

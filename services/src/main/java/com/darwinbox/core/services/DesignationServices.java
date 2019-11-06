@@ -1,7 +1,6 @@
 package com.darwinbox.core.services;
-import com.darwinbox.core.Services;
+import com.darwinbox.Services;
 import com.darwinbox.core.employee.objects.Designation;
-import com.darwinbox.core.employee.objects.DesignationNames;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

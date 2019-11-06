@@ -3,7 +3,7 @@ package com.darwinbox.attendance.services.apply;
 import com.darwinbox.attendance.objects.Attendance;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.NameValuePair;

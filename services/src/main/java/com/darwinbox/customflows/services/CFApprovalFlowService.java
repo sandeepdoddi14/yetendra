@@ -1,8 +1,7 @@
 package com.darwinbox.customflows.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlow;
-import com.darwinbox.customflows.objects.forms.CFForm;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -11,8 +10,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CFApprovalFlowService extends Services {
 

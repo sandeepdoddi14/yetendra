@@ -1,6 +1,6 @@
 package com.darwinbox.attendance.services.apply;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;

@@ -1,7 +1,7 @@
 package com.darwinbox.attendance.services.settings;
 
 import com.darwinbox.attendance.objects.Shift;
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.HashMap;

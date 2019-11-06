@@ -1,16 +1,13 @@
 package com.darwinbox.attendance.services.settings;
 
 import com.darwinbox.attendance.objects.Holiday;
-import com.darwinbox.attendance.objects.Shift;
-import com.darwinbox.attendance.services.Services;
-import org.json.JSONObject;
+import com.darwinbox.Services;
 import org.json.simple.JSONArray;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class HolidayService extends Services {
 
