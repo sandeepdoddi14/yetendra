@@ -1,13 +1,11 @@
 package com.darwinbox.recruitment.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.recruitment.objects.RecruitmentSettings;
 import org.apache.http.NameValuePair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RecruitmentSettingsService extends Services {
 

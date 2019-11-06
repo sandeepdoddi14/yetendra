@@ -1,4 +1,4 @@
-package com.darwinbox.core;
+package com.darwinbox;
 
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
@@ -24,25 +24,33 @@ import java.util.regex.Pattern;
 
 public class Services extends TestBase {
 
+    public String getCurrentInstanceGroupCompany(){
+        return data.get("@@url").replaceAll(".qa.darwinbox.io","").replaceAll("https://","");
+    }
 
-    public Map<String,String> getWeeklyOFFlist(){
-        String url=data.get("@@url")+UtilityHelper.getProperty("ServiceUrls","getWeeklyOffList");
+    public HashMap<String, HashMap<String, String>> getProbations() {
+        String url = data.get("@@url") + "/settings/getProbation";
 
         HashMap<String, String> headers = new HashMap<>();
         headers.put("X-Requested-With", "XMLHttpRequest");
-        String response=doGet(url,headers);
-        JSONObject obj = new JSONObject(response);
-        JSONArray arr = obj.getJSONArray("aaData");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+
         int i = 0;
-        HashMap<String, String> ids = new HashMap();
+        HashMap<String, HashMap<String, String>> probationInfo = new HashMap<>();
         while (i < arr.length()) {
-            ids.put(arr.getJSONArray(i).getString(0).split("/a>")[1],
-                    arr.getJSONArray(i).getString(2).substring(7,20));
+            String name = arr.getJSONArray(i).get(0).toString();
+            String value = arr.getJSONArray(i).get(1).toString();
+            String id = arr.getJSONArray(i).get(2).toString().substring(7, 20);
+            HashMap<String, String> ids = new HashMap();
+            ids.put(value, id);
+            probationInfo.put(name, ids);
             i++;
         }
-
-        return ids;
+        return probationInfo;
     }
+
 
 
 
@@ -69,8 +77,6 @@ public class Services extends TestBase {
 
         return defaultBody;
     }
-
-
 
 
     public String createWeeklyOff(String days) {
@@ -129,12 +135,31 @@ public class Services extends TestBase {
     }
 
 
+    public Map<String,String> getWeeklyOFFlist(){
+        String url=data.get("@@url")+UtilityHelper.getProperty("ServiceUrls","getWeeklyOffList");
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        String response=doGet(url,headers);
+        JSONObject obj = new JSONObject(response);
+        JSONArray arr = obj.getJSONArray("aaData");
+        int i = 0;
+        HashMap<String, String> ids = new HashMap();
+        while (i < arr.length()) {
+            ids.put(arr.getJSONArray(i).getString(0).split("/a>")[1],
+                    arr.getJSONArray(i).getString(2).substring(7,20));
+            i++;
+        }
+
+        return ids;
+    }
 
     /*
- get job level info
- @@returns String--> JobLevelIDs
-  */
-    public HashMap<String, String> getJobLevelIDS() {
+  get job level info
+  @@returns String--> JobLevel
+            Hashmap-->Grade,JobLevelId
+   */
+    public HashMap<String, HashMap<String, String>> getJobLevel() {
         String url = data.get("@@url") + "/settings/getjoblevel";
 
         HashMap<String, String> headers = new HashMap<>();
@@ -144,39 +169,20 @@ public class Services extends TestBase {
         JSONArray arr = response.getJSONArray("aaData");
 
         int i = 0;
-        HashMap<String, String> ids = new HashMap<>();
+        HashMap<String, HashMap<String, String>> jobLevelInfo = new HashMap<>();
         while (i < arr.length()) {
-            String jobLevel = arr.getJSONArray(i).get(1).toString();
-            String grade = arr.getJSONArray(i).get(2).toString();
-            String jobLevelId = arr.getJSONArray(i).get(3).toString().substring(7, 20);
-            ids.put(jobLevel, jobLevelId);
-            i++;
-        }
-        return ids;
-    }
-
-    public HashMap<String, HashMap<String, String>> getProbations() {
-        String url = data.get("@@url") + "/settings/getProbation";
-
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("X-Requested-With", "XMLHttpRequest");
-
-        JSONObject response = new JSONObject(doGet(url, headers));
-        JSONArray arr = response.getJSONArray("aaData");
-
-        int i = 0;
-        HashMap<String, HashMap<String, String>> probationInfo = new HashMap<>();
-        while (i < arr.length()) {
-            String name = arr.getJSONArray(i).get(0).toString();
-            String value = arr.getJSONArray(i).get(1).toString();
-            String id = arr.getJSONArray(i).get(2).toString().substring(7, 20);
+            String jobLevel = arr.getJSONArray(i).get(0).toString();
+            String grade = arr.getJSONArray(i).get(1).toString();
+            String jobLevelId = arr.getJSONArray(i).get(2).toString().substring(7, 20);
             HashMap<String, String> ids = new HashMap();
-            ids.put(value, id);
-            probationInfo.put(name, ids);
+            ids.put(grade, jobLevel);
+            jobLevelInfo.put(jobLevelId, ids);
             i++;
         }
-        return probationInfo;
+        return jobLevelInfo;
     }
+
+
 
     public String doGet(String url, Map<String, String> headers) {
 
@@ -466,7 +472,7 @@ public class Services extends TestBase {
 
     /*
     gets bands
-     *//*
+     */
     public HashMap<String, String> getBands() {
         String url = data.get("@@url") + "/settings/GetBands";
 
@@ -490,6 +496,54 @@ public class Services extends TestBase {
             i++;
         }
         return ids;
-    }*/
+    }
+
+
+    public HashMap<String, String> getUserAssignments() {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        JSONObject response = new JSONObject(doGet(getData("@@url") + "/settings/getAssignment", headers));
+
+        JSONArray arr = response.getJSONArray("aaData");
+        int i = 0;
+        HashMap<String, String> ids = new HashMap();
+        while (i < arr.length()) {
+            Pattern p = Pattern.compile("id=\"\\w+\"");
+            Matcher m = p.matcher(arr.getJSONArray(i).getString(1));
+            if (m.find()) {
+                ids.put(arr.getJSONArray(i).getString(0), StringUtils.substringsBetween(m.group(0), "\"", "\"")[0]);
+            } else {
+                ids.put(arr.getJSONArray(i).getString(0), "");
+            }
+            i++;
+        }
+        return ids;
+    }
+
+    /*
+get job level info
+@@returns String--> JobLevelIDs
+ */
+    public HashMap<String, String> getJobLevelIDS() {
+        String url = data.get("@@url") + "/settings/getjoblevel";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+        JSONArray arr = response.getJSONArray("aaData");
+
+        int i = 0;
+        HashMap<String, String> ids = new HashMap<>();
+        while (i < arr.length()) {
+            String jobLevel = arr.getJSONArray(i).get(1).toString();
+            String grade = arr.getJSONArray(i).get(2).toString();
+            String jobLevelId = arr.getJSONArray(i).get(3).toString().substring(7, 20);
+            ids.put(jobLevel, jobLevelId);
+            i++;
+        }
+        return ids;
+    }
+
 
 }

@@ -1,6 +1,6 @@
 package com.darwinbox.leaves.Services;
 
-import com.darwinbox.core.Services;
+import com.darwinbox.Services;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;

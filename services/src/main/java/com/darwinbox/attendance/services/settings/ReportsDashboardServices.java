@@ -1,7 +1,7 @@
 package com.darwinbox.attendance.services.settings;
 
 import com.darwinbox.attendance.objects.Reports;
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import org.json.JSONObject;
 
 import java.time.temporal.ChronoUnit;

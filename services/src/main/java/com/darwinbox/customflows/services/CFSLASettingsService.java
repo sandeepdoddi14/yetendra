@@ -1,9 +1,7 @@
 package com.darwinbox.customflows.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.customflows.objects.CFSLASettings;
-import com.darwinbox.recruitment.objects.ArchivePosition;
-import com.darwinbox.recruitment.objects.CandidateTags;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;

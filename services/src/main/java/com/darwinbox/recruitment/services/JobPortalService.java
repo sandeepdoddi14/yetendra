@@ -1,6 +1,6 @@
 package com.darwinbox.recruitment.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.recruitment.objects.JobPortals;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;

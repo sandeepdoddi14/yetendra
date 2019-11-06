@@ -1,9 +1,7 @@
 package com.darwinbox.core.services;
 
-import com.darwinbox.core.Services;
+import com.darwinbox.Services;
 import com.darwinbox.core.company.objects.Division;
-import com.darwinbox.core.employee.objects.BusinessUnit;
-import com.darwinbox.core.employee.objects.Designation;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;

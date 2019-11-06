@@ -1,9 +1,8 @@
 package com.darwinbox.recruitment.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.recruitment.objects.CandidateTags;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

@@ -4,7 +4,7 @@ package com.darwinbox.leaves.Application;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Holiday;
 import com.darwinbox.attendance.services.EmployeeServices;
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.attendance.services.settings.HolidayService;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
@@ -179,7 +179,10 @@ public class OverUtilization extends LeaveBase {
             employeeServices.createWeeklyOffForAnEmp(employee.getUserID(), weeklyOffID);
         }
 
-        double employeeBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+        //below api wont work in production
+        //double employeeBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+
+        double employeeBalance = Double.parseDouble(new LeaveAdmin().GetLeavesByOnBehalf(employee.getMongoID()).get(leavePolicyObject.getLeave_Type()));
 
         //  expectedLeaveDetails = new LeaveService().calculateDuration(employee.getMongoID(), workingDays[0], workingDays[workingDays.length - 1], new LeaveService().getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId), halfDay);
         expectedLeaveDetails = new LeaveService().calculateDuration(employee.getMongoID(), leaveStartDate, workingDays.get(workingDays.size()-1), new LeaveService().getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId), halfDay);

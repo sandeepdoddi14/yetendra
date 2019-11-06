@@ -1,10 +1,7 @@
 package com.darwinbox.attendance.services.settings;
 
 import com.darwinbox.attendance.objects.AttendanceSettingsPage;
-import com.darwinbox.attendance.services.Services;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.darwinbox.Services;
 
 public class AttendanceSettingsServices extends Services {
 

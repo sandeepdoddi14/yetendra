@@ -1,7 +1,7 @@
 package com.darwinbox.leaves.pageObjectRepo.settings;
 
 
-import com.darwinbox.core.Services;
+import com.darwinbox.Services;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.framework.uiautomation.base.TestBase;
