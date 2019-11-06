@@ -1,7 +1,8 @@
-package com.darwinbox.recruitment.objects;
+package com.darwinbox.recruitment.objects.HiringWorkFlow;
 
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.Services;
+import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlowBody;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -13,10 +14,12 @@ public class HiringWorkFlow extends Services {
          private boolean firstStageStatus;
          private String secondStageName;
 
-         private List<String> assessmentName;
-         private List<String> assessmentMeasure;
-         private List<String> stepType;
+          List<String> assessmentName;
+          List<String> assessmentMeasure;
+          List<String> stepType;
          private String lastStageName;
+    private List<HiringWorkFlowLineItems> hiringWorkFlowLineItems = new ArrayList<>();
+
 
     public List<String> getStepType() {
         return stepType;
@@ -74,6 +77,11 @@ public class HiringWorkFlow extends Services {
         this.lastStageName = lastStageName;
     }
 
+
+    public void add(HiringWorkFlowLineItems hiringWorkFlowLineItem){
+        hiringWorkFlowLineItems.add(hiringWorkFlowLineItem);
+    }
+
     public List<NameValuePair> toMap() {
 
         List<NameValuePair> list = new ArrayList<>();
@@ -85,39 +93,24 @@ public class HiringWorkFlow extends Services {
         body.put("HiringWorkflow[second_stage_name]",getSecondStageName());
         body.put("HiringWorkflow[last_stage_name]",getLastStageName());
 
-        for(int count = 0;count <=1;count++) {
-            for (String assessmentName : getAssessmentName()) {
-                list.add(new BasicNameValuePair("Recruitment_set[" + count + "][assessment]", assessmentName));
-            }
-            for (String assessmentMeasure : getAssessmentMeasure()) {
-                list.add(new BasicNameValuePair("Recruitment_set[" + count + "][measure]", assessmentMeasure));
-            }
-            for (String step : getStepType()) {
-                list.add(new BasicNameValuePair("Recruitment_set[" + count + "][step_type]", step));
-            }
+        int count = 0;
+        for (HiringWorkFlowLineItems HWbody : hiringWorkFlowLineItems) {
+
+            list.addAll(list.size(), (HWbody.toMap(count)));
+            count++;
         }
+
+
         list.addAll(mapToFormData(body)) ;
         return list;
     }
 
-    public void toObject(Map<String, String> body) {
+        public void toObject(Map<String, String> body) {
 
         setFirstStageName(body.get("firstStageName"));
         setFirstStageStatus(LeaveDeductionsBase.getFilter(body,"setFirstStageNameStatus","true"));
         setSecondStageName(body.get("secondStageName"));
         setLastStageName(body.get("lastStageName"));
-
-           List<String> firstSetName = new ArrayList<>();
-           List<String> firstSetMeasure = new ArrayList<>();
-           List<String> firstSetstepType = new ArrayList<>();
-           firstSetName.add(body.get("firstSetName"));
-           firstSetMeasure.add(body.get("firstSetMeasure"));
-           firstSetstepType.add(body.get("firstSetStepType"));
-        /* firstSetName.add("Manager Round");
-           firstSetMeasure.add("12");
-        */    setAssessmentName(firstSetName);
-            setStepType(firstSetstepType);
-            setAssessmentMeasure(firstSetMeasure);
 
     }
 
