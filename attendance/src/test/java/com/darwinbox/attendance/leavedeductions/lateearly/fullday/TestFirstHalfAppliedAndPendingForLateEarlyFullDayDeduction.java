@@ -156,7 +156,6 @@ public class TestFirstHalfAppliedAndPendingForLateEarlyFullDayDeduction extends 
 
             }
 
-            break;
         }
     }
 

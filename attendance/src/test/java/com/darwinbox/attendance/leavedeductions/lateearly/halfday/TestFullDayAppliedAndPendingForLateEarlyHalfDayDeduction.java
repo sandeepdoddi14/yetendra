@@ -148,8 +148,6 @@ public class TestFullDayAppliedAndPendingForLateEarlyHalfDayDeduction extends Te
                     count = count % latePlusEarly.getCount();
 
             }
-
-            break;
         }
     }
 

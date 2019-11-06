@@ -1,4 +1,4 @@
-package com.darwinbox.attendance.policies;
+package com.darwinbox.attendance.crud.policies;
 
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
 import com.darwinbox.attendance.objects.policy.others.PolicyInfo;

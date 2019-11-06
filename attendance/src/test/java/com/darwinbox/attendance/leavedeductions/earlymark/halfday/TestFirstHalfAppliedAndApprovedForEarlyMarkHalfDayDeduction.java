@@ -155,8 +155,6 @@ public class TestFirstHalfAppliedAndApprovedForEarlyMarkHalfDayDeduction extends
                     count = count % earlyMark.getCount();
 
             }
-
-            break;
         }
     }
 

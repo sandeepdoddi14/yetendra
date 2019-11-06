@@ -54,7 +54,7 @@ public class TestLateDurationAndEarlyDurationDeduction extends TestBase {
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "Login Unsuccessfull ");
         Assert.assertTrue(loginPage.switchToAdmin(), "Switch to Admin Unsuccessfull ");
 
-        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPolicies.xlsx");
+        AttendanceTestBase atb = AttendanceTestBase.getObject("LeaveDeductionPoliciesMultiple.xlsx");
 
         AttendancePolicy policy = atb.getAttendancePolicy(testData.get("PolicyName"));
         Shift shift = atb.getShift(testData.get("Shift Name"));
@@ -96,8 +96,12 @@ public class TestLateDurationAndEarlyDurationDeduction extends TestBase {
 
         Reporter(" Actual Status " + date_test + " " + status.replaceAll("\\<.*?>", ""), "INFO");
 
+        boolean isFirst = true;
+
         for ( LeaveDeductionsBase ldbase : list) {
-            atb.validateLeave(!ldbase.isApprovalRequired(),true,status,atb.getLeaveNameById(ldbase.getLeaveId()),this);
+            if ( ldbase.isInDay() || isFirst )
+                atb.validateLeave(!ldbase.isApprovalRequired(),true,status,atb.getLeaveNameById(ldbase.getLeaveId()),this);
+            isFirst = false;
         }
 
         validateDate();

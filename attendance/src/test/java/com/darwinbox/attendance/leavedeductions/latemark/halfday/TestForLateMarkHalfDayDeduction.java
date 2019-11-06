@@ -146,8 +146,6 @@ public class TestForLateMarkHalfDayDeduction extends TestBase {
                     count = count % lateMark.getCount();
 
             }
-
-            break;
         }
     }
 }

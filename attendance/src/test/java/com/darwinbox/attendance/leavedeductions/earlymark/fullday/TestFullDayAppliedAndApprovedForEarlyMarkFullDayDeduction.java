@@ -141,8 +141,6 @@ public class TestFullDayAppliedAndApprovedForEarlyMarkFullDayDeduction extends T
                 atb.validateNoLeave(status, leaveName, this);
 
             }
-
-            break;
         }
     }
 
