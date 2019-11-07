@@ -27,4 +27,5 @@ Payroll, should be created manually(26/27), make sure only one paycycle is avail
 /-----------------------------Run Depeendencies-------------------------/
 weekly off  --> all,none should be created be created manually before run
 
+* Time change, to be set to current date and select instance. example: QA->Automation crons-> /bin/date -s "07 Nov 2019 12:30:00"
 
