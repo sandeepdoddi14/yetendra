@@ -2,7 +2,6 @@ package com.darwinbox.reimbursement.services;
 
 import com.darwinbox.attendance.services.Services;
 import com.darwinbox.reimbursement.objects.ReimbCreation.ReimbUnits;
-import com.github.javafaker.Bool;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -45,12 +44,12 @@ public class ReimbUnitService extends Services {
     }
 
     public ReimbUnits getReimbUnitIdByName(String reunitType) {
-        Map<String, String> allReimbData = getAllReimbUnits();
+        Map<String, String> allReimbUnitsData = getAllReimbUnits();
         ReimbUnits reimbUnits = null;
-        if (allReimbData.containsKey(reunitType)) {
+        if (allReimbUnitsData.containsKey(reunitType)) {
             reimbUnits = new ReimbUnits();
             reimbUnits.setUnitType(reunitType);
-            reimbUnits.setId(allReimbData.get(reunitType));
+            reimbUnits.setId(allReimbUnitsData.get(reunitType));
         }
         return reimbUnits;
     }
@@ -75,7 +74,7 @@ public class ReimbUnitService extends Services {
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
-        List<NameValuePair> obj = reimbUnits.toMap();
+        //List<NameValuePair> obj = reimbUnits.toMap();
         body.put("resource", reimbUnits.getId());
         body.put("mode", "delete");
 
