@@ -33,10 +33,8 @@ public class TestCreateReimbUnits extends TestBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
     public void CreateReimbUnitActions(Map<String, String> testData) throws Exception {
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "User is unable to login to application as Admin");
-        Assert.assertTrue(loginPage.switchToAdmin(), "Switch to admin unsuccessful");
 
         String unitType = testData.get("Unit Type");
-
         ReimbUnits reimbUnits = new ReimbUnits();
         reimbUnits.toObject(testData);
 
