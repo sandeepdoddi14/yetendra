@@ -1,7 +1,7 @@
 package com.darwinbox.core.employee.objects;
 
-import com.darwinbox.core.Services;
-import com.darwinbox.core.location.services.LocationTypeServices;
+import com.darwinbox.Services;
+import com.darwinbox.core.services.LocationTypeServices;
 import com.darwinbox.core.services.DepartmentServices;
 import com.darwinbox.core.services.DesignationNamesServices;
 import com.darwinbox.core.services.FunctionalAreaServices;

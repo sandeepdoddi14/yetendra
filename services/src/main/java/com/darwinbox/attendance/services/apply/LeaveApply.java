@@ -1,10 +1,8 @@
 package com.darwinbox.attendance.services.apply;
 
-import com.darwinbox.attendance.services.Services;
-import org.json.JSONObject;
+import com.darwinbox.Services;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class LeaveApply extends Services {

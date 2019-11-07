@@ -148,8 +148,6 @@ public class TestForLateEarlyHalfDayDeduction extends TestBase {
                 if ( !latePlusEarly.isForEvery())
                     count = count % latePlusEarly.getCount();
             }
-
-            break;
         }
     }
 

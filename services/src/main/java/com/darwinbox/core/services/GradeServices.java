@@ -1,6 +1,5 @@
 package com.darwinbox.core.services;
-import com.darwinbox.core.Services;
-import com.darwinbox.core.employee.objects.Band;
+import com.darwinbox.Services;
 import com.darwinbox.core.employee.objects.Grade;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,22 +62,22 @@ public class GradeServices extends Services {
     /*
      gets grades
       */
-    public HashMap<String, String> getGrades() {
-        String url = data.get("@@url") + "/settings/GetGrades";
+            public HashMap<String, String> getGrades() {
+                String url = data.get("@@url") + "/settings/GetGrades";
 
-        HashMap<String, String> headers = new HashMap<>();
-        headers.put("X-Requested-With", "XMLHttpRequest");
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("X-Requested-With", "XMLHttpRequest");
 
-        JSONObject response = new JSONObject(doGet(url, headers));
-        JSONArray arr = response.getJSONArray("aaData");
-        int i = 0;
-        HashMap<String, String> ids = new HashMap();
-        while (i < arr.length()) {
-            //Pattern p = Pattern.compile("id=\"\\w+\"");
-            String grade_name = arr.getJSONArray(i).getString(0);
-            String value = arr.getJSONArray(i).getString(2).substring(7, 20);
+                JSONObject response = new JSONObject(doGet(url, headers));
+                JSONArray arr = response.getJSONArray("aaData");
+                int i = 0;
+                HashMap<String, String> ids = new HashMap();
+                while (i < arr.length()) {
+                    //Pattern p = Pattern.compile("id=\"\\w+\"");
+                    String grade_name = arr.getJSONArray(i).getString(0);
+                    String value = arr.getJSONArray(i).getString(2).substring(7, 20);
 
-            //  if (m.find()) {
+                    //  if (m.find()) {
             ids.put(grade_name, value);
             //  } else {
             //    ids.put(arr.getJSONArray(i).getString(0), "");

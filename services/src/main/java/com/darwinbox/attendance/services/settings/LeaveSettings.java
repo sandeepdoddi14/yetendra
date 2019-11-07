@@ -1,6 +1,6 @@
 package com.darwinbox.attendance.services.settings;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import org.json.JSONObject;
 import java.util.HashMap;

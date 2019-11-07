@@ -146,8 +146,6 @@ public class TestForEarlyMarkFullDayDeduction extends TestBase {
                     count = count % earlyMark.getCount();
 
             }
-
-            break;
         }
     }
 

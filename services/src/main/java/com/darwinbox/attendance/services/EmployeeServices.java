@@ -1,5 +1,6 @@
 package com.darwinbox.attendance.services;
 
+import com.darwinbox.Services;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.attendance.objects.EmployeeProfileEmailSettings;
@@ -248,7 +249,7 @@ public class EmployeeServices extends Services {
     public Employee createAnEmployee(boolean isParent) {
 
         Employee employee = generateAnEmployee(isParent, getData("@@group"));
-        log.info("INFO: Employee object : " + new JSONObject(employee));
+       // log.info("INFO: Employee object : " + new JSONObject(employee));
         employee.setCompanyID("main");
 
         if (!isParent)

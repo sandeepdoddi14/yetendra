@@ -1,39 +1,56 @@
 package com.darwinbox.attendance.services;
 
+import com.darwinbox.Services;
 import com.darwinbox.attendance.objects.WeeklyOff;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WeeklyOffService extends Services {
 
-    public WeeklyOff getWeeklyOff(String name) {
+    public JSONArray getWeeklyOffList() {
 
-            String url = getData("@@url") + "/settings/getWeeklyOffList";
-            Map headers = new HashMap();
-            headers.put("X-Requested-With", "XMLHttpRequest");
-            String response = doGet(url, headers);
-            JSONObject objResponse = new JSONObject(response);
+        String url = getData("@@url") + "/settings/getWeeklyOffList";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+        String response = doGet(url, headers);
+        JSONObject objResponse = new JSONObject(response);
 
-            if (objResponse != null && objResponse.getString("status").equals("success")) {
-                return new WeeklyOff();//objResponse.getJSONArray("update");
-            } else {
-                log.error("Status in Response: " + objResponse);
-                throw new RuntimeException("ERROR: Unable to get shifts");
-            }
+        if (objResponse != null)
+            return objResponse.getJSONArray("aaData");
 
+        return null;
     }
 
 
-    public WeeklyOff createWeekOff(WeeklyOff weekOffData) {
+    public String getWeeklyOffId(String name) {
 
-        String url = getData("@@url") + "/weeklyOff/create";
-        Map headers = new HashMap();
-        headers.put("X-Requested-With", "XMLHttpRequest");
-        doPost(url, headers, mapToFormData(weekOffData.getWeekOffMapObject()));
-        return getWeeklyOff(weekOffData.getWeeklyOffName());
+        JSONArray weekoffs = getWeeklyOffList();
+        String id = null;
+
+        for (Object weekOff : weekoffs) {
+
+            JSONArray obj = (JSONArray) weekOff;
+
+            String weekoffName = obj.getString(0).replaceAll("\\<.*?>", "");
+
+            if (weekoffName.equalsIgnoreCase(name)) {
+                Pattern p = Pattern.compile("id=\"\\w+\"");
+                Matcher m = p.matcher(obj.getString(2));
+                if (m.find()) {
+                    id = StringUtils.substringsBetween(m.group(0), "\"", "\"")[0];
+                    break;
+                }
+            }
+
+        }
+
+        return id;
 
     }
 }

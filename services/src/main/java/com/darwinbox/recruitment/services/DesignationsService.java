@@ -1,7 +1,6 @@
 package com.darwinbox.recruitment.services;
 
-import com.darwinbox.attendance.services.Services;
-import com.darwinbox.recruitment.objects.ArchivePosition;
+import com.darwinbox.Services;
 import com.darwinbox.recruitment.objects.Designations;
 
 import java.util.HashMap;

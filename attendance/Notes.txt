@@ -1,0 +1,31 @@
+Leave Deductions
+  Default Sort Order -> 4612735
+->absent - 4 - 5hrs
+->lateDuration -1 - 5h
+->EarlyDuration -2 - 5h
+->Work Duration -6 - 8 hrs
+->Late Mark -3   - 1 daY()
+->Early Mark-5
+->Late Plus Early - 7
+
+
+Multiple -> NO LONGER REQUIRED AFTER SORT Order(Sanity Check is required)
+Sort oRDER
+
+
+Optional Holidays Should be deleted Manually
+
+
+goProceed()  --> inDay Function
+
+
+payroll/calender cycle
+
+Payroll, should be created manually(26/27), make sure only one paycycle is available in system
+
+
+/-----------------------------Run Depeendencies-------------------------/
+weekly off  --> all,none should be created be created manually before run
+
+* Time change, to be set to current date and select instance. example: QA->Automation crons-> /bin/date -s "07 Nov 2019 12:30:00"
+

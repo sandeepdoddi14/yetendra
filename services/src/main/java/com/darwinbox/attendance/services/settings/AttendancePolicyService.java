@@ -1,7 +1,7 @@
 package com.darwinbox.attendance.services.settings;
 
 import com.darwinbox.attendance.objects.policy.AttendancePolicy;
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -223,9 +223,9 @@ public class AttendancePolicyService extends Services {
     }
 
     public void updateAttendancePolicy(AttendancePolicy policy) {
-        String response = deletePolicy(policy);
-        if (!response.contains("Attendance policy deleted successfully.")) {
-            throw new RuntimeException(" Error in deleting attendance policy ");
+        String response = updatePolicy(policy);
+        if (!response.contains("Attendance policy updated successfully.")) {
+            throw new RuntimeException(" Error in updating attendance policy ");
         }
     }
 

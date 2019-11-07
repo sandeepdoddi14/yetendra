@@ -1,19 +1,15 @@
 package com.darwinbox.recruitment.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
 import com.darwinbox.recruitment.objects.Requisition;
 import com.darwinbox.recruitment.objects.jobsPages.JobPosting;
-import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RequisitionService extends Services {
 
@@ -103,7 +99,7 @@ public class RequisitionService extends Services {
         return jobID;
     }
 
-     /*Below method Posts job page-4*/
+     /*Below method Posts job page-4*/ //remove here
 
     public void postJob(Requisition requisition){
 
@@ -111,22 +107,6 @@ public class RequisitionService extends Services {
 
         Map<String, String> body = new HashMap<>();
         body.putAll(requisition.toMapPostJob());
-
-        doPost(url, null,mapToFormData(body));
-
-    }
-
-    /*Below method is to post job, page-1*/
-
-    public void jobPosting(String id){
-
-        String url = getData("@@url") + "/recruitment/recruitment/requisitionstageone";
-
-        Map<String, String> body = new HashMap<>();
-       // body.putAll(requisition.toMapfirstPage());
-
-        body.put("id",new JobPosting().getId());
-       // body.put("jd["+getId()+"]",id);
 
         doPost(url, null,mapToFormData(body));
 

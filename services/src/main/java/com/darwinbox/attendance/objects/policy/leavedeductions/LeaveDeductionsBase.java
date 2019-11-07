@@ -11,7 +11,7 @@ public abstract class LeaveDeductionsBase implements Serializable {
     private boolean inDay;
     private String leaveId;
 
-    public enum DAYSTATUS {WEEKOFF, HOLIDAY, WH, EMPTY}
+    public enum DAYSTATUS {EMPTY, WEEKOFF, HOLIDAY, WH}
 
     public static boolean getFilterObject(Map<String, Object> data, String key, String value) {
         if (data.containsKey(key) && data.get(key).toString().equals(value))

@@ -5,7 +5,7 @@ import com.darwinbox.recruitment.objects.Requisition;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JobPosting extends Requisition {
+public class JobPosting  {
 
 
     //extends requisition, as values are same for different keys
@@ -36,44 +36,37 @@ jd[5da595867631b]: Please enter job description*/
 
 //capture how to activate jobs on page-1 using api
 
-    private String id;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-
-    public Map<String, String> toMapfirstPage() {
-
+    public Map<String, String> toMapfirstPage(Requisition requisition) {
 
         Map<String, String> body = new HashMap<>();
 
-        body.put("id",getId());
-        body.put("","");
-        body.put("",getCompanyName());
-        body.put("",getDesignationAndDepartment());
-        body.put("",getLocations());
-        body.put("",getExpFrom());
-        body.put("",getExpTo());
-        body.put("",getYearsOrMonths().s);
-        body.put("","");
-        body.put("",getEmployeeType());
-        body.put("","");
-        body.put("",getSkillsRequired());
-        body.put("",getCurrency());
-        body.put("",getMinSalary());
-        body.put("",getMaxSalary());
-        body.put("","");
-        body.put("jd["+getId()+"]","Please enter job description");
-
+        body.put("edit","1");
+        body.put("RaiseRequisition[parent_company_id]",requisition.getCompanyName());
+        body.put("RaiseRequisition[designation]",requisition.getDesignationAndDepartment());
+        body.put("RaiseRequisition[officelocation_arr][]",requisition.getLocations());
+        body.put("RaiseRequisition[experience_from]",requisition.getExpFrom());
+        body.put("RaiseRequisition[experience_to]",requisition.getExpTo());
+        body.put("RaiseRequisition[experience_yrs_month]",requisition.getYearsOrMonths().s);
+        body.put("RaiseRequisition[target_tat]","");
+        body.put("RaiseRequisition[employee_type]",requisition.getEmployeeType());
+        body.put("RaiseRequisition[designation_display_name]","");
+        body.put("RaiseRequisition[key_skills]",requisition.getSkillsRequired());
+        body.put("RaiseRequisition[salary_currency]",requisition.getCurrency());
+        body.put("RaiseRequisition[salary_min]",requisition.getMinSalary());
+        body.put("RaiseRequisition[salary_max]",requisition.getMaxSalary());
+        body.put("RaiseRequisition[job_details_updated]","");
+        body.put("RaiseRequisition[post_on_carrers_page]","");
+        body.put("RaiseRequisition[post_on_refer_page]","");
+        body.put("RaiseRequisition[post_on_ijp_page]","");
+        body.put("RaiseRequisition[internal_job_code]","");
 
         return body;
 
     }
 
+    public void toObjectFirstPage(Map<String,String> body) {
 
+           //to post on careers page objects?
+
+    }
     }

@@ -1,7 +1,7 @@
 package com.darwinbox.recruitment.services;
 
-import com.darwinbox.attendance.services.Services;
-import com.darwinbox.recruitment.objects.HiringWorkFlow;
+import com.darwinbox.Services;
+import com.darwinbox.recruitment.objects.HiringWorkFlow.HiringWorkFlow;
 import org.apache.http.NameValuePair;
 
 import java.util.ArrayList;

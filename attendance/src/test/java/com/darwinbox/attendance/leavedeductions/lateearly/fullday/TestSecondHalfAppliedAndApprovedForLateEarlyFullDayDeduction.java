@@ -155,8 +155,6 @@ public class TestSecondHalfAppliedAndApprovedForLateEarlyFullDayDeduction extend
                     count = count % latePlusEarly.getCount();
 
             }
-
-            break;
         }
     }
 

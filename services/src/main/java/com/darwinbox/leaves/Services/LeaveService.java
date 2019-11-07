@@ -1,7 +1,7 @@
 package com.darwinbox.leaves.Services;
 
 
-import com.darwinbox.core.Services;
+import com.darwinbox.Services;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.*;
 import org.apache.http.NameValuePair;

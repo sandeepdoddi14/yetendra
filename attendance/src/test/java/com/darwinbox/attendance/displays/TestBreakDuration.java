@@ -109,10 +109,8 @@ public class TestBreakDuration extends TestBase {
             if ( breakDur == attPage)
                 Reporter("Break Duration is as expected "+userEnd,"PASS");
             else {
-
                 Reporter("Break Duration is not as expected "+userEnd,"FAIL");
                 Reporter("Expected is "+breakDur+" Actual is "+attPage,"INFO");
-
             }
         }
     }
