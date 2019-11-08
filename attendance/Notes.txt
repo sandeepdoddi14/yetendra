@@ -25,7 +25,16 @@ Payroll, should be created manually(26/27), make sure only one paycycle is avail
 
 
 /-----------------------------Run Depeendencies-------------------------/
-weekly off  --> all,none should be created be created manually before run
+1.weekly off  --> all,none should be created be created manually before run
+2.pay cycle
+3. freeze date
+4. group company
 
 * Time change, to be set to current date and select instance. example: QA->Automation crons-> /bin/date -s "07 Nov 2019 12:30:00"
+
+most used
+-->absent
+    in addition please make below leave setting false
+    Sandwich leaves based on count intervening 'Weeklyoff' and 'Holiday' in leave policy
+-->work duration
 
