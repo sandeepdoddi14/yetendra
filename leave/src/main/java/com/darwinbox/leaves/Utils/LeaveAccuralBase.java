@@ -441,56 +441,6 @@ public class LeaveAccuralBase extends  LeaveBase {
 
     }
 
-    public List<LeavePolicyObject> getLeaveBalancePolicies_1_25(){
-        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance_1_25");
-        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
-
-        for(Map<String,String> testData : excelData){
-            leaveBalancePolicies.add(getLeaveBalancePolicy(testData));
-        }
-
-        return leaveBalancePolicies;
-
-    }
-
-
-    public List<LeavePolicyObject> getLeaveBalancePolicies_26_41(){
-        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance_26_41");
-        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
-
-        for(Map<String,String> testData : excelData){
-            leaveBalancePolicies.add(getLeaveBalancePolicy(testData));
-        }
-
-        return leaveBalancePolicies;
-
-    }
-
-    public List<LeavePolicyObject> getLeaveBalancePolicies_83_100(){
-        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance_83_100");
-        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
-
-        for(Map<String,String> testData : excelData){
-            leaveBalancePolicies.add(getLeaveBalancePolicy(testData));
-        }
-
-        return leaveBalancePolicies;
-
-    }
-
-
-    public List<LeavePolicyObject> getLeaveBalancePolicies_101_103(){
-        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance_101_123");
-        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
-
-        for(Map<String,String> testData : excelData){
-            leaveBalancePolicies.add(getLeaveBalancePolicy(testData));
-        }
-
-        return leaveBalancePolicies;
-
-    }
-
 
     public LeavePolicyObject getLeaveBalancePolicy(Map<String,String> testData){
 
