@@ -8,6 +8,7 @@ import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.LeaveAdmin;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
@@ -127,14 +128,17 @@ public class LeaveBalance_48EmployeeCreation_1_25 extends LeaveAccuralBase {
 
                                 //making sure it wont fail on exception bec of JSON PARSER
                                 try {
-                                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                   // actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                    actualLeaveBalance= Double.parseDouble(new LeaveAdmin().GetLeavesByOnBehalf(employee.getMongoID()).get(leavePolicyObject.getLeave_Type()));
                                 }
                                 catch (Exception e){
                                     try {
-                                        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                        //actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                        actualLeaveBalance= Double.parseDouble(new LeaveAdmin().GetLeavesByOnBehalf(employee.getMongoID()).get(leavePolicyObject.getLeave_Type()));
                                     }
                                     catch (Exception e1){
-                                        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                        //actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                        actualLeaveBalance= Double.parseDouble(new LeaveAdmin().GetLeavesByOnBehalf(employee.getMongoID()).get(leavePolicyObject.getLeave_Type()));
 
                                     }
                                 }
