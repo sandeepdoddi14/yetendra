@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class LeaveBalance_48EmployeeCreation_100_123 extends LeaveAccuralBase {
+public class LeaveBalance_48EmployeeCreation_101_123 extends LeaveAccuralBase {
 
     List<Employee> employees = new ArrayList<>();
 
