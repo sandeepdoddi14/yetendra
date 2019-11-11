@@ -11,7 +11,6 @@ import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
-
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
+public class LeaveBalance_48EmployeeCreation_83_100 extends LeaveAccuralBase {
 
     List<Employee> employees = new ArrayList<>();
 
@@ -56,7 +55,7 @@ public class LeaveBalance_48EmployeeCreation extends LeaveAccuralBase {
 
 
 
-            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies();
+            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("83-100");
 
             leaveCycleStartDate = LocalDate.parse("2019-08-01");
             leaveCycleEndDate = LocalDate.parse("2020-07-31");
