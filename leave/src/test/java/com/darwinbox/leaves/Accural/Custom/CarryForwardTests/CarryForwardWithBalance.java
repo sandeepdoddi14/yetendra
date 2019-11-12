@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Accural.Custom;
+package com.darwinbox.leaves.Accural.Custom.CarryForwardTests;
 
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.services.EmployeeServices;
@@ -7,6 +7,7 @@ import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.ProbationPeriodForLeaveValidity;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 
-public class CarryForward extends LeaveAccuralBase {
+public class CarryForwardWithBalance extends LeaveAccuralBase {
 
     Employee employee = new Employee();
 
@@ -119,10 +120,53 @@ public class CarryForward extends LeaveAccuralBase {
                     Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
+                    //restore the policy object
+                    //1.reset accural
+                    if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
+                        Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+                        credit_on_accural_basis.setIndicator(true);
+
+                        if(!testData.get("Monthly").equalsIgnoreCase("yes")?true:false)
+                            credit_on_accural_basis.setMonthlyAccuralSetting(false,false,false);
+                        else
+                            credit_on_accural_basis.setMonthlyAccuralSetting(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+                        if(!testData.get("Quarterly").equalsIgnoreCase("yes")?true:false)
+                            credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+                        else
+                            credit_on_accural_basis.setQuarterlyAccural(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+                        credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes")?true:false);
+
+                        carryForwardBalance.setCredit_on_accural_basis(credit_on_accural_basis);
+                    }
+
+                    //2.reset probation before leave validity
+                    ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
+                    probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
+                    probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+                    //if(probationPeriodForLeaveValidity.probation)
+                    //employeeProbation=testData.get("Employee Probation Period");
+                    if(probationPeriodForLeaveValidity.custom)
+                        probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
+
+                    carryForwardBalance.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+
+                    super.setLeavePolicyObject(carryForwardBalance);
+
+
+                    //call leave balance for one day
+                    //this will add leave balance to carry forward balnce for one day
+                    expecetedLeaveBalance=expecetedLeaveBalance+calculateLeaveBalance(leaveCycleEndDate.plusDays(1).toString(), getServerOrLocalDate().toString());
+
+
                     //leavesAction.removeEmployeeCarryForwardLeaveLogs();
                     leavesAction.runCarryFrowardCronByEndPointURL();
 
-                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(),carryForwardBalance.getLeave_Type()).getCarryForwardBalance();
+                    carryForward = false;
+
+
+                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(),carryForwardBalance.getLeave_Type()).getTotalBalance();
                     Reporter("Actual Leave Balance is ---" + actualLeaveBalance, "Info");
 
                     if (expecetedLeaveBalance == actualLeaveBalance)

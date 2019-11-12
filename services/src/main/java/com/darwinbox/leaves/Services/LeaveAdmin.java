@@ -5,6 +5,7 @@ import com.darwinbox.leaves.Objects.LeavePolicyObject.*;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class LeaveAdmin extends Services {
     private String applyLeaveUrl = getData("@@url") + "/leaves/leaves/apply";
     private String getLeavesByOnBehalf = getData("@@url") + "/employee/GetLeavesByOnBehalf";
+    private String getLeaveBalancesByOnBehalf = getData("@@url") + "/employee/GetLeavesBalancesOnBehalf";
 
     /*
     Admin Apply Leave on Behalf of employee
@@ -142,6 +144,41 @@ public class LeaveAdmin extends Services {
         }
         return temp;
     }
+
+
+
+    /*
+    admin gets leaves Balance on behalf of employee
+     */
+    public Double GetLeaveBalanceByOnBehalf(String userMongoId,String leaveID) {
+        Map<String, String> request = new HashMap<>();
+        Map<String, String> body = new HashMap<>();
+
+        request.put("id", userMongoId);
+
+        body.putAll(request);
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        String leaves = doPost(getLeaveBalancesByOnBehalf, headers, mapToFormData(body));
+
+        JSONObject balances=(JSONObject) new JSONObject(leaves).get("update");
+
+        JSONObject balance=(JSONObject)balances.get(leaveID);
+
+        /*String leaves1 = leaves.replace("{\"status\":\"success\",\"update\":{", "").replace("}}", "");
+        String[] leaves2 = leaves1.split("},");
+
+        Map<String, String> temp = new HashMap<String, String>();
+
+        for (int i = 0; i < leaves2.length; i++) {
+            temp.put(leaves2[i].split(":")[1].replace("\"", ""), leaves2[i].split(":")[0].replace("\"", ""));
+        }*/
+
+
+        return Double.parseDouble(balance.get("balance").toString());
+    }
+
 
     /*
     default request body

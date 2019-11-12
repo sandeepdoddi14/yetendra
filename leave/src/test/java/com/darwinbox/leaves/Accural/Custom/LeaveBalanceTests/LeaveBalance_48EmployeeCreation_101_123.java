@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Accural.Custom;
+package com.darwinbox.leaves.Accural.Custom.LeaveBalanceTests;
 
 
 import com.darwinbox.attendance.objects.Employee;
@@ -8,11 +8,9 @@ import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
-import com.darwinbox.leaves.Services.LeaveAdmin;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
-
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -24,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class LeaveBalance_48EmployeeCreation_1_25 extends LeaveAccuralBase {
+public class LeaveBalance_48EmployeeCreation_101_123 extends LeaveAccuralBase {
 
     List<Employee> employees = new ArrayList<>();
 
@@ -57,7 +55,7 @@ public class LeaveBalance_48EmployeeCreation_1_25 extends LeaveAccuralBase {
 
 
 
-            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("1-25");
+            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("101-123");
 
             leaveCycleStartDate = LocalDate.parse("2019-08-01");
             leaveCycleEndDate = LocalDate.parse("2020-07-31");
@@ -128,17 +126,14 @@ public class LeaveBalance_48EmployeeCreation_1_25 extends LeaveAccuralBase {
 
                                 //making sure it wont fail on exception bec of JSON PARSER
                                 try {
-                                   // actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
-                                    actualLeaveBalance= Double.parseDouble(new LeaveAdmin().GetLeavesByOnBehalf(employee.getMongoID()).get(leavePolicyObject.getLeave_Type()));
+                                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
                                 }
                                 catch (Exception e){
                                     try {
-                                        //actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
-                                        actualLeaveBalance= Double.parseDouble(new LeaveAdmin().GetLeavesByOnBehalf(employee.getMongoID()).get(leavePolicyObject.getLeave_Type()));
+                                        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
                                     }
                                     catch (Exception e1){
-                                        //actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
-                                        actualLeaveBalance= Double.parseDouble(new LeaveAdmin().GetLeavesByOnBehalf(employee.getMongoID()).get(leavePolicyObject.getLeave_Type()));
+                                        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
 
                                     }
                                 }
