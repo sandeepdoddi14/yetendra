@@ -117,7 +117,6 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
 
 
                     expecetedLeaveBalance = calculateLeaveBalance(doj.toString(), leaveCycleEndDate.toString());
-                    Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
                     //restore the policy object
@@ -154,19 +153,20 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
 
                     super.setLeavePolicyObject(carryForwardBalance);
 
-
+                    carryForward = false;
                     //call leave balance for one day
                     //this will add leave balance to carry forward balnce for one day
                     expecetedLeaveBalance=expecetedLeaveBalance+calculateLeaveBalance(leaveCycleEndDate.plusDays(1).toString(), getServerOrLocalDate().toString());
+                    Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
                     //leavesAction.removeEmployeeCarryForwardLeaveLogs();
                     leavesAction.runCarryFrowardCronByEndPointURL();
 
-                    carryForward = false;
 
 
-                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(),carryForwardBalance.getLeave_Type()).getTotalBalance();
+
+                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(),carryForwardBalance.getLeave_Type()).getBalance();
                     Reporter("Actual Leave Balance is ---" + actualLeaveBalance, "Info");
 
                     if (expecetedLeaveBalance == actualLeaveBalance)
