@@ -115,6 +115,7 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
                     changeEmployeeDOJ(doj,employee);
                     employee.setDoj(doj.toString());
 
+                    Reporter("Empoloyee DOJ is changed to "+doj.toString(),"Info");
 
                     expecetedLeaveBalance = calculateLeaveBalance(doj.toString(), leaveCycleEndDate.toString());
 
@@ -154,9 +155,12 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
                     super.setLeavePolicyObject(carryForwardBalance);
 
                     carryForward = false;
+
+                    leaveCycleStartDate=leaveCycleStartDate.plusYears(1);
+                    leaveCycleEndDate=leaveCycleEndDate.plusYears(1);
                     //call leave balance for one day
                     //this will add leave balance to carry forward balnce for one day
-                    expecetedLeaveBalance=expecetedLeaveBalance+calculateLeaveBalance(leaveCycleEndDate.plusDays(1).toString(), getServerOrLocalDate().toString());
+                    expecetedLeaveBalance=expecetedLeaveBalance+calculateLeaveBalance(leaveCycleStartDate.toString(), getServerOrLocalDate().toString());
                     Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
@@ -174,8 +178,10 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
                     else
                         Reporter("Failed |||| actual and expected are not same", "Fail");
 
-
+                    leaveCycleStartDate=leaveCycleStartDate.minusYears(1);
+                    leaveCycleEndDate=leaveCycleEndDate.minusYears(1);
                 }
+
                 doj = doj.minusDays(1);
             }
 
