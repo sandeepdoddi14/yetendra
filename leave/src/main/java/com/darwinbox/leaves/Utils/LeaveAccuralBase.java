@@ -419,8 +419,20 @@ public class LeaveAccuralBase extends  LeaveBase {
     private static List<Map<String, String>> readDatafromSheet(String sheetname) {
 
         HashMap<String, String> excelDetails = new HashMap<>();
-        excelDetails.put("FileName", "/Accural/LeaveBalance.xlsx");
+        excelDetails.put("FileName", "/Accural/LeaveBalanceTests.xlsx");
         excelDetails.put("TestDataRow", "all");
+        excelDetails.put("SheetName", sheetname);
+
+        ExcelReader reader = new ExcelReader();
+        reader.setFilenameAndSheetName(excelDetails);
+        return reader.getExcelData();
+    }
+
+    private static List<Map<String, String>> readDatafromSheet(String sheetname,String rows) {
+
+        HashMap<String, String> excelDetails = new HashMap<>();
+        excelDetails.put("FileName", "/Accural/LeaveBalanceTests.xlsx");
+        excelDetails.put("TestDataRow", rows);
         excelDetails.put("SheetName", sheetname);
 
         ExcelReader reader = new ExcelReader();
@@ -430,7 +442,7 @@ public class LeaveAccuralBase extends  LeaveBase {
 
 
     public List<LeavePolicyObject> getLeaveBalancePolicies(){
-        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance");
+        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalanceTests");
         List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
 
         for(Map<String,String> testData : excelData){
@@ -440,6 +452,21 @@ public class LeaveAccuralBase extends  LeaveBase {
         return leaveBalancePolicies;
 
     }
+
+    public List<LeavePolicyObject> getLeaveBalancePolicies(String rows){
+        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance",rows);
+        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
+
+        for(Map<String,String> testData : excelData){
+            leaveBalancePolicies.add(getLeaveBalancePolicy(testData));
+        }
+
+        return leaveBalancePolicies;
+
+    }
+
+
+
 
 
     public LeavePolicyObject getLeaveBalancePolicy(Map<String,String> testData){
