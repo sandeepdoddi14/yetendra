@@ -1,6 +1,8 @@
 package com.darwinbox.reimbursement.services;
 
-import com.darwinbox.attendance.services.Services;
+import com.darwinbox.Services;
+import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
+import com.darwinbox.reimbursement.objects.ReimbCreation.ReimbForm;
 import com.darwinbox.reimbursement.objects.ReimbCreation.ReimbForm;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -14,7 +16,6 @@ import java.util.Map;
 public class ReimbFormService extends Services {
 
     public ReimbForm getReimbFormIdByName(String grpCompName, String reimbname) {
-
         String url = getData("@@url") + "/settings/getReimData";
 
         Map headers = new HashMap<>();
@@ -35,42 +36,35 @@ public class ReimbFormService extends Services {
             boolean isReimFormPresent = reimbname.equalsIgnoreCase(reimbFormName);
 
             reimbFormId = isGpPresent && isReimFormPresent ? reFormId : null;
-            reimbForm.setId(reimbFormId);
-            reimbForm.setGrpCompany(gpCompName);
-            reimbForm.setName(reimbFormName);
+            if(reimbFormId == reFormId) {
+                reimbForm.setId(reimbFormId);
+                reimbForm.setGrpCompany(gpCompName);
+                reimbForm.setName(reimbFormName);
+                break;
+            }
         }
-
         return reimbForm;
     }
-
 
     public String createReimbform(ReimbForm reimbForm) {
         String url = getData("@@url" + "/settings/reimbursement/settings");
+
         Map headers = new HashMap();
         headers.put("x-requested-with", "XMLHttpRequest");
-        String response = doPost(url, headers, reimbForm.toMap());
+        List<NameValuePair> obj = reimbForm.toMap();
+        obj.add(new BasicNameValuePair("mode" , "create"));
+        String response = doPost(url, headers, obj);
         return response;
     }
-
-    //return response: success> returns null
-    /*public ReimbForm getReimbFormIdByName(String parentCompanyName,String reimbName ) {
-        ReimbForm reimbForm = null;
-        if (allReimbTypesData.containsKey(reFormName)) {
-            reimbForm = new ReimbForm();
-            reimbForm.setName(reFormName);
-            reimbForm.setId(reimbForm.getId());
-        }
-        return reimbForm;
-    }*/
 
     public String updateReimbForm(ReimbForm reimbForm) {
         String url = getData("@@url") + "/settings/editreimbursement";
         Map headers = new HashMap();
         headers.put("x-requested-with", "XMLHttpRequest");
         List<NameValuePair> obj = reimbForm.toMap();
+        obj.add(new BasicNameValuePair("mode" , "edit"));
         obj.add(new BasicNameValuePair("reimb_id", reimbForm.getId()));
         String response = doPost(url, headers, obj);
-        waitForUpdate(3);
         return response;
     }
 
@@ -79,11 +73,10 @@ public class ReimbFormService extends Services {
         Map headers = new HashMap();
         headers.put("x-requested-with", "XMLHttpRequest");
         Map<String, String> body = new HashMap<>();
-        body.put("resource", reimbForm.getId());
         body.put("mode", "delete");
+        body.put("resource", reimbForm.getId());
 
         String response = doPost(url, headers, mapToFormData(body));
-        waitForUpdate(3);
         return response;
     }
 }

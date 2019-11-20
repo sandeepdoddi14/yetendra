@@ -74,7 +74,6 @@ public class ReimbUnitService extends Services {
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
-        //List<NameValuePair> obj = reimbUnits.toMap();
         body.put("resource", reimbUnits.getId());
         body.put("mode", "delete");
 
