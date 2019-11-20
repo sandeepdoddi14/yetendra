@@ -37,7 +37,6 @@ public class TestValidateDuplicateReimbUnits extends TestBase {
     public void ValidateReimbUnitActions(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "User is unable to login to application as Admin");
-        Assert.assertTrue(loginPage.switchToAdmin(), "Switch to admin unsuccessful");
 
         String unitType = testData.get("Unit Type");
 

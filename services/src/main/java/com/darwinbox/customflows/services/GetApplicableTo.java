@@ -10,12 +10,13 @@ import java.util.Map;
 public class GetApplicableTo extends Services {
 
 
-    public Map<String, List<String>> getAllApplicableTo(String companyId) {
+    public Map<String, List<String>> getAllApplicableTo(String companyId, String toBeAppended) {
 
         Map<String, List<String>> data = new HashMap();
 
-        String url = data.get("@@url") + "/Customflow/loadRestrictOtherReimbApplicable?id=" + companyId + "&all=1&is_assignment=1";
+        //String url = data.get("@@url") + "/Customflow/loadRestrictOtherReimbApplicable?id=" + companyId + "&all=1&is_assignment=1";
 
+        String url = data.get("@@url") + toBeAppended;
         JSONObject objResponse = new JSONObject(doGet(url, null)).getJSONObject("update");
 
         List<String> grades = (List<String>) getGrades().values();

@@ -4,6 +4,7 @@ import com.darwinbox.Services;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -172,6 +173,7 @@ public class CustomFlow extends Services {
         if ( comp.equalsIgnoreCase("no")) {
 
             // TODO : how to get mangoid for that groupcompany read from inifile
+            // write a wrapper over this method to centralize it? How to check for parent company for diff cases?
             groupCompanyMongoId = getGroupCompanyIds().get(getIsParent().trim());
             setCompanyName("no");
 
@@ -236,6 +238,7 @@ public class CustomFlow extends Services {
         formData.add(new BasicNameValuePair("CustomFlow[retirement_before_days]", ""));
 
         // get applicable category short names from Excel sheet
+        //make this method generic, passing params: applicableToList, returning formData
         List<String> applicabilityList = getApplicableToList();
         String[] ApplicableCategories = new String[applicabilityList.size()];
         if (applicabilityList.size() >= 1) {
@@ -250,14 +253,14 @@ public class CustomFlow extends Services {
             }
 
         }
-
+//use arraylist in switch-case directly
         String id = "";
         List<String> valuesList ;
         int randomIndex;
 
-//        HashMap departments = getDepartments(groupCompanyMongoId);
-//        HashMap locations = getOfficeLocations(groupCompanyMongoId);
-//        JSONObject designations = getDesignations(groupCompanyMongoId);
+        HashMap departments = getDepartments(groupCompanyMongoId);
+        HashMap locations = getOfficeLocations(groupCompanyMongoId);
+        JSONObject designations = getDesignations(groupCompanyMongoId);
         HashMap empTypes = getEmployeeTypes();
         HashMap grades = getGrades();
         HashMap bands = getBands();
@@ -289,7 +292,7 @@ public class CustomFlow extends Services {
                     id = valuesList.get(randomIndex);
                     formData.add(new BasicNameValuePair("CustomFlow[assign_to][]", "GRADE_" + id));
                     break;
-                /*case "DEPT":
+                case "DEPT":
                     valuesList = new ArrayList<String>(departments.values());
                     randomIndex = new Random().nextInt(valuesList.size());
                     id = valuesList.get(randomIndex);
@@ -302,8 +305,12 @@ public class CustomFlow extends Services {
                     formData.add(new BasicNameValuePair("CustomFlow[assign_to][]", "LOC_" + id));
                     break;
                 case "DESG":
-                    formData.add(new BasicNameValuePair("CustomFlow[assign_to][]", "DESG_" + id));
-                    break;*/
+                    JSONObject obj = getDesignations(groupCompanyMongoId);
+                    Object[] keys = obj.keySet().toArray();
+                    JSONObject keyvalue = obj.getJSONObject((String) keys[new Random().nextInt(keys.length)]);
+                    Object desig = keyvalue.keySet().toArray();
+                    formData.add(new BasicNameValuePair("CustomFlow[assign_to][]", "DESG_" + desig));
+                    break;
                 case "assignment":
                     valuesList = new ArrayList<String>(assignments.values());
                     randomIndex = new Random().nextInt(valuesList.size());

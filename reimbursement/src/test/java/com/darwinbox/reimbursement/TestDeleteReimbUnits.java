@@ -50,10 +50,10 @@ public class TestDeleteReimbUnits extends TestBase {
 
         reimbUnitService.createReimbUnit(reimbUnits);
         reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
-        Reporter("Reimbursement unit created by the name: "+reimbUnits.getUnitType(), "INFO");
+        Reporter("Reimbursement unit by the name: "+reimbUnits.getUnitType()+"has been deleted", "INFO");
 
-        String response = reimbUnitService.deleteReimbUnit(reimbUnits);
-        Assert.assertTrue(response.contains("Reimbursement Unit has been deleted successfully.")," Error in deleting Reimbursement unit.");
+        String deleteResponse = reimbUnitService.deleteReimbUnit(reimbUnits);
+        Assert.assertTrue(deleteResponse.contains("Reimbursement Unit has been deleted successfully.")," Error in deleting Reimbursement unit.");
 
         reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
         Assert.assertNull(reimbUnits, "Reimbursement unit has been deleted successfully");

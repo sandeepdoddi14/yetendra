@@ -35,7 +35,6 @@ public class TestUpdateReimbUnits extends TestBase {
     public void UpdateReimbUnitActions(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplicationAsAdmin(), "User is unable to login to application as Admin");
-        Assert.assertTrue(loginPage.switchToAdmin(), "Switch to admin unsuccessful");
 
         ReimbUnits reimbUnits = new ReimbUnits();
         reimbUnits.toObject(testData);
@@ -53,9 +52,9 @@ public class TestUpdateReimbUnits extends TestBase {
         Reporter("Reimbursement unit created by the name: " + reimbUnits.getUnitType(), "INFO");
 
         reimbUnits.setUnitType(unitType + "_updated");
-        String response = reimbUnitService.updateReimbUnit(reimbUnits);
-        Reporter("Reimbursement: " + reimbUnits.getUnitType() + " has been updated to :" + reimbUnits.getUnitType(), "INFO");
-        Assert.assertTrue(response.contains("Reimbursement Unit has been updated!"), "Error in updating Reimbursement unit.");
+        String updateResponse = reimbUnitService.updateReimbUnit(reimbUnits);
+        Reporter("Reimbursement: " + unitType + " has been updated to :" + reimbUnits.getUnitType(), "INFO");
+        Assert.assertTrue(updateResponse.contains("Reimbursement Unit has been updated!"), "Error in updating Reimbursement unit.");
 
         reimbUnits = reimbUnitService.getReimbUnitIdByName(unitType);
         Assert.assertNull(reimbUnits, "Reimbursement unit has been updated successfully");
