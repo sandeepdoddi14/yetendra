@@ -1,6 +1,8 @@
+CarryForwardWith Balance
+Run Time --> 2 Days
+
 
 Deactivation
-
 Run Time -->3hours
 
 Leave Balance Test

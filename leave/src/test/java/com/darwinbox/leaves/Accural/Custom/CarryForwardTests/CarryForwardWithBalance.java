@@ -22,6 +22,8 @@ import java.util.Map;
 
 
 public class CarryForwardWithBalance extends LeaveAccuralBase {
+    LeavePolicyObject carryForwardBalance=null;
+    LeavePolicyObject balancePolicyObject=null;
 
     Employee employee = new Employee();
 
@@ -57,7 +59,9 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
     public void verifyCarryForwardBalance(Map<String, String> testData) {
 
-        LeavePolicyObject carryForwardBalance = getCarryForwardPolicy(testData);
+        carryForwardBalance= getCarryForwardPolicy(testData);
+        balancePolicyObject =carryForwardBalance;
+
         super.carryForward=true;
         //making default to begin of month for calculation
         if(carryForwardBalance.getCredit_on_accural_basis().getIndicator()){
@@ -76,7 +80,7 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
         //if(carryForwardBalance.getProbation_period_before_leave_validity().probation)
             ///carryForwardBalance.getProbation_period_before_leave_validity()
 
-        super.setLeavePolicyObject(carryForwardBalance);
+
 
         leaveCycleStartDate = LocalDate.parse("2019-05-01");
         leaveCycleEndDate = LocalDate.parse("2020-04-30");
@@ -115,32 +119,51 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
                     changeEmployeeDOJ(doj,employee);
                     employee.setDoj(doj.toString());
 
-                    Reporter("Empoloyee DOJ is changed to "+doj.toString(),"Info");
+                    Reporter("DOJ is changed to "+doj,"info");
 
+
+                    if(carryForwardBalance.getCredit_on_accural_basis().getIndicator()){
+                        Credit_On_Accural_Basis credit_on_accural_basis=carryForwardBalance.getCredit_on_accural_basis();
+                        credit_on_accural_basis.setMonthlyAccuralSetting(true,true,false);
+                        credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+                        credit_on_accural_basis.setBiAnnual(false);
+                        carryForwardBalance.setCredit_on_accural_basis(credit_on_accural_basis);
+                    }
+
+                    //leave validity also needs to be set to zero for carry forward
+                    if(carryForwardBalance.getProbation_period_before_leave_validity().custom &&
+                            !carryForwardBalance.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
+                        carryForwardBalance.getProbation_period_before_leave_validity().customMonths=0;
+
+
+                    super.setLeavePolicyObject(carryForwardBalance);
+                    //carry forward balance
                     expecetedLeaveBalance = calculateLeaveBalance(doj.toString(), leaveCycleEndDate.toString());
+
 
 
                     //restore the policy object
                     //1.reset accural
-                    if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
-                        Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+                    if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false) {
+                        Credit_On_Accural_Basis credit_on_accural_basis = new Credit_On_Accural_Basis();
                         credit_on_accural_basis.setIndicator(true);
 
-                        if(!testData.get("Monthly").equalsIgnoreCase("yes")?true:false)
-                            credit_on_accural_basis.setMonthlyAccuralSetting(false,false,false);
+                        if (!testData.get("Monthly").equalsIgnoreCase("yes") ? true : false)
+                            credit_on_accural_basis.setMonthlyAccuralSetting(false, false, false);
                         else
-                            credit_on_accural_basis.setMonthlyAccuralSetting(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+                            credit_on_accural_basis.setMonthlyAccuralSetting(true, testData.get("Begin of month/Quarter").equalsIgnoreCase("yes") ? true : false, testData.get("End of month/Quarter").equalsIgnoreCase("yes") ? true : false);
 
-                        if(!testData.get("Quarterly").equalsIgnoreCase("yes")?true:false)
-                            credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+                        if (!testData.get("Quarterly").equalsIgnoreCase("yes") ? true : false)
+                            credit_on_accural_basis.setQuarterlyAccural(false, false, false);
                         else
-                            credit_on_accural_basis.setQuarterlyAccural(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+                            credit_on_accural_basis.setQuarterlyAccural(true, testData.get("Begin of month/Quarter").equalsIgnoreCase("yes") ? true : false, testData.get("End of month/Quarter").equalsIgnoreCase("yes") ? true : false);
 
-                        credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes")?true:false);
+                        credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes") ? true : false);
 
-                        carryForwardBalance.setCredit_on_accural_basis(credit_on_accural_basis);
+
+                        balancePolicyObject.setCredit_on_accural_basis(credit_on_accural_basis);
+
                     }
-
                     //2.reset probation before leave validity
                     ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
                     probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
@@ -150,17 +173,18 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
                     if(probationPeriodForLeaveValidity.custom)
                         probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
 
-                    carryForwardBalance.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+                    balancePolicyObject.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
 
-                    super.setLeavePolicyObject(carryForwardBalance);
+
+                    super.setLeavePolicyObject(balancePolicyObject);
+
 
                     carryForward = false;
 
-                    leaveCycleStartDate=leaveCycleStartDate.plusYears(1);
-                    leaveCycleEndDate=leaveCycleEndDate.plusYears(1);
                     //call leave balance for one day
                     //this will add leave balance to carry forward balnce for one day
-                    expecetedLeaveBalance=expecetedLeaveBalance+calculateLeaveBalance(leaveCycleStartDate.toString(), getServerOrLocalDate().toString());
+                    expecetedLeaveBalance=expecetedLeaveBalance+calculateLeaveBalance(leaveCycleEndDate.plusDays(1).toString(), getServerOrLocalDate().toString());
+
                     Reporter("Expected Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
@@ -171,6 +195,7 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
 
 
                     actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(),carryForwardBalance.getLeave_Type()).getBalance();
+
                     Reporter("Actual Leave Balance is ---" + actualLeaveBalance, "Info");
 
                     if (expecetedLeaveBalance == actualLeaveBalance)
@@ -178,10 +203,8 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
                     else
                         Reporter("Failed |||| actual and expected are not same", "Fail");
 
-                    leaveCycleStartDate=leaveCycleStartDate.minusYears(1);
-                    leaveCycleEndDate=leaveCycleEndDate.minusYears(1);
-                }
 
+                }
                 doj = doj.minusDays(1);
             }
 
