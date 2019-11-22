@@ -408,6 +408,10 @@ public class LeaveAccuralBase extends  LeaveBase {
 
         }
 
+        if(testData.get("HourlyLeave").equalsIgnoreCase("true")){
+            leaveBalancePolicy.setHourlyLeave(true);
+        }
+
 
             List<NameValuePair> request=leaveBalancePolicy.createRequest();
 

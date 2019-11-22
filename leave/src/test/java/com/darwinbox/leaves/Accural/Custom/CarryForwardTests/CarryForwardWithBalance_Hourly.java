@@ -7,7 +7,6 @@ import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
-import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.ProbationPeriodForLeaveValidity;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
@@ -24,7 +23,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 
-public class CarryForwardWithBalance extends LeaveAccuralBase {
+public class CarryForwardWithBalance_Hourly extends LeaveAccuralBase {
     LeavePolicyObject carryForwardBalance=null;
     LeavePolicyObject balancePolicyObject=null;
 
@@ -62,10 +61,9 @@ public class CarryForwardWithBalance extends LeaveAccuralBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
     public void verifyCarryForwardBalance(Map<String, String> testData) {
 
-
-
+        testData.put("HourlyLeave","TRUE");
         carryForwardBalance= getCarryForwardPolicy(testData);
-        balancePolicyObject =carryForwardBalance;
+          balancePolicyObject =carryForwardBalance;
 
         super.carryForward=true;
         //making default to begin of month for calculation
