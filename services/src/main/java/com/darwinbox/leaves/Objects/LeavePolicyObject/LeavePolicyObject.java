@@ -939,7 +939,7 @@ public class LeavePolicyObject extends TestBase {
 
 
             if(this.getCarryForwardUnusedLeave().indicator) {
-                formData.removeIf(x -> x.getName().contains("LeavePolicy_Accural[is_monthly_quaterly]"));
+                formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedCarryover[status]"));
                 formData.add(new BasicNameValuePair("LeavePolicy_UnusedCarryover[status]", "1"));
 
                 if (this.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {

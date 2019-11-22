@@ -37,6 +37,8 @@ public class LeaveBalanceAPI extends TestBase {
 
     public double getTotalBalance(){return leaveBalnce().total;}
 
+    public double getAccuredTillNow(){return leaveBalnce().accured_till_now;}
+
 }
 
 //mapper class to convert json to java object
