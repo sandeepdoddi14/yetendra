@@ -237,7 +237,7 @@ public class EmployeeServices extends Services {
         formData.add(new BasicNameValuePair("UserAddForm[dob]", employee.getDob()));
         formData.add(new BasicNameValuePair("UserAddForm[doj]", employee.getDoj()));
         formData.add(new BasicNameValuePair("UserAddForm[email]", employee.getEmailID()));
-        formData.add(new BasicNameValuePair("UserAddForm[gender]", employee.getGender().equals("male") ? "1" : "2"));
+        formData.add(new BasicNameValuePair("UserAd0dForm[gender]", employee.getGender().equals("male") ? "1" : "2"));
         formData.add(new BasicNameValuePair("UserAddForm[parent_company_id]", employee.getCompanyID()));
         formData.add(new BasicNameValuePair("UserAddForm[officelocation]", employee.getLocationID()));
         formData.add(new BasicNameValuePair("UserAddForm[designation]", employee.getDesignationID()));
