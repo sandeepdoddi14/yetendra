@@ -22,6 +22,8 @@ public class ReimbExpenseService extends Services {
         headers.put("X-Requested-With", "XMLHttpRequest");
 
         List<NameValuePair> obj = expenses.toMap();
+        obj.add(new BasicNameValuePair("shouldUpload[]","[]"));
+
         String response = doPost(url, headers, obj);
         return response;
     }

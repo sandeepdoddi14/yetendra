@@ -1,22 +1,38 @@
 package com.darwinbox.reimbursement.services;
 
 import com.darwinbox.Services;
-import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
-import com.darwinbox.reimbursement.objects.ReimbCreation.ReimbForm;
 import com.darwinbox.reimbursement.objects.ReimbCreation.ReimbForm;
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ReimbFormService extends Services {
 
-    public ReimbForm getReimbFormIdByName(String grpCompName, String reimbname) {
+    public Map<String,String> getAllReimbForms() {
+        Map reimbFormsData = new HashMap<>();
         String url = getData("@@url") + "/settings/getReimData";
+
+        Map headers = new HashMap<>();
+        headers.put("x-requested-with", "XMLHttpRequest");
+
+        String response = doGet(url, headers);
+        JSONObject objResponse = new JSONObject(response);
+        JSONArray jsonArray = objResponse.getJSONArray("aaData");
+
+        for (Object object : jsonArray) {
+            JSONArray data = (JSONArray) object;
+            String rfType = data.getString(0);
+            String rfId = data.getString(2).split("\" class")[0].substring(7);
+            reimbFormsData.put(rfType,rfId);
+        }
+        return reimbFormsData;
+    }
+
+    public ReimbForm getReimbFormIdByName(String grpCompName, String reimbname) {
+        String url = getData("@@url") + "settings/getReimData";
 
         Map headers = new HashMap<>();
         headers.put("x-requested-with", "XMLHttpRequest");
@@ -47,29 +63,27 @@ public class ReimbFormService extends Services {
     }
 
     public String createReimbform(ReimbForm reimbForm) {
-        String url = getData("@@url" + "/settings/reimbursement/settings");
+        String url = getData("@@url") + "/settings/reimbursement/settings";
 
         Map headers = new HashMap();
         headers.put("x-requested-with", "XMLHttpRequest");
-        List<NameValuePair> obj = reimbForm.toMap();
-        obj.add(new BasicNameValuePair("mode" , "create"));
+        List<NameValuePair> obj = reimbForm.toMap("create");
         String response = doPost(url, headers, obj);
         return response;
     }
 
     public String updateReimbForm(ReimbForm reimbForm) {
         String url = getData("@@url") + "/settings/editreimbursement";
+
         Map headers = new HashMap();
         headers.put("x-requested-with", "XMLHttpRequest");
-        List<NameValuePair> obj = reimbForm.toMap();
-        obj.add(new BasicNameValuePair("mode" , "edit"));
-        obj.add(new BasicNameValuePair("reimb_id", reimbForm.getId()));
+        List<NameValuePair> obj = reimbForm.toMap("edit");
         String response = doPost(url, headers, obj);
         return response;
     }
 
     public String deleteReimbForm(ReimbForm reimbForm) {
-        String url = getData("@@url" + "/settings/editreimbursement");
+        String url = getData("@@url" + "settings/EditReimbursement");
         Map headers = new HashMap();
         headers.put("x-requested-with", "XMLHttpRequest");
         Map<String, String> body = new HashMap<>();

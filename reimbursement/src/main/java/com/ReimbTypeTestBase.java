@@ -20,79 +20,6 @@ public class ReimbTypeTestBase {
 
 
 /*
-    private ReimbTypeTestBase(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public static ReimbTypeTestBase getObject(String reimbFile) {
-        if (obj == null)
-            obj = new HashMap<>();
-
-        ReimbTypeTestBase rttb = obj.get(reimbFile);
-        if (rttb == null) {
-            rttb = new ReimbTypeTestBase(reimbFile);
-            rttb.loadData();
-            obj.put(reimbFile, rttb);
-        }
-        return rttb;
-    }
-
-    public static ReimbTypeTestBase getObject() {
-        return getObject("TestData.xlsx");
-    }
-
-    private void loadData() {
-        readReimbTypeData();
-    }
-
-    public void readReimbTypeData() {
-        List<Map<String, String>> ReimbFormDataList = readDatafromSheet("ReimbForm");
-        List<Map<String, String>> ReimbLimitsBodyDataList = readDatafromSheet("ReimbLimitsBody");
-
-        //with all values in ReimbLimitsBody excel sheet create a java object
-        for (Map<String, String> data : ReimbLimitsBodyDataList) {
-            ReimbLimitsBody reimbLimitsBody = new ReimbLimitsBody();
-            reimbLimitsBody.toObject(data);
-            reimbLimitsBodyList.add(reimbLimitsBody);
-        }
-
-        //with all values in ReimbForm excel sheet create a java object
-        for (Map<String, String> data : ReimbFormDataList) {
-            ReimbForm reimbForm = new ReimbForm();
-            //reimbForm.toObject(data);
-
-            String id = (reimbFormService.getReimbFormIdByName(data.get("GroupCompany"), data.get("Name"))).getId();
-            if (id == null) {
-                String bodyObjects = data.get("ReimbursementLimitsBody");
-                String objectTypes[] = bodyObjects.split(",");
-
-                for (String value : objectTypes) {
-                    int index = Integer.parseInt(value) - 1;
-                    reimbForm.addReimbLimits(reimbLimitsBodyList.get(index));
-                }
-//            int rowcount = Integer.parseInt(data.get("ReimbursementLimitsBody"));
-//            data.put("ReimbursementLimitsBody", reimbLimitsBodyList.get(rowcount).toString());
-            }
-            else {
-                reimbForm.setId(id);
-                reimbFormService.updateReimbForm(reimbForm);
-            }
-            reimbFormList.add(reimbForm);
-        }
-    }
-
-
-    private List<Map<String, String>> readDatafromSheet(String sheetname) {
-
-        Map<String, String> excelDetails = new HashMap<>();
-        excelDetails.put("FileName", "TestData.xlsx");
-        excelDetails.put("TestDataRow", "all");
-        excelDetails.put("SheetName", sheetname);
-
-        ExcelReader reader = new ExcelReader();
-        reader.setFilenameAndSheetName(excelDetails);
-        return reader.getExcelData();
-    }
     //String key = "TenantReimbursement[applicable][]";
         /*String groupCompanyMongoId = getGroupCompanyIds().get(TestBase.data.get("@@group"));
         String companyId = getIsParent().equalsIgnoreCase("yes") ? "" : groupCompanyMongoId;
@@ -166,22 +93,22 @@ public class ReimbTypeTestBase {
             }
             setApplicableToList(applicableToList);
         }*/
-
-        /*//reimbForm = reimbFormService.getReimbFormIdByName(testdata.get("GroupCompany"), formname);
-        //GrpCompany not to be taken from excel, modify later
-        if (reimbForm.getId() != null) {
-            formname = "Default_Create_" + new DateTimeHelper().formatDateTo(new Date(), "YYYYMMdd_HHmmss");
-            reimbForm.setName(formname);
-        }
-
-         //addReimbTypeData("ReimbursementLimitsBody");
-        /*String temp = data.get("Applicable_To");
-        if (temp.length() != 0) {
-            for (String value : temp.split(",")) {
-                applicableToList.add(value);
+  /*for (String locn : location) {
+                if (locn.equals("all"))
+                    body.add(new BasicNameValuePair("Reimb_set[location][" + count + "][]", "ALL_0"));
+                else
+                    body.add(new BasicNameValuePair("Reimb_set[location][" + count + "][]", location));
             }
-            setApplicableToList(applicableToList);
-        }
-    }
+            for (String bgd : band_grade_desig) {
+                if (bgd.equals("all"))
+                    body.add(new BasicNameValuePair("Reimb_set[designation][" + count + "][]", "ALL_0"));
 
-            */
+                else
+                    body.add(new BasicNameValuePair("Reimb_set[designation][" + count + "][]", bgd));
+            }
+        }*/
+
+
+
+
+

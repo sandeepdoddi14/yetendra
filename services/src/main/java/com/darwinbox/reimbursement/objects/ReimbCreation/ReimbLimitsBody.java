@@ -1,6 +1,7 @@
 package com.darwinbox.reimbursement.objects.ReimbCreation;
 
 import com.darwinbox.Services;
+import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ public class ReimbLimitsBody extends Services {
     }
 
     public void setUppercappu(String uppercappu) {
-            this.uppercappu = uppercappu;
+        this.uppercappu = uppercappu;
     }
 
     public String getUppercaponunits() {
@@ -79,20 +80,12 @@ public class ReimbLimitsBody extends Services {
         this.autocalculate = autocalculate;
     }
 
-    public List<String> getBand_grade_desig() {
-        return band_grade_desig;
+    public void addBandGradeDesig(String bgd) {
+        band_grade_desig.add(bgd);
     }
 
-    public void setBand_grade_desig(List<String> band_grade_desig) {
-        this.band_grade_desig = band_grade_desig;
-    }
-
-    public List<String> getLocation() {
-        return location;
-    }
-
-    public void setLocation(List<String> location) {
-        this.location = location;
+    public void addLocation(String loc) {
+        location.add(loc);
     }
 
     public void toObject(Map<String, String> data) {
@@ -103,48 +96,88 @@ public class ReimbLimitsBody extends Services {
         setDayspostexpense(data.get("DaysPostExpense"));
         setAutoapprovallimit(data.get("AutoApprovalLimit"));
         setAutocalculate(data.get("AutoCalculate"));
-    }
 
-    public List<NameValuePair> toMap(int count) {
-        List<NameValuePair> body = new ArrayList<>();
-        body.add(new BasicNameValuePair("Reimb_set[" + count + "][rupees]", getUppercappu() + ""));
-        body.add(new BasicNameValuePair("Reimb_set[" + count + "][upper_cap_unit]", getUppercappu() + ""));
-        body.add(new BasicNameValuePair("Reimb_set[" + count + "][number_of_times]", getNooftimespermonth() + ""));
-        body.add(new BasicNameValuePair("Reimb_set[" + count + "][max_in_month]", getMaxamtpermonth() + ""));
-        body.add(new BasicNameValuePair("Reimb_set[" + count + "][in_how_many_days]", getDayspostexpense() + ""));
-        body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_approval_limit]", getAutoapprovallimit() + ""));
-
-        if (autocalculate.equalsIgnoreCase("yes"))
-            body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_cal_and_non_editable]", "1"));
-        else
-            body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_cal_and_non_editable]", "0"));
-
-        HashMap band = getBands();
-        HashMap grade = getGrades();
-        String gcName = getData("@@group");
-        String  id = getGroupCompanyIds().get(gcName);
-        JSONObject designation = getDesignations(id);
-
-        for (String bandGradeDesig : getBand_grade_desig()) {
-            if (bandGradeDesig.equalsIgnoreCase("all")) {
-                body.add(new BasicNameValuePair("Reimb_set[designation][" + count + "][]", "ALL_0"));
-            } else if (bandGradeDesig.equals("BAND")) {
-                body.add(new BasicNameValuePair("Reimb_set[designation][" + count + "][]", "BAND_" + bandGradeDesig));
-            } else if (bandGradeDesig.equals("GRADE")) {
-                body.add(new BasicNameValuePair("Reimb_set[designation][" + count + "][]", "GRADE_" + bandGradeDesig));
-            } else {
-                body.add(new BasicNameValuePair("Reimb_set[designation][" + count + "][]", bandGradeDesig + ""));
+        String temp_bgd = data.get("Band_Grade_Designation");
+        if (temp_bgd.length() != 0) {
+            for (String bgd : temp_bgd.split(",")) {
+                addBandGradeDesig(bgd);
             }
         }
-
-        for (String location : getLocation()) {
-            if (getLocation().equals("all"))
-                body.add(new BasicNameValuePair("Reimb_set[" + count + "][location][]", "ALL_0"));
-
-            else
-                body.add(new BasicNameValuePair("Reimb_set[" + count + "][location][]", location));
+        String temp_loc = data.get("Location");
+        if (temp_loc.length() != 0) {
+            for (String loc : temp_loc.split(",")) {
+                addLocation(loc);
+            }
         }
-        return body;
     }
 
+    public List<NameValuePair> toMap(int count, String mode) {
+        List<NameValuePair> body = new ArrayList<>();
+        ReimbForm reimbForm = new ReimbForm();
+
+        if (mode == "create") {
+            body.add(new BasicNameValuePair("Reimb_set[rupees][]", getUppercappu() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[upper_cap_unit][]", getUppercappu() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[number_of_times][]", getNooftimespermonth() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[max_in_month][]", getMaxamtpermonth() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[in_how_many_days][]", getDayspostexpense() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[auto_approval_limit][]", getAutoapprovallimit() + ""));
+
+            String keyBgd = "Reimb_set[designation][" + count + "][]";
+            List<NameValuePair> nvp_bgd = chooseApplicableTo(band_grade_desig, reimbForm.companyId, keyBgd);
+            for (NameValuePair nv : nvp_bgd) {
+                body.add(nv);
+            }
+            String keyloc = "Reimb_set[location][" + count + "][]";
+            List<NameValuePair> nvp_loc = chooseApplicableTo(location, reimbForm.companyId, keyloc);
+            for (NameValuePair nv : nvp_loc) {
+                body.add(nv);
+            }
+            if (autocalculate.equalsIgnoreCase("yes"))
+                body.add(new BasicNameValuePair("Reimb_set[auto_cal_and_non_editable][]", "1"));
+            else
+                body.add(new BasicNameValuePair("Reimb_set[auto_cal_and_non_editable][]", "0"));
+        }
+        if (mode == "edit") {
+            body.add(new BasicNameValuePair("Reimb_set[" + count + "][rupees]", getUppercappu() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[" + count + "][upper_cap_unit]", getUppercappu() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[" + count + "][number_of_times]", getNooftimespermonth() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[" + count + "][max_in_month]", getMaxamtpermonth() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[" + count + "][in_how_many_days]", getDayspostexpense() + ""));
+            body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_approval_limit]", getAutoapprovallimit() + ""));
+
+            String keyBgd = "Reimb_set[" + count + "][designation][]";
+            List<NameValuePair> nvp_bgd = chooseApplicableTo(band_grade_desig, reimbForm.companyId, keyBgd);
+            for (NameValuePair nv : nvp_bgd) {
+                body.add(nv);
+            }
+            String keyloc = "Reimb_set[" + count + "][location][]";
+            List<NameValuePair> nvp_loc = chooseApplicableTo(location, reimbForm.companyId, keyloc);
+            for (NameValuePair nv : nvp_loc) {
+                body.add(nv);
+            }
+
+            if (autocalculate.equalsIgnoreCase("yes"))
+                body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_cal_and_non_editable][]", "1"));
+            else
+                body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_cal_and_non_editable][]", "0"));
+
+        }
+              /* for (String location : getLocation()) {
+                if (getLocation().equals("all"))
+                    body.add(new BasicNameValuePair("Reimb_set[" + count + "][location][]", "ALL_0"));
+                else
+                    body.add(new BasicNameValuePair("Reimb_set[" + count + "][location][]", location));
+            }
+            for (String bgd : getBand_grade_desig()) {
+                if (getLocation().equals("all"))
+                    body.add(new BasicNameValuePair("Reimb_set[" + count + "][]", "ALL_0"));
+
+                else
+                    body.add(new BasicNameValuePair("Reimb_set[" + count + "][designation][]", bgd));
+            }
+*/
+        return body;
+    }
 }
+

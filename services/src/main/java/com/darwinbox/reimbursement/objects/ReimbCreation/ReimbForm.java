@@ -2,7 +2,7 @@ package com.darwinbox.reimbursement.objects.ReimbCreation;
 
 import com.darwinbox.Services;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
-import com.darwinbox.reimbursement.services.ReimbFormService;
+import com.darwinbox.framework.uiautomation.base.TestBase;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -16,15 +16,15 @@ public class ReimbForm extends Services {
         RUPEE, DOLLAR, POUNDS, AED, EURO, PHP, SGD, IDR, HKD, AUD, BDT, VND, CNY, TWD, JPY, MYR, KRW, KHR
     }
 
+    public String companyId;
     private String name;
     private String description;
     private String units;//use extra fields as precalculated values
     private String approvalFlow;//use gpcompanies only from .ini files
     private String ledger;
     private String id;
-    private String isParent = "No"; //can i use isParent to check if the parent entered in excel is a valid parent or not?use isGroupCompany logic to check: main/null/""
+    private String isGpCompany;
     private String GrpCompany;
-    private String groupCompanyMongoId = "";
     private List<String> applicableToList = new ArrayList<>();
     private List<CURRENCY> currencyList = new ArrayList<>();
     private List<ReimbLimitsBody> reimbLimitsBodyList = new ArrayList<>();
@@ -51,14 +51,6 @@ public class ReimbForm extends Services {
 
     public void setGrpCompany(String grpCompany) {
         GrpCompany = grpCompany;
-    }
-
-    public String getIsParent() {
-        return isParent;
-    }
-
-    public void setIsParent(String isParent) {
-        this.isParent = isParent;
     }
 
     public String getUnits() {
@@ -93,24 +85,16 @@ public class ReimbForm extends Services {
         this.id = id;
     }
 
-    public List<String> getApplicableToList() {
-        return applicableToList;
+    public String getIsGpCompany() {
+        return isGpCompany;
     }
 
-    public void setApplicableToList(List<String> applicableToList) {
-        this.applicableToList = applicableToList;
-    }
-
-    public List<CURRENCY> getCurrencyList() {
-        return currencyList;
-    }
-
-    public void setCurrencyList(List<CURRENCY> currencyList) {
-        this.currencyList = currencyList;
+    public void setIsGpCompany(String isGpCompany) {
+        this.isGpCompany = isGpCompany;
     }
 
     public void addCurrency(String currency) {
-        CURRENCY.valueOf(currency);
+        currencyList.add(CURRENCY.valueOf(currency));
     }
 
     public void addApplicableTo(String applicableTo) {
@@ -132,58 +116,86 @@ public class ReimbForm extends Services {
         return reader.getExcelData();
     }
 
-    public List<ReimbForm> readReimbLimitsData() {
-        List<Map<String, String>> excelData = readDataFromSheet("ReimbLimitsBody");
-        List<ReimbForm> reimbFormList = new ArrayList<>();
+    public ReimbForm readReimbData() {
+        List<Map<String, String>> rldata = readDataFromSheet("ReimbLimitsBody");
+        List<Map<String, String>> rdata = readDataFromSheet("ReimbForm");
+        ReimbForm rform = new ReimbForm();
+        for (Map<String, String> robj : rdata) {
+            String bodyObjects = robj.get("ReimbursementLimitsBody");
+            String objectTypes[] = bodyObjects.split(",");
 
-        for (Map<String, String> testData : excelData) {
-            reimbFormList.add(toObject(testData));
+            for (String value : objectTypes) {
+                ReimbLimitsBody bdy = new ReimbLimitsBody();
+                int index = 0;
+                if (value != null)
+                    index = Integer.valueOf(value); //this throws number format exception when only 1 entry is passed, why?
+                bdy.toObject(rldata.get(index - 1)); //this calls setter multiple times, even if i want that value to be set only once?
+                rform.add(bdy);
+            }
+            rform.toObject(robj);
         }
-        return reimbFormList;
+        return rform;
     }
 
-    public ReimbForm toObject(Map<String, String> testdata) {
-        ReimbForm reimbForm = new ReimbForm();
-        reimbForm.setName(data.get("Name"));
-        reimbForm.setDescription(data.get("Description"));
-        reimbForm.setGrpCompany(data.get("GroupCompany"));
-
-        String bodyObjects = data.get("ReimbursementLimitsBody");
-        String objectTypes[] = bodyObjects.split(",");
-
-        for (String value : objectTypes) {
-            int index = Integer.parseInt(value)-1;
-            reimbForm.add(reimbLimitsBodyList.get(index));
-            //reimbForm.add((ReimbLimitsBody) readReimbLimitsData());
+    public void toObject(Map<String, String> entry) {
+        setName(entry.get("Name"));
+        setDescription(entry.get("Description"));
+        setIsGpCompany(entry.get("IsGroupCompany"));
+        //Append '_' at end for all choices given in excel sheet for ReimbForm.
+        String tempAppTo = entry.get("ApplicableTo");
+        if (tempAppTo.length() != 0) {
+            for (String value : tempAppTo.split(",")) {
+                addApplicableTo(value);
+            }
         }
-        return reimbForm;
+        String tempCurr = entry.get("CurrencyType");
+        if (tempCurr.length() != 0) {
+            for (String value : tempCurr.split(",")) {
+                addCurrency(value);
+            }
+        }
     }
 
-    public List<NameValuePair> toMap() {
+    public List<NameValuePair> toMap(String mode) {
         List<NameValuePair> body = new ArrayList<>();
-
         body.add(new BasicNameValuePair("TenantReimbursement[name]", getName()));
         body.add(new BasicNameValuePair("TenantReimbursement[description]", getDescription()));
-        body.add(new BasicNameValuePair("TenantReimbursement[parent_company_id]", getGrpCompany()));
         body.add(new BasicNameValuePair("TenantReimbursement[units]", ""));
         body.add(new BasicNameValuePair("TenantReimbursement[approval_flow]", ""));
-        body.add(new BasicNameValuePair("TenantReimbursement[ledger]", "0"));
-        body.add(new BasicNameValuePair("TenantReimbursement[applicable][]", "ALL_0"));
+        body.add(new BasicNameValuePair("TenantReimbursement[ledger]", ""));
 
-        for (CURRENCY cur : getCurrencyList()) {
+        for (CURRENCY cur : currencyList) {
             body.add(new BasicNameValuePair("TenantReimbursement[currency_allowed][]", cur.toString()));
         }
 
-        for (String applicableTo : getApplicableToList()) {
-            body.add(new BasicNameValuePair("TenantReimbursement[applicable][]", applicableTo));
-        }
+        String groupCompanyMongoId = getGroupCompanyIds().get(TestBase.data.get("@@group"));
+        companyId = getIsGpCompany().equalsIgnoreCase("yes") ? "" : groupCompanyMongoId;
 
+        String keyAppTo = "TenantReimbursement[applicable][]";
+        List<NameValuePair> nvp = chooseApplicableTo(applicableToList, companyId, keyAppTo);
+        for (NameValuePair nv : nvp) {
+            body.add(nv);
+        }
         int count = 0;
         for (ReimbLimitsBody reLimitsBody : reimbLimitsBodyList) {
-            body.add(count, (NameValuePair) reLimitsBody);
+            for (NameValuePair e : reLimitsBody.toMap(count, mode)) {
+                body.add(e);
+            }
             count++;
         }
-    return body;
+        count++;
+
+        if (mode == "create") {
+            body.add(new BasicNameValuePair("mode", "create"));
+            body.add(new BasicNameValuePair("unit_type_value", ""));
+            body.add(new BasicNameValuePair("TenantReimbursement[parent_company_id]", getGrpCompany()));
+        }
+        if (mode == "edit") {
+            body.add(new BasicNameValuePair("mode", "edit"));
+            body.add(new BasicNameValuePair("unit_type_value_modal", "No Unit"));
+            body.add(new BasicNameValuePair("reimb_id", getId()));
+        }
+        return body;
     }
 }
 
