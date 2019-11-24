@@ -408,6 +408,16 @@ public class LeaveAccuralBase extends  LeaveBase {
 
         }
 
+        try {
+            if (testData.get("HourlyLeave").equalsIgnoreCase("true")) {
+                leaveBalancePolicy.setHourlyLeave(true);
+                Reporter("Hourly Leave  :true","info");
+            }
+        }
+        catch (Exception e){
+            Reporter("Hourly Leave  :false","info");
+        }
+
 
             List<NameValuePair> request=leaveBalancePolicy.createRequest();
 
@@ -1174,9 +1184,13 @@ public class LeaveAccuralBase extends  LeaveBase {
 
                     if(leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
                     {
-                        if (leavePolicyObject.getProbation_period_before_leave_validity().custom)
-                            LeaveCalBeginningDate = LocalDate.parse(DOJ).plusMonths(leavePolicyObject.getProbation_period_before_leave_validity().customMonths).toString();
-                        else if(leavePolicyObject.getProbation_period_before_leave_validity().probation)
+                        if (leavePolicyObject.getProbation_period_before_leave_validity().custom) {
+                            LeaveCalBeginningDate = LocalDate.parse(employee.getDoj()).plusMonths(leavePolicyObject.getProbation_period_before_leave_validity().customMonths).toString();
+                            if(LocalDate.parse(LeaveCalBeginningDate).compareTo(LocalDate.parse(DOJ))<0){
+                             LeaveCalBeginningDate = DOJ;
+                            }
+                        }
+                            else if(leavePolicyObject.getProbation_period_before_leave_validity().probation)
                             LeaveCalBeginningDate = Leave_Probation_End_Date;
 
                         else
