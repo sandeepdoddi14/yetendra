@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Accural.Custom.LeaveBalanceTests;
+package com.darwinbox.leaves.Accural.Custom.LeaveBalanceTests.Hourly;
 
 
 import com.darwinbox.attendance.objects.Employee;
@@ -53,6 +53,7 @@ public class LeaveBalance_48EmployeeCreation_42_82 extends LeaveAccuralBase {
     public void verifyLeaveBalance(Map<String, String> testData) {
         if (runTest) {
 
+            testData.put("HourlyLeave","TRUE");
 
 
             List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("42-82");
