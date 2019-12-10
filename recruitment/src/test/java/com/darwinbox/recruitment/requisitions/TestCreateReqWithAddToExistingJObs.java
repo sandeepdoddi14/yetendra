@@ -55,7 +55,7 @@ public class TestCreateReqWithAddToExistingJObs extends TestBase {
 
         requisition.toObject(testData);
         requisitionService.createRequisition(requisition);
-
+        Reporter("Active job is selected","INFO");
         /*requisitionService.createRequisition(requisition);
         requisition.toObjectSearch("Automation Admin");
         String reqID = requisitionService.searchRequisition(requisition);

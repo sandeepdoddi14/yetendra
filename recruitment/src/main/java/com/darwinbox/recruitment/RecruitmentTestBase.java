@@ -1,5 +1,6 @@
 package com.darwinbox.recruitment;
 
+import com.darwinbox.attendance.objects.Reports;
 import com.darwinbox.customflows.objects.approvalflows.CFApprovalFlow;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.base.TestBase;
@@ -9,6 +10,7 @@ import com.darwinbox.recruitment.objects.jobsPages.HiringWFThirdPage;
 import com.darwinbox.recruitment.objects.jobsPages.HiringWFThirdPageBody;
 import com.darwinbox.recruitment.services.HiringWorkFlowService;
 import com.darwinbox.recruitment.services.JobsPagesService;
+import com.darwinbox.recruitment.services.RequisitionService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +43,7 @@ public class RecruitmentTestBase extends TestBase {
 
         if (baseData == null) {
             baseData = new RecruitmentTestBase(baseFile);
-            baseData.loadData();
+            //baseData.loadData();
             obj.put(baseFile, baseData);
         }
         return baseData;
@@ -51,7 +53,6 @@ public class RecruitmentTestBase extends TestBase {
 
         updateHiringWorkFlow();
         updateHiringWFThirdPage();
-
     }
 
     public void updateHiringWorkFlow(){
@@ -87,8 +88,33 @@ public class RecruitmentTestBase extends TestBase {
 
     public void updateHiringWFThirdPage(){
 
+        List<Map<String, String>> HWF = readDatafromSheet("HiringWF");
+        List<Map<String, String>> HWFbody = readDatafromSheet("HiringWFThirdPage");
 
-        //pass id in create settings
+        for (Map<String, String> data : HWFbody) {
+            HiringWFThirdPageBody lineItemsBody = new HiringWFThirdPageBody();
+            lineItemsBody.toObjectThirdPageBody(data);
+            hiringWFThirdPageBody.add(lineItemsBody);
+        }
+
+        for(Map<String, String> data : HWF){
+            HiringWFThirdPage hirWF = new HiringWFThirdPage();
+            hirWF.toObjectThirdPage(data);
+
+          String bodyObjects = data.get("HirWFThirdPageData");
+          String[] objectTypes = bodyObjects.split(",");
+          for (String value : objectTypes){
+
+              int count = Integer.parseInt(value)-1;
+              hirWF.add(hiringWFThirdPageBody.get(count));
+          }
+
+            String jobID=  new RequisitionService().searchActiveJobs();
+            Reporter("Third page WorkFlow is updated for job ID :"+jobID,"PASS");
+
+            jobsPagesService.hiringWorkFlow(hirWF,jobID);
+            hiringWFThirdPage.add(hirWF);
+        }
     }
 
     private List<Map<String, String>> readDatafromSheet(String sheetname) {

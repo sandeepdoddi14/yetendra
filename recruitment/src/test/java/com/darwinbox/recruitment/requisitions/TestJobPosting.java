@@ -108,7 +108,6 @@ public class TestJobPosting extends TestBase {
          //page-3
 
 
-
         //page-4
         hiringTeam.toObjectFourthPage(testData);
         jobsPagesService.hiringTeam(hiringTeam,jobID);

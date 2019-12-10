@@ -17,6 +17,7 @@ public class Requisition extends Services {
     private String totalNewPositions;
     private String totalReplacementPositions;
     private List<String> replacementEmployees;
+    private String positionID;
 
     private String employeeType;
     private String locations;
@@ -221,6 +222,13 @@ public class Requisition extends Services {
     public void setAssetRequirements(String assetRequirements) {
         this.assetRequirements = assetRequirements;
     }
+    public String getPositionID() {
+        return positionID;
+    }
+
+    public void setPositionID(String positionID) {
+        this.positionID = positionID;
+    }
 
     public List<NameValuePair> toMap() {
 
@@ -234,7 +242,7 @@ public class Requisition extends Services {
         body.put("RequestRequisition[positions]",getTotalPositions());
         body.put("RequestRequisition[no_of_employees_new]",getTotalNewPositions());
         body.put("RequestRequisition[no_of_employees_replacement]",getTotalReplacementPositions());
-
+        body.put("RequestRequisition[position_id][]",getPositionID());
        /* for (String getreplacedUsers  : getReplacementEmployees()) {
             list.add(new BasicNameValuePair("RequestRequisition[replaced_users]", getreplacedUsers));
         }*/

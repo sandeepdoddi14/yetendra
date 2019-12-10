@@ -84,7 +84,7 @@ public class TestRequisitionPermissionRoleHolder extends TestBase {
 
         genericHelper.navigateTo("/recruitment/recruitment/requisitionstagefour/id/"+jobID+"/edit/1");
 
-        Reporter("navigated to jobs page-4","INFO");
+        //Reporter("navigated to jobs page-4","INFO");
 
         //post job
 
