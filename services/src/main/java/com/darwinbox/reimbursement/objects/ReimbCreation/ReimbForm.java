@@ -172,11 +172,11 @@ public class ReimbForm extends Services {
         companyId = getIsGpCompany().equalsIgnoreCase("yes") ? "" : groupCompanyMongoId;
 
         String keyAppTo = "TenantReimbursement[applicable][]";
-        List<NameValuePair> nvp = chooseApplicableTo(applicableToList, companyId, keyAppTo);
+      /*  List<NameValuePair> nvp = chooseApplicableTo(applicableToList, companyId, keyAppTo);
         for (NameValuePair nv : nvp) {
             body.add(nv);
         }
-        int count = 0;
+      */  int count = 0;
         for (ReimbLimitsBody reLimitsBody : reimbLimitsBodyList) {
             for (NameValuePair e : reLimitsBody.toMap(count, mode)) {
                 body.add(e);

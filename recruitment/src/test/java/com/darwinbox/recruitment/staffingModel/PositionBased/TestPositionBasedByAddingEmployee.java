@@ -1,5 +1,6 @@
 package com.darwinbox.recruitment.staffingModel.PositionBased;
 
+import com.darwinbox.Services;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.services.EmployeeServices;
 import com.darwinbox.core.employee.objects.DesignationNames;
@@ -21,10 +22,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TestPositionBasedByAddingEmployee extends TestBase {
 
@@ -66,7 +64,7 @@ public class TestPositionBasedByAddingEmployee extends TestBase {
         positionDataService = new PositionDataService();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class,enabled = false)
     public void testStaffingModel(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
@@ -83,25 +81,56 @@ public class TestPositionBasedByAddingEmployee extends TestBase {
         Reporter("Designation Name created is : "+designationName,"INFO");
 
         Assert.assertNotNull(designationName,"Designation Name is NOT created");
+// instead of setDefault
 
-        designations.setDefaultForDesignation(designationName);
-        designations.setStaffingModel("2");
-        designations.setNumberOfPositions("2"); // if num of pos increase, check pos status code to get for every position raised
+        Services services=new Services();
+        String gcName =getData("@@group");
+        String  id = services.getGroupCompanyIds().get(gcName);
+
+        Object[] departments= services.getDepartments(id).values().toArray();
+        designations.setGroupCompany(id);
+
+
+            designations.setDepartment(String.valueOf(departments[new Random().nextInt(departments.length)]));
+
+            DesignationNames designationNames = new DesignationNames();
+            DesignationNamesServices designationNamesServices = new DesignationNamesServices();
+            designationNames=  designationNamesServices.getDesignationNamesID(designationName);
+
+        designations.setDesignation(designationNames.getId().replace("\" ",""));
+            //setDesignation("5ddf6a1c4102f");
+        designations.setStaffingModel(
+                    com.darwinbox.recruitment.objects.Designations.staffingModel.valueOf("POSITIONBASED"));
+        designations.setNumberOfPositions("1");
+            //setNumberOfPositions("5");
+        designations.setOverHiringAllowed(true);
+        designations.setCountNoticePeriod(false);
+
+
+
+        //
+
+
+
+
+       // designations.setDefaultForDesignation(designationName,testData);
+       // designations.setStaffingModel("2");
+        designations.setNumberOfPositions("1"); // if num of pos increase, check pos status code to get for every position raised
         designationsService.createDesignation(designations,"PositionBased");
 
        //assertions whether IDs contains in response  response.contains()
 
         String designationID = designationsService.getDesignationID(designationName);
 
-        designations.setNumberOfPositions("2");
+        designations.setNumberOfPositions("1");
         designationsService.createPositionStageOne(designations,designationID);
-        //designations.setPositionID(""); pos name
+       // designations.setPositionID(""); //pos name
         designationsService.createPositionStageTwo(designations,designationID);
 
         positionData.defaultToPositionData();
-        positionData= positionDataService.getPositionID(designationID,positionData);
+        List<PositionData> list= positionDataService.getPositionID(designationID,positionData);
 
-        Assert.assertNotNull(positionData.getPositionID(),"Position ID is NOT captured");
+        Assert.assertNotNull(list.get(0).getPositionID(),"Position ID is NOT captured");
 
         String status = positionData.getPositionStatus();
         if(!status.contains("Active"))

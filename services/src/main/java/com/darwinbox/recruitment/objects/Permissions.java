@@ -9,14 +9,14 @@ public class Permissions {
 
 
     public String permissionGroup;
-    public List<String> restrictedGroups;
+    public String restrictedGroups;
     public String permissionUsers;
 
-    public List<String> getRestrictedGroups() {
+    public String getRestrictedGroups() {
         return restrictedGroups;
     }
 
-    public void setRestrictedGroups(List<String> restrictedGroups) {
+    public void setRestrictedGroups(String restrictedGroups) {
         this.restrictedGroups = restrictedGroups;
     }
 
@@ -48,7 +48,7 @@ public class Permissions {
 
         body.put("yt0","SAVE");
         body.put("Permission[group]",getPermissionGroup());
-       // body.put("Permission[restriction][0][]",getRestrictedGroups());
+        body.put("Permission[restriction][0][]",getRestrictedGroups());
         body.put("Permission[users][0][]",getPermissionUsers());
 
         return body;

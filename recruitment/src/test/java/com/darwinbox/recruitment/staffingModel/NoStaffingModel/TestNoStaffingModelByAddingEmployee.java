@@ -50,7 +50,7 @@ public class TestNoStaffingModelByAddingEmployee extends TestBase {
         requisitionService = new RequisitionService();
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class,enabled = false)
     public void testStaffingModel(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
@@ -62,8 +62,8 @@ public class TestNoStaffingModelByAddingEmployee extends TestBase {
 
         Assert.assertNotNull(designationName, "Designation Name is NOT created");
 
-        designations.setDefaultForDesignation(designationName);
-        designations.setStaffingModel("");
+        designations.setDefaultForDesignation(designationName,testData);
+      //  designations.setStaffingModel("");
         designationsService.createDesignation(designations, "No");
 
         String designationID = designationsService.getDesignationID(designationName);

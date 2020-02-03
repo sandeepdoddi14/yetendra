@@ -13,6 +13,15 @@ public class PositionData extends Services {
 
     private String positionID;
     private String positionStatus;
+    private String positionName;
+
+    public String getPositionName() {
+        return positionName;
+    }
+
+    public void setPositionName(String positionName) {
+        this.positionName = positionName;
+    }
 
     public String getPositionID() {
         return positionID;

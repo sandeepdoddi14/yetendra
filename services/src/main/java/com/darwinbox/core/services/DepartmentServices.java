@@ -24,44 +24,73 @@ public class DepartmentServices extends Services {
     }
 
 
-    public void updateDepartment(Department department) {
-        Map<String, String> body = defaultBody();
+    public void editDepartment(Department department) {
+
+        Map<String, String> body = new HashMap<>();
         body.putAll(department.toMap());
+        body.put("UserDepartments[id]",department.getId());
 
-
-        HashMap<String,String> departments=getDepartments();
+        /*HashMap<String,String> departments=getDepartments();
         String  id=departments.get(department.getDepartmentName());
-
-        if(id!=null){
-            body.put("UserDepartments[id]",id);
-        }
-        else
-            throw new RuntimeException("There is no department to update department Name="+department.getDepartmentName());
-
+*/
+     //        body.put("UserDepartments[department_code]","DEP_12");
         String url = getData("@@url") + "/settings/editDept";
         Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
-        doPost(url, headers, mapToFormData(body));
+        String response = doPost(url, headers, mapToFormData(body));
+        Reporter("Response while updating department is ::"+response,"INFO");
+    }
+
+
+    /*Below method gets all data in one department*/
+
+    public Department getAllDepartments(Department department,String deptName){
+
+
+        String url = data.get("@@url") + "/settings/getDepartments";
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        JSONObject response = new JSONObject(doGet(url, headers));
+
+        String gcID = getData("@@group");
+        String  id = getGroupCompanyIds().get(gcID);
+        String a =response.get("group_cmpny_str").toString();
+        JSONObject object = new JSONObject(a);
+        JSONArray array = object.getJSONArray(id);
+        for (Object obj : array) {
+            Object o=  obj;
+            String[] split=o.toString().split("\"");
+            String[] dName=split[3].split(" ");
+            department.setDepartmentName(dName[0]);
+
+            if (deptName.equalsIgnoreCase(department.getDepartmentName())) {
+
+                department.setDepartmentCode("");       //
+                department.setId(split[6].substring(0,13));
+                break;
+            }
+        }
+        return department;
     }
 
     public void createDepartment(Department department){
 
 
-            Map<String, String> body = defaultBody();
+        Map<String, String> body = defaultBody();
 
-            body.putAll(department.toMap());
+        body.putAll(department.toMap());
 
 
-            String url = getData("@@url") + "/settings/company/departments";
+        String url = getData("@@url") + "/settings/company/departments";
 
-            Map headers = new HashMap();
-            headers.put("x-requested-with", "XMLHttpRequest");
+        Map headers = new HashMap();
+        headers.put("x-requested-with", "XMLHttpRequest");
 
-            doPost(url, headers, mapToFormData(body));
+        doPost(url, headers, mapToFormData(body));
 
     }
-
-
     /*
   get departments
    */
@@ -89,6 +118,8 @@ public class DepartmentServices extends Services {
         }
         return ids;
     }
+
+
 
     public void deleteDepartment(Department department){
         String departmentID=getGrades().get(department.getDepartmentName());

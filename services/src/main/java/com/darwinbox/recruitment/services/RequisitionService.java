@@ -2,7 +2,6 @@ package com.darwinbox.recruitment.services;
 
 import com.darwinbox.Services;
 import com.darwinbox.recruitment.objects.Requisition;
-import com.darwinbox.recruitment.objects.jobsPages.JobPosting;
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,6 +47,26 @@ public class RequisitionService extends Services {
 
         }
 
+        /*Below method returns number of records present under requisition tab, with ALL as default setting*/
+
+       public String getTotalRequisitions(Requisition requisition){
+
+        String url = getData("@@url") + "/recruitment/recruitment/RequisitionData";
+
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        Map<String, String> body = new HashMap<>();
+        requisition.setSearchText("");
+        body.putAll(requisition.toMapSearch());
+        String response = doPost(url, headers,mapToFormData(body));
+
+        JSONObject obj = new JSONObject(response);
+        Object arr = obj.get("recordsTotal");
+
+       return arr.toString();
+
+    }
 
     /*The below method returns job ID*/
 

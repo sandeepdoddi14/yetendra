@@ -7,15 +7,17 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PositionDataService extends Services {
 
 
-    /*Below methods fetches Position ID's mongoID, on designation's page*/
+    /*Below methods fetches Position ID's mongoID,positionName,positionStatus, on designation's page*/
 
-    public PositionData getPositionID(String designationID, PositionData positionData){
+    public List<PositionData> getPositionID(String designationID, PositionData positionData){
 
         String url = getData("@@url") + "/position/positiondata";
 
@@ -30,18 +32,48 @@ public class PositionDataService extends Services {
         JSONObject obj = new JSONObject(res);
         JSONArray arr = obj.getJSONArray("data");
 
-        String  id=arr.getJSONObject(0).optString("effective_date");
-        Document doc = Jsoup.parse(id);
-        String des_position=doc.body().getElementsByTag("div").attr("id");
-        String[] ab= des_position.split("_");
+        List<PositionData> list = new ArrayList();
 
-        positionData.setPositionID(ab[1]);
+        for(int i=0;i<arr.length();i++) {
 
-        String status= arr.getJSONObject(0).optString("position_status");
-        positionData.setPositionStatus(status);
+            PositionData positionData1 = new PositionData();
+            String id = arr.getJSONObject(i).optString("effective_date");
+            Document doc = Jsoup.parse(id);
+            String des_position = doc.body().getElementsByTag("div").attr("id");
+            String[] ab = des_position.split("_");
 
-        return  positionData;
+            positionData1.setPositionID(ab[1]);
+
+            String status= arr.getJSONObject(i).optString("position_status");
+            positionData1.setPositionStatus(status);
+
+            String positionName = arr.getJSONObject(i).optString("position_id").replaceAll("\\<.*?>", "");
+            positionData1.setPositionName(positionName);
+
+            list.add(positionData1);
+        }
+
+        return  list;
 
     }
 
+
+    /*Below method archives a position, in designations page*/
+
+
+    public void archivePosition(String designationID,String positionID){
+
+
+        String url = getData("@@url") + "/position/archievePosition";
+
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        Map<String, String> body = new HashMap<>();
+        body.put("resource",designationID+"_"+positionID);
+
+        String res = doPost(url, headers,mapToFormData(body));
+
+        Reporter("Response while archiving position is ::"+res,"INFO");
+    }
 }
