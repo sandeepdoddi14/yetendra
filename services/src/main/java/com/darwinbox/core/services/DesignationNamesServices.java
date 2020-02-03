@@ -1,11 +1,14 @@
 package com.darwinbox.core.services;
 import com.darwinbox.Services;
 import com.darwinbox.core.employee.objects.DesignationNames;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DesignationNamesServices extends Services {
 
@@ -24,17 +27,13 @@ public class DesignationNamesServices extends Services {
 
         body.putAll(designationNames.toMap());
 
+        String url = getData("@@url") + "/settings/company/designationnames";
 
-        String url = getData("@@url") + "/company/designationnames";
-
-        Map headers = new HashMap();
-        headers.put("x-requested-with", "XMLHttpRequest");
-
-        doPost(url, headers, mapToFormData(body));
+        doPost(url, null, mapToFormData(body));
 
     }
 
-    public void updateDesignationName(DesignationNames designationName) {
+  /*  public void updateDesignationName(DesignationNames designationName) {
         Map<String, String> body =getDefaultBody();
         body.putAll(designationName.toMap());
 
@@ -53,38 +52,42 @@ public class DesignationNamesServices extends Services {
         headers.put("X-Requested-With", "XMLHttpRequest");
         doPost(url, headers, mapToFormData(body));
     }
+*/
+    public JSONArray getAllDesignationNames() {
 
-    /*
-   gets Designation Names
-    */
-    public HashMap<String, String> getDesignationNames() {
-        String url = data.get("@@url") + "/settings/getDesignationName";
-
-        HashMap<String, String> headers = new HashMap<>();
+        String url = getData("@@url") + "/settings/getDesignationName";
+        Map headers = new HashMap();
         headers.put("X-Requested-With", "XMLHttpRequest");
 
-        JSONObject response = new JSONObject(doGet(url, headers));
-        JSONArray arr = response.getJSONArray("aaData");
-        int i = 0;
-        HashMap<String, String> ids = new HashMap();
-        while (i < arr.length()) {
-            //Pattern p = Pattern.compile("id=\"\\w+\"");
-            String grade_name = arr.getJSONArray(i).getString(0);
-            String value = arr.getJSONArray(i).getString(1).substring(7, 20);
+        String response = doGet(url, headers);
+        JSONObject objResponse = new JSONObject(response);
 
-            //  if (m.find()) {
-            ids.put(grade_name, value);
-            //  } else {
-            //    ids.put(arr.getJSONArray(i).getString(0), "");
-            // }
-            i++;
-        }
-        return ids;
+        return objResponse.getJSONArray("aaData");
+
+
     }
 
 
+    public DesignationNames getDesignationNamesID(String designationName) {
 
-    public void deleteDesignationName(DesignationNames designationNames){
+        DesignationNames designationNames = new DesignationNames();
+        JSONArray arr = getAllDesignationNames();
+
+        for (Object obj : arr) {
+
+            JSONArray objarr = (JSONArray) obj;
+
+            designationNames.setDesignationName(objarr.getString(0));
+            if (designationName.equalsIgnoreCase(designationNames.getDesignationName())) {
+                String ab[]=objarr.getString(1).split("\"");
+                designationNames.setId(ab[1]); //split
+            }
+        }
+        return designationNames;
+    }
+
+
+  /*  public void deleteDesignationName(DesignationNames designationNames){
 
             String designationID=getDesignationNames().get(designationNames.getDesignationName());
 
@@ -104,7 +107,7 @@ public class DesignationNamesServices extends Services {
 
     }
 
-
+*/
 }
 
 

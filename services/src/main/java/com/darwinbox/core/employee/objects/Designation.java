@@ -92,7 +92,7 @@ public class Designation {
     public HashMap<String, String> toMap() {
         HashMap<String, String> body = new HashMap<>();
 
-        body.put("UserDesignationsForm[designation_name_id]", new DesignationNamesServices().getDesignationNames().get(getDepartmentName()));
+      //  body.put("UserDesignationsForm[designation_name_id]", new DesignationNamesServices().getDesignationNames().get(getDepartmentName()));
 
         body.put("UserDesignationsForm[parent_company_id]", new Services().getGroupCompanyIds().get(getGroupCompany()));
         body.put("UserDesignationsForm[department_id]", new DepartmentServices().getDepartments().get(getDepartmentName()));

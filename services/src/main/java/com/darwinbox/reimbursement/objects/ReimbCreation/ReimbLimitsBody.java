@@ -124,16 +124,16 @@ public class ReimbLimitsBody extends Services {
             body.add(new BasicNameValuePair("Reimb_set[auto_approval_limit][]", getAutoapprovallimit() + ""));
 
             String keyBgd = "Reimb_set[designation][" + count + "][]";
-            List<NameValuePair> nvp_bgd = chooseApplicableTo(band_grade_desig, reimbForm.companyId, keyBgd);
+          /*  List<NameValuePair> nvp_bgd = chooseApplicableTo(band_grade_desig, reimbForm.companyId, keyBgd);
             for (NameValuePair nv : nvp_bgd) {
                 body.add(nv);
             }
-            String keyloc = "Reimb_set[location][" + count + "][]";
-            List<NameValuePair> nvp_loc = chooseApplicableTo(location, reimbForm.companyId, keyloc);
+          */  String keyloc = "Reimb_set[location][" + count + "][]";
+          /*  List<NameValuePair> nvp_loc = chooseApplicableTo(location, reimbForm.companyId, keyloc);
             for (NameValuePair nv : nvp_loc) {
                 body.add(nv);
             }
-            if (autocalculate.equalsIgnoreCase("yes"))
+          */  if (autocalculate.equalsIgnoreCase("yes"))
                 body.add(new BasicNameValuePair("Reimb_set[auto_cal_and_non_editable][]", "1"));
             else
                 body.add(new BasicNameValuePair("Reimb_set[auto_cal_and_non_editable][]", "0"));
@@ -147,16 +147,16 @@ public class ReimbLimitsBody extends Services {
             body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_approval_limit]", getAutoapprovallimit() + ""));
 
             String keyBgd = "Reimb_set[" + count + "][designation][]";
-            List<NameValuePair> nvp_bgd = chooseApplicableTo(band_grade_desig, reimbForm.companyId, keyBgd);
+         /*   List<NameValuePair> nvp_bgd = chooseApplicableTo(band_grade_desig, reimbForm.companyId, keyBgd);
             for (NameValuePair nv : nvp_bgd) {
                 body.add(nv);
             }
-            String keyloc = "Reimb_set[" + count + "][location][]";
-            List<NameValuePair> nvp_loc = chooseApplicableTo(location, reimbForm.companyId, keyloc);
+         */   String keyloc = "Reimb_set[" + count + "][location][]";
+           /* List<NameValuePair> nvp_loc = chooseApplicableTo(location, reimbForm.companyId, keyloc);
             for (NameValuePair nv : nvp_loc) {
                 body.add(nv);
             }
-
+*/
             if (autocalculate.equalsIgnoreCase("yes"))
                 body.add(new BasicNameValuePair("Reimb_set[" + count + "][auto_cal_and_non_editable][]", "1"));
             else

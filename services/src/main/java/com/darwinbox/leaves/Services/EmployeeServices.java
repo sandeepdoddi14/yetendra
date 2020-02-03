@@ -175,8 +175,8 @@ public class EmployeeServices extends Services {
         } else {
             locations = getOfficeLocations(id).values().toArray();
         }
-        Object[] empTypes = getEmployeeTypes().values().toArray();
-        if (locations.length == 0 || empTypes.length == 0) {
+        HashMap<String,String> empTypes = getEmployeeTypes();
+        if (locations.length == 0 || empTypes.keySet().size() == 0) {
             log.error("ERROR: Unable to fetch " + ((locations.length == 0) ? "locations" : "employee types"));
             return null;
         }
@@ -219,7 +219,7 @@ public class EmployeeServices extends Services {
             employee.setCompanyID(id.equals("main") ? "" : id);
             employee.setLocationID((String) locations[new Random().nextInt(locations.length)]);
             employee.setDesignationID((String) designations[new Random().nextInt(designations.length)]);
-            employee.setEmployeeTypeID((String) empTypes[new Random().nextInt(empTypes.length)]);
+            employee.setEmployeeTypeID((String) empTypes.get("Full Time"));
             employee.setSelfService("1");
             employee.setCandidateID(empID);
             employee.setJobLevel((String) jobLevelIDS[new Random().nextInt(jobLevelIDS.length)]);
@@ -349,7 +349,7 @@ public class EmployeeServices extends Services {
         Map<String, String> ma = getEmpIDAndMongoID(emps.get(0).getEmployeeID());
         emps.get(0).setMongoID(ma.get("userMongoID"));
 
-        resetPassword(emps.get(0),"123456");
+        resetPassword(emps.get(0),"123456Aa!");
 
         return emps.get(0);
     }
@@ -383,7 +383,7 @@ public class EmployeeServices extends Services {
         Map<String, String> ma = getEmpIDAndMongoID(emps.get(0).getEmployeeID());
         emps.get(0).setMongoID(ma.get("userMongoID"));
 
-        resetPassword(emps.get(0),"123456");
+        resetPassword(emps.get(0),"123456Aa!");
 
         return emps.get(0);
     }
@@ -400,7 +400,7 @@ public class EmployeeServices extends Services {
         Reporter("Info -- Employee "+employee.getFirstName()+"  created Successfully","Info");
         JSONObject response;
         try{
-        response = new JSONObject(resBody);
+            response = new JSONObject(resBody);
         }
         catch (Exception e){
             throw new RuntimeException("ERROR: Unable to find Pending Employee with CandidateID: " + employee.getCandidateID());
@@ -502,15 +502,15 @@ public class EmployeeServices extends Services {
 
     public HashMap<String,String>  addUserEmployementDefaultBody(){
 
-     HashMap<String,String> defaultBody = new HashMap<>();
-     defaultBody.put("UserMongo[id]","");
-     defaultBody.put("UserEmployeementForm[type]","");
-     defaultBody.put("UserEmployeementForm[type_name]","employee_type_id");
-     defaultBody.put("UserEmployeementForm[employee_type_id]","");
-     defaultBody.put("Events[event]","");
-     defaultBody.put("UserEmployeementForm[from_date]","");
+        HashMap<String,String> defaultBody = new HashMap<>();
+        defaultBody.put("UserMongo[id]","");
+        defaultBody.put("UserEmployeementForm[type]","");
+        defaultBody.put("UserEmployeementForm[type_name]","employee_type_id");
+        defaultBody.put("UserEmployeementForm[employee_type_id]","");
+        defaultBody.put("Events[event]","");
+        defaultBody.put("UserEmployeementForm[from_date]","");
 
-     return  defaultBody;
+        return  defaultBody;
 
     }
 

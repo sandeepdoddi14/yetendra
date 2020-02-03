@@ -1,7 +1,10 @@
 package com.darwinbox.recruitment.objects;
 
 import com.darwinbox.Services;
+import com.darwinbox.core.employee.objects.Department;
+import com.darwinbox.core.services.DepartmentServices;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
+import com.darwinbox.recruitment.services.DesignationsService;
 import com.darwinbox.recruitment.services.RequisitionService;
 import org.apache.http.NameValuePair;
 import org.json.JSONObject;
@@ -17,6 +20,7 @@ public class Requisition extends Services {
     private String totalNewPositions;
     private String totalReplacementPositions;
     private List<String> replacementEmployees;
+    private String positionID;
 
     private String employeeType;
     private String locations;
@@ -221,6 +225,13 @@ public class Requisition extends Services {
     public void setAssetRequirements(String assetRequirements) {
         this.assetRequirements = assetRequirements;
     }
+    public String getPositionID() {
+        return positionID;
+    }
+
+    public void setPositionID(String positionID) {
+        this.positionID = positionID;
+    }
 
     public List<NameValuePair> toMap() {
 
@@ -234,11 +245,11 @@ public class Requisition extends Services {
         body.put("RequestRequisition[positions]",getTotalPositions());
         body.put("RequestRequisition[no_of_employees_new]",getTotalNewPositions());
         body.put("RequestRequisition[no_of_employees_replacement]",getTotalReplacementPositions());
-
+       // body.put("RequestRequisition[position_id][]",getPositionID());
        /* for (String getreplacedUsers  : getReplacementEmployees()) {
             list.add(new BasicNameValuePair("RequestRequisition[replaced_users]", getreplacedUsers));
         }*/
-
+        body.put("RequestRequisition[replaced_users]","");
         body.put("RequestRequisition[employee_type]",getEmployeeType());
         body.put("RequestRequisition[office_locations][]",getLocations());
         body.put("RequestRequisition[recruitment_start_date]",getRecruitmentStartDate());
@@ -255,6 +266,7 @@ public class Requisition extends Services {
         body.put("RequestRequisition[hiring_lead]",getHiringLead());
         body.put("RequestRequisition[key_skills]",getSkillsRequired());
         body.put("RequestRequisition[comments]",getComments());
+        body.put("RequestRequisition[asset_requirements]",getAssetRequirements());
 
         list.addAll(mapToFormData(body));
         return list;
@@ -310,9 +322,102 @@ public class Requisition extends Services {
         setHiringLead(body.get("HiringLead"));
         setSkillsRequired(body.get("Skills"));
         setComments(body.get("comments"));
+        setAssetRequirements("");
     }
 
-    /*Below objects and methods are for Searching using text on requisition page*/
+    /*Below methods are for raising requisition with linewise matrix*/
+    private String department;
+    private String designation;
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public void toObjectPositionMatrix(Map<String, String> body,String designationID) {
+
+        String gcName = getData("@@group");
+        String  id = getGroupCompanyIds().get(gcName);
+
+        if(body.get("createType").contains("Random")){
+
+            JSONObject obj = getDesignations(id);
+            Object[] keys = obj.keySet().toArray();
+            JSONObject kv = obj.getJSONObject((String) keys[new Random().nextInt(keys.length)]);
+            Object[] designations = kv.keySet().toArray();
+            Object[] departments= getDepartments(id).values().toArray();
+
+            setDepartment(String.valueOf(departments[new Random().nextInt(departments.length)]).replace("DEPT_",""));
+            setDesignation((String) designations[new Random().nextInt(designations.length)]);
+
+        }
+        if(body.get("createType").contains("Specific")) {
+            Department department = new Department();
+            DepartmentServices departmentServices = new DepartmentServices();
+            DesignationsService designationsService = new DesignationsService();
+            department=departmentServices.getAllDepartments(department,body.get("DepartmentName"));
+
+            setDepartment(department.getId());
+   //below line, if passed through testdata
+              //setDesignation(designationsService.getDesignationsID(body.get("DesignationName")).getId());
+
+   //below line, if created at run time
+            setDesignation(designationID);
+
+
+        }
+            setCompanyName(id);
+            setSkillsRequired("");
+            setJobOpeningOptions(Requisition.jobOpeningOptions.valueOf(body.get("jobOpeningOption")));
+            setTotalPositions(body.get("TotalPositions"));
+            setTotalNewPositions(body.get("NewPositions"));
+            setTotalReplacementPositions(body.get("ReplacedPositions"));
+            setHiringLead(body.get("HiringLead"));
+
+    }
+
+    private List<RequisitionPositionLinewise> requisitionPositionLinewises = new ArrayList<>();
+
+    public List<NameValuePair> toMapPositionMatrix() {
+
+        Map<String, String> body = new HashMap<>();
+        body.put("yt0", "SAVE");
+
+        body.put("RequestRequisition[parent_company_id]",getCompanyName());
+        body.put("RequestRequisition[department_id]",getDepartment());
+        body.put("RequestRequisition[designation]",getDesignation());
+        body.put("RequestRequisition[key_skills]",getSkillsRequired());
+        body.put("RequestRequisition[job_opening_option]",""+getJobOpeningOptions().ordinal());
+        body.put("RequestRequisition[positions]",getTotalPositions());
+        body.put("RequestRequisition[no_of_employees_new]",getTotalNewPositions());
+        body.put("RequestRequisition[no_of_employees_replacement]",getTotalReplacementPositions());
+        body.put("RequestRequisition[hiring_lead]",getHiringLead());
+
+        List<NameValuePair> list = new ArrayList<>();
+        list.addAll(mapToFormData(body));
+
+        int count = 0;
+        for (RequisitionPositionLinewise  RPbody : requisitionPositionLinewises) {
+            list.addAll(list.size(), (RPbody.toMap(count)));
+            count++;
+
+        }
+
+
+        return list;
+    }
+        /*Below objects and methods are for Searching using text on requisition page*/
 
     private String searchText;
 

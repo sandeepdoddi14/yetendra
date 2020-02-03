@@ -47,7 +47,7 @@ public class TestRequisitionPermissionRoleHolder extends TestBase {
 
     }
 
-    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class)
+    @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class,enabled = false)
     public void testRequisition(Map<String, String> testData) throws Exception {
 
         Assert.assertTrue(loginPage.loginToApplication(data.get("@@admin"), data.get("@@password")), "User not Loggin to Application as Admin");
@@ -84,7 +84,7 @@ public class TestRequisitionPermissionRoleHolder extends TestBase {
 
         genericHelper.navigateTo("/recruitment/recruitment/requisitionstagefour/id/"+jobID+"/edit/1");
 
-        Reporter("navigated to jobs page-4","INFO");
+        //Reporter("navigated to jobs page-4","INFO");
 
         //post job
 

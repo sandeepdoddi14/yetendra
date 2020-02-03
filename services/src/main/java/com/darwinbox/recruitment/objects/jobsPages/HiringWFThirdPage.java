@@ -14,9 +14,6 @@ public class HiringWFThirdPage {
     private boolean isInterviewsParallel;
     private boolean isPreOffer;
 
-    private List<HiringWFThirdPageBody> hiringWFThirdPageBody = new ArrayList<>();
-
-
     public boolean isInterviewsParallel() {
         return isInterviewsParallel;
     }
@@ -33,6 +30,13 @@ public class HiringWFThirdPage {
         isPreOffer = preOffer;
     }
 
+    private List<HiringWFThirdPageBody> hirWFThirdPageBody = new ArrayList<>();
+
+    public void add(HiringWFThirdPageBody hiringWFThirdPageBody){
+        hirWFThirdPageBody.add(hiringWFThirdPageBody);
+    }
+
+
     public List<NameValuePair> toMapThirdPage() {
 
         List<NameValuePair> list = new ArrayList<>();
@@ -45,7 +49,7 @@ public class HiringWFThirdPage {
         //first-step checkbox, takes input as "on" or ""
         list.add(new BasicNameValuePair("shortlist_status","on"));
 
-        for (HiringWFThirdPageBody HWbody : hiringWFThirdPageBody) {
+        for (HiringWFThirdPageBody HWbody : hirWFThirdPageBody) {
 
             list.addAll(list.size(), (HWbody.toMapThirdPageBody()));
         }
@@ -54,9 +58,11 @@ public class HiringWFThirdPage {
     }
     public void toObjectThirdPage(Map<String, String> body) {
 
-        setInterviewsParallel(LeaveDeductionsBase.getFilter(body,"","true"));
+        /*setInterviewsParallel(LeaveDeductionsBase.getFilter(body,"","true"));
         setPreOffer(LeaveDeductionsBase.getFilter(body,"","true"));
-
+*/
+        setInterviewsParallel(true);
+        setPreOffer(true);
 
 
     }

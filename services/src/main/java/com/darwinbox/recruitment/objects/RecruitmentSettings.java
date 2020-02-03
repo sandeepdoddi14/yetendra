@@ -1,5 +1,6 @@
 package com.darwinbox.recruitment.objects;
 
+import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.policy.leavedeductions.LeaveDeductionsBase;
 import com.darwinbox.Services;
 import org.apache.http.NameValuePair;
@@ -313,4 +314,41 @@ public class RecruitmentSettings extends Services {
                 setEndTAT(RecruitmentSettings.endTAT.valueOf(body.get("endTAT")));
         }
 
-        }
+    public void toMapDefaultBody(Employee employee,Map<String,String> data) {
+
+        String url = getData("@@url") + "/settings/recruitment/user";
+
+        Map<String, String> body = new HashMap<>();
+
+        body.put("yt0", "SAVE");
+
+        body.put("recruitment_access_users",data.get("HiringLead"));
+
+        // use getters and setters here
+        body.put("RecruitmentAddingUser[aadhar_check]","0");
+        body.put("RecruitmentAddingUser[pan_check]","0");
+        body.put("RecruitmentAddingUser[email_check]","0");
+        body.put("RecruitmentAddingUser[phone_check]","0");
+        body.put("RecruitmentAddingUser[no_of_days]","0");
+        body.put("RecruitmentAddingUser[allow_diff_position]","0");
+        body.put("RecruitmentAddingUser[ijp_no_of_days]","");
+        body.put("RecruitmentAddingUser[allow_diff_position_ijp]","0");
+        body.put("RecruitmentAddingUser[back_to_website_link]","");
+        body.put("RecruitmentAddingUser[raise_requisition_access][]",employee.getDesignationID()); //
+        body.put("RecruitmentAddingUser[requisition_recruitment_start_date]","0");
+        body.put("RecruitmentAddingUser[requisition_exp_range]","0");
+        body.put("RecruitmentAddingUser[requisition_sal_range]","0");
+        body.put("RecruitmentAddingUser[requisition_comments]","0");
+        body.put("RecruitmentAddingUser[requisition_asset]","0");
+        body.put("RecruitmentAddingUser[block_ijp]","0");
+        body.put("RecruitmentAddingUser[block_refer]","0");
+        body.put("RecruitmentAddingUser[recruitment_calendar_service]","g");
+        body.put("RecruitmentAddingUser[recruitment_calendar_service]","g");
+        body.put("RecruitmentAddingUser[tat_start]","1");
+        body.put("RecruitmentAddingUser[tat_end]","1");
+
+        doPost(url, null,mapToFormData(body));
+
+    }
+
+    }

@@ -11,6 +11,7 @@ public class Department {
 
 
     private  String departmentName;
+    private String departmentCode;
     private  String businessUnit;
     private String departmentEmail;
     private String parentDepartment;
@@ -32,6 +33,14 @@ public class Department {
 
     public void setDepartmentName(String departmentName) {
         this.departmentName = departmentName;
+    }
+
+    public String getDepartmentCode() {
+        return departmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
     }
 
     public String getBusinessUnit() {
@@ -91,18 +100,26 @@ public class Department {
 
         data.put("UserDepartments[department_name]", getDepartmentName());
         data.put("UserDepartments[department_email]", getDepartmentEmail());
+        data.put("UserDepartments[department_code]",getDepartmentCode());
+        //data.put("UserDepartments[parent_company_id]", "");
 
-        data.put("UserDepartments[parent_company_id]", new Services().getGroupCompanyIds().get(getGroupCompany()));
-
-        data.put("UserDepartments[business_unit_id]", new BusinessUnitServices().getBusinessUnits().get(getBusinessUnit()));
+       // data.put("UserDepartments[business_unit_id]", new BusinessUnitServices().getBusinessUnits().get(getBusinessUnit()));
         //YTD
         data.put("UserDepartments[parent_department]", "");
-        data.put("UserDepartments[departments_hod]", "");
-        data.put("employee_search", "");
-        data.put("UserDepartments[performance_hod]", "");
-        data.put("employee_search", "");
+        data.put("UserDepartments[departments_hod]", getHeadOfDepartment());
+        //data.put("UserDepartments[performance_hod]", "");
 
         return data;
+    }
+
+    public void toObject(Map<String, String> data){
+
+
+        setDepartmentName(data.get("DepartmentName"));
+        setDepartmentCode("");
+        setDepartmentEmail("");
+        setParentDepartment("");
+        setHeadOfDepartment("");
     }
 
 }

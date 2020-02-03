@@ -23,7 +23,7 @@ public class MailService {
 
         Message[] messages = null;
         try {
-            loginToImap("imap.gmail.com", "darwinbox.qa@gmail.com", "Dbox123456");
+            loginToImap("imap.gmail.com", "automationdarwinbox@gmail.com", "Darwin@123");
             messages = getMessages(subject, body);
         } catch (Exception e) {}
 
