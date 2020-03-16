@@ -5,10 +5,13 @@ import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Accural.*;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.Encashment;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.OverUtilization;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.ProbationPeriodForLeaveValidity;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Services.LeaveService;
+import com.darwinbox.leaves.Services.LeaveSettings;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -29,26 +32,42 @@ public class LeaveAccuralBase extends  LeaveBase {
 
     public static String serverChangedDate=null;
     public static LocalDate  serverDateInFormat=null;
+    protected  static double workingDaysDenominator=0;
+
 
     //manual employee data
     public  static String DateOfJoining = "";
     public static String  EmployeeId=null;
 
-    static LeavePolicyObject leavePolicyObject=null;
+     public static LeavePolicyObject leavePolicyObject=null;
     public static LocalDate leaveCycleStartDate=null;
     public static LocalDate leaveCycleEndDate=null;
     static String Leave_Probation_End_Date=null;
     static String LeaveCalBeginningDate=null;
 
-   public  static Employee employee=null;
+    public  static Employee employee=null;
 
-   public Boolean deActiavation=false;
-   public Boolean carryForward=false;
+    public Boolean deActiavation=false;
+    public Boolean carryForward=false;
 
     DateTimeHelper objDateTimeHelper= new DateTimeHelper();
 
     static double ExpectedLeaveBalance = 0;
 
+
+    public void setDenominatorForWorkingDays(Map<String,String> testData)
+    {
+        if(testData.get("denominator").equalsIgnoreCase("yes"))
+        {
+
+            workingDaysDenominator = Double.parseDouble(testData.get("denominatorValue"));
+          // new LeaveSettings().setDenominatorForWorkingDaysAccural(workingDaysDenominator+"");
+        }
+        else {
+            //new LeaveSettings().setDenominatorForWorkingDaysAccural("");
+        }
+
+    }
     public void setLeavePolicyObject(LeavePolicyObject leavePolicyObject){
         this.leavePolicyObject=leavePolicyObject;
         //this.leaveCycleStartDate=LocalDate.parse(getFirstDayofLeaveCycle(leavePolicyObject.getLeave_cycle().toString()));
@@ -158,7 +177,19 @@ public class LeaveAccuralBase extends  LeaveBase {
         }*/
 
 
+       try {
 
+
+           if (testData.get("Use Multiple allotment restrictions").equalsIgnoreCase("yes")) {
+               leaveBalancePolicy.getMultipleAllotment().indicator = true;
+               leaveBalancePolicy.getMultipleAllotment().restrictCondition = testData.get("Multiple Allotment Restrictions");
+               leaveBalancePolicy.getMultipleAllotment().maximumAllowedPerYear = testData.get("Alloted Leaves");
+
+           }
+       }
+       catch ( Exception e){
+           Reporter("Multiple Allotment is set to FALSE","INFO");
+       }
 
         List<NameValuePair> request=leaveBalancePolicy.createRequest();
 
@@ -244,15 +275,13 @@ public class LeaveAccuralBase extends  LeaveBase {
 
 
         List<NameValuePair> request=leaveBalancePolicy.createRequest();
-
         new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
 
         return  leaveBalancePolicy;
     }
 
 
-
-    public LeavePolicyObject getMultipleAllotmentLeavePolicy(Map<String,String> testData){
+    public LeavePolicyObject getTenureWithCarryForward(Map<String,String> testData){
 
         LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
         leaveBalancePolicy.setAssignment_Type("company wise");
@@ -305,6 +334,129 @@ public class LeaveAccuralBase extends  LeaveBase {
 
             leaveBalancePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
         }
+        if(testData.get("Credit On Tenure Basis").equalsIgnoreCase("yes")){
+            TenureBasis tenureBasis = new TenureBasis();
+            tenureBasis.indicator=true;
+            for(String fromYear: testData.get("Credit From Year").split(",")){
+                tenureBasis.fromYear.add(Integer.parseInt(fromYear));
+            }
+
+            for(String toYear: testData.get("Credit To Year").split(",")){
+                tenureBasis.toYear.add(Integer.parseInt(toYear));
+            }
+
+
+            for(String leaves: testData.get("Credit No of Leaves").split(",")){
+                tenureBasis.noOfLeaves.add(Integer.parseInt(leaves.trim()));
+            }
+
+
+            if(testData.get("Carry forward").equalsIgnoreCase("yes")) {
+                CarryForwardUnusedLeave carryForwardUnusedLeave = new CarryForwardUnusedLeave();
+                carryForwardUnusedLeave.indicator = testData.get("Carry forward").equalsIgnoreCase("yes") ? true : false;
+
+                if (testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("all")) {
+                    carryForwardUnusedLeave.carryForwardAllUnusedLeave = true;
+                }
+                if (testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("fixed")) {
+                    carryForwardUnusedLeave.carryForwardOnly = true;
+                    carryForwardUnusedLeave.fixed = true;
+                    carryForwardUnusedLeave.fixedValue = Integer.parseInt(testData.get("Fixed/Percentage value"));
+                }
+                if (testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("percentage")) {
+                    carryForwardUnusedLeave.carryForwardOnly = true;
+                    carryForwardUnusedLeave.percentage = true;
+                    carryForwardUnusedLeave.percentageValue = Integer.parseInt(testData.get("Fixed/Percentage value"));
+                }
+
+                leaveBalancePolicy.setCarryForwardUnusedLeave(carryForwardUnusedLeave);
+            }
+
+
+                leaveBalancePolicy.setTenureBasis(tenureBasis);
+
+        }
+
+
+        Encashment encashment = new Encashment();
+        encashment.indicatoer= true;
+        encashment.encashAll="both";
+        encashment.Encash_Min="0.5";
+        leaveBalancePolicy.setLeaveEncashment(encashment);
+
+
+        List<NameValuePair> request=leaveBalancePolicy.createRequest();
+
+        new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
+
+        return  leaveBalancePolicy;
+    }
+
+
+
+    public LeavePolicyObject getMultipleAllotmentWithCarryForwardLeavePolicy(Map<String,String> testData){
+
+        LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
+        leaveBalancePolicy.setAssignment_Type("company wise");
+        leaveBalancePolicy.setGroup_Company("Working Days (DO NOT TOUCH)");
+        leaveBalancePolicy.setLeave_Type(testData.get("Leave_Type"));
+        leaveBalancePolicy.setDescription("AutomationCreatedLeavePolicy");
+        leaveBalancePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Max_Leaves_Allowed_Per_Year").replace(".0","")));
+        leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
+        leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
+
+        try {
+            if (testData.get("HourlyLeave").equalsIgnoreCase("true")) {
+                leaveBalancePolicy.setHourlyLeave(true);
+                Reporter("Hourly Leave  :true","info");
+            }
+        }
+        catch (Exception e){
+            Reporter("Hourly Leave  :false","info");
+        }
+
+        ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
+        probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
+        probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+        //if(probationPeriodForLeaveValidity.probation)
+        //employeeProbation=testData.get("Employee Probation Period");
+        if(probationPeriodForLeaveValidity.custom)
+            probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
+
+        leaveBalancePolicy.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+
+
+        if(testData.get("Pro rata").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Pro_Rata_Basis pro_rata_basis= new Credit_On_Pro_Rata_Basis();
+            pro_rata_basis.indicator=true;
+            pro_rata_basis.calculateFromJoiningDate=testData.get("From Joining date").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.calculateAfterProbationPeriod=testData.get("After Probation period").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditHalfMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Half Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditfullMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Full Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+
+            leaveBalancePolicy.setCredit_on_pro_rata_basis(pro_rata_basis);
+        }
+
+        if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+            credit_on_accural_basis.setIndicator(true);
+
+            if(!testData.get("Monthly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setMonthlyAccuralSetting(false,false,false);
+            else
+                credit_on_accural_basis.setMonthlyAccuralSetting(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            if(!testData.get("Quarterly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+            else
+                credit_on_accural_basis.setQuarterlyAccural(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes")?true:false);
+
+
+
+            leaveBalancePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
 
 
 
@@ -313,7 +465,226 @@ public class LeaveAccuralBase extends  LeaveBase {
             leaveBalancePolicy.getMultipleAllotment().indicator=true;
             leaveBalancePolicy.getMultipleAllotment().restrictCondition=testData.get("Multiple Allotment Restrictions");
             leaveBalancePolicy.getMultipleAllotment().maximumAllowedPerYear=testData.get("Alloted Leaves");
-            
+
+        }
+
+
+        if(testData.get("Carry forward").equalsIgnoreCase("yes")){
+            CarryForwardUnusedLeave carryForwardUnusedLeave = new CarryForwardUnusedLeave();
+            carryForwardUnusedLeave.indicator=testData.get("Carry forward").equalsIgnoreCase("yes")?true:false;
+
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("all"))
+            {
+                carryForwardUnusedLeave.carryForwardAllUnusedLeave=true;
+            }
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("fixed")){
+                carryForwardUnusedLeave.carryForwardOnly=true;
+                carryForwardUnusedLeave.fixed=true;
+                carryForwardUnusedLeave.fixedValue=Integer.parseInt(testData.get("Fixed/Percentage value"));
+            }
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("percentage")){
+                carryForwardUnusedLeave.carryForwardOnly=true;
+                carryForwardUnusedLeave.percentage=true;
+                carryForwardUnusedLeave.percentageValue=Integer.parseInt(testData.get("Fixed/Percentage value"));
+            }
+
+            leaveBalancePolicy.setCarryForwardUnusedLeave(carryForwardUnusedLeave);
+
+        }
+
+        List<NameValuePair> request=leaveBalancePolicy.createRequest();
+
+        new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
+
+        return  leaveBalancePolicy;
+    }
+
+    public LeavePolicyObject getMultipleAllotmentLeavePolicy(Map<String,String> testData){
+
+        LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
+        leaveBalancePolicy.setAssignment_Type("company wise");
+        leaveBalancePolicy.setGroup_Company("Working Days (DO NOT TOUCH)");
+        leaveBalancePolicy.setLeave_Type(testData.get("Leave_Type"));
+        leaveBalancePolicy.setDescription("AutomationCreatedLeavePolicy");
+        leaveBalancePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Max_Leaves_Allowed_Per_Year").replace(".0","")));
+        leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
+        leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
+
+        try {
+            if (testData.get("HourlyLeave").equalsIgnoreCase("true")) {
+                leaveBalancePolicy.setHourlyLeave(true);
+                Reporter("Hourly Leave  :true","info");
+            }
+        }
+        catch (Exception e){
+            Reporter("Hourly Leave  :false","info");
+        }
+
+        ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
+        probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
+        probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+        //if(probationPeriodForLeaveValidity.probation)
+        //employeeProbation=testData.get("Employee Probation Period");
+        if(probationPeriodForLeaveValidity.custom)
+            probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
+
+        leaveBalancePolicy.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+
+
+        if(testData.get("Pro rata").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Pro_Rata_Basis pro_rata_basis= new Credit_On_Pro_Rata_Basis();
+            pro_rata_basis.indicator=true;
+            pro_rata_basis.calculateFromJoiningDate=testData.get("From Joining date").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.calculateAfterProbationPeriod=testData.get("After Probation period").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditHalfMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Half Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditfullMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Full Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+
+            leaveBalancePolicy.setCredit_on_pro_rata_basis(pro_rata_basis);
+        }
+
+        if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+            credit_on_accural_basis.setIndicator(true);
+
+            if(!testData.get("Monthly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setMonthlyAccuralSetting(false,false,false);
+            else
+                credit_on_accural_basis.setMonthlyAccuralSetting(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            if(!testData.get("Quarterly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+            else
+                credit_on_accural_basis.setQuarterlyAccural(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes")?true:false);
+
+
+
+            leaveBalancePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
+
+
+
+        if(testData.get("Use Multiple allotment restrictions").equalsIgnoreCase("yes"))
+        {
+            leaveBalancePolicy.getMultipleAllotment().indicator=true;
+            leaveBalancePolicy.getMultipleAllotment().restrictCondition=testData.get("Multiple Allotment Restrictions");
+            leaveBalancePolicy.getMultipleAllotment().maximumAllowedPerYear=testData.get("Alloted Leaves");
+
+        }
+
+        List<NameValuePair> request=leaveBalancePolicy.createRequest();
+
+        new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
+
+        return  leaveBalancePolicy;
+    }
+
+
+
+    public LeavePolicyObject getMultipleAllotmentLeavePolicyWithWorkingDays(Map<String,String> testData){
+
+        LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
+        leaveBalancePolicy.setAssignment_Type("company wise");
+        leaveBalancePolicy.setGroup_Company("Working Days (DO NOT TOUCH)");
+        leaveBalancePolicy.setLeave_Type(testData.get("Leave_Type"));
+        leaveBalancePolicy.setDescription("AutomationCreatedLeavePolicy");
+        leaveBalancePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Max_Leaves_Allowed_Per_Year").replace(".0","")));
+        leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
+        leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
+
+        try {
+            if (testData.get("HourlyLeave").equalsIgnoreCase("true")) {
+                leaveBalancePolicy.setHourlyLeave(true);
+                Reporter("Hourly Leave  :true","info");
+            }
+        }
+        catch (Exception e){
+            Reporter("Hourly Leave  :false","info");
+        }
+
+        ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
+        probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
+        probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+        //if(probationPeriodForLeaveValidity.probation)
+        //employeeProbation=testData.get("Employee Probation Period");
+        if(probationPeriodForLeaveValidity.custom)
+            probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
+
+        leaveBalancePolicy.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+
+
+        if(testData.get("Pro rata").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Pro_Rata_Basis pro_rata_basis= new Credit_On_Pro_Rata_Basis();
+            pro_rata_basis.indicator=true;
+            pro_rata_basis.calculateFromJoiningDate=testData.get("From Joining date").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.calculateAfterProbationPeriod=testData.get("After Probation period").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditHalfMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Half Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.creditfullMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Full Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+
+            leaveBalancePolicy.setCredit_on_pro_rata_basis(pro_rata_basis);
+        }
+
+        if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+            credit_on_accural_basis.setIndicator(true);
+
+
+            if(!testData.get("Monthly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setMonthlyAccuralSetting(false,false,false);
+            else
+                credit_on_accural_basis.setMonthlyAccuralSetting(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            if(!testData.get("Quarterly").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+            else
+                credit_on_accural_basis.setQuarterlyAccural(true,testData.get("Begin of month/Quarter").equalsIgnoreCase("yes")?true:false,testData.get("End of month/Quarter").equalsIgnoreCase("yes")?true:false);
+
+            credit_on_accural_basis.setBiAnnual(testData.get("Biannually").equalsIgnoreCase("yes")?true:false);
+
+
+
+            if(testData.get("Leave Accrual based on Working days").equalsIgnoreCase("yes")?true:false)
+            {
+                ConsiderWorkingDays considerWorkingDays = new ConsiderWorkingDays();
+                considerWorkingDays.indicator=true;
+                if(testData.get("Count Present Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.presentDays=true;
+
+                if(testData.get("Count Absent Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.absentDaysAndUnpaidLeave=true;
+
+                if(testData.get("Count Weeklyoff Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.weeklyOffs=true;
+
+                if(testData.get("Count Holiday Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.holidays=true;
+
+                if(testData.get("Count Optional Holiday Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.optionalHoliodays=true;
+
+                if(testData.get("Count Leave Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.leaveDays=true;
+
+                if(testData.get("End of Year").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.endOfYear=true;
+
+                credit_on_accural_basis.setConsiderWorkingDays(considerWorkingDays);
+
+            }
+
+
+            //end of biannual??
+
+            leaveBalancePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
+
+        if(testData.get("Use Multiple allotment restrictions").equalsIgnoreCase("yes"))
+        {
+            leaveBalancePolicy.getMultipleAllotment().indicator=true;
+            leaveBalancePolicy.getMultipleAllotment().restrictCondition=testData.get("Multiple Allotment Restrictions");
+            leaveBalancePolicy.getMultipleAllotment().maximumAllowedPerYear=testData.get("Alloted Leaves");
+
         }
 
         List<NameValuePair> request=leaveBalancePolicy.createRequest();
@@ -329,9 +700,25 @@ public class LeaveAccuralBase extends  LeaveBase {
         return  true;
     }
 
+
     public void setEmployee(Employee employee){
         this.employee=employee;
     }
+
+
+    public List<LeavePolicyObject> getCarryForwardPolicy(String rows){
+        List<Map<String, String>> excelData = readDatafromSheet("CarryForward","All_Scenarios",rows);
+        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
+
+        for(Map<String,String> testData : excelData){
+
+            leaveBalancePolicies.add(getCarryForwardPolicy(testData));
+        }
+
+        return leaveBalancePolicies;
+
+    }
+
     public LeavePolicyObject getCarryForwardPolicy(Map<String,String> testData){
 
         LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
@@ -385,6 +772,30 @@ public class LeaveAccuralBase extends  LeaveBase {
         }
 
 
+        try {
+
+            if (testData.get("OverUtilization").equalsIgnoreCase("yes") ? true : false) {
+
+                OverUtilization overUtilization= new OverUtilization();
+                overUtilization.indicator= true;
+                overUtilization.countExcessAsPaid = Boolean.parseBoolean(testData.get("Count_excess_leave_as_Paid,_by_default"));
+                overUtilization.countExcessAsUnPaid = Boolean.parseBoolean(testData.get("Count_excess_leave_as_Unpaid,_by_default"));
+                overUtilization.utilizeFrom = Boolean.parseBoolean(testData.get("Utilize_from"));
+                overUtilization.dontAllowMoreThanYearlyAllocation = Boolean.parseBoolean(testData.get("Dont_Allow_leave_more_than_Yearly_allocation"));
+                overUtilization.dontAllowMoreThanYearlyAccural = Boolean.parseBoolean(testData.get("Dont_Allow_leave_more_than_Yearly_accrual"));
+                overUtilization.fixedOverUtilization = testData.get("fixed_overutilization").equalsIgnoreCase("") ? 0 : Integer.parseInt(data.get("fixed_overutilization"));
+                overUtilization.utlizeFromDropDown = testData.get("LeavePolicy_OverUtilization").equalsIgnoreCase("") ? null : data.get("LeavePolicy_OverUtilization");
+
+
+                leaveBalancePolicy.setOverUtilization(overUtilization);
+                }
+            }
+
+        catch(Exception e){
+            Reporter("OverUtilization is Set to FALSE while creating leave policy","Info");
+        }
+
+
         if(testData.get("Carry forward").equalsIgnoreCase("yes")){
             CarryForwardUnusedLeave carryForwardUnusedLeave = new CarryForwardUnusedLeave();
             carryForwardUnusedLeave.indicator=testData.get("Carry forward").equalsIgnoreCase("yes")?true:false;
@@ -419,17 +830,177 @@ public class LeaveAccuralBase extends  LeaveBase {
         }
 
 
-            List<NameValuePair> request=leaveBalancePolicy.createRequest();
+        List<NameValuePair> request=leaveBalancePolicy.createRequest();
 
         new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
 
         return  leaveBalancePolicy;
     }
 
+    public LeavePolicyObject getCarryForwardWorkingDaysPolicy(Map<String,String> testData){
+        LeavePolicyObject leaveBalancePolicy=new LeavePolicyObject();
+        leaveBalancePolicy.setAssignment_Type("company wise");
+        leaveBalancePolicy.setGroup_Company("Working Days (DO NOT TOUCH)");
+        leaveBalancePolicy.setLeave_Type(testData.get("Leave_Type"));
+        leaveBalancePolicy.setDescription("AutomationCreatedLeavePolicy");
+        leaveBalancePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Max_Leaves_Allowed_Per_Year").replace(".0","")));
+        leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
+        leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
+
+        ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
+        probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
+        probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+        //if(probationPeriodForLeaveValidity.probation)
+        //employeeProbation=testData.get("Employee Probation Period");
+        if(probationPeriodForLeaveValidity.custom)
+            probationPeriodForLeaveValidity.customMonths=Integer.parseInt(testData.get("Probation period before leave validity months").replace(".0",""));
+
+        leaveBalancePolicy.setProbation_period_before_leave_validity(probationPeriodForLeaveValidity);
+
+
+        if(testData.get("Pro rata").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Pro_Rata_Basis pro_rata_basis= new Credit_On_Pro_Rata_Basis();
+            pro_rata_basis.indicator=true;
+            pro_rata_basis.calculateFromJoiningDate=testData.get("From Joining date").equalsIgnoreCase("yes")?true:false;
+            pro_rata_basis.calculateAfterProbationPeriod=testData.get("After Probation period").equalsIgnoreCase("yes")?true:false;
+            //  pro_rata_basis.creditHalfMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Half Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+            // pro_rata_basis.creditfullMonthsLeavesIfEmpJoinsAfter15Th=testData.get("Full Month Leaves if employee joins after 15th").equalsIgnoreCase("yes")?true:false;
+
+            leaveBalancePolicy.setCredit_on_pro_rata_basis(pro_rata_basis);
+        }
+
+        if(testData.get("Accrual").equalsIgnoreCase("yes")?true:false){
+            Credit_On_Accural_Basis credit_on_accural_basis= new Credit_On_Accural_Basis();
+            credit_on_accural_basis.setIndicator(true);
+
+            if(testData.get("Leave Accrual based on Working days").equalsIgnoreCase("yes")?true:false)
+            {
+                ConsiderWorkingDays considerWorkingDays = new ConsiderWorkingDays();
+                considerWorkingDays.indicator=true;
+                if(testData.get("Count Present Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.presentDays=true;
+
+                if(testData.get("Count Absent Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.absentDaysAndUnpaidLeave=true;
+
+                if(testData.get("Count Weeklyoff Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.weeklyOffs=true;
+
+                if(testData.get("Count Holiday Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.holidays=true;
+
+                if(testData.get("Count Optional Holiday Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.optionalHoliodays=true;
+
+                if(testData.get("Count Leave Days").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.leaveDays=true;
+
+                if(testData.get("End of Year").equalsIgnoreCase("yes")?true:false)
+                    considerWorkingDays.endOfYear=true;
+
+                credit_on_accural_basis.setConsiderWorkingDays(considerWorkingDays);
+
+            }
+
+
+            if(testData.get("End of Month").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setMonthlyAccuralSetting(true,false,true);
+
+
+
+            if(testData.get("End of Quarter").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setQuarterlyAccural(true,false,true);
+
+
+            if(testData.get("End Of Biannual").equalsIgnoreCase("yes")?true:false)
+                credit_on_accural_basis.setBiAnnual(true);
+            //end of biannual??
+
+            leaveBalancePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
+       /* if(testData.get("Credit On Tenure Basis").equalsIgnoreCase("yes")){
+            TenureBasis tenureBasis = new TenureBasis();
+            tenureBasis.indicator=true;
+            for(String fromYear: testData.get("Credit From Year").split(",")){
+                tenureBasis.fromYear.add(Integer.parseInt(fromYear));
+            }
+
+            for(String toYear: testData.get("Credit To Year").split(",")){
+                tenureBasis.toYear.add(Integer.parseInt(toYear));
+            }
+
+
+            for(String leaves: testData.get("Credit No of Leaves").split(",")){
+                tenureBasis.noOfLeaves.add(Integer.parseInt(leaves.trim()));
+            }
+
+            leaveBalancePolicy.setTenureBasis(tenureBasis);
+
+        }*/
+
+        if(testData.get("Carry forward").equalsIgnoreCase("yes")){
+            CarryForwardUnusedLeave carryForwardUnusedLeave = new CarryForwardUnusedLeave();
+            carryForwardUnusedLeave.indicator=testData.get("Carry forward").equalsIgnoreCase("yes")?true:false;
+
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("all"))
+            {
+                carryForwardUnusedLeave.carryForwardAllUnusedLeave=true;
+            }
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("fixed")){
+                carryForwardUnusedLeave.carryForwardOnly=true;
+                carryForwardUnusedLeave.fixed=true;
+                carryForwardUnusedLeave.fixedValue=Integer.parseInt(testData.get("Fixed/Percentage value"));
+            }
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("percentage")){
+                carryForwardUnusedLeave.carryForwardOnly=true;
+                carryForwardUnusedLeave.percentage=true;
+                carryForwardUnusedLeave.percentageValue=Integer.parseInt(testData.get("Fixed/Percentage value"));
+            }
+
+            leaveBalancePolicy.setCarryForwardUnusedLeave(carryForwardUnusedLeave);
+
+        }
+
+        try {
+            if (testData.get("HourlyLeave").equalsIgnoreCase("true")) {
+                leaveBalancePolicy.setHourlyLeave(true);
+                Reporter("Hourly Leave  :true","info");
+            }
+        }
+        catch (Exception e){
+            Reporter("Hourly Leave  :false","info");
+        }
+
+
+
+
+
+        List<NameValuePair> request=leaveBalancePolicy.createRequest();
+
+        new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
+
+        return  leaveBalancePolicy;
+    }
+
+
+
     private static List<Map<String, String>> readDatafromSheet(String sheetname) {
 
         HashMap<String, String> excelDetails = new HashMap<>();
         excelDetails.put("FileName", "/Accural/LeaveBalanceTests.xlsx");
+        excelDetails.put("TestDataRow", "all");
+        excelDetails.put("SheetName", sheetname);
+
+        ExcelReader reader = new ExcelReader();
+        reader.setFilenameAndSheetName(excelDetails);
+        return reader.getExcelData();
+    }
+
+    private static List<Map<String,String>> readDataForLeaveAdjustment(String sheetname)
+    {
+
+        HashMap<String, String> excelDetails = new HashMap<>();
+        excelDetails.put("FileName", "/LeaveAdjustments/LeaveAdjustmentTests.xlsx");
         excelDetails.put("TestDataRow", "all");
         excelDetails.put("SheetName", sheetname);
 
@@ -451,6 +1022,71 @@ public class LeaveAccuralBase extends  LeaveBase {
     }
 
 
+    private static List<Map<String, String>> readDatafromSheet(String excelName,String sheetname,String rows) {
+
+        HashMap<String, String> excelDetails = new HashMap<>();
+        excelDetails.put("FileName", "/Accural/"+excelName+".xlsx");
+        excelDetails.put("TestDataRow", rows);
+        excelDetails.put("SheetName", sheetname);
+
+        ExcelReader reader = new ExcelReader();
+        reader.setFilenameAndSheetName(excelDetails);
+        return reader.getExcelData();
+    }
+
+
+
+
+    //hard coded policy fields
+    //only for one policy check
+    //OverUtilization -Leave Adjustment
+    public LeavePolicyObject getOverUtilizationPolicyForAdjustment()
+    {
+        List<Map<String, String>> excelData = readDataForLeaveAdjustment("LeaveBalance");
+        LeavePolicyObject leaveBalancePolicy = new LeavePolicyObject();
+
+        for(Map<String,String> testData : excelData){
+            testData.put("Leave_Type","AdjustementPolicyWithOU");
+            testData.put("OverUtilization","yes");
+            testData.put("Count_excess_leave_as_Paid,_by_default","yes");
+            testData.put("Utilize_from","no");
+            testData.put("Dont_Allow_leave_more_than_Yearly_allocation","no");
+            testData.put("Dont_Allow_leave_more_than_Yearly_accrual","no");
+            testData.put("fixed_overutilization","");
+            testData.put("LeavePolicy_OverUtilization","");
+            leaveBalancePolicy =getCarryForwardPolicy(testData);
+            break;
+        }
+
+        return  leaveBalancePolicy;
+
+
+    }
+
+    public List<LeavePolicyObject> getLeaveAdjustmentPoliciesForCarryForward(){
+        List<Map<String, String>> excelData = readDataForLeaveAdjustment("CarryForwardPolicies");
+        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
+
+        for(Map<String,String> testData : excelData){
+            leaveBalancePolicies.add(getCarryForwardWorkingDaysPolicy(testData));
+        }
+
+        return leaveBalancePolicies;
+
+    }
+
+    public List<LeavePolicyObject> getLeaveAdjustmentPolicies(){
+        List<Map<String, String>> excelData = readDataForLeaveAdjustment("LeaveBalance");
+        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
+
+        for(Map<String,String> testData : excelData){
+            leaveBalancePolicies.add(getCarryForwardPolicy(testData));
+        }
+
+        return leaveBalancePolicies;
+
+    }
+
     public List<LeavePolicyObject> getLeaveBalancePolicies(){
         List<Map<String, String>> excelData = readDatafromSheet("LeaveBalanceTests");
         List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
@@ -463,17 +1099,36 @@ public class LeaveAccuralBase extends  LeaveBase {
 
     }
 
-    public List<LeavePolicyObject> getLeaveBalancePolicies(String rows){
+    public List<LeavePolicyObject> getLeaveBalancePoliciesHourly(String rows){
         List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance",rows);
         List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
 
         for(Map<String,String> testData : excelData){
+            testData.put("HourlyLeave","TRUE");
+
             leaveBalancePolicies.add(getLeaveBalancePolicy(testData));
         }
 
         return leaveBalancePolicies;
 
     }
+
+    public List<LeavePolicyObject> getLeaveBalancePolicies(String rows){
+        List<Map<String, String>> excelData = readDatafromSheet("LeaveBalance",rows);
+        List<LeavePolicyObject> leaveBalancePolicies = new ArrayList<>();
+
+        for(Map<String,String> testData : excelData){
+
+
+            leaveBalancePolicies.add(getLeaveBalancePolicy(testData));
+        }
+
+        return leaveBalancePolicies;
+
+    }
+
+
+
 
 
 
@@ -489,6 +1144,16 @@ public class LeaveAccuralBase extends  LeaveBase {
         leaveBalancePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Max_Leaves_Allowed_Per_Year").replace(".0","")));
         leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
         leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
+
+        try {
+            if (testData.get("HourlyLeave").equalsIgnoreCase("true")) {
+                leaveBalancePolicy.setHourlyLeave(true);
+                Reporter("Hourly Leave  :true","info");
+            }
+        }
+        catch (Exception e){
+            Reporter("Hourly Leave  :false","info");
+        }
 
         ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
         probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
@@ -538,6 +1203,7 @@ public class LeaveAccuralBase extends  LeaveBase {
 
         return  leaveBalancePolicy;
     }
+
 
 
 
@@ -640,7 +1306,7 @@ public class LeaveAccuralBase extends  LeaveBase {
                             LeaveCalBeginningDate=LocalDate.parse(Leave_Probation_End_Date).plusMonths(leavePolicyObject.getProbation_period_before_leave_validity().customMonths).toString();
                         }
                         else
-                        LeaveCalBeginningDate = Leave_Probation_End_Date;
+                            LeaveCalBeginningDate = Leave_Probation_End_Date;
                     }
                 }
                 else{
@@ -694,10 +1360,10 @@ public class LeaveAccuralBase extends  LeaveBase {
                             !leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter() &&
                             leavePolicyObject.getCredit_on_accural_basis().getBiAnnual()) {
                         //if (LocalDate.parse(toDate).isEqual(getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()))) {
-                           // toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).toString();
-                            toDate=leaveCycleEndDate.minusDays(1).toString();
+                        // toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).toString();
+                        toDate=leaveCycleEndDate.minusDays(1).toString();
                         //} else {
-                          //  toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).minusMonths(6).toString();
+                        //  toDate = getLastDayOfMonth_Quarter_Biannual(toDate, "Biannual", leavePolicyObject.getLeave_cycle()).minusMonths(6).toString();
                         //}
                     }
                 }
@@ -705,14 +1371,39 @@ public class LeaveAccuralBase extends  LeaveBase {
                 if (leavePolicyObject.getCredit_on_accural_basis().getConsiderWorkingDays().indicator) {
                     //cahnge the logic
                     //calculate the number of days from start date to end date
+                    if(workingDaysDenominator!=0)
+                        daysConsiderForCalculation = workingDaysDenominator;
+                    else
                     daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
                 } else {
                     daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
                 }
 
-                double workingDays = getWorkingDaysToConsiderForCalculation(LeaveCalBeginningDate, toDate);
+                double workingDays = getWorkingDaysToConsiderForCalculation(DOJ, toDate);
                 workingDaysBalance = leavePolicyObject.getMaximum_leave_allowed_per_year() * (workingDays / daysConsiderForCalculation);
 
+            }
+
+             if(carryForward)
+            {
+                if (leavePolicyObject.getCarryForwardUnusedLeave().indicator)
+                {
+                    if(leavePolicyObject.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
+                        workingDaysBalance = workingDaysBalance;
+                    } else if (leavePolicyObject.getCarryForwardUnusedLeave().fixed) {
+                        double fixedValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().fixedValue);
+                        if (fixedValue > workingDaysBalance) {
+                            workingDaysBalance = workingDaysBalance;
+                        } else if (fixedValue <= ExpectedLeaveBalance) {
+                            workingDaysBalance = fixedValue;
+                        }
+                    } else if (leavePolicyObject.getCarryForwardUnusedLeave().percentage) {
+                        double percentageValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().percentageValue);
+                        workingDaysBalance = ((workingDaysBalance * percentageValue) / 100);
+                    } else {
+                        throw new RuntimeException("Parameters provided to calculate carry forward balance are not proper.");
+                    }
+                }
             }
             return workingDaysBalance;
         } catch (Exception e) {
@@ -731,7 +1422,7 @@ public class LeaveAccuralBase extends  LeaveBase {
         try {
             String todaysDate = getServerOrLocalDate().toString();
             String probationDays=null;
-            if(employee.getProbation()!=null && employee.getProbation()!="no"){
+            if(employee!=null && employee.getProbation().equalsIgnoreCase("yes")){
                 probationDays="180";
             }
 
@@ -751,11 +1442,11 @@ public class LeaveAccuralBase extends  LeaveBase {
 
                 if (!leavePolicyObject.getProbation_period_before_leave_validity().custom
                         && leavePolicyObject.getProbation_period_before_leave_validity().probation
-                        ) {
+                ) {
                     double daysDiff = objDateTimeHelper.getDaysDifferenceBetweenTwoDates(employee.getDoj(), todaysDate);
                     double Employee_probation_period_Int=0.0D;
                     if(employee.getProbation()!="no")
-                     Employee_probation_period_Int = Double.valueOf(probationDays);
+                        Employee_probation_period_Int = Double.valueOf(probationDays);
                     else
                         Employee_probation_period_Int = 0;
 
@@ -769,8 +1460,8 @@ public class LeaveAccuralBase extends  LeaveBase {
                 }
 
                 if (employee.getProbation() != null && !employee.getProbation().equalsIgnoreCase("no")
-                    && leavePolicyObject.getProbation_period_before_leave_validity().probation
-                    && leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod) {
+                        && leavePolicyObject.getProbation_period_before_leave_validity().probation
+                        && leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod) {
 
                     double daysDiff1 = objDateTimeHelper.getDaysDifferenceBetweenTwoDates(employee.getDoj(), todaysDate);
                     double Employee_probation_period_Int1 = Double.valueOf(probationDays);
@@ -822,7 +1513,7 @@ public class LeaveAccuralBase extends  LeaveBase {
 
     public LocalDate getLastDayOfBiannual(String DATEIN_YYYY_MM_DD_format, String leaveCycle) {
         try {
-          return   leaveCycleEndDate;
+            return   leaveCycleEndDate;
 
         } catch (Exception e) {
             Reporter("Exception while calculation last day of Biannual Half", "Error");
@@ -837,9 +1528,9 @@ public class LeaveAccuralBase extends  LeaveBase {
             JSONObject workingDaysJsonObj=null;
 
             if(employee!=null)
-             workingDaysJsonObj = getWorkingDaysDetailsOfEmployeeFromApplication(fromDate, toDate, employee.getEmployeeID());
+                workingDaysJsonObj = getWorkingDaysDetailsOfEmployeeFromApplication(fromDate, toDate, employee.getEmployeeID());
             else
-             workingDaysJsonObj = getWorkingDaysDetailsOfEmployeeFromApplication(fromDate, toDate, EmployeeId);
+                workingDaysJsonObj = getWorkingDaysDetailsOfEmployeeFromApplication(fromDate, toDate, EmployeeId);
 
             Double presentDays = Double.valueOf(workingDaysJsonObj.get("present").toString());
             Double weeklyoff = Double.valueOf(workingDaysJsonObj.get("weeklyoff").toString());
@@ -1148,9 +1839,9 @@ public class LeaveAccuralBase extends  LeaveBase {
             String midYearEndDate;
             double biannualLeave = 0;
 
-            if (checkDOJisUnderLeaveProbationPeriod() == true) {
+            if (!carryForward && checkDOJisUnderLeaveProbationPeriod() == true) {
                 ExpectedLeaveBalance = 0;
-            } else if (checkDOJisUnderLeaveProbationPeriod() == false) {
+            } else {
                 Leave_Probation_End_Date = DOJ;
                 if ((LocalDate.parse(DOJ)).isBefore(leaveCycleStartDate)) {
                     DOJ = leaveCycleStartDate.toString();
@@ -1187,10 +1878,10 @@ public class LeaveAccuralBase extends  LeaveBase {
                         if (leavePolicyObject.getProbation_period_before_leave_validity().custom) {
                             LeaveCalBeginningDate = LocalDate.parse(employee.getDoj()).plusMonths(leavePolicyObject.getProbation_period_before_leave_validity().customMonths).toString();
                             if(LocalDate.parse(LeaveCalBeginningDate).compareTo(LocalDate.parse(DOJ))<0){
-                             LeaveCalBeginningDate = DOJ;
+                                LeaveCalBeginningDate = DOJ;
                             }
                         }
-                            else if(leavePolicyObject.getProbation_period_before_leave_validity().probation)
+                        else if(leavePolicyObject.getProbation_period_before_leave_validity().probation)
                             LeaveCalBeginningDate = Leave_Probation_End_Date;
 
                         else
@@ -1283,11 +1974,11 @@ public class LeaveAccuralBase extends  LeaveBase {
                         MonthOrQuarterDifference = objDateTimeHelper
                                 .getQuarterDiffFromCurrentDate(serverChangedDate,leavesCalculationStartDate);
 
-                       // if(leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter())
+                        // if(leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter())
                         //    leavesDiffFromFirstDayOfQuarter = 0;
-                       // else
-                            leavesDiffFromFirstDayOfQuarter = ((perMonthLeaves)
-                                    * getMonthDiffFromFirstDayOfQuarter(leavesCalculationStartDate));
+                        // else
+                        leavesDiffFromFirstDayOfQuarter = ((perMonthLeaves)
+                                * getMonthDiffFromFirstDayOfQuarter(leavesCalculationStartDate));
                     }
                     /*
                     This function calculates biannual leave balance
@@ -1353,26 +2044,26 @@ public class LeaveAccuralBase extends  LeaveBase {
                     if(LocalDate.parse(toDate).getDayOfMonth()<=15){
                         int  months=0;
                         if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator())
-                         months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
-                       ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
-                      if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator){
-                          if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th)
-                              ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves/2;
-                          else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
-                              ExpectedLeaveBalance = ExpectedLeaveBalance;
-                          else if(!leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th
-                          && !leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
-                              ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves;
-                      }
-                      else{
+                            months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
+                        ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
+                        if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator){
+                            if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th)
+                                ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves/2;
+                            else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
+                                ExpectedLeaveBalance = ExpectedLeaveBalance;
+                            else if(!leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th
+                                    && !leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
+                                ExpectedLeaveBalance = ExpectedLeaveBalance - perMonthLeaves;
+                        }
+                        else{
 
-                          ExpectedLeaveBalance =ExpectedLeaveBalance -perMonthLeaves;
-                      }
+                            ExpectedLeaveBalance =ExpectedLeaveBalance -perMonthLeaves;
+                        }
                     }
                     else {
                         int months=0;
                         if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator())
-                         months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
+                            months= Period.between(LocalDate.parse(toDate),leaveCycleEndDate).getMonths();
                         ExpectedLeaveBalance = ExpectedLeaveBalance - months*perMonthLeaves;
                     }
                 }
@@ -1382,21 +2073,21 @@ public class LeaveAccuralBase extends  LeaveBase {
                 {
                     if (leavePolicyObject.getCarryForwardUnusedLeave().indicator)
                     {
-                       if(leavePolicyObject.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
-                        ExpectedLeaveBalance = ExpectedLeaveBalance;
-                    } else if (leavePolicyObject.getCarryForwardUnusedLeave().fixed) {
-                        double fixedValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().fixedValue);
-                        if (fixedValue > ExpectedLeaveBalance) {
+                        if(leavePolicyObject.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
                             ExpectedLeaveBalance = ExpectedLeaveBalance;
-                        } else if (fixedValue <= ExpectedLeaveBalance) {
-                            ExpectedLeaveBalance = fixedValue;
+                        } else if (leavePolicyObject.getCarryForwardUnusedLeave().fixed) {
+                            double fixedValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().fixedValue);
+                            if (fixedValue > ExpectedLeaveBalance) {
+                                ExpectedLeaveBalance = ExpectedLeaveBalance;
+                            } else if (fixedValue <= ExpectedLeaveBalance) {
+                                ExpectedLeaveBalance = fixedValue;
+                            }
+                        } else if (leavePolicyObject.getCarryForwardUnusedLeave().percentage) {
+                            double percentageValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().percentageValue);
+                            ExpectedLeaveBalance = ((ExpectedLeaveBalance * percentageValue) / 100);
+                        } else {
+                            throw new RuntimeException("Parameters provided to calculate carry forward balance are not proper.");
                         }
-                    } else if (leavePolicyObject.getCarryForwardUnusedLeave().percentage) {
-                        double percentageValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().percentageValue);
-                        ExpectedLeaveBalance = ((ExpectedLeaveBalance * percentageValue) / 100);
-                    } else {
-                        throw new RuntimeException("Parameters provided to calculate carry forward balance are not proper.");
-                    }
                     }
                 }
 
@@ -1846,8 +2537,8 @@ public class LeaveAccuralBase extends  LeaveBase {
                 String applicationURL = data.get("@@url");
                 String URL=null;
                 if(employee!=null)
-                URL = applicationURL + "/emailtemplate/Employeeleaved?id=" + employee.getEmployeeID() + "&leave=" + leaveType
-                        + "&date=" + deactivationDate;
+                    URL = applicationURL + "/emailtemplate/Employeeleaved?id=" + employee.getEmployeeID() + "&leave=" + leaveType
+                            + "&date=" + deactivationDate;
                 else
                     URL = applicationURL + "/emailtemplate/Employeeleaved?id=" + EmployeeId + "&leave=" + leaveType
                             + "&date=" + deactivationDate;
@@ -1929,20 +2620,19 @@ public class LeaveAccuralBase extends  LeaveBase {
     public LocalDate getLastDayOfQuarter(String DATEIN_YYYY_MM_DD_format) {
 
 
-        int monthFar=LocalDate.parse(DATEIN_YYYY_MM_DD_format).minusMonths(leaveCycleStartDate.getMonthValue()).getMonthValue();
-        if(monthFar<3)
+        int monthFar = LocalDate.parse(DATEIN_YYYY_MM_DD_format).minusMonths(leaveCycleStartDate.getMonthValue()).getMonthValue();
+        if (monthFar < 3)
             return leaveCycleStartDate.plusMonths(3).minusDays(1);
 
-        if(monthFar>3 && monthFar<6)
+        if (monthFar > 3 && monthFar < 6)
             return leaveCycleStartDate.plusMonths(6).minusDays(1);
 
 
-
-        if(monthFar>6 && monthFar<9)
+        if (monthFar > 6 && monthFar < 9)
             return leaveCycleStartDate.plusMonths(9).minusDays(1);
 
 
-        if(monthFar>9 && monthFar<12)
+        if (monthFar > 9 && monthFar < 12)
             return leaveCycleStartDate.plusMonths(12).minusDays(1);
        /* LocalDate.parse("2019-10-30").minusMonths(LocalDate.parse("2018-11-01").getMonthValue()).getMonthValue()
         String arr[] = DATEIN_YYYY_MM_DD_format.split("-");
@@ -1959,17 +2649,93 @@ public class LeaveAccuralBase extends  LeaveBase {
             quarterMonth = 9;
         } else if (DOJQuarter == 4) {
             quarterMonth = 12;
-        }*/ else {
+        }*/
+        else {
             throw new RuntimeException("DOJ is not correct");
         }
 
-       // LocalDate lastDate = LocalDate.of(year, quarterMonth, 01).with(lastDayOfMonth());
-       // return lastDate;
+        // LocalDate lastDate = LocalDate.of(year, quarterMonth, 01).with(lastDayOfMonth());
+        // return lastDate;
+    }
+
+
+    public  void changeServerDate(LocalDate date){
+        new DateTimeHelper().changeServerDate(driver, date.toString());
+        serverChangedDate = date.toString();
+        serverDateInFormat = LocalDate.parse(serverChangedDate);
+    }
+
+    public enum failureCronCase {sameCycle,multipleTimesSameCycle,}
+
+
+    public void resetDateFromJenkin(){
+        driver.navigate().to("https://jenkins.darwinbox.in/job/QA/job/Automation_Crons/");
+        driver.findElement(By.xpath("//*[@id=\"tasks\"]/div[4]/a[2]")).click();
+        driver.findElement(By.xpath("//*[@id=\"main-panel\"]/form/table/tbody[1]/tr[1]/td[3]/div/input[2]")).sendKeys("bin/date -s \""+LocalDate.now().getDayOfMonth() +LocalDate.now().getMonth().toString().substring(0,3) +LocalDate.now().getYear());
+
+
+
+
+    }
+
+
+    public double getCarryFowardBalance(Double balance){
+
+        if(leavePolicyObject.getCarryForwardUnusedLeave().indicator==false)
+        {
+           return  balance = 0.0D;
+
+        }
+      else if(leavePolicyObject.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
+            balance = balance;
+        } else if (leavePolicyObject.getCarryForwardUnusedLeave().fixed) {
+            double fixedValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().fixedValue);
+            if (fixedValue > balance) {
+                balance = balance;
+            } else if (fixedValue <= balance) {
+                balance = fixedValue;
+            }
+        } else if (leavePolicyObject.getCarryForwardUnusedLeave().percentage) {
+            double percentageValue = Double.valueOf(leavePolicyObject.getCarryForwardUnusedLeave().percentageValue);
+            balance = ((balance * percentageValue) / 100);
+
+
+
+
+        } else {
+            throw new RuntimeException("Parameters provided to calculate carry forward balance are not proper.");
+        }
+        return  balance;
     }
 
 
 
+    public Map<String,String> setZeroCarryForwardMapData(Map<String,String> testData){
+        testData.put("Carry forward","No");
+        testData.put("Carry forward All/Fixed/Percentage","No");
+        testData.put("Fixed/Percentage value","No");
+
+        return testData;
+    }
+
+    public Map<String,String> setAllCarryForwardToMap(Map<String,String> testData){
+        testData.put("Carry forward","Yes");
+        testData.put("Carry forward All/Fixed/Percentage","all");
+        testData.put("Fixed/Percentage value","No");
+
+
+        return  testData;
+    }
+
+    public void changeServerDate(String date){
+        new DateTimeHelper().changeServerDate(driver,date);
+        serverDateInFormat=LocalDate.parse(date);
+        serverChangedDate=serverDateInFormat.toString();
+
+
+    }
 
 
 
 }
+

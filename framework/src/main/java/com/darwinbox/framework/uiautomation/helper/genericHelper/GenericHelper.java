@@ -22,7 +22,7 @@ import java.util.Random;
  * @ClassName: GenericHelper.java
  * @LastModified_Date: 20 Nov 2017
  */
-public class GenericHelper extends TestBase {
+public class    GenericHelper extends TestBase {
 
     private static final Logger log = Logger.getLogger(GenericHelper.class);
     WaitHelper objWait;

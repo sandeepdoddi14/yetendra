@@ -324,7 +324,7 @@ public class CreateAndManageLeavePoliciesPage extends TestBase {
      * @return
      */
     public boolean clickCreateLeavePolicySaveButton() {
-        objJavaScrHelper.scrollUpVertically( );
+        //objJavaScrHelper.scrollUpVertically( );
         // objAction.moveToTop(driver,createLeavePolicySaveButton, "Create Leave Policy
         // Save button");
         return objGenHelper.elementClick(createLeavePolicySaveButton, "Create Leave Policy Save button");

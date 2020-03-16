@@ -77,7 +77,7 @@ public void Verify_Deactivation_Leave_Balance_of_an_employee_for_all_scenarios_w
 		}i++;
 		Assert.assertTrue(commonAction.changeApplicationAccessMode("Admin"), "Application access changed to Admin mode");
 		Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
-		Assert.assertTrue(leavesAction.verifyTenureDeactivationLeaveBalanceForFourEdgeDaysCustomDatesNew(deactivationDates), "Deactivation Leave Balance for whole leave cycle calculated successfully") ;
+		Assert.assertTrue(leavesAction.verifyTenureDeactivationLeaveBalanceForFourEdgeDaysCustomDatesNew(deactivationDates), "WDWithDeactivation Leave Balance for whole leave cycle calculated successfully") ;
 
 	}
 }

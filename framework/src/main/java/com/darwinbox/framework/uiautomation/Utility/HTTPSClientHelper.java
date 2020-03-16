@@ -98,7 +98,7 @@ public class HTTPSClientHelper extends TestBase {
 					request.addHeader(key, headers.get(key));
 				}
 			}
-			request.addHeader("Cookie", getCookies());
+				request.addHeader("Cookie", getCookies());
 			request.setEntity(new StringEntity(body.toString(), "UTF-8"));
 			log.info("POST Call: " + url);
 			log.info("Request body: " + body.toString());

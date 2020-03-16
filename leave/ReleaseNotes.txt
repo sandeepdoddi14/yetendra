@@ -1,0 +1,11 @@
+Carry Forward  - can be verified from imports and cron(automated)
+
+
+ISSUE RAISED IN YEAR END CARRY FORWARD
+--> run our automation(single tenant)
+--> run for multiple tenants(missed this in december cycle) while ran for all tenants in wild1
+
+FINANACIAL CYCLE
+-->carry forward is showing wrong when verified for 2 years - DBX 7557
+
+

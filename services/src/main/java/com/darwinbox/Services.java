@@ -16,6 +16,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.openqa.selenium.Cookie;
+import org.testng.Assert;
 
 import java.net.URLEncoder;
 import java.util.*;
@@ -24,8 +25,8 @@ import java.util.regex.Pattern;
 
 public class Services extends TestBase {
 
-    public String getCurrentInstanceGroupCompany() {
-        return data.get("@@url").replaceAll(".qa.darwinbox.io", "").replaceAll("https://", "");
+    public String getCurrentInstanceGroupCompany(){
+        return data.get("@@url").replaceAll(".qa.darwinbox.io","").replaceAll("https://","");
     }
 
     public HashMap<String, HashMap<String, String>> getProbations() {
@@ -52,7 +53,9 @@ public class Services extends TestBase {
     }
 
 
-    public Map<String, String> createWeeklyOffDeafultBody() {
+
+
+    public Map<String,String> createWeeklyOffDeafultBody() {
         Map<String, String> defaultBody = new HashMap<>();
 
         defaultBody.put("WeeklyOffForm[weekly_off_name]", "");
@@ -122,7 +125,7 @@ public class Services extends TestBase {
 
             }
         }
-        request.put("WeeklyOffForm[weekly_off_name]", days.replace(",", "And"));
+        request.put("WeeklyOffForm[weekly_off_name]",days.replace(",","And"));
 
         deafultBody.putAll(request);
 
@@ -133,19 +136,19 @@ public class Services extends TestBase {
     }
 
 
-    public Map<String, String> getWeeklyOFFlist() {
-        String url = data.get("@@url") + UtilityHelper.getProperty("ServiceUrls", "getWeeklyOffList");
+    public Map<String,String> getWeeklyOFFlist(){
+        String url=data.get("@@url")+UtilityHelper.getProperty("ServiceUrls","getWeeklyOffList");
 
         HashMap<String, String> headers = new HashMap<>();
         headers.put("X-Requested-With", "XMLHttpRequest");
-        String response = doGet(url, headers);
+        String response=doGet(url,headers);
         JSONObject obj = new JSONObject(response);
         JSONArray arr = obj.getJSONArray("aaData");
         int i = 0;
         HashMap<String, String> ids = new HashMap();
         while (i < arr.length()) {
             ids.put(arr.getJSONArray(i).getString(0).split("/a>")[1],
-                    arr.getJSONArray(i).getString(2).substring(7, 20));
+                    arr.getJSONArray(i).getString(2).substring(7,20));
             i++;
         }
 
@@ -181,6 +184,7 @@ public class Services extends TestBase {
     }
 
 
+
     public String doGet(String url, Map<String, String> headers) {
 
         try {
@@ -191,7 +195,7 @@ public class Services extends TestBase {
             if (headers == null)
                 headers = new HashMap<>();
 
-            headers.putIfAbsent("Cookie", getCookies());
+            headers.putIfAbsent("Cookie",getCookies());
 
             if (headers != null) {
                 for (String key : headers.keySet()) {
@@ -212,7 +216,7 @@ public class Services extends TestBase {
         try {
             RequestConfig requestConfig = RequestConfig.custom()
                     .setConnectTimeout(60 * 1000)
-                    .setSocketTimeout(3 * 60 * 1000)
+                    .setSocketTimeout(3* 60 * 1000)
                     .build();
             if (headers != null) {
                 if (headers.get("Cookie") == null) {
@@ -223,7 +227,9 @@ public class Services extends TestBase {
                 headers.put("Cookie", getCookies());
             }
 
-            return customPost(requestConfig, url, headers, formData);
+            formData.add(new BasicNameValuePair(getCookies().toString().split(";")[1].split("=")[0],
+                    getCookies().toString().split(";")[1].split("=")[1]));
+            return customPost(requestConfig, url, headers,formData);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -247,6 +253,18 @@ public class Services extends TestBase {
             log.debug("URL " + url);
             log.debug("Request body: " + formData);
             HttpResponse result = httpClient.execute(request);
+            /*if(result.getStatusLine().getStatusCode()==400) {
+                Assert.assertTrue(false,"Getting 400 Code for "+url);
+            }
+            if(result.getStatusLine().getStatusCode()==200) {
+                Reporter("Url -->"+url,"info");
+
+                Reporter("Body -->"+formData.toString(),"info");
+                Reporter("Raw Code -->"+result.getStatusLine().getStatusCode(),"info");
+
+                Assert.assertTrue(true,"Getting 200 Code for "+url);
+            }*/
+
             return EntityUtils.toString(result.getEntity(), "UTF-8");
 
         } catch (Exception e) {
@@ -266,12 +284,12 @@ public class Services extends TestBase {
         return cookie;
     }
 
-    public List<NameValuePair> mapToFormData(Map<String, String> data) {
+    public List<NameValuePair> mapToFormData(Map<String,String> data) {
 
         List<NameValuePair> formData = new ArrayList<>();
         Iterator it = data.keySet().iterator();
 
-        while (it.hasNext()) {
+        while(it.hasNext()) {
             String entry = (String) it.next();
             formData.add(new BasicNameValuePair(entry, data.get(entry)));
         }
@@ -281,10 +299,9 @@ public class Services extends TestBase {
 
     public String encodeUrl(String params) {
 
-        try {
-            params = URLEncoder.encode(params, "UTF-8");
-        } catch (Exception e) {
-        }
+        try{
+            params = URLEncoder.encode( params ,"UTF-8");
+        }catch(Exception e){}
 
         return params;
     }
@@ -363,12 +380,14 @@ public class Services extends TestBase {
         return ids;
     }
 
+
+
     public HashMap<String, String> getEmployeeTypes() {
         Map<String, String> headers = new HashMap<>();
         headers.put("X-Requested-With", "XMLHttpRequest");
         JSONObject response = new JSONObject(doGet(getData("@@url") + "/settings/getEmpTypeList", headers));
 
-        JSONArray arr = response.getJSONArray("aaData");
+       JSONArray arr = response.getJSONArray("aaData");
         int i = 0;
         HashMap<String, String> ids = new HashMap();
         while (i < arr.length()) {
@@ -384,6 +403,31 @@ public class Services extends TestBase {
         return ids;
     }
 
+
+    public String deleteEmpTyppes(String empUserID,String typeID) {
+
+        String url = data.get("@@url") +"/employeement/deleteRecord";
+
+        HashMap<String, String> deafultBody = new HashMap<>();
+
+        deafultBody.put("user",empUserID);
+        deafultBody.put("resource",typeID);
+        deafultBody.put("mode","delete");
+
+
+
+
+
+        HashMap<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        return doPost(url, headers, mapToFormData(deafultBody));
+
+
+    }
+
+
+
     public JSONObject getDesignations(String companyID) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put("X-Requested-With", "XMLHttpRequest");
@@ -398,9 +442,9 @@ public class Services extends TestBase {
     }
 
     public void waitForUpdate(int n) {
-        try {
-            Thread.sleep(n * 1000);
-        } catch (Exception e) {
+        try{
+            Thread.sleep(n * 1000 );
+        } catch (Exception e){
 
         }
     }
@@ -409,7 +453,7 @@ public class Services extends TestBase {
     /**
      * Added below methods from Leave/ service class
      */
-    // TODO : later please clean up Service class in Leaves or Services Class in Attendance
+      // TODO : later please clean up Service class in Leaves or Services Class in Attendance
 
  /*
     gets grades
@@ -543,79 +587,5 @@ get job level info
         return ids;
     }
 
-    public List<NameValuePair> chooseApplicableTo(String companyId, String key) {
-        String id = "";
-        List<String> applicableToList = new ArrayList<>();
-        List<NameValuePair> body = new ArrayList<>();
-        List<String> valuesList;
-        int randomIndex;
 
-        String temp = data.get("Applicable To");
-        if (temp.length() != 0) {
-            for (String value : temp.split(",")) {
-                applicableToList.add(value);
-            }
-        }
-        //How to check for exception when parentCompId is Null??
-        HashMap departments = getDepartments(companyId);
-        HashMap locations = getOfficeLocations(companyId);
-        HashMap empTypes = getEmployeeTypes();
-        HashMap bands = getBands();
-        HashMap grades = getGrades();
-        JSONObject designations = getDesignations(companyId);
-//use centralized method in Custom Flow & use applicable to: another method to invoke
-        for (String applicable : applicableToList) {
-
-            switch (applicable) {
-                case "ALL":
-
-                    body.add(new BasicNameValuePair(key, "ALL_0"));
-                    break;
-                case "DEPT":
-
-                    valuesList = new ArrayList<String>(departments.values());
-                    randomIndex = new Random().nextInt(valuesList.size());
-                    id = valuesList.get(randomIndex);
-                    body.add(new BasicNameValuePair(key, "DEPT_" + id));
-                    break;
-                case "LOC":
-
-                    valuesList = new ArrayList<String>(locations.values());
-                    randomIndex = new Random().nextInt(valuesList.size());
-                    id = valuesList.get(randomIndex);
-                    body.add(new BasicNameValuePair(key, "LOC_" + id));
-                    break;
-                case "TYP":
-
-                    valuesList = new ArrayList<String>(empTypes.values());
-                    randomIndex = new Random().nextInt(valuesList.size());
-                    id = valuesList.get(randomIndex);
-                    body.add(new BasicNameValuePair(key, "TYP_" + id));
-                    break;
-                case "BAND":
-
-                    valuesList = new ArrayList<String>(bands.values());
-                    randomIndex = new Random().nextInt(valuesList.size());
-                    id = valuesList.get(randomIndex);
-                    body.add(new BasicNameValuePair(key, "BAND_" + id));
-                    break;
-                case "GRAD":
-
-                    valuesList = new ArrayList<String>(grades.values());
-                    randomIndex = new Random().nextInt(valuesList.size());
-                    id = valuesList.get(randomIndex);
-                    body.add(new BasicNameValuePair(key, "GRADE_" + id));
-                    break;
-
-                case "DESG":
-
-                    Object[] keys = designations.keySet().toArray();
-                    JSONObject keyvalue = designations.getJSONObject((String) keys[new Random().nextInt(keys.length)]);
-                    Object desig = keyvalue.keySet().toArray();
-                    body.add(new BasicNameValuePair("TenantReimbursement[applicable][]", "DESG_" + id));
-                    break;
-            }
-        }
-        return body;
-    }
 }

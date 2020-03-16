@@ -344,6 +344,32 @@ public class LeaveAdmin extends Services {
         }
     }
 
+
+    public String getMessageId(Employee employee){
+
+        String url = data.get("@@url") + "/dashboard/filter";
+
+        HashMap<String,String> body = new HashMap<>();
+        body.put("whose",employee.getUserID());
+        body.put("which","all");
+        body.put("type","1");
+        body.put("action","all");
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+
+        String response=doPost(url,headers,mapToFormData(body));
+
+        String messageId=new JSONObject(response).get("update").toString().replaceAll("<li class=\"liMobileRequestTab\"><div class = \"clearfix requestDiv \" id=\"request_thread_","").substring(0,13);
+       // String messageId = null;
+        if (messageId.isEmpty()) {
+            throw  new RuntimeException("Error in getting messagae id ");
+            //return  "Error in getting Message Id";
+        } else {
+            return messageId;
+        }
+    }
     /*
     Performs leave actions such as accept,decline,employee
     takes the phpSessionID of the employee and performs the leave action
@@ -379,6 +405,40 @@ public class LeaveAdmin extends Services {
             headers.put("Cookie",employee.getPhpSessid());
 
             return doPost(leaveActionUrl, headers, mapToFormData(body));
+    }
+
+    /*
+    from admin end
+     */
+    public String encashmentAction(String messageId,String leaveAction){
+        String leaveId=getLeaveIdForRevoke(messageId);
+
+        String leaveActionUrl = data.get("@@url") + "/leaves/leaves/leaveEncashProcess";
+        Map<String, String> body = new HashMap<>();
+
+        Map<String, String> request = new HashMap<>();
+
+        request.put("id", messageId);
+        request.put("opid", leaveId);
+
+        if(leaveAction.equalsIgnoreCase("accept")){
+            request.put("action","approve");
+        }
+        if(leaveAction.equalsIgnoreCase("decline")){
+            request.put("action","decline");
+        }
+        if(leaveAction.equalsIgnoreCase("revoke")){
+            request.put("action","revoke");
+        }
+
+        body.putAll(request);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+
+
+        return doPost(leaveActionUrl, headers, mapToFormData(body));
     }
 
     public Map<String, String> revokeRequestDefaultBody() {

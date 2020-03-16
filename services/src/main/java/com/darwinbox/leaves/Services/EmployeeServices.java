@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+
 public class EmployeeServices extends Services {
 
     public boolean resetPassword(Employee employee, String password) {
@@ -218,8 +219,12 @@ public class EmployeeServices extends Services {
             employee.setGender(new Random().nextBoolean() ? "male" : "female");
             employee.setCompanyID(id.equals("main") ? "" : id);
             employee.setLocationID((String) locations[new Random().nextInt(locations.length)]);
+
             employee.setDesignationID((String) designations[new Random().nextInt(designations.length)]);
+
             employee.setEmployeeTypeID((String) empTypes.get("Full Time"));
+            employee.setEmployeeType("Full Time");
+
             employee.setSelfService("1");
             employee.setCandidateID(empID);
             employee.setJobLevel((String) jobLevelIDS[new Random().nextInt(jobLevelIDS.length)]);
@@ -260,8 +265,8 @@ public class EmployeeServices extends Services {
         } else {
             locations = getOfficeLocations(id).values().toArray();
         }
-        Object[] empTypes = getEmployeeTypes().values().toArray();
-        if (locations.length == 0 || empTypes.length == 0) {
+        Map<String,String> empTypes = getEmployeeTypes();
+        if (locations.length == 0 || empTypes.size() == 0) {
             log.error("ERROR: Unable to fetch " + ((locations.length == 0) ? "locations" : "employee types"));
             return null;
         }
@@ -304,7 +309,7 @@ public class EmployeeServices extends Services {
             employee.setCompanyID(id.equals("main") ? "" : id);
             employee.setLocationID((String) locations[new Random().nextInt(locations.length)]);
             employee.setDesignationID((String) designations[new Random().nextInt(designations.length)]);
-            employee.setEmployeeTypeID((String) empTypes[0]);
+            employee.setEmployeeTypeID((empTypes.get("Full Time")));
             employee.setSelfService("1");
             employee.setCandidateID(empID);
             employee.setJobLevel((String) jobLevelIDS[new Random().nextInt(jobLevelIDS.length)]);
@@ -400,7 +405,7 @@ public class EmployeeServices extends Services {
         Reporter("Info -- Employee "+employee.getFirstName()+"  created Successfully","Info");
         JSONObject response;
         try{
-            response = new JSONObject(resBody);
+        response = new JSONObject(resBody);
         }
         catch (Exception e){
             throw new RuntimeException("ERROR: Unable to find Pending Employee with CandidateID: " + employee.getCandidateID());
@@ -502,15 +507,84 @@ public class EmployeeServices extends Services {
 
     public HashMap<String,String>  addUserEmployementDefaultBody(){
 
-        HashMap<String,String> defaultBody = new HashMap<>();
-        defaultBody.put("UserMongo[id]","");
-        defaultBody.put("UserEmployeementForm[type]","");
-        defaultBody.put("UserEmployeementForm[type_name]","employee_type_id");
-        defaultBody.put("UserEmployeementForm[employee_type_id]","");
-        defaultBody.put("Events[event]","");
-        defaultBody.put("UserEmployeementForm[from_date]","");
+     HashMap<String,String> defaultBody = new HashMap<>();
+     defaultBody.put("UserMongo[id]","");
+     defaultBody.put("UserEmployeementForm[type]","");
+     defaultBody.put("UserEmployeementForm[type_name]","employee_type_id");
+     defaultBody.put("UserEmployeementForm[employee_type_id]","");
+     defaultBody.put("Events[event]","");
+     defaultBody.put("UserEmployeementForm[from_date]","");
 
-        return  defaultBody;
+     return  defaultBody;
+
+    }
+
+
+    public String deActivateEmployee(String userId,String noticeDate,String deactivationDate){
+
+        String url=data.get("@@url")+ "/employee/bulkdeactivate";
+
+        String reasonID=null;
+
+        for(HashMap<String,String> temp : deactivateReasons().values()){
+        for(String  reasonType : temp.keySet())
+        {
+            if(reasonType.equalsIgnoreCase("terminated")){
+                reasonID=temp.get(reasonType);
+                break;
+            }
+        }
+        break;
+        }
+
+
+        HashMap<String,String> defaultBody = new HashMap<>();
+        defaultBody.put("UserDeactivate[user_id][]",userId);
+        defaultBody.put("UserDeactivate[reason]",reasonID);
+        defaultBody.put("UserDeactivate[notice_date]",noticeDate);
+        defaultBody.put("UserDeactivate[date]",deactivationDate);
+        defaultBody.put("UserDeactivate[comment]","automation deactivated");
+        defaultBody.put("Events[event]","");
+
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+
+        return doPost(url,headers,mapToFormData(defaultBody));
+
+    }
+
+
+    public HashMap<String,HashMap<String,String>>  deactivateReasons(){
+        String url = getData("@@url") + "/settings/GetEmpDeactivationList";
+        Map headers = new HashMap();
+        headers.put("X-Requested-With", "XMLHttpRequest");
+
+        String response = doGet(url, headers);
+        JSONObject jsonres = new JSONObject(response);
+        JSONArray arr = jsonres.getJSONArray("aaData");
+
+        HashMap<String,HashMap<String,String>>  deactivationReasons= new HashMap<>();
+
+        for (Object obj : arr) {
+
+            JSONArray objarr = (JSONArray) obj;
+            String reason = objarr.getString(0);
+            String reasonType = objarr.getString(1);
+            String  id= objarr.getString(2).substring(7,20);
+
+
+            HashMap<String,String> map= new HashMap<>();
+            map.put(reasonType,id);
+
+          deactivationReasons.put(reason,map);
+
+
+       }
+
+
+
+        return  deactivationReasons;
 
     }
 

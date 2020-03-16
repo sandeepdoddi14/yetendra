@@ -106,6 +106,7 @@ public class AlertHelper extends TestBase {
 
 	public Alert getAlert() {
 		return driver.switchTo().alert();
+
 	}
 
 }

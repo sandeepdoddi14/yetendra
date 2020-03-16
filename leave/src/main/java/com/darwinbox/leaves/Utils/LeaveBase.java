@@ -204,6 +204,7 @@ public class LeaveBase extends TestBase {
         createApprovalFlow.setName(approvalFlowObject.get("ApprovalFlowName"));
         if (approvalFlowObject.get("SelectModule").equalsIgnoreCase("Leaves"))
             createApprovalFlow.setType("2");
+            createApprovalFlow.setType("2");
         if (level1 != null)
             createApprovalFlow.setLevel1(level1);
         if (level2 != null)
@@ -525,6 +526,16 @@ public class LeaveBase extends TestBase {
         return noOfLeaves;
     }
 
+    protected double verifyLeavesForMaxHoursAllowedInASingleDay(LeavePolicyObject leavePolicyObject, double noOfHours) throws Exception {
+        if (leavePolicyObject.getMaxNumberOfHoursInaSingleDay() != "") {
+            if (Integer.parseInt(leavePolicyObject.getMaxNumberOfHoursInaSingleDay()) >= noOfHours)
+                noOfHours = noOfHours;
+            else if (noOfHours > Integer.parseInt(leavePolicyObject.getMaxNumberOfHoursInaSingleDay()))
+                throw new Exception(ERROR_MESSAGES.maximumHoursToBeAppliedInSingleDay + leavePolicyObject.getMaxNumberOfHoursInaSingleDay());
+        }
+        return noOfHours;
+    }
+
     protected double verifyLeavesForDontAllowMoreThanYearlyAllocation(LeavePolicyObject leavePolicyObject, double noOfLeaves) throws Exception {
         if (leavePolicyObject.getOverUtilization().dontAllowMoreThanYearlyAllocation != false) {
             if (leavePolicyObject.getMaximum_leave_allowed_per_year() >= noOfLeaves)
@@ -731,6 +742,17 @@ public class LeaveBase extends TestBase {
             return noOfLeaves;
     }
 
+
+    protected double verifyMinimumHoursToBeAppliedInASingleDay(LeavePolicyObject leavePolicyObject, double noOfLeaves) throws Exception {
+
+        if (leavePolicyObject.getMinNumbersOfHoursInaSingleDay() != "") {
+            if (Integer.parseInt(leavePolicyObject.getMinNumbersOfHoursInaSingleDay()) <= noOfLeaves)
+                return noOfLeaves;
+            else
+                throw new Exception(ERROR_MESSAGES.minimumHoursToBeAppliedInSingleDay + leavePolicyObject.getMinNumbersOfHoursInaSingleDay());
+        } else
+            return noOfLeaves;
+    }
 
     protected double checkAllowDay(LeavePolicyObject leavePolicyObject, double noOfLeaves) throws Exception {
         if (noOfLeaves == 0.5) {

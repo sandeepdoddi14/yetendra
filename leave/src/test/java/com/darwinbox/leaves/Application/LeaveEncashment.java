@@ -116,7 +116,7 @@ public class LeaveEncashment extends LeaveBase {
                 expectedEncashedLeves=leaveBalnce;
             }
 
-            if(noOfLeaves>=leaveEncashmentPolicy.getLeaveEncashment().Encash_Min)
+            if(noOfLeaves>=Double.parseDouble(leaveEncashmentPolicy.getLeaveEncashment().Encash_Min))
             {
                 expectedEncashedLeves=expectedEncashedLeves;
             }
@@ -125,11 +125,11 @@ public class LeaveEncashment extends LeaveBase {
                 error="Cannot apply for leave encashment as minimum leaves to be encash is "+leaveEncashmentPolicy.getLeaveEncashment().Encash_Min;
             }
 
-            if(noOfLeaves>=leaveEncashmentPolicy.getLeaveEncashment().Encash_Max &&  leaveEncashmentPolicy.getLeaveEncashment().Encash_Max!=0)
+            if(noOfLeaves>=Double.parseDouble(leaveEncashmentPolicy.getLeaveEncashment().Encash_Max) &&  leaveEncashmentPolicy.getLeaveEncashment().Encash_Max!="0")
             {
                 error="Cannot apply for leave encashment more than allowed balance to encash";
             }
-            if(!(leaveBalnce-expectedEncashedLeves>=leaveEncashmentPolicy.getLeaveEncashment().minLeaveBalance))
+            if(!(leaveBalnce-expectedEncashedLeves>=Double.parseDouble(leaveEncashmentPolicy.getLeaveEncashment().minLeaveBalance)))
             {
                 error="Cannot apply for leave encashment as minimum balance to retain after encashment is "+leaveEncashmentPolicy.getLeaveEncashment().minLeaveBalance;
             }

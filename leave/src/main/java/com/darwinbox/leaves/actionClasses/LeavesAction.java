@@ -17,6 +17,7 @@ import com.darwinbox.framework.uiautomation.helper.Javascript.JavaScriptHelper;
 import com.darwinbox.framework.uiautomation.helper.Wait.WaitHelper;
 import com.darwinbox.framework.uiautomation.helper.genericHelper.GenericHelper;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
+import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.pageObjectRepo.settings.CreateAndManageLeavePoliciesPage;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesSettingsPage;
 import io.restassured.RestAssured;
@@ -1196,6 +1197,26 @@ public class LeavesAction extends TestBase {
 
 
     /**
+     * Just a hard coded value to support carry forward cron
+     */
+    private int getLeaveTypeForCarryForwardEndPoint(String cycleType){
+        if(cycleType.equalsIgnoreCase("calender")){
+            return 1;
+        }
+
+        if(cycleType.equalsIgnoreCase("financial")){
+            return 2;
+        }
+
+        if(cycleType.equalsIgnoreCase("custom leave cycle")){
+            return 4;
+        }
+
+
+        return 0;
+    }
+
+    /**
      * This method runs Carry forward cron
      *
      * @return Leave Balance
@@ -1204,7 +1225,7 @@ public class LeavesAction extends TestBase {
     public boolean runCarryFrowardCronByEndPointURL() {
              double actualLeaveBalance = 0;
             String applicationURL = data.get("@@url");
-            String URL = UtilityHelper.getProperty("allAPIRepository", "Run.Cron.API") + "CarryforwardLeavesnew"+"&type=4&eno="+EMPID;
+            String URL = UtilityHelper.getProperty("allAPIRepository", "Run.Cron.API") + "CarryforwardLeavesnew"+"&type="+getLeaveTypeForCarryForwardEndPoint(LeaveAccuralBase.leavePolicyObject.getLeave_cycle())+"&eno="+EMPID;
             objUtil.getHTMLTextFromAPI(driver, URL);
             String frontEndLeaveBalance = driver.findElement(By.xpath("//body")).getText();
             if (frontEndLeaveBalance.isEmpty()) {

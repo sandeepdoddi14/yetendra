@@ -40,34 +40,10 @@ public class LeavePolicyObject extends TestBase {
     private String group_Company = null;
     private String leave_Type = null;
     private String description;
-
-    public Boolean getHourlyLeave() {
-        return isHourlyLeave;
-    }
-
-    public void setHourlyLeave(Boolean hourlyLeave) {
-        isHourlyLeave = hourlyLeave;
-    }
-
     private Boolean isHourlyLeave=false;
-
-    public TenureBasis getTenureBasis() {
-        return tenureBasis;
-    }
-
-    public void setTenureBasis(TenureBasis tenureBasis) {
-        this.tenureBasis = tenureBasis;
-    }
-
+    private String minNumbersOfHoursInaSingleDay="";
+    private String maxNumberOfHoursInaSingleDay="";
     private TenureBasis tenureBasis= new TenureBasis();
-
-    public String getCustomLeaveCycleMonth() {
-        return customLeaveCycleMonth;
-    }
-
-    public void setCustomLeaveCycleMonth(String customLeaveCycleMonth) {
-        this.customLeaveCycleMonth = customLeaveCycleMonth;
-    }
 
     private String customLeaveCycleMonth=null;
     private int maximum_leave_allowed_per_year;
@@ -93,8 +69,35 @@ public class LeavePolicyObject extends TestBase {
     private PastDatedLeave pastDatedLeave = new PastDatedLeave();
     private Clubbing Clubbing = new Clubbing();
     private OverUtilization OverUtilization = new OverUtilization();
-
     private ApprovalFlow approvalFlow=null;
+    private MultipleAllotment multipleAllotment= new MultipleAllotment();
+    private Encashment leaveEncashment=new Encashment();
+
+
+
+    public Boolean getHourlyLeave() {
+        return isHourlyLeave;
+    }
+
+    public void setHourlyLeave(Boolean hourlyLeave) {
+        isHourlyLeave = hourlyLeave;
+    }
+
+    public TenureBasis getTenureBasis() {
+        return tenureBasis;
+    }
+
+    public void setTenureBasis(TenureBasis tenureBasis) {
+        this.tenureBasis = tenureBasis;
+    }
+
+    public String getCustomLeaveCycleMonth() {
+        return customLeaveCycleMonth;
+    }
+
+    public void setCustomLeaveCycleMonth(String customLeaveCycleMonth) {
+        this.customLeaveCycleMonth = customLeaveCycleMonth;
+    }
 
 
     /*
@@ -121,12 +124,17 @@ public class LeavePolicyObject extends TestBase {
         this.multipleAllotment = multipleAllotment;
     }
 
-    private MultipleAllotment multipleAllotment= new MultipleAllotment();
-
-   private Encashment leaveEncashment=new Encashment();
 
     public Encashment getLeaveEncashment() {
         return leaveEncashment;
+    }
+
+    public PastDatedLeave getPastDatedLeave() {
+        return pastDatedLeave;
+    }
+
+    public void setPastDatedLeave(PastDatedLeave pastDatedLeave) {
+        this.pastDatedLeave = pastDatedLeave;
     }
 
     public void setLeaveEncashment(Encashment leaveEncashment) {
@@ -158,13 +166,6 @@ public class LeavePolicyObject extends TestBase {
         groupCompanyMongoId = new Services().getGroupCompanyIds().get(group_Company);
     }
 
-    public PastDatedLeave getPastDatedLeave() {
-        return pastDatedLeave;
-    }
-
-    public void setPastDatedLeave(PastDatedLeave pastDatedLeave) {
-        this.pastDatedLeave = pastDatedLeave;
-    }
 
     public PrefixSuffixSetting getPrefixSuffixSetting() {
         return prefixSuffixSetting;
@@ -409,18 +410,59 @@ public class LeavePolicyObject extends TestBase {
         OverUtilization = overUtilization;
     }
 
+
+    public String getMinNumbersOfHoursInaSingleDay() {
+        return minNumbersOfHoursInaSingleDay;
+    }
+
+    public void setMinNumbersOfHoursInaSingleDay(String minNumbersOfHoursInaSingleDay) {
+        this.minNumbersOfHoursInaSingleDay = minNumbersOfHoursInaSingleDay;
+    }
+
+    public String getMaxNumberOfHoursInaSingleDay() {
+        return maxNumberOfHoursInaSingleDay;
+    }
+
+    public void setMaxNumberOfHoursInaSingleDay(String maxNumberOfHoursInaSingleDay) {
+         this.maxNumberOfHoursInaSingleDay = maxNumberOfHoursInaSingleDay;
+    }
+
     public void setFields(Map<String, String> data) {
         this.setAssignment_Type(data.get("Assignment_Type"));
         this.setAssignmemnt_Framework(data.get("Assignmemnt_Framework"));
         this.setGroup_Company(data.get("Group_Company"));
         this.setLeave_Type(data.get("Leave_Type"));
+
+
         this.setDescription(data.get("Description"));
-        this.setHourlyLeave(Boolean.parseBoolean(data.get("HourlyLeave")));
+        try {
+            this.setHourlyLeave(Boolean.parseBoolean(data.get("HourlyLeave")));
+            Reporter("Hourly is set to true","info");
+        }
+        catch(Exception e){
+            Reporter("Hourly is set to false","info");
+        }
+
+        if(this.getHourlyLeave()==true){
+            if(data.get("MinimumNumberOfHoursInaSingleDay")!=null || data.get("MinimumNumberOfHoursInaSingleDay")!="")
+            {
+                this.setMinNumbersOfHoursInaSingleDay(data.get("MinimumNumberOfHoursInaSingleDay"));
+            }
+            if(data.get("MaximumNumberOfHoursInaSingleDay")!=null || data.get("MaximumNumberOfHoursInaSingleDay")!="")
+            {
+                this.setMaxNumberOfHoursInaSingleDay(data.get("MaximumNumberOfHoursInaSingleDay"));
+            }
+
+        }
         this.setMaximum_leave_allowed_per_year(Integer.parseInt(data.get("Maximum_leave_allowed_per_year")));
         this.restriction_Condition.AND_OR = data.get("Restriction_Condition");
         this.restriction_Condition.Restriction = data.get("Restriction_(Department,_Employee_Type_or_Location)");
         this.consecutive_leave_allowed = data.get("Consecutive_leave_allowed").equalsIgnoreCase("") ? 0 : Integer.parseInt(data.get("Consecutive_leave_allowed"));
         this.leave_cycle = data.get("Leave_cycle");
+
+        if(this.getLeave_cycle().equalsIgnoreCase("Custom Leave Cycle"))
+                this.setCustomLeaveCycleMonth(data.get("CustomLeaveCycleMonth"));
+
         this.push_all_these_leave_requests_to_admin = data.get("Push_all_these_leave_requests_to_admin");
 
         this.restrict_to_Week_Days = data.get("Restrict_to_Week_Days").equalsIgnoreCase("") ? null : data.get("Restrict_to_Week_Days");
@@ -492,9 +534,9 @@ public class LeavePolicyObject extends TestBase {
 
         if(this.leaveEncashment.indicatoer){
             this.leaveEncashment.encashAll=testData.get("Consider");
-            this.leaveEncashment.Encash_Min=Integer.parseInt(testData.get("Encash_Min"));
-            this.leaveEncashment.Encash_Max=Integer.parseInt(testData.get("Encash_Max"));
-            this.leaveEncashment.minLeaveBalance=Integer.parseInt(testData.get("Encash_MinLeaveBalLeft"));
+            this.leaveEncashment.Encash_Min=(testData.get("Encash_Min"));
+            this.leaveEncashment.Encash_Max=(testData.get("Encash_Max"));
+            this.leaveEncashment.minLeaveBalance=(testData.get("Encash_MinLeaveBalLeft"));
         }
     }
 
@@ -541,6 +583,23 @@ public class LeavePolicyObject extends TestBase {
         formData.removeIf(x->x.getName().contains("Leaves[is_hourly]"));
         formData.add(new BasicNameValuePair("Leaves[is_hourly]",getHourlyLeave()?1+"":0+""));
 
+
+        if(this.getHourlyLeave()==true)
+        {
+            if(this.getMinNumbersOfHoursInaSingleDay()!=null || this.getMinNumbersOfHoursInaSingleDay()!="")
+            {
+                formData.removeIf(x->x.getName().contains("Leaves[min_hours_leaves_per_day]"));
+                formData.add(new BasicNameValuePair("Leaves[min_hours_leaves_per_day]",getMinNumbersOfHoursInaSingleDay()));
+            }
+
+            if(this.getMaxNumberOfHoursInaSingleDay()!=null || this.getMaxNumberOfHoursInaSingleDay()!="")
+            {
+                formData.removeIf(x->x.getName().contains("Leaves[max_hours_leaves_per_day]"));
+                formData.add(new BasicNameValuePair("Leaves[max_hours_leaves_per_day]",getMaxNumberOfHoursInaSingleDay()));
+            }
+
+        }
+
         //Maximum Leave Allowed Per Year
         if (this.maximum_leave_allowed_per_year != 0) {
             formData.removeIf(x -> x.getName().contains("Leaves[yearly_endowment]"));
@@ -560,6 +619,24 @@ public class LeavePolicyObject extends TestBase {
                         getMonthValue(customLeaveCycleMonth).replace("0","").trim():
                         getMonthValue(customLeaveCycleMonth)));
             }
+            if(this.getLeave_cycle().equalsIgnoreCase("calender")){
+                formData.removeIf(x -> x.getName().contains("Leaves[p4_carry_over_time]"));
+                formData.removeIf(x -> x.getName().contains("Leaves[p4_custom_month]"));
+
+                formData.add(new BasicNameValuePair("Leaves[p4_carry_over_time]", "1"));
+
+
+            }
+
+            if(this.getLeave_cycle().equalsIgnoreCase("financial")){
+                formData.removeIf(x -> x.getName().contains("Leaves[p4_carry_over_time]"));
+                formData.removeIf(x -> x.getName().contains("Leaves[p4_custom_month]"));
+
+                formData.add(new BasicNameValuePair("Leaves[p4_carry_over_time]", "2"));
+
+
+            }
+
 
 
 
@@ -918,6 +995,10 @@ public class LeavePolicyObject extends TestBase {
 
         if(this.leaveEncashment.indicatoer)
         {
+
+            formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedUserEncash[status]"));
+            formData.removeIf(x -> x.getName().contains("LeavePolicy_UnusedUserEncash[user_encash_type]"));
+
             formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[status]","1"));
 
             if(this.leaveEncashment.encashAll.equalsIgnoreCase("accured"))
@@ -933,7 +1014,7 @@ public class LeavePolicyObject extends TestBase {
                     formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[minimum_encash_leaves]",this.leaveEncashment.Encash_Min+""));
                     formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[remaining_balance]",this.leaveEncashment.minLeaveBalance+""));
                     formData.add(new BasicNameValuePair("LeavePolicy_UnusedUserEncash[user_encash_amount]",this.leaveEncashment.Encash_Max+""));
-                }
+        }
 
 
 
@@ -1005,6 +1086,9 @@ public class LeavePolicyObject extends TestBase {
                         String empType = this.getMultipleAllotment().restrictCondition.split(",")[i];
                         String type = "TYP_" + new Services().getEmployeeTypes().get(empType);
                         String maxAllowedPerYear=this.getMultipleAllotment().maximumAllowedPerYear.split(",")[i];
+                        //defines :OR  statement
+                        formData.add(new BasicNameValuePair("Leaves[multiple_allotment_restriction]["+i+"][maximumLeaves_radio]","0"));
+
                         formData.add(new BasicNameValuePair("Leaves[multiple_allotment_restriction][" + i + "][restriction][]", type));
                         formData.add(new BasicNameValuePair("Leaves[multiple_allotment_restriction]["+i+"][maximumLeaves]",maxAllowedPerYear));
                     }

@@ -92,7 +92,7 @@ public class WaitHelper extends TestBase {
 	 */
 	public void waitForPageToLoad() {
 		try {
-			driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.MINUTES);
+			driver.manage().timeouts().pageLoadTimeout(5000, TimeUnit.MINUTES);
 		} catch (Exception e) {
 			Reporter("Exception while applying wait to load page:" + e.getMessage(), "Fail");
 		}

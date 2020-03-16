@@ -3,13 +3,14 @@ package com.darwinbox.leaves.Application;
 import com.darwinbox.Services;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Holiday;
-import com.darwinbox.attendance.services.EmployeeServices;
+
 import com.darwinbox.attendance.services.settings.HolidayService;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.EmployeeServices;
 import com.darwinbox.leaves.Services.LeaveAdmin;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Services.LeaveService;
@@ -78,6 +79,7 @@ public class OverUtilization_Hourly extends LeaveBase {
 
         LeavePolicyObject leavePolicyObject = policies.stream().filter(x -> x.getLeave_Type().equalsIgnoreCase(data.get("LeavePolicy"))).findFirst().get();
 
+        Reporter("Leave Policy Name is   :"+leavePolicyObject.getLeave_Type(),"Info");
         List<LeavePolicyObject> leavePolicyObjectObjects = new ArrayList<>();
         List<Map<String, Object>> expectedLeaveDetails = null;
         List<Map<String, Object>> actualLeaveDeatails = new ArrayList<>();
@@ -91,15 +93,18 @@ public class OverUtilization_Hourly extends LeaveBase {
         LocalDate fromDate = LocalDate.parse(data.get("from_Date"));
 
         //1. change this such that it wont go for carry forward or leave cycle end date
-        LocalDate leaveStartDate= today;
+        LocalDate leaveStartDate= fromDate;
         //leavesPage.
         if(ChronoUnit.DAYS.between(fromDate,leaveStartDate) < 0)
             pastDatedLleave= true;
+
         LocalDate toDate = LocalDate.parse(data.get("to_Date"));
 
 
         int noOfLeaves = (int)ChronoUnit.DAYS.between(fromDate, toDate)+1;
-        int noOfHours =  Integer.parseInt(data.get("noOfHours"));;
+        int noOfHours =  Integer.parseInt(data.get("noOfHours"));
+
+        Reporter("Number off Hours Applied is "+noOfHours,"Info");
        /* if (diff == 0 || data.get("noOfLeaves").contains("0.5")) {
 
             noOfLeaves = Double.parseDouble(data.get("noOfLeaves"));
@@ -114,9 +119,12 @@ public class OverUtilization_Hourly extends LeaveBase {
         //LeavesPage leavesPage = new LeavesPage(driver);
         String weeklyOff = null;
 
+
         if (!halfDay) {
             leavesPage.setFromAndToDatesWithoutProperty(noOfLeaves,leaveStartDate);
             workingDays.addAll(Arrays.asList(leavesPage.workingDays));
+            Reporter("From Date is   :"+leavesPage.workingDays[0].toString(),"Info");
+            Reporter("To Date is   :"+leavesPage.workingDays[leavesPage.workingDays.length-1].toString(),"Info");
         } else if (halfDay) {
             // workingDays= new ArrayList<>();
             workingDays.add(leaveStartDate);
@@ -168,8 +176,9 @@ public class OverUtilization_Hourly extends LeaveBase {
 
 
         //2. change this such that it wont go for carry forward or leave cycle end date beyond
-        new DateTimeHelper().changeServerDate(driver,LocalDate.now().minusDays(30).toString());
+        //new DateTimeHelper().changeServerDate(driver,LocalDate.now().minusDays(30).toString());
 
+        new DateTimeHelper().changeServerDate(driver,LocalDate.now().toString());
         if (data.get("emp_WeeklyOff") != null & !data.get("emp_WeeklyOff").equalsIgnoreCase("")) {
             weeklyOff = data.get("emp_WeeklyOff");
             new Services().createWeeklyOff(weeklyOff);
@@ -407,26 +416,37 @@ public class OverUtilization_Hourly extends LeaveBase {
             errrorFlag = true;
             actualErrorCount++;
             if(applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:","").trim())){
-                Reporter("Past Dated Leave Error Message is Verified","Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
         }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
+            }
         }
 
         try {
             verifyFixedOverUtilization(leavePolicyObjectObjects.get(0), employeeBalance, noOfLeaves*noOfHours);
         } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
+
             if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
-                errrorFlag = true;
-                actualErrorCount++;
-                Reporter("Max Consecutive Error Message Minimum Balance Message Verified", "Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
             }
         }
         try {
             verifyLeavesForConsecutiveLeaveAllowedField(leavePolicyObjectObjects.get(0), noOfLeaves*noOfHours);
         } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
+
             if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
-                errrorFlag = true;
-                actualErrorCount++;
-                Reporter("Max Consecutive Error Message Verified", "Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
             }
         }
 
@@ -434,21 +454,57 @@ public class OverUtilization_Hourly extends LeaveBase {
         try {
             verifyMinimumConsecutiveDaysAllowedInSingleApplication(leavePolicyObjectObjects.get(0), noOfLeaves*noOfHours);
         } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
+
             if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
-                errrorFlag = true;
-                actualErrorCount++;
-                Reporter("Min Consecutive Single Application Error Message Verified", "Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
             }
         }
 
         try {
             verifyLeavesForMaxConsecutiveAllowedPerSingleApplicationField(leavePolicyObjectObjects.get(0), noOfLeaves*noOfHours);
         } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
 
             if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
-                errrorFlag = true;
-                actualErrorCount++;
-                Reporter("Max Consecutive Single Application Error Message Verified", "Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
+            }
+        }
+
+        try {
+            verifyMinimumHoursToBeAppliedInASingleDay(leavePolicyObjectObjects.get(0), noOfLeaves*noOfHours);
+        } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
+            if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
+
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
+            }
+        }
+
+
+        try {
+            verifyLeavesForMaxHoursAllowedInASingleDay(leavePolicyObjectObjects.get(0), noOfLeaves*noOfHours);
+        } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
+
+            if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
             }
         }
 
@@ -456,20 +512,29 @@ public class OverUtilization_Hourly extends LeaveBase {
         try {
             verifyLeavesForDontAllowMoreThanYearlyAccural(leavePolicyObjectObjects.get(0), employee, noOfLeaves*noOfHours);
         } catch (Exception e) {
+
+            errrorFlag = true;
+            actualErrorCount++;
+
             if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
-                errrorFlag = true;
-                actualErrorCount++;
-                Reporter("Yearly Accural Error Message Verified", "Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
             }
         }
 
         try {
             verifyLeavesForDontAllowMoreThanYearlyAllocation(leavePolicyObjectObjects.get(0), noOfLeaves*noOfHours);
         } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
+
             if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
-                errrorFlag = true;
-                actualErrorCount++;
-                Reporter("Yearly Allocation Error Message Verified", "Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
             }
         }
 
@@ -477,10 +542,14 @@ public class OverUtilization_Hourly extends LeaveBase {
         try {
             verifyLeavesForFixedOverUtilization(leavePolicyObjectObjects.get(0), employeeBalance, noOfLeaves*noOfHours);
         } catch (Exception e) {
+            errrorFlag = true;
+            actualErrorCount++;
+
             if (applyLeaveResponse.contains(e.toString().replace("java.lang.Exception:", "").trim())) {
-                errrorFlag = true;
-                actualErrorCount++;
-                Reporter("fixed Over Utilization Error Verified", "Info");
+                Reporter(e.toString()   +"   Error Message is Verified","Info");
+            }
+            else{
+                Assert.fail(e.toString()+  "    Not Found In Response");
             }
         }
 
@@ -493,6 +562,16 @@ public class OverUtilization_Hourly extends LeaveBase {
         if (!errrorFlag) {
             Assert.assertTrue(applyLeaveResponse.contains("success"), "Expected Successfull Leave Response But Found "
                     + applyLeaveResponse);
+
+
+            employeeBalance =new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+
+            Double expectedBalance = Double.parseDouble(leavePolicyObject.getMaximum_leave_allowed_per_year()-noOfLeaves*noOfHours+"");
+            Reporter("Expected Employee Balance  is -->  "+expectedBalance,"Info");
+            Reporter("Actual Employee Balance  is -->  "+employeeBalance,"Info");
+
+            Assert.assertTrue(expectedBalance==employeeBalance,"Expected Balance and Actual Balance are not same");
+
         }
         if (errrorFlag) {
 
@@ -507,6 +586,9 @@ public class OverUtilization_Hourly extends LeaveBase {
 
 
         }
+
+
+
 
 
     }
