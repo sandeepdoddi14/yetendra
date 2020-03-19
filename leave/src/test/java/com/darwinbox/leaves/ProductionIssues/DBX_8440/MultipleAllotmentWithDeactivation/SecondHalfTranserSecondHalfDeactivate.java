@@ -72,8 +72,8 @@ public class SecondHalfTranserSecondHalfDeactivate extends LeaveAccuralBase {
         Reporter("Leave Type is"+multipleAllotmentLeavePolicy.getLeave_Type(),"Info");
 
         //always start from previous year
-        leaveCycleStartDate=LocalDate.parse("2020-01-01");
-        leaveCycleEndDate=LocalDate.parse("2020-12-31");
+        leaveCycleStartDate=LocalDate.parse("2019-04-01");
+        leaveCycleEndDate=LocalDate.parse("2020-03-31");
 
 
         Reporter("Leave Cycle Start Date is -->"+leaveCycleStartDate,"INfo");
