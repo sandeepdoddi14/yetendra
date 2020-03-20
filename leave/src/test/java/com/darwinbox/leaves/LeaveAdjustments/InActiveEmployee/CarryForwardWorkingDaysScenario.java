@@ -133,7 +133,7 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
 
         Double adjustedBalance=Double.parseDouble(testData.get("LeaveAdjustment"));
 
-        new ImportServices().importLeaveAdjustmentBalance(EmployeeId,leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",getServerOrLocalDate().getYear()+"");
+        new ImportServices().importLeaveAdjustmentBalance(EmployeeId,leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",leaveCycleStartDate.getYear()+"");
 
         Reporter("Import is Performed for adjustment  of "+adjustedBalance +"On "+serverChangedDate ,"Info");
 

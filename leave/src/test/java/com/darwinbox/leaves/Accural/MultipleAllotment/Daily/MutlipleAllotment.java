@@ -69,8 +69,8 @@ public class MutlipleAllotment extends LeaveAccuralBase {
         Reporter("Leave Type is"+multipleAllotmentLeavePolicy.getLeave_Type(),"Info");
 
         //always start from previous year
-        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2018-08-01");
-        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2019-07-31");
+        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2018-04-01");
+        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2019-03-31");
 
         leaveCycleStartDate = firstLeaveCycleStartDate;
         leaveCycleEndDate = firstLeaveCyclceEndDate;

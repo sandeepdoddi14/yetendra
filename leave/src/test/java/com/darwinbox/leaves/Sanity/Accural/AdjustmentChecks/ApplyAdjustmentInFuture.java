@@ -64,8 +64,8 @@ public class ApplyAdjustmentInFuture extends LeaveAccuralBase {
 
         int noOfLeaves = 3;
         //always give current year
-        leaveCycleStartDate = LocalDate.parse("2020-01-01");
-        leaveCycleEndDate = LocalDate.parse("2020-12-31");
+        leaveCycleStartDate = LocalDate.parse("2019-04-01");
+        leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
         LeavePolicyObject carryForwardBalance = getCarryForwardPolicy(testData);
         super.carryForward = true;
@@ -110,12 +110,12 @@ public class ApplyAdjustmentInFuture extends LeaveAccuralBase {
 
         int adjustedBalance = -2;
         new LeaveSettings().showLeaveAdjustments(carryForwardBalance.getLeave_Type());
-        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", getServerOrLocalDate().getYear() + "");
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", leaveCycleStartDate.getYear()+"");
 
         double actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), carryForwardBalance.getLeave_Type()).getBalance();
         double expectedBalance = carryForwardBalance.getMaximum_leave_allowed_per_year()-adjustedBalance;
 
-        Reporter("Leave Adjusted Year is -->"+getServerOrLocalDate().getYear() ,"Info");
+        Reporter("Leave Adjusted Year is -->"+leaveCycleStartDate ,"Info");
         Reporter("Adjusted Balace is -->"+adjustedBalance,"Info");
         Reporter("Leave Balance after adjustment is"+actualLeaveBalance,"Info");
 
@@ -123,12 +123,12 @@ public class ApplyAdjustmentInFuture extends LeaveAccuralBase {
 
         int adjustedBalance1 = -5;
         new LeaveSettings().showLeaveAdjustments(carryForwardBalance.getLeave_Type());
-        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", getServerOrLocalDate().getYear()+1 + "");
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", leaveCycleStartDate.plusYears(1) + "");
 
         double actualLeaveBalance1 = new LeaveBalanceAPI(employee.getEmployeeID(), carryForwardBalance.getLeave_Type()).getBalance();
         double expectedBalance1 = expectedBalance;
 
-        Reporter("Leave Adjusted Year is -->"+(getServerOrLocalDate().getYear()+1) ,"Info");
+        Reporter("Leave Adjusted Year is -->"+(leaveCycleStartDate.plusYears(1)) ,"Info");
         Reporter("Adjusted Balace is -->"+adjustedBalance1,"Info");
         Reporter("Leave Balance after adjustment is"+actualLeaveBalance1,"Info");
 

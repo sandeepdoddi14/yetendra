@@ -79,11 +79,11 @@ public class VerifyCFWithLeaveAdjustment extends LeaveAccuralBase {
 
         super.setEmployee(employee);
 
-        leaveCycleStartDate=LocalDate.parse("2020-01-01");
-        leaveCycleEndDate = LocalDate.parse("2020-12-31");
+        leaveCycleStartDate=LocalDate.parse("2019-04-01");
+        leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
         new LeaveSettings().showLeaveAdjustments(leaveAdjustmentPolicy.getLeave_Type());
-        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",getServerOrLocalDate().getYear()+"");
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",leaveCycleStartDate.getYear()+"");
 
         Reporter("Import is Performed for adjustment  of "+adjustedBalance +"On "+serverChangedDate ,"Info");
 
