@@ -2,7 +2,7 @@ package com.darwinbox.leaves.Accural.LeaveBalanceTests.Daily;
 
 
 import com.darwinbox.attendance.objects.Employee;
-import com.darwinbox.attendance.services.EmployeeServices;
+import com.darwinbox.leaves.Services.EmployeeServices;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
