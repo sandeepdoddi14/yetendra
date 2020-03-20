@@ -7,6 +7,7 @@ import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Accural.*;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.Encashment;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.OverUtilization;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.PastDatedLeave;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.ProbationPeriodForLeaveValidity;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
@@ -23,10 +24,7 @@ import org.openqa.selenium.By;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LeaveAccuralBase extends  LeaveBase {
 
@@ -730,6 +728,10 @@ public class LeaveAccuralBase extends  LeaveBase {
         leaveBalancePolicy.setLeave_cycle(testData.get("Leave Cycle"));
         leaveBalancePolicy.setCustomLeaveCycleMonth(testData.get("CustomLeaveCycleMonth"));
 
+        PastDatedLeave pastDatedLeave= new PastDatedLeave();
+        pastDatedLeave.indicator=true;
+        leaveBalancePolicy.setPastDatedLeave(pastDatedLeave);
+
         ProbationPeriodForLeaveValidity probationPeriodForLeaveValidity = new ProbationPeriodForLeaveValidity();
         probationPeriodForLeaveValidity.custom=testData.get("Leave Probation Period according to Custom Months").equalsIgnoreCase("yes")?true:false;
         probationPeriodForLeaveValidity.probation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
@@ -1046,7 +1048,7 @@ public class LeaveAccuralBase extends  LeaveBase {
         LeavePolicyObject leaveBalancePolicy = new LeavePolicyObject();
 
         for(Map<String,String> testData : excelData){
-            testData.put("Leave_Type","AdjustementPolicyWithOU");
+            testData.put("Leave_Type","AdjustementPolicyWithOU"+ new Random().nextInt()+"");
             testData.put("OverUtilization","yes");
             testData.put("Count_excess_leave_as_Paid,_by_default","yes");
             testData.put("Utilize_from","no");

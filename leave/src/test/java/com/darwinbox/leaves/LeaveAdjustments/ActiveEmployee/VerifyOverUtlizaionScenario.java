@@ -91,6 +91,10 @@ public class VerifyOverUtlizaionScenario extends LeaveAccuralBase {
         leaveCycleStartDate=LocalDate.parse("2019-04-01");
         leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
+        changeServerDate(leaveCycleEndDate.minusMonths(1));
+
+
+
         Double leavebalance= new LeaveBalanceAPI(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type()).getTotalBalance();
         leavesPage.setFromAndToDatesWithoutProperty(leavebalance.intValue()+2,serverDateInFormat);
         List<LocalDate> workingDays = new CopyOnWriteArrayList<>();
