@@ -59,10 +59,10 @@ public class LeaveAccuralBase extends  LeaveBase {
         {
 
             workingDaysDenominator = Double.parseDouble(testData.get("denominatorValue"));
-          // new LeaveSettings().setDenominatorForWorkingDaysAccural(workingDaysDenominator+"");
+            new LeaveSettings().setDenominatorForWorkingDaysAccural(workingDaysDenominator+"");
         }
         else {
-            //new LeaveSettings().setDenominatorForWorkingDaysAccural("");
+            new LeaveSettings().setDenominatorForWorkingDaysAccural("");
         }
 
     }

@@ -82,7 +82,7 @@ public class CarryForwardWithBalanceWorkingDays extends LeaveAccuralBase {
         Assert.assertTrue(setEmployeeId("E1582725086492"), "Employee ID is set Mnually");
 
         leavesAction.setEmployeeID("E1582725086492");
-        Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
+       // Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
 
 
         leaveCycleStartDate=LocalDate.parse("2019-04-01");
@@ -104,7 +104,7 @@ public class CarryForwardWithBalanceWorkingDays extends LeaveAccuralBase {
             while (!doj.isBefore(leaveCycleStartDate)) {
                 if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
 
-                    leavesAction.removeEmployeeLeaveLogs();
+                    //leavesAction.removeEmployeeLeaveLogs();
                     changeEmployeeDOJ(doj);
                     DateOfJoining=doj.toString();
                     Reporter("DOJ is changed to "+doj.toString(),"Info");
@@ -121,7 +121,7 @@ public class CarryForwardWithBalanceWorkingDays extends LeaveAccuralBase {
                     //carry forward balance
                     DateOfJoining=doj.toString();
                     expecetedLeaveBalance = calculateLeaveBalanceAsPerEmployeeWorkingDays(doj.toString(), leaveCycleEndDate.toString());
-
+                    expecetedLeaveBalance = getCarryFowardBalance(expecetedLeaveBalance);
 
                     //expecetedLeaveBalance= Math.round(expecetedLeaveBalance);
 
