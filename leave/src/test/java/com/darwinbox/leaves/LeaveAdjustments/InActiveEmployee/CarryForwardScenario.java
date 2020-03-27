@@ -72,13 +72,15 @@ public class CarryForwardScenario extends LeaveAccuralBase {
         serverChangedDate = LocalDate.now().toString();
         serverDateInFormat = LocalDate.parse(serverChangedDate);
 
-        employee= new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", "random", "no");
+        leaveCycleStartDate=LocalDate.parse("2019-04-01");
+        leaveCycleEndDate = LocalDate.parse("2020-03-31");
+
+
+        employee= new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no");
         leavesAction.setEmployeeID(employee.getEmployeeID());
 
         super.setEmployee(employee);
 
-        leaveCycleStartDate=LocalDate.parse("2019-04-01");
-        leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
         new LeaveSettings().showLeaveAdjustments(leaveAdjustmentPolicy.getLeave_Type());
 

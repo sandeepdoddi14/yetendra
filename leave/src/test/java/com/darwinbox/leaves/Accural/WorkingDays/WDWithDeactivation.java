@@ -77,6 +77,7 @@ public class WDWithDeactivation extends LeaveAccuralBase {
 
         new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
 
+        //auto5
         Assert.assertTrue(setEmployeeId("Deactivate_Balance"), "Employee ID is set Mnually");
 
         leavesAction.setEmployeeID("Deactivate_Balance");

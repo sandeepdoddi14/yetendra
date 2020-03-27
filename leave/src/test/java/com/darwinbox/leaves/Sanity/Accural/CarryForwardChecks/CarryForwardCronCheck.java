@@ -23,8 +23,6 @@ import java.util.Map;
 public class CarryForwardCronCheck extends LeaveAccuralBase {
 
 
-    Employee employee = new Employee();
-
     LoginPage loginpage = null;
     CommonAction commonAction = null;
     Boolean runTest = true;
@@ -34,7 +32,7 @@ public class CarryForwardCronCheck extends LeaveAccuralBase {
     LocalDate doj = null;
 
     LeavesAction leavesAction = null;
-
+    LeavePolicyObject carryForwardBalance = null;
 
     @BeforeMethod
     public void initializeObjects() {
@@ -56,8 +54,9 @@ public class CarryForwardCronCheck extends LeaveAccuralBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
     public void Create_Leaves_for_Multiple_Allotment_Leave_Transfer(Map<String, String> testData) {
 
-        for (failureCronCase cronCase : failureCronCase.values()) {
-            LeavePolicyObject carryForwardBalance = getCarryForwardPolicy(testData);
+        for (failureCronCase cronCase : failureCronCase.values())
+        {
+            carryForwardBalance = getCarryForwardPolicy(testData);
             super.carryForward = true;
             //making default to begin of month for calculation
             if (carryForwardBalance.getCredit_on_accural_basis().getIndicator()) {
@@ -83,19 +82,7 @@ public class CarryForwardCronCheck extends LeaveAccuralBase {
 
             changeServerDate(LocalDate.now());
 
-
-            try {
-                employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
-            } catch (Exception e) {
-                try {
-                    employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
-                } catch (Exception e1) {
-                    employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
-
-                }
-            }
-
-            Reporter("Employee DOJ  is  --> " + employee.getDoj(),"Info");
+            createEmployee();
 
             leavesAction.setEmployeeID(employee.getEmployeeID());
             super.employee = employee;
@@ -104,59 +91,83 @@ public class CarryForwardCronCheck extends LeaveAccuralBase {
             Reporter("Leave Cycle End Date is --> " + leaveCycleEndDate.toString(), "Info");
 
 
-            if(cronCase.equals(failureCronCase.sameCycle)) {
-                Reporter("Running Carry Forward Cron Once","Info");
+            if (cronCase.equals(failureCronCase.sameCycle)) {
+                Reporter("Running Carry Forward Cron Once", "Info");
                 changeServerDate(leaveCycleEndDate.minusDays(1));
                 leavesAction.runCarryFrowardCronByEndPointURL();
                 Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
+
 
             }
 
-            if(cronCase.equals(failureCronCase.multipleTimesSameCycle))
-            {
-                Reporter("Running Carry Forward Cron Multiple Times","Info");
+            if (cronCase.equals(failureCronCase.multipleTimesSameCycle)) {
+                Reporter("Running Carry Forward Cron Multiple Times", "Info");
+
+                changeServerDate(leaveCycleEndDate.minusDays(1));
+                leavesAction.runCarryFrowardCronByEndPointURL();
+                Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
+
+
+                changeServerDate(leaveCycleEndDate.minusDays(2));
+                leavesAction.runCarryFrowardCronByEndPointURL();
+                Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
+
+                changeServerDate(leaveCycleEndDate.minusDays(2));
+                leavesAction.runCarryFrowardCronByEndPointURL();
+                Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
+
+
 
                 changeServerDate(leaveCycleEndDate.minusMonths(1));
                 leavesAction.runCarryFrowardCronByEndPointURL();
                 Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
+
+                changeServerDate(leaveCycleEndDate.minusMonths(1).plusDays(1));
+                leavesAction.runCarryFrowardCronByEndPointURL();
+                Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
 
                 changeServerDate(leaveCycleEndDate.minusMonths(2));
                 leavesAction.runCarryFrowardCronByEndPointURL();
                 Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
+
+                changeServerDate(leaveCycleEndDate.minusMonths(2).plusDays(1));
+                leavesAction.runCarryFrowardCronByEndPointURL();
+                Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
 
                 changeServerDate(leaveCycleEndDate.minusMonths(3));
                 leavesAction.runCarryFrowardCronByEndPointURL();
                 Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
+
+                changeServerDate(leaveCycleEndDate.minusMonths(3).plusDays(1));
+                leavesAction.runCarryFrowardCronByEndPointURL();
+                Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
 
                 changeServerDate(leaveCycleEndDate.minusMonths(4));
                 leavesAction.runCarryFrowardCronByEndPointURL();
                 Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
 
+                changeServerDate(leaveCycleEndDate.minusMonths(4).plusDays(1));
+                leavesAction.runCarryFrowardCronByEndPointURL();
+                Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+                verifyBalance();
             }
-
-
-
 
 
             super.carryForward = false;
 
-            double actualLeaveBalance = 0.0D;
-            double expecetedLeaveBalance = 0.0D;
-
-            //expecetedLeaveBalance = calculateLeaveBalance(employee.getDoj(), leaveCycleEndDate.toString());
-            Reporter("Expected CF Leave Balance is --" + expecetedLeaveBalance, "Info");
-
-
-            actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), carryForwardBalance.getLeave_Type()).getCarryForwardBalance();
-            Reporter("Actual CF Leave Balance is ---" + actualLeaveBalance, "Info");
-
-            if (expecetedLeaveBalance == actualLeaveBalance)
-                Reporter("Passed |||| actual and expected are same", "Pass");
-            else
-                Reporter("Failed |||| actual and expected are not same", "Fail");
-
 
         }
-
     }
+
 }

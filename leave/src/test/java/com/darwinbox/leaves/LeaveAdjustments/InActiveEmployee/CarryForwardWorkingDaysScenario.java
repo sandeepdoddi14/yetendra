@@ -71,16 +71,16 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
         serverChangedDate = LocalDate.now().toString();
         serverDateInFormat = LocalDate.parse(serverChangedDate);
 
-        Assert.assertTrue(setEmployeeId("Y1576663572866"), "Employee ID is set Mnually");
+        Assert.assertTrue(setEmployeeId("U1585296830996"), "Employee ID is set Mnually");
 
-        leavesAction.setEmployeeID("Y1576663572866");
-        String userId="213805";
+        leavesAction.setEmployeeID("U1585296830996");
+        String userId="242092";
         Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
 
         super.setEmployee(employee);
 
-        leaveCycleStartDate=LocalDate.parse("2019-01-01");
-        leaveCycleEndDate = LocalDate.parse("2019-12-31");
+        leaveCycleStartDate=LocalDate.parse("2019-04-01");
+        leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
 
         //just making employee doj = leave cycle start date
@@ -115,9 +115,10 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
 
 
 
+
         Reporter("Expected CarryForward_one_zero Balance........"+expecetedCarrytForwardBalance+".....Actual CarryForward_one_zero Balance"+actualCarryForwardBalance,"Info");
 
-        Assert.assertTrue(new BigDecimal(actualCarryForwardBalance).setScale(2).equals(new BigDecimal(expecetedCarrytForwardBalance).setScale(2))
+        Assert.assertTrue(new BigDecimal(Math.round(actualCarryForwardBalance)).setScale(2).equals(new BigDecimal(expecetedCarrytForwardBalance).setScale(2))
                 ,"Expected Adjusted Balance = " + actualCarryForwardBalance + "Actual Adjusted Carry Forward Balance = "+ actualCarryForwardBalance+" .. Expected Adjusted Carry Forward Balance ="+expecetedCarrytForwardBalance);
 
         carryForward = false;
@@ -152,7 +153,7 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
 
         Reporter("Expected Adjusted Balance  -->" +adjustedBalance+ " Actual Adjusted Balance -->"+actualCurrentDeactivatedBalance,"Info");
 
-        Assert.assertTrue(new BigDecimal(adjustedBalance).setScale(2, RoundingMode.HALF_EVEN).equals(new BigDecimal(actualCurrentDeactivatedBalance).setScale(2,RoundingMode.HALF_EVEN)),"Expected Adjusted Balance and Actual Adjusted Balance are Not Same");
+        Assert.assertTrue(new BigDecimal(adjustedBalance).setScale(2, RoundingMode.HALF_EVEN).equals(new BigDecimal(Math.round(actualCurrentDeactivatedBalance)).setScale(2,RoundingMode.HALF_EVEN)),"Expected Adjusted Balance -->"+adjustedBalance+"...and Actual Adjusted Balance -->"+actualCurrentDeactivatedBalance);
 
 
 

@@ -10,6 +10,7 @@ import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.OverUtilization;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.PastDatedLeave;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.ProbationPeriodForLeaveValidity;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.EmployeeServices;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Services.LeaveService;
 import com.darwinbox.leaves.Services.LeaveSettings;
@@ -20,6 +21,7 @@ import org.apache.http.NameValuePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openqa.selenium.By;
+import org.testng.Assert;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -50,7 +52,44 @@ public class LeaveAccuralBase extends  LeaveBase {
 
     DateTimeHelper objDateTimeHelper= new DateTimeHelper();
 
-    static double ExpectedLeaveBalance = 0;
+    static double ExpectedLeaveBalance = 0.0D;
+    static double actualLeaveBalance = 0.0D;
+
+
+    public void createEmployee()
+    {
+
+        try {
+            employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
+        } catch (Exception e) {
+            try {
+                employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
+            } catch (Exception e1) {
+                employee = (new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no"));
+
+            }
+        }
+
+        Reporter("Employee DOJ  is  --> " + employee.getDoj(), "Info");
+    }
+
+
+    public void verifyBalance()
+    {
+
+        Reporter("Expected CF Leave Balance is --" + ExpectedLeaveBalance, "Info");
+
+
+        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getCarryForwardBalance();
+        Reporter("Actual CF Leave Balance is ---" + actualLeaveBalance, "Info");
+
+
+        Assert.assertTrue(ExpectedLeaveBalance==actualLeaveBalance,"Expected Leave Balance is  -->"+ExpectedLeaveBalance
+                +"Actual Leave Balance is -->"+actualLeaveBalance);
+
+    }
+
+
 
 
     public void setDenominatorForWorkingDays(Map<String,String> testData)
@@ -1376,9 +1415,9 @@ public class LeaveAccuralBase extends  LeaveBase {
                     if(workingDaysDenominator!=0)
                         daysConsiderForCalculation = workingDaysDenominator;
                     else
-                    daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
+                    daysConsiderForCalculation = leaveCycleEndDate.lengthOfYear();
                 } else {
-                    daysConsiderForCalculation = getServerOrLocalDate().lengthOfYear();
+                    daysConsiderForCalculation = leaveCycleEndDate.lengthOfYear();
                 }
 
                 double workingDays = getWorkingDaysToConsiderForCalculation(DOJ, toDate);

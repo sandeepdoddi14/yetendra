@@ -67,20 +67,16 @@ public class SecondHalfTranserSecondHalfDeactivate extends LeaveAccuralBase {
 
 
         //always start from previous year
-        leaveCycleStartDate=LocalDate.parse("2019-01-01");
-        leaveCycleEndDate=LocalDate.parse("2019-12-31");
+        leaveCycleStartDate=LocalDate.parse("2019-04-01");
+        leaveCycleEndDate=LocalDate.parse("2020-03-31");
 
 
 
         Double perMonthLeavesFullTime=0.0D;
         Double perMonthLeavesPartTime=0.0D;
-        String empMongoID="5e4f5f41be901";
+        String empMongoID="5e7cb30cdb64e";
         String empDoj=leaveCycleStartDate.minusDays(15).toString();
            DateOfJoining=empDoj;
-
-
-
-
 
 
 
@@ -99,58 +95,28 @@ public class SecondHalfTranserSecondHalfDeactivate extends LeaveAccuralBase {
         //to generate employee
         //it will create a full time employee
         //changeServerDate(LocalDate.now().toString());
-        Assert.assertTrue(setEmployeeId("L1582269310068"), "Employee ID is set Mnually");
 
-        leavesAction.setEmployeeID("L1582269310068");
-        Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
+        //auto 3
+        //emp id should be created new every time while running script
+        Assert.assertTrue(setEmployeeId("P1585230825401"), "Employee ID is set Mnually");
 
-        String userID="228681";
+        leavesAction.setEmployeeID("P1585230825401");
+        //Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
+
+        String userID="242073";
 
 
         changeServerDate(DateOfJoining);
         driver.get(data.get("@@url")+"/employeement/employeementdetails/id/"+userID);
 
-        List<WebElement> messageIDS=driver.findElements(By.xpath("//*[contains(@id, 'employeetype_')]"));
-
-        for (WebElement ID:messageIDS){
-            Thread.sleep(2000);
-            String typeID=ID.getAttribute("id").trim();
-            new Services().deleteEmpTyppes("5e4f5f41be901",typeID);
-        }
-
-
-
-
-
-
-      /*  if(new EmployeeServices().addUserEmployment(empMongoID,"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("full time")).findFirst().get().getValue(),serverChangedDate).contains("failure"))
-
-        {
-            String id=driver.findElement(By.xpath("//*[contains(@id,'4_')]")).getAttribute("id");
-
-        }
-*/
 
         Reporter("Employee DOJ is ---->"+empDoj,"Info");
 
-       Boolean prorata_afterProbation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+        Boolean prorata_afterProbation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
 
 
 
-
-        //CALCULATE DEACTIVATION BALANCE FOR 1ST TRANSFER
-        deActiavation=true;
-        //making default to begin of month for calculation
-        if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getIndicator()){
-            Credit_On_Accural_Basis credit_on_accural_basis=multipleAllotmentLeavePolicy.getCredit_on_accural_basis();
-            credit_on_accural_basis.setMonthlyAccuralSetting(true,true,false);
-            credit_on_accural_basis.setQuarterlyAccural(false,false,false);
-            credit_on_accural_basis.setBiAnnual(false);
-            multipleAllotmentLeavePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
-        }
-        super.setLeavePolicyObject(multipleAllotmentLeavePolicy);
-
-        perMonthLeavesFullTime = leavePolicyObject.getMaximum_leave_allowed_per_year()/12.0;
+         perMonthLeavesFullTime = leavePolicyObject.getMaximum_leave_allowed_per_year()/12.0;
 
         changeServerDate(LocalDate.parse(empDoj).plusMonths(6));
 
@@ -166,7 +132,7 @@ public class SecondHalfTranserSecondHalfDeactivate extends LeaveAccuralBase {
         Reporter("Employee WDWithDeactivation Date is ---->"+serverChangedDate,"Info");
 
         //part time
-        //new EmployeeServices().addUserEmployment(empMongoID,"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("part time")).findFirst().get().getValue(),serverChangedDate);
+        new EmployeeServices().addUserEmployment(empMongoID,"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("part time")).findFirst().get().getValue(),serverChangedDate);
        multipleAllotmentLeavePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[1]));
 
       // leaveCycleStartDate=leaveCycleStartDate.plusMonths(5);

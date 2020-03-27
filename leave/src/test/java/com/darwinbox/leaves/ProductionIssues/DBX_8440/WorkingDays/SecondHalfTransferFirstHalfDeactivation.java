@@ -17,6 +17,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,15 +68,15 @@ public class SecondHalfTransferFirstHalfDeactivation extends LeaveAccuralBase {
         Double perMonthLeavesFullTime=0.0D;
         Double perMonthLeavesPartTime=0.0D;
 
-        LeavePolicyObject multipleAllotmentLeavePolicy = getMultipleAllotmentLeavePolicy(testData);
+        LeavePolicyObject multipleAllotmentLeavePolicy = getMultipleAllotmentLeavePolicyWithWorkingDays(testData);
         super.setLeavePolicyObject(multipleAllotmentLeavePolicy);
 
         Reporter("Leave Type is"+multipleAllotmentLeavePolicy.getLeave_Type(),"Info");
 
         //always start from previous year
-        leaveCycleStartDate=LocalDate.parse("2020-01-01");
-        leaveCycleEndDate=LocalDate.parse("2020-12-31");
-        String empMongoID="5e4f5f41be901";
+        leaveCycleStartDate=LocalDate.parse("2019-04-01");
+        leaveCycleEndDate=LocalDate.parse("2020-03-31");
+        String empMongoID="5e7cf570c2962";
         String empDoj=leaveCycleStartDate.minusDays(15).toString();
         DateOfJoining=empDoj;
 
@@ -87,102 +89,46 @@ public class SecondHalfTransferFirstHalfDeactivation extends LeaveAccuralBase {
 
         //to generate employee
         //it will create a full time employee
-        Assert.assertTrue(setEmployeeId("L1582269310068"), "Employee ID is set Mnually");
+        Assert.assertTrue(setEmployeeId("M1585247914194"), "Employee ID is set Mnually");
 
-        leavesAction.setEmployeeID("L1582269310068");
-        Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
+        leavesAction.setEmployeeID("M1585247914194");
+        //Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
 
 
-        Reporter("Employee DOJ is ---->"+employee.getDoj(),"Info");
+        Reporter("Employee DOJ is ---->"+doj,"Info");
 
         Boolean prorata_afterProbation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
 
 
 
 
-        //CALCULATE DEACTIVATION BALANCE FOR 1ST TRANSFER
-        deActiavation=true;
-        //making default to begin of month for calculation
-        if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getIndicator()){
-            Credit_On_Accural_Basis credit_on_accural_basis=multipleAllotmentLeavePolicy.getCredit_on_accural_basis();
-            credit_on_accural_basis.setMonthlyAccuralSetting(true,true,false);
-            credit_on_accural_basis.setQuarterlyAccural(false,false,false);
-            credit_on_accural_basis.setBiAnnual(false);
-            multipleAllotmentLeavePolicy.setCredit_on_accural_basis(credit_on_accural_basis);
-        }
-        super.setLeavePolicyObject(multipleAllotmentLeavePolicy);
 
-        perMonthLeavesFullTime = leavePolicyObject.getMaximum_leave_allowed_per_year()/12.0;
-
-        changeServerDate(LocalDate.parse(employee.getDoj()).plusMonths(6));
-
-        ExpectedLeaveBalance=calculateLeaveBalance(leaveCycleStartDate.toString(),leaveCycleStartDate.plusMonths(5).minusDays(1).toString());
+        changeServerDate(LocalDate.parse(empDoj).plusMonths(6));
+        ExpectedLeaveBalance=calculateLeaveBalanceAsPerEmployeeWorkingDays(leaveCycleStartDate.toString(),serverChangedDate);
 
 
 
         //EMPLOYEE WILL BE CHANGED FROM FULL TIME TO PART TIME AT THIS DATE
-        //employee also deactivates in same day
-        changeServerDate(LocalDate.parse(employee.getDoj()).plusMonths(6).plusDays(1).toString());
+        changeServerDate(LocalDate.parse(empDoj).plusMonths(6).plusDays(1).toString());
 
         Reporter("Employee Tranfer Date  is ---->"+serverChangedDate,"Info");
 
         //part time
-        new EmployeeServices().addUserEmployment(employee.getMongoID(),"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("part time")).findFirst().get().getValue(),serverChangedDate);
+        LocalDate partTimeTransferDate=serverDateInFormat;
+       // new EmployeeServices().addUserEmployment(employee.getMongoID(),"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("part time")).findFirst().get().getValue(),serverChangedDate);
         multipleAllotmentLeavePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[1]));
 
-        // leaveCycleStartDate=leaveCycleStartDate.plusMonths(5);
-        //leaveCycleEndDate=leaveCycleStartDate.plusYears(1).minusDays(1);
 
         super.setLeavePolicyObject(multipleAllotmentLeavePolicy);
-
-
-
-
-
-        perMonthLeavesPartTime=multipleAllotmentLeavePolicy.getMaximum_leave_allowed_per_year()/12.0;
-
-
-
-
-
-
-        if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator && !leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th
-                && !leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th || !leavePolicyObject.getCredit_on_pro_rata_basis().indicator)
-            ExpectedLeaveBalance = ExpectedLeaveBalance + perMonthLeavesFullTime;
-
-        else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
-            ExpectedLeaveBalance = ExpectedLeaveBalance + perMonthLeavesPartTime;
-
-        else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th) {
-
-            ExpectedLeaveBalance = ExpectedLeaveBalance +
-                    perMonthLeavesFullTime/2.0
-                    + perMonthLeavesPartTime/2.0;
-        }
-
-
-
-
 
 
         changeServerDate(leaveCycleStartDate.plusMonths(6).plusDays(5));
         deActicvationDate=serverDateInFormat;
         Reporter("Employee WDWithDeactivation Date is ---->"+serverChangedDate,"Info");
 
+        ExpectedLeaveBalance = ExpectedLeaveBalance + calculateLeaveBalanceAsPerEmployeeWorkingDays(partTimeTransferDate.toString(),serverChangedDate.toString());
 
-        if(leavePolicyObject.getCredit_on_pro_rata_basis().indicator && !leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th
-                && !leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th || !leavePolicyObject.getCredit_on_pro_rata_basis().indicator)
-            ExpectedLeaveBalance = ExpectedLeaveBalance;
-
-        else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditfullMonthsLeavesIfEmpJoinsAfter15Th)
-            ExpectedLeaveBalance = ExpectedLeaveBalance + perMonthLeavesPartTime;
-
-        else if(leavePolicyObject.getCredit_on_pro_rata_basis().creditHalfMonthsLeavesIfEmpJoinsAfter15Th) {
-
-
-            ExpectedLeaveBalance = ExpectedLeaveBalance +  perMonthLeavesPartTime/2.0;
-        }
-
+        ExpectedLeaveBalance = new BigDecimal(ExpectedLeaveBalance).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
 
         Double ActualDeactivationBalance=getEmployeesFrontEndDeactivationLeaveBalance(multipleAllotmentLeavePolicy.getLeave_Type(), serverDateInFormat.toString());
 
