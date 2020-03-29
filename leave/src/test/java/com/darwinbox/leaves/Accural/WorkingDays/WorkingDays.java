@@ -53,16 +53,18 @@ public class WorkingDays extends LeaveAccuralBase {
     public void verifyWorkingDays(Map<String,String> testData) {
 
 
-        setDenominatorForWorkingDays(testData);
+
 
         LeavePolicyObject workingDaysPolicy=getWorkingDaysPolicy(testData);
         super.setLeavePolicyObject(workingDaysPolicy);
 
         new DateTimeHelper().changeServerDate(driver,LocalDate.now().toString());
 
-        Assert.assertTrue(setEmployeeId("L1582719780687"), "Employee ID is set Mnually");
 
-        leavesAction.setEmployeeID("L1582719780687");
+        //auto 4
+        Assert.assertTrue(setEmployeeId("D1585515207467"), "Employee ID is set Mnually");
+
+        leavesAction.setEmployeeID("D1585515207467");
         Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
 
 

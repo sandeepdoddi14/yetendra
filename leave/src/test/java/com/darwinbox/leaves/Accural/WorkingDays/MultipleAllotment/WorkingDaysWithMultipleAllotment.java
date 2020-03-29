@@ -57,8 +57,8 @@ public class WorkingDaysWithMultipleAllotment extends LeaveAccuralBase {
         // every 3 months
 
 
-        leaveCycleStartDate = LocalDate.parse("2019-01-01");
-        leaveCycleEndDate = LocalDate.parse("2019-12-31");
+        leaveCycleStartDate = LocalDate.parse("2019-04-01");
+        leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
 
         LocalDate fullTimeStartDate= leaveCycleStartDate;
@@ -86,10 +86,10 @@ public class WorkingDaysWithMultipleAllotment extends LeaveAccuralBase {
 
 
 
-        Assert.assertTrue(setEmployeeId("L1582269310068"), "Employee ID is set Mnually");
+        Assert.assertTrue(setEmployeeId("W1585513633203"), "Employee ID is set Mnually");
 
-        leavesAction.setEmployeeID("L1582269310068");
-        Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
+        leavesAction.setEmployeeID("W1585513633203");
+       Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
         DateOfJoining=leaveCycleStartDate.toString();
 
 
@@ -100,6 +100,7 @@ public class WorkingDaysWithMultipleAllotment extends LeaveAccuralBase {
 
 
 
+        Reporter("Emplyee is chnged to part time ","Info");
         changeServerDate(partTimeStartDate);
         deactivationLeaveBalance.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[1]));
         super.setLeavePolicyObject(deactivationLeaveBalance);
@@ -110,6 +111,7 @@ public class WorkingDaysWithMultipleAllotment extends LeaveAccuralBase {
         expecetedLeaveBalacne = expecetedLeaveBalacne+calculateLeaveBalanceAsPerEmployeeWorkingDays(partTimeStartDate.toString(), partTimeEndDate.toString());
 
 
+        Reporter("Emplyee is chnged to contract time ","Info");
         changeServerDate(contractStartDate);
         deactivationLeaveBalance.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[2]));
         super.setLeavePolicyObject(deactivationLeaveBalance);
@@ -123,6 +125,11 @@ public class WorkingDaysWithMultipleAllotment extends LeaveAccuralBase {
         actualLeaveBalance= new LeaveBalanceAPI(EmployeeId,deactivationLeaveBalance.getLeave_Type()).getBalance();
 
 
+
+        Reporter("Expected Leave Balance is -->"+expecetedLeaveBalacne,"Info");
+        Reporter("Actual Leave Balance is -->"+actualLeaveBalance,"Info");
+
+        Assert.assertTrue(expecetedLeaveBalacne==actualLeaveBalance,"Actual and Expected Are Not Same");
 
 
     }
