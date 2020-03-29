@@ -79,9 +79,9 @@ public class CarryForwardWithBalanceWorkingDays extends LeaveAccuralBase {
 
 
         //auto 5 employee
-        Assert.assertTrue(setEmployeeId("E1582725086492"), "Employee ID is set Mnually");
+        Assert.assertTrue(setEmployeeId("T1585496946428"), "Employee ID is set Mnually");
 
-        leavesAction.setEmployeeID("E1582725086492");
+        leavesAction.setEmployeeID("T1585496946428");
        // Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
 
 
@@ -126,7 +126,7 @@ public class CarryForwardWithBalanceWorkingDays extends LeaveAccuralBase {
                     //expecetedLeaveBalance= Math.round(expecetedLeaveBalance);
 
                     Reporter("Expected Balance at Leave Cycle End Date is --"+Math.round(expecetedLeaveBalance *100)/100,"Info");
-                    Reporter("Actual Balance at Leave Cycle End Date is --"+ new LeaveBalanceAPI(EmployeeId,carryForwardBalance.getLeave_Type()).getTotalBalance(),"Info");
+                    Reporter("Actual Balance at Leave Cycle End Date is --"+ new LeaveBalanceAPI(EmployeeId,carryForwardBalance.getLeave_Type()).getBalance(),"Info");
 
 
                     new DateTimeHelper().changeServerDate(driver, leaveCycleEndDate.plusDays(10).toString());

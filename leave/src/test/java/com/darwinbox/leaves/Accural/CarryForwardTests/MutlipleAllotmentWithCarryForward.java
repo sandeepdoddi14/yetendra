@@ -370,7 +370,7 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
         //leavesAction.removeEmployeeLeaveLogs();
         leavesAction.runCarryFrowardCronByEndPointURL();
 
-        expectedBalanceForCarryForward = getCarryFowardBalance(expectedBalanceForCarryForward);
+        //expectedBalanceForCarryForward = getCarryFowardBalance(expectedBalanceForCarryForward);
         double actualBalanceForCarryForward= new LeaveBalanceAPI(employee.getEmployeeID(),multipleAllotmentLeavePolicy.getLeave_Type()).getCarryForwardBalance();
 
 

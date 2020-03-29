@@ -15,6 +15,7 @@ import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -289,7 +290,7 @@ public class MutlipleAllotment extends LeaveAccuralBase {
         Reporter("Actual Second First Transfer Date Balance"+actualAfterSecondTransfer,"Info");
 
 
-
+        Assert.assertTrue(afterSecondTransferBalance==actualAfterSecondTransfer,"Not Same Actal And Expectd");
 
     }
 
