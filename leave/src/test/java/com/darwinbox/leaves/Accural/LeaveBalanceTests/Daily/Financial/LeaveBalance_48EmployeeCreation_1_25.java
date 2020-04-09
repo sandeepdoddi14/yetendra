@@ -1,16 +1,20 @@
-package com.darwinbox.leaves.Accural.LeaveBalanceTests.Daily;
+package com.darwinbox.leaves.Accural.LeaveBalanceTests.Daily.Financial;
 
 
 import com.darwinbox.attendance.objects.Employee;
-import com.darwinbox.leaves.Services.EmployeeServices;
+
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
+import com.darwinbox.leaves.Services.EmployeeServices;
+import com.darwinbox.leaves.Services.LeaveAdmin;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
+import com.darwinbox.leaves.Services.LeaveService;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
+
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -22,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class LeaveBalance_48EmployeeCreation_42_82 extends LeaveAccuralBase {
+public class LeaveBalance_48EmployeeCreation_1_25 extends LeaveAccuralBase {
 
     List<Employee> employees = new ArrayList<>();
 
@@ -55,7 +59,7 @@ public class LeaveBalance_48EmployeeCreation_42_82 extends LeaveAccuralBase {
 
 
 
-            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("42-82");
+            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("1-25");
 
             leaveCycleStartDate = LocalDate.parse("2019-04-01");
             leaveCycleEndDate = LocalDate.parse("2020-03-31");
@@ -63,31 +67,43 @@ public class LeaveBalance_48EmployeeCreation_42_82 extends LeaveAccuralBase {
 
             new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
             while (doj.isAfter(leaveCycleStartDate)) {
+
+
+
                 try{
                     if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                       employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "5afd30be47f23"));
+                       employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                       // new LeaveAdmin().GetLeaveBalanceByOnBehalf(employees.get(0).getMongoID(),new LeaveService().getLeaveID(leaveBalancePolicies.get(0).getLeave_Type(),leaveBalancePolicies.get(0).groupCompanyMongoId));
                     }
                 }
                 catch (Exception e){
                     try {
                         if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                           employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "5afd30be47f23"));
+                           employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
                         }
                     }
                     catch(Exception e1){
 
                         try{
                         if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                           employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "5afd30be47f23"));
+                           employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
                         }}
                         catch (Exception e2){
                             try {
                                 if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "5afd30be47f23"));
+                                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
                                 }
                             }catch(Exception e3){
-                                if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
-                                    employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "5afd30be47f23"));
+                                try {
+                                    if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                                        employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                                    }
+                                }
+                                catch (Exception e4){
+                                    if (new LeavesAction().iterationDateFourTimesPerMonth(doj) == true) {
+                                        employees.add(new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", doj.toString(), "no"));
+                                    }
+
                                 }
 
                             }
@@ -126,24 +142,22 @@ public class LeaveBalance_48EmployeeCreation_42_82 extends LeaveAccuralBase {
 
                                 //making sure it wont fail on exception bec of JSON PARSER
                                 try {
-                                    actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                   actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                   // actualLeaveBalance= new LeaveAdmin().GetLeaveBalanceByOnBehalf(employee.getMongoID(),new LeaveService().getLeaveID(leavePolicyObject.getLeave_Type(),leaveBalancePolicies.get(0).groupCompanyMongoId));
                                 }
                                 catch (Exception e){
                                     try {
                                         actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                        //actualLeaveBalance= new LeaveAdmin().GetLeaveBalanceByOnBehalf(employee.getMongoID(),new LeaveService().getLeaveID(leavePolicyObject.getLeave_Type(),leaveBalancePolicies.get(0).groupCompanyMongoId));
                                     }
                                     catch (Exception e1){
                                         actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), leavePolicyObject.getLeave_Type()).getBalance();
+                                        //actualLeaveBalance= new LeaveAdmin().GetLeaveBalanceByOnBehalf(employee.getMongoID(),new LeaveService().getLeaveID(leavePolicyObject.getLeave_Type(),leaveBalancePolicies.get(0).groupCompanyMongoId));
 
                                     }
                                 }
                                 Reporter("Actual Leave Balance  is  ..." + actualLeaveBalance, "Info");
-
-
-                                if(leavePolicyObject.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
-                                    expecetedLeaveBalance=calculateLeaveBalance(LocalDate.parse(employee.getDoj()).plusDays(180).toString(), getServerOrLocalDate().toString());
-                                else
-                                    expecetedLeaveBalance=calculateLeaveBalance(employee.getDoj(), getServerOrLocalDate().toString());
+                                expecetedLeaveBalance=calculateLeaveBalance(employee.getDoj(), getServerOrLocalDate().toString());
                                 Reporter("Expected Leave Balance is " + expecetedLeaveBalance, "Info");
                                    if(actualLeaveBalance==expecetedLeaveBalance)
                                     Reporter("Passed || actual leave balance and expected are same","Pass");

@@ -1,9 +1,8 @@
-package com.darwinbox.leaves.Accural.MultipleAllotment.Daily;
+package com.darwinbox.leaves.Accural.MultipleAllotment.Daily.December;
 
 
 import com.darwinbox.Services;
 import com.darwinbox.attendance.objects.Employee;
-
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -22,7 +21,6 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -263,7 +261,7 @@ public class MutlipleAllotment extends LeaveAccuralBase {
         }
         if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getBeginOfQuarter())
         {
-            afterSecondTransferDate=((afterSecondTransferDate/3.0))/2;
+            afterSecondTransferDate=((afterSecondTransferDate/3.0))*2;
         }
 
         if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getBeginOfMonth()){
@@ -284,7 +282,13 @@ public class MutlipleAllotment extends LeaveAccuralBase {
         }
 
 
-        double afterSecondTransferBalance=afterSecondTransferDate+15.0D;
+        double afterSecondTransferBalance = 0.0D;
+        if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getEndOfQuarter())
+        {
+            afterSecondTransferBalance = afterSecondTransferDate + actualBeforeSecondTrnsfer;
+        }
+        else
+         afterSecondTransferBalance=afterSecondTransferDate+15.0D;
 
         Reporter("after Second Transfer Date Balance"+(afterSecondTransferBalance),"Info");
         Reporter("Actual Second First Transfer Date Balance"+actualAfterSecondTransfer,"Info");

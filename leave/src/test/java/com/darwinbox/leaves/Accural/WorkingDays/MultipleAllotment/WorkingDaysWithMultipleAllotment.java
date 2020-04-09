@@ -72,14 +72,7 @@ public class WorkingDaysWithMultipleAllotment extends LeaveAccuralBase {
 
         LeavePolicyObject deactivationLeaveBalance = getWorkingDaysPolicy(testData);
 
-      /*  //making default to begin of month for calculation
-        if(deactivationLeaveBalance.getCredit_on_accural_basis().getIndicator()){
-            Credit_On_Accural_Basis credit_on_accural_basis=deactivationLeaveBalance.getCredit_on_accural_basis();
-            credit_on_accural_basis.setMonthlyAccuralSetting(true,true,false);
-            credit_on_accural_basis.setQuarterlyAccural(false,false,false);
-            credit_on_accural_basis.setBiAnnual(false);
-            deactivationLeaveBalance.setCredit_on_accural_basis(credit_on_accural_basis);
-        }*/
+        changeServerDate(contractEndDate);
 
         super.setLeavePolicyObject(deactivationLeaveBalance);
 
@@ -87,37 +80,28 @@ public class WorkingDaysWithMultipleAllotment extends LeaveAccuralBase {
 
 
         Assert.assertTrue(setEmployeeId("W1585513633203"), "Employee ID is set Mnually");
-
         leavesAction.setEmployeeID("W1585513633203");
+
        Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
         DateOfJoining=leaveCycleStartDate.toString();
 
 
 
-        changeServerDate(fullTimeEndDate);
+
         expecetedLeaveBalacne = calculateLeaveBalanceAsPerEmployeeWorkingDays(fullTimeStartDate.toString(), fullTimeEndDate.toString());
 
 
 
 
-        Reporter("Emplyee is chnged to part time ","Info");
-        changeServerDate(partTimeStartDate);
+        Reporter("Emplyee is chnged to part time "+partTimeStartDate,"Info");
         deactivationLeaveBalance.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[1]));
         super.setLeavePolicyObject(deactivationLeaveBalance);
-
-
-
-        changeServerDate(partTimeEndDate);
         expecetedLeaveBalacne = expecetedLeaveBalacne+calculateLeaveBalanceAsPerEmployeeWorkingDays(partTimeStartDate.toString(), partTimeEndDate.toString());
 
 
-        Reporter("Emplyee is chnged to contract time ","Info");
-        changeServerDate(contractStartDate);
+        Reporter("Emplyee is chnged to contract time "+contractStartDate,"Info");
         deactivationLeaveBalance.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[2]));
         super.setLeavePolicyObject(deactivationLeaveBalance);
-
-
-        changeServerDate(contractEndDate);
         expecetedLeaveBalacne = expecetedLeaveBalacne+calculateLeaveBalanceAsPerEmployeeWorkingDays(contractStartDate.toString(), contractEndDate.toString());
 
 

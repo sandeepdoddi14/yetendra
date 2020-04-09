@@ -1,5 +1,6 @@
 package com.darwinbox.leaves.Utils;
 
+import com.darwinbox.Services;
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.attendance.objects.Holiday;
 import com.darwinbox.attendance.services.EmployeeServices;
@@ -278,6 +279,7 @@ public class LeaveBase extends TestBase {
             leaveID = UtilityHelper.getProperty("", "");
         } else {
             leaveID = leaveService.getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId);
+           // leaveID = leaveService.getLeaveID("taco", new Services().getGroupCompanyIds().get("Working Days (DO NOT TOUCH)"));
         }
 
             return new LeaveAdmin().applyLeaveWithEmpSession(e, fromDate.toString(), toDate.toString(), leaveID);
@@ -286,11 +288,14 @@ public class LeaveBase extends TestBase {
         String leaveID = null;
         if (leavePolicyObject.getLeave_Type().equalsIgnoreCase("unpaid")) {
             leaveID = "unpaid";
-        } else if (leavePolicyObject.getLeave_Type().equalsIgnoreCase("unpaid")) {
+        } else if (leavePolicyObject.getLeave_Type().equalsIgnoreCase("compoff")) {
             leaveID = UtilityHelper.getProperty("", "");
         } else {
-            leaveID = leaveService.getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId);
+             leaveID = leaveService.getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId);
+            //leaveID = leaveService.getLeaveID("taco", new Services().getGroupCompanyIds().get("Working Days (DO NOT TOUCH)"));
         }
+
+
 
 
 

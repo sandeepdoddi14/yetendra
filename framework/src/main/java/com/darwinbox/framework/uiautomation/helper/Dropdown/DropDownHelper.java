@@ -51,6 +51,7 @@ public class DropDownHelper extends TestBase {
 	
 	public List<String> getAllDropDownValues(WebElement locator) {
 		Select select = new Select(locator);
+
 		List<WebElement> elementList = select.getOptions();
 		List<String> valueList = new LinkedList<String>();
 		
@@ -102,6 +103,7 @@ public class DropDownHelper extends TestBase {
 
 		try {
 			Select drpElement = new Select(element);
+
 			drpElement.selectByIndex(drptIndexToSelect);
 			Reporter("From '" + text + "' drop down test data is selected", "Pass", Log);
 			return true;

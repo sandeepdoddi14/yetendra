@@ -29,6 +29,7 @@ public class ActionHelper extends TestBase {
 	public boolean actionClick(WebDriver driver,WebElement element, String text) {
 		try {
 			Actions action = new Actions(driver);
+			
 			action.moveToElement(element).build().perform();
 			action.click(element).build().perform();
 			Reporter("Clicked on " + text + " successfully", "Pass");
@@ -68,6 +69,7 @@ public class ActionHelper extends TestBase {
 	public boolean moveToTop(WebDriver driver,WebElement element, String text) {
 		try {
 			Actions action = new Actions(driver);
+
 			action.keyDown(Keys.CONTROL).sendKeys(Keys.HOME).build().perform();
 			action.keyDown(Keys.CONTROL).release().perform();
 			Reporter("Moved to top successfully", "Pass");

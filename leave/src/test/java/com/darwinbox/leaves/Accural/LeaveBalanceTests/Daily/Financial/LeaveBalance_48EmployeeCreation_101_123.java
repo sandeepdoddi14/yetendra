@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Accural.LeaveBalanceTests.Daily;
+package com.darwinbox.leaves.Accural.LeaveBalanceTests.Daily.Financial;
 
 
 import com.darwinbox.attendance.objects.Employee;
@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class LeaveBalance_48EmployeeCreation_83_100 extends LeaveAccuralBase {
+public class LeaveBalance_48EmployeeCreation_101_123 extends LeaveAccuralBase {
 
     List<Employee> employees = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class LeaveBalance_48EmployeeCreation_83_100 extends LeaveAccuralBase {
 
 
 
-            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("83-100");
+            List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("101-123");
 
             leaveCycleStartDate = LocalDate.parse("2019-04-01");
             leaveCycleEndDate = LocalDate.parse("2020-03-31");

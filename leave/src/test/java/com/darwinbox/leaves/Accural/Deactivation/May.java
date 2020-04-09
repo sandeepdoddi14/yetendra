@@ -1,8 +1,7 @@
-package com.darwinbox.leaves.Accural;
+package com.darwinbox.leaves.Accural.Deactivation;
 
 
 import com.darwinbox.attendance.objects.Employee;
-
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -21,7 +20,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 
-public class Deactivation extends LeaveAccuralBase {
+public class May extends LeaveAccuralBase {
 
     Employee employee = new Employee();
 
@@ -66,8 +65,8 @@ public class Deactivation extends LeaveAccuralBase {
 
         super.setLeavePolicyObject(deactivationLeaveBalance);
 
-        leaveCycleStartDate = LocalDate.parse("2019-04-01");
-        leaveCycleEndDate = LocalDate.parse("2020-03-31");
+        leaveCycleStartDate = LocalDate.parse("2019-05-01");
+        leaveCycleEndDate = LocalDate.parse("2020-04-30");
 
 
 

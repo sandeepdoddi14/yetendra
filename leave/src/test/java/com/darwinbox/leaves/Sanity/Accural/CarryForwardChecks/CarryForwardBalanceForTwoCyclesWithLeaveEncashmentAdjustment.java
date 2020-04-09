@@ -4,12 +4,14 @@ import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
+import com.darwinbox.leaves.Objects.LeavePolicyObject.Accural.CarryForwardUnusedLeave;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
 import com.darwinbox.leaves.Services.*;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
+import org.apache.http.NameValuePair;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -17,6 +19,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 public class CarryForwardBalanceForTwoCyclesWithLeaveEncashmentAdjustment extends LeaveAccuralBase {
@@ -56,7 +59,7 @@ public class CarryForwardBalanceForTwoCyclesWithLeaveEncashmentAdjustment extend
 
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
-    public void VerifyCarryForwardForTwoCyclesWithLeaves(Map<String, String> testData) {
+    public void VerifyCarryForwardForTwoCyclesWithLeaves(Map<String, String> testData) throws  Exception{
 
 
         int noOfLeaves = 3;
@@ -64,7 +67,37 @@ public class CarryForwardBalanceForTwoCyclesWithLeaveEncashmentAdjustment extend
         leaveCycleStartDate = LocalDate.parse("2019-04-01");
         leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
-        LeavePolicyObject carryForwardBalance = getCarryForwardPolicy(testData);
+        //LeavePolicyObject carryForwardBalance = getCarryForwardPolicy(testData);
+
+        LeavePolicyObject carryForwardBalance = new LeavePolicyObject();
+        carryForwardBalance.setFields(testData);
+        carryForwardBalance.setEncashmentData(testData);
+        if(testData.get("Carry forward").equalsIgnoreCase("yes")){
+            CarryForwardUnusedLeave carryForwardUnusedLeave = new CarryForwardUnusedLeave();
+            carryForwardUnusedLeave.indicator=testData.get("Carry forward").equalsIgnoreCase("yes")?true:false;
+
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("all"))
+            {
+                carryForwardUnusedLeave.carryForwardAllUnusedLeave=true;
+            }
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("fixed")){
+                carryForwardUnusedLeave.carryForwardOnly=true;
+                carryForwardUnusedLeave.fixed=true;
+                carryForwardUnusedLeave.fixedValue=Integer.parseInt(testData.get("Fixed/Percentage value"));
+            }
+            if(testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("percentage")){
+                carryForwardUnusedLeave.carryForwardOnly=true;
+                carryForwardUnusedLeave.percentage=true;
+                carryForwardUnusedLeave.percentageValue=Integer.parseInt(testData.get("Fixed/Percentage value"));
+            }
+
+            carryForwardBalance.setCarryForwardUnusedLeave(carryForwardUnusedLeave);
+
+        }
+
+        List<NameValuePair> body = carryForwardBalance.createRequest();
+        new LeaveService().createLeaveForPolicy(body, carryForwardBalance);
+
         super.carryForward = true;
         //making default to begin of month for calculation
         if (carryForwardBalance.getCredit_on_accural_basis().getIndicator()) {
@@ -143,15 +176,29 @@ public class CarryForwardBalanceForTwoCyclesWithLeaveEncashmentAdjustment extend
 
 
         int forwardDateForEncashmnet = leavePage.workingDays.length;
-        changeServerDate(leaveCycleStartDate.minusYears(1).plusDays(forwardDateForEncashmnet));
+        changeServerDate(serverDateInFormat.plusDays(forwardDateForEncashmnet));
 
 
-        new LeaveAdmin().applyEncashmentWithEmpSession(employee, serverChangedDate, noOfLeaves + "", new LeaveService().getLeaveID(carryForwardBalance.getLeave_Type(), carryForwardBalance.groupCompanyMongoId));
-        Reporter("No of Leaves Encashed   -->" + noOfLeaves + ";Date -->" + serverChangedDate, "Info");
+        logoutFromSession();
+        // Thread.sleep(5000);
+        loginpage.loginToApplication(employee.getEmailID(), employee.getPassword());
+        new LeaveAdmin().applyEncashmentWithEmpSession(employee,serverChangedDate,noOfLeaves+"",new LeaveService().getLeaveID(carryForwardBalance.getLeave_Type(),carryForwardBalance.groupCompanyMongoId));
+        Reporter("No of Leaves Encashed   -->" +noOfLeaves+";Date -->"+serverChangedDate,"Info");
+
+
+        logoutFromSession();
+        loginpage.loginToApplication();
+        loginpage.switchToAdmin();
+
+
+        String messageId = new LeaveAdmin().getMessageId(employee);
+        new LeaveAdmin().encashmentAction(messageId, "accept");
+
+
 
         int adjustedBalance = -2;
         new LeaveSettings().showLeaveAdjustments(carryForwardBalance.getLeave_Type());
-        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", getServerOrLocalDate().getYear() + "");
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "",  leaveCycleStartDate.getYear()+ "");
         Reporter("No of Leaves Adjusted is   -->" + adjustedBalance + ";Date -->" + serverChangedDate, "Info");
 
 

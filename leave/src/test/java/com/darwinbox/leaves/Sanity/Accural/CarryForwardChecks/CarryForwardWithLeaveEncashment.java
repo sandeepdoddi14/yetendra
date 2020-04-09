@@ -134,6 +134,7 @@ public class CarryForwardWithLeaveEncashment extends LeaveAccuralBase {
 
                 logoutFromSession();
                 loginpage.loginToApplication();
+                loginpage.switchToAdmin();
 
 
                 String messageId = new LeaveAdmin().getMessageId(employee);

@@ -1,8 +1,9 @@
-package com.darwinbox.leaves.Accural.CarryForwardTests;
+package com.darwinbox.leaves.Accural.MultipleAllotment.Daily.Fiancial;
 
 
 import com.darwinbox.Services;
 import com.darwinbox.attendance.objects.Employee;
+
 import com.darwinbox.dashboard.actionClasses.CommonAction;
 import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
@@ -13,8 +14,6 @@ import com.darwinbox.leaves.Services.EmployeeServices;
 import com.darwinbox.leaves.Services.LeaveBalanceAPI;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
-import com.darwinbox.leaves.pageObjectRepo.settings.CreateAndManageLeavePoliciesPage;
-import org.openqa.selenium.By;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -23,10 +22,11 @@ import org.testng.annotations.Test;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
-public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
+public class MutlipleAllotment extends LeaveAccuralBase {
 
     Employee employee = new Employee();
 
@@ -64,14 +64,14 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
     public void verifyMultipleAllotmentBalance(Map<String, String> testData) {
 
-        LeavePolicyObject multipleAllotmentLeavePolicy = getMultipleAllotmentWithCarryForwardLeavePolicy(testData);
+        LeavePolicyObject multipleAllotmentLeavePolicy = getMultipleAllotmentLeavePolicy(testData);
         super.setLeavePolicyObject(multipleAllotmentLeavePolicy);
 
         Reporter("Leave Type is"+multipleAllotmentLeavePolicy.getLeave_Type(),"Info");
 
         //always start from previous year
-        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2019-04-01");
-        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2020-03-31");
+        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2018-04-01");
+        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2019-03-31");
 
         leaveCycleStartDate = firstLeaveCycleStartDate;
         leaveCycleEndDate = firstLeaveCyclceEndDate;
@@ -93,9 +93,9 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
 
             }
         }
-        super.setEmployee(employee);
+       super.setEmployee(employee);
 
-        Boolean prorata_afterProbation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
+       Boolean prorata_afterProbation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;
 
 
 
@@ -151,16 +151,16 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
         changeServerDate(leaveCycleStartDate.plusMonths(5).plusDays(1).toString());
 
         //part time
-        new EmployeeServices().addUserEmployment(employee.getMongoID(),"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("part time")).findFirst().get().getValue(),leaveCycleStartDate.plusMonths(5).toString());
-        multipleAllotmentLeavePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[1]));
+       new EmployeeServices().addUserEmployment(employee.getMongoID(),"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("part time")).findFirst().get().getValue(),leaveCycleStartDate.plusMonths(5).toString());
+       multipleAllotmentLeavePolicy.setMaximum_leave_allowed_per_year(Integer.parseInt(testData.get("Alloted Leaves").split(",")[1]));
 
-        leaveCycleStartDate=leaveCycleStartDate.plusMonths(5);
-        leaveCycleEndDate=leaveCycleStartDate.plusYears(1).minusDays(1);
+       leaveCycleStartDate=leaveCycleStartDate.plusMonths(5);
+       leaveCycleEndDate=leaveCycleStartDate.plusYears(1).minusDays(1);
 
-        super.setLeavePolicyObject(multipleAllotmentLeavePolicy);
-        double afterFirstTransferDate = calculateLeaveBalance(leaveCycleStartDate.toString(),leaveCycleEndDate.toString());
+       super.setLeavePolicyObject(multipleAllotmentLeavePolicy);
+       double afterFirstTransferDate = calculateLeaveBalance(leaveCycleStartDate.toString(),leaveCycleEndDate.toString());
         double afterFirstTransferDatetemp1 = 24.0;
-        double actualAfterFirstTransfer= new LeaveBalanceAPI(employee.getEmployeeID(),multipleAllotmentLeavePolicy.getLeave_Type()).getBalance();
+       double actualAfterFirstTransfer= new LeaveBalanceAPI(employee.getEmployeeID(),multipleAllotmentLeavePolicy.getLeave_Type()).getBalance();
 
 
         if(!multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getIndicator()){
@@ -193,14 +193,14 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
 
         double afterFirstTransferBalance=afterFirstTransferDate+firstDeactivagtionBalance;
 
-        Reporter("after First Transfer Date Balance"+(afterFirstTransferBalance),"Info");
-        Reporter("Actual After First Transfer Date Balance"+actualAfterFirstTransfer,"Info");
+       Reporter("after First Transfer Date Balance"+(afterFirstTransferBalance),"Info");
+       Reporter("Actual After First Transfer Date Balance"+actualAfterFirstTransfer,"Info");
 
 
-        changeServerDate(firstLeaveCycleStartDate.plusMonths(10).minusDays(1).toString());
+       changeServerDate(firstLeaveCycleStartDate.plusMonths(10).minusDays(1).toString());
 
-        //set for probation = true
-        // if(true)
+       //set for probation = true
+      // if(true)
         //   afterFirstTransferDatetemp1 = calculateLeaveBalance(leaveCycleStartDate.toString(),leaveCycleEndDate.toString());
         if(!multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getIndicator()){
 
@@ -230,9 +230,9 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
 
         double actualBeforeSecondTrnsfer= new LeaveBalanceAPI(employee.getEmployeeID(),multipleAllotmentLeavePolicy.getLeave_Type()).getBalance();
 
-        //   Reporter("before seccond transfer balnce"+(firstDeactivagtionBalanceValue+afterFirstTransferDatetemp1),"Info");
+        Reporter("before seccond transfer balnce"+(firstDeactivagtionBalanceValue+afterFirstTransferDatetemp1),"Info");
 
-        // Reporter("actual before seccond transfer balnce"+(actualBeforeSecondTrnsfer),"Info");
+        Reporter("actual before seccond transfer balnce"+(actualBeforeSecondTrnsfer),"Info");
 
 
 
@@ -240,7 +240,7 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
         changeServerDate(leaveCycleStartDate.plusMonths(5).toString());
 
 
-        //contract
+       //contract
         new EmployeeServices().addUserEmployment(employee.getMongoID(),"4",empTypes.entrySet().stream().filter(x->x.getKey().equalsIgnoreCase("contract")).findFirst().get().getValue(),leaveCycleStartDate.plusMonths(5).toString());
 
 
@@ -263,7 +263,7 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
         }
         if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getBeginOfQuarter())
         {
-            afterSecondTransferDate=((afterSecondTransferDate/3.0))/2;
+            afterSecondTransferDate=((afterSecondTransferDate/3.0))*2;
         }
 
         if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getBeginOfMonth()){
@@ -284,102 +284,19 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
         }
 
 
-        double afterSecondTransferBalance=afterSecondTransferDate+15.0D;
-
-        Reporter("after Second Transfer Date Balance"+(afterSecondTransferBalance),"Info");
-        Reporter("Actual Second Transfer Date Balance"+actualAfterSecondTransfer,"Info");
-
-
-        double expectedBalanceForCarryForward = 6.0D;
-       // double expectedBalanceForCarryForward = calculateLeaveBalance(leaveCycleStartDate.toString(),leaveCycleEndDate.toString());
-
-       /* if(!multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getIndicator()){
-
-            expectedBalanceForCarryForward=(expectedBalanceForCarryForward/12.0)*2;
-
-        }
-        if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getBeginOfQuarter())
-        {
-            expectedBalanceForCarryForward=((expectedBalanceForCarryForward/3.0))/2;
-        }
-
-        if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getBeginOfMonth()){
-            expectedBalanceForCarryForward=(expectedBalanceForCarryForward/12.0)*2;
-        }
-
-        if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getEndOfMonth()){
-            expectedBalanceForCarryForward=(expectedBalanceForCarryForward/12.0)*2;
-        }
-
+        double afterSecondTransferBalance = 0.0D;
         if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getEndOfQuarter())
         {
-            expectedBalanceForCarryForward=0.0D;
-            //firstDeactivagtionBalance=(firstDeactivagtionBalance/5.0)*3.0;
+            afterSecondTransferBalance = afterSecondTransferDate + actualBeforeSecondTrnsfer;
         }
-        if(multipleAllotmentLeavePolicy.getCredit_on_accural_basis().getBiAnnual()){
-            expectedBalanceForCarryForward = (36.0/12.0)*2.0;
-        }
-*/
+        else
+         afterSecondTransferBalance=afterSecondTransferDate+15.0D;
 
-        expectedBalanceForCarryForward=expectedBalanceForCarryForward+15.0D;
-
-
-        if (multipleAllotmentLeavePolicy.getCarryForwardUnusedLeave().indicator) {
-            if (multipleAllotmentLeavePolicy.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
-                expectedBalanceForCarryForward = expectedBalanceForCarryForward;
-            } else if (multipleAllotmentLeavePolicy.getCarryForwardUnusedLeave().fixed) {
-                double fixedValue = Double.valueOf(multipleAllotmentLeavePolicy.getCarryForwardUnusedLeave().fixedValue);
-                if (fixedValue > expectedBalanceForCarryForward) {
-                    expectedBalanceForCarryForward = expectedBalanceForCarryForward;
-                } else if (fixedValue <= expectedBalanceForCarryForward) {
-                    expectedBalanceForCarryForward = fixedValue;
-                }
-            } else if (multipleAllotmentLeavePolicy.getCarryForwardUnusedLeave().percentage) {
-                double percentageValue = Double.valueOf(multipleAllotmentLeavePolicy.getCarryForwardUnusedLeave().percentageValue);
-                expectedBalanceForCarryForward = ((expectedBalanceForCarryForward * percentageValue) / 100);
-
-            }
-        }
+        Reporter("after Second Transfer Date Balance"+(afterSecondTransferBalance),"Info");
+        Reporter("Actual Second First Transfer Date Balance"+actualAfterSecondTransfer,"Info");
 
 
-        changeServerDate(leaveCycleStartDate.plusMonths(2).plusDays(1).toString());
-
-
-        leavesAction.setEmployeeID(employee.getEmployeeID());
-
-       /* leavesAction.navigateToSettings_Leaves();
-        leavesAction.Leave_Type=multipleAllotmentLeavePolicy.getLeave_Type();
-
-        leavesAction.editLeaveType();
-        try {
-            Thread.sleep(5000);
-        }
-        catch (Exception e){
-            Reporter("Error in saving policy","error");
-        }
-        //new CreateAndManageLeavePoliciesPage(driver).clickCreateLeavePolicySaveButton();
-        driver.findElement(By.xpath("//input[@class = 'btn btn-primary btn-sm text-uppercase company_leave_update_btn']")).click();
-
-        try {
-            Thread.sleep(2000);
-        }
-        catch (Exception e){
-            Reporter("Error in saving policy","error");
-        }
-       */
-        //leavesAction.removeEmployeeLeaveLogs();
-        leavesAction.runCarryFrowardCronByEndPointURL();
-
-        //expectedBalanceForCarryForward = getCarryFowardBalance(expectedBalanceForCarryForward);
-        double actualBalanceForCarryForward= new LeaveBalanceAPI(employee.getEmployeeID(),multipleAllotmentLeavePolicy.getLeave_Type()).getCarryForwardBalance();
-
-
-        Reporter("Expected carry foprward Balance is "+ expectedBalanceForCarryForward ,"Info");
-
-
-        Reporter("Actual carry foprward Balance is "+ actualBalanceForCarryForward ,"Info");
-
-        Assert.assertTrue(expectedBalanceForCarryForward==actualBalanceForCarryForward,"Carry Foraward Balances are not same");
+        Assert.assertTrue(afterSecondTransferBalance==actualAfterSecondTransfer,"Not Same Actal And Expectd");
 
     }
 
@@ -391,5 +308,5 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
 
     }
 
-}
+    }
 
