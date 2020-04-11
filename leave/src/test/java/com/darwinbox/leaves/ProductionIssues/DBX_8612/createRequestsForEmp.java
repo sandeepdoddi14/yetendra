@@ -71,7 +71,7 @@ public class createRequestsForEmp extends LeaveAccuralBase {
         //to generate employee
         //it will create a full time employee
         changeServerDate(LocalDate.now().toString());
-        try {
+      /*  try {
             employee= new EmployeeServices().generateAnFullTimeEmployee("no", "Working Days (DO NOT TOUCH)", serverDateInFormat.minusDays(15).toString(), "no");
         } catch (Exception e) {
             try {
@@ -82,13 +82,26 @@ public class createRequestsForEmp extends LeaveAccuralBase {
             }
         }
 
-        super.setEmployee(employee);
+*/
+      employee = new Employee();
+      employee.setEmployeeType("full time");
+      employee.setCandidateID("I1586521662061");
+      employee.setCompany("Working Days (DO NOT TOUCH)");
+      employee.setEmailID("I1586521662061@yopmail.com");
+      employee.setPassword("123456Aa!");
+      employee.setEmployeeID("I1586521662061");
+      employee.setFirstName("Keshawn Ullrich");
+      employee.setLastName("Keshawn Ullrich");
+      employee.setUserID("251353");
+      employee.setDesignation("Finance");
+
+      super.setEmployee(employee);
 
         Reporter("Employee DOJ is ---->" + employee.getDoj(), "Info");
 
 
 
-        for(int i=0 ; i<13000;i++){
+        for(int i=1050 ; i<13000;i++){
             logoutFromSession();
 
             try {
@@ -100,17 +113,28 @@ public class createRequestsForEmp extends LeaveAccuralBase {
 
             }
 
-            applyLeaveWithEmpSession(employee,multipleAllotmentLeavePolicy,LocalDate.now().minusDays(0),LocalDate.now().minusDays(0));
+            for(int j=0;j<365;j++) {
+               applyLeaveWithEmpSession(employee, multipleAllotmentLeavePolicy, LocalDate.now().minusDays(j), LocalDate.now().minusDays(j));
+            }
 
 
             logoutFromSession();
             loginpage.loginToApplication();
             loginpage.switchToAdmin();
 
-            String messageId = new LeaveAdmin().getMessageId(employee, multipleAllotmentLeavePolicy, LocalDate.now().toString());
+            for(int k=0;k<365;k++) {
+                try {
+                    String messageId = new LeaveAdmin().getMessageId(employee, multipleAllotmentLeavePolicy, LocalDate.now().minusDays(k).toString());
 
-            new LeaveAdmin().leaveAction(null, messageId, "decline");
-            System.out.println("i -->"+i);
+                    new LeaveAdmin().leaveAction(null, messageId, "decline");
+                }
+                catch(Exception e)
+                {
+
+                }
+                i=i+1;
+                System.out.println("i -->" + i);
+            }
         }
 
 
