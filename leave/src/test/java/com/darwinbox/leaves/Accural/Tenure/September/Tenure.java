@@ -65,8 +65,8 @@ public class Tenure extends LeaveAccuralBase {
         Reporter("Leave Type is"+tenureLeaveBalancePolicy.getLeave_Type(),"Info");
 
         //always start from previous year
-        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2018-04-01");
-        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2019-08-31");
+        LocalDate firstLeaveCycleStartDate=LocalDate.parse("2019-09-01");
+        LocalDate firstLeaveCyclceEndDate=LocalDate.parse("2012-08-31");
 
         leaveCycleStartDate = firstLeaveCycleStartDate;
         leaveCycleEndDate = firstLeaveCyclceEndDate;

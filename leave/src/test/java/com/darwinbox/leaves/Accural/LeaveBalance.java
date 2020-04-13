@@ -44,6 +44,7 @@ public class LeaveBalance extends LeaveAccuralBase {
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
     public void verifyLeaveBalance(Map<String,String> testData) {
+
         dateOfJoining = LocalDate.now();
 
         LeavePolicyObject leaveBalancePolicy=getLeaveBalancePolicy(testData);

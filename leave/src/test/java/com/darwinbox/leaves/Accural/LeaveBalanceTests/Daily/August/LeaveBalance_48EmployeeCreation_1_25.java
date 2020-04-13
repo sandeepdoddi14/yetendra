@@ -57,8 +57,8 @@ public class LeaveBalance_48EmployeeCreation_1_25 extends LeaveAccuralBase {
 
             List<LeavePolicyObject> leaveBalancePolicies = getLeaveBalancePolicies("1-25");
 
-            leaveCycleStartDate = LocalDate.parse("2019-04-01");
-            leaveCycleEndDate = LocalDate.parse("2020-03-31");
+            leaveCycleStartDate = LocalDate.parse("2019-08-01");
+            leaveCycleEndDate = LocalDate.parse("2020-07-31");
             LocalDate doj = leaveCycleEndDate;
 
             new DateTimeHelper().changeServerDate(driver, LocalDate.now().toString());
