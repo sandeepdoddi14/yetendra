@@ -1,6 +1,7 @@
 package com.darwinbox.leaves.Utils;
 
 import com.darwinbox.attendance.objects.Employee;
+import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.Utility.DateTimeHelper;
 import com.darwinbox.framework.uiautomation.Utility.ExcelReader;
 import com.darwinbox.framework.uiautomation.Utility.UtilityHelper;
@@ -10,10 +11,7 @@ import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.OverUtilization;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.PastDatedLeave;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Fields.ProbationPeriodForLeaveValidity;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
-import com.darwinbox.leaves.Services.EmployeeServices;
-import com.darwinbox.leaves.Services.LeaveBalanceAPI;
-import com.darwinbox.leaves.Services.LeaveService;
-import com.darwinbox.leaves.Services.LeaveSettings;
+import com.darwinbox.leaves.Services.*;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -610,6 +608,13 @@ public class LeaveAccuralBase extends  LeaveBase {
 
         }
 
+        try{
+            leaveBalancePolicy.setEncashmentData(testData);
+        }
+        catch (Exception e){
+
+        }
+
         List<NameValuePair> request=leaveBalancePolicy.createRequest();
 
         new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
@@ -1073,6 +1078,42 @@ public class LeaveAccuralBase extends  LeaveBase {
         ExcelReader reader = new ExcelReader();
         reader.setFilenameAndSheetName(excelDetails);
         return reader.getExcelData();
+    }
+
+
+
+    public void applyEnacashment(int count){
+
+        try {
+
+            String response;
+
+            //assuming control is at admin
+            logoutFromSession();
+            // Thread.sleep(5000);
+            new LoginPage(driver).loginToApplication(employee.getEmailID(), employee.getPassword());
+            response = new LeaveAdmin().applyEncashmentWithEmpSession(employee, serverChangedDate, count + "", new LeaveService().getLeaveID(leavePolicyObject.getLeave_Type(), leavePolicyObject.groupCompanyMongoId));
+            Reporter("No of Leaves Encashed   -->" + count + ";Date -->" + serverChangedDate, "Info");
+
+
+            logoutFromSession();
+            new LoginPage(driver).loginToApplication();
+            new LoginPage(driver).switchToAdmin();
+
+            String messageId = new LeaveAdmin().getMessageId(employee);
+            new LeaveAdmin().encashmentAction(messageId, "accept");
+
+
+            if (response.contains("failure")) {
+                throw new Error("Error in Applying Encashmnet" + response);
+            }
+            Reporter("No of Leaves Encashed -->" + count, "Info");
+
+
+        }
+        catch(Exception e){
+            throw new RuntimeException("Error In Applying Encahment"+e);
+        }
     }
 
 

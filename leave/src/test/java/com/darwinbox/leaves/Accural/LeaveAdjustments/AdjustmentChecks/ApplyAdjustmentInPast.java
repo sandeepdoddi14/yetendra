@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Sanity.Accural.AdjustmentChecks;
+package com.darwinbox.leaves.Accural.LeaveAdjustments.AdjustmentChecks;
 
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
@@ -6,10 +6,7 @@ import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.Accural.Credit_On_Accural_Basis;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
-import com.darwinbox.leaves.Services.EmployeeServices;
-import com.darwinbox.leaves.Services.ImportServices;
-import com.darwinbox.leaves.Services.LeaveBalanceAPI;
-import com.darwinbox.leaves.Services.LeaveSettings;
+import com.darwinbox.leaves.Services.*;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
 import com.darwinbox.leaves.actionClasses.LeavesAction;
 import com.darwinbox.leaves.pageObjectRepo.settings.LeavesPage;
@@ -22,7 +19,7 @@ import org.testng.annotations.Test;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class ApplyAdjustmentInFuture extends LeaveAccuralBase {
+public class ApplyAdjustmentInPast extends LeaveAccuralBase {
 
 
     Employee employee = new Employee();
@@ -110,12 +107,12 @@ public class ApplyAdjustmentInFuture extends LeaveAccuralBase {
 
         int adjustedBalance = -2;
         new LeaveSettings().showLeaveAdjustments(carryForwardBalance.getLeave_Type());
-        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", leaveCycleStartDate.getYear()+"");
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", leaveCycleStartDate.getYear() + "");
 
         double actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), carryForwardBalance.getLeave_Type()).getBalance();
         double expectedBalance = carryForwardBalance.getMaximum_leave_allowed_per_year()-adjustedBalance;
 
-        Reporter("Leave Adjusted Year is -->"+leaveCycleStartDate ,"Info");
+        Reporter("Leave Adjusted Year is -->"+leaveCycleStartDate.getYear() ,"Info");
         Reporter("Adjusted Balace is -->"+adjustedBalance,"Info");
         Reporter("Leave Balance after adjustment is"+actualLeaveBalance,"Info");
 
@@ -123,12 +120,12 @@ public class ApplyAdjustmentInFuture extends LeaveAccuralBase {
 
         int adjustedBalance1 = -5;
         new LeaveSettings().showLeaveAdjustments(carryForwardBalance.getLeave_Type());
-        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", leaveCycleStartDate.plusYears(1) + "");
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(), carryForwardBalance.getLeave_Type(), adjustedBalance + "", leaveCycleStartDate.minusYears(1) + "");
 
         double actualLeaveBalance1 = new LeaveBalanceAPI(employee.getEmployeeID(), carryForwardBalance.getLeave_Type()).getBalance();
         double expectedBalance1 = expectedBalance;
 
-        Reporter("Leave Adjusted Year is -->"+(leaveCycleStartDate.plusYears(1)) ,"Info");
+        Reporter("Leave Adjusted Year is -->"+(leaveCycleStartDate.minusYears(1)) ,"Info");
         Reporter("Adjusted Balace is -->"+adjustedBalance1,"Info");
         Reporter("Leave Balance after adjustment is"+actualLeaveBalance1,"Info");
 

@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Sanity.Accural.CarryForwardChecks;
+package com.darwinbox.leaves.Accural.CarryForwardTests.CarryForwardChecks;
 
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class CarryForwardWithLeavesApplied extends LeaveAccuralBase {
+public class CarryForwardBalanceForTwoCyclesWithLeaves extends LeaveAccuralBase {
 
 
     Employee employee = new Employee();
@@ -57,10 +57,14 @@ public class CarryForwardWithLeavesApplied extends LeaveAccuralBase {
 
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
-    public void Create_Leaves_for_Multiple_Allotment_Leave_Transfer(Map<String, String> testData) {
+    public void VerifyCarryForwardForTwoCyclesWithLeaves(Map<String, String> testData) {
 
 
-        int noOfLeaves =2;
+        int noOfLeaves =12;
+       //always give current year
+        leaveCycleStartDate = LocalDate.parse("2019-04-01");
+        leaveCycleEndDate = LocalDate.parse("2020-03-31");
+
             LeavePolicyObject carryForwardBalance = getCarryForwardPolicy(testData);
             super.carryForward = true;
             //making default to begin of month for calculation
@@ -81,8 +85,7 @@ public class CarryForwardWithLeavesApplied extends LeaveAccuralBase {
             ///carryForwardBalance.getProbation_period_before_leave_validity()
 
             super.setLeavePolicyObject(carryForwardBalance);
-            leaveCycleStartDate = LocalDate.parse("2019-04-01");
-            leaveCycleEndDate = LocalDate.parse("2020-03-31");
+
 
 
             changeServerDate(LocalDate.now());
@@ -99,41 +102,69 @@ public class CarryForwardWithLeavesApplied extends LeaveAccuralBase {
                 }
             }
 
-
             leavesAction.setEmployeeID(employee.getEmployeeID());
             super.employee = employee;
-             Reporter("Employee DOJ is --> "+employee.getDoj(),"INFO");
 
-                changeServerDate(leaveCycleStartDate.minusYears(1));
-                leavePage.setFromAndToDatesWithoutProperty(noOfLeaves, LocalDate.parse(employee.getDoj()));
-                applyLeave(employee,leavePolicyObject,leavePage.workingDays);
-                Reporter("No of Leaves applied -->" +noOfLeaves+";From Date -->"+leavePage.workingDays[0]+"     ;To Date is  --> "+ leavePage.workingDays[leavePage.workingDays.length-1],"Info");
+            Reporter("Employee DOJ is --> "+employee.getDoj(),"INFO");
 
+            changeServerDate(leaveCycleStartDate.minusYears(1));
 
-        Reporter("Leave Cycle Start Date is --> " + leaveCycleStartDate.minusYears(1).toString(), "Info");
+            Reporter("Leave Cycle Start Date is --> " + leaveCycleStartDate.minusYears(1).toString(), "Info");
             Reporter("Leave Cycle End Date is --> " + leaveCycleEndDate.minusYears(1).toString(), "Info");
             changeServerDate(leaveCycleStartDate);
             Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
-            leavesAction.runCarryFrowardCronByEndPointURL();
 
+
+            leavesAction.runCarryFrowardCronByEndPointURL();
 
             double actualLeaveBalance = 0.0D;
             double expecetedLeaveBalance = 0.0D;
 
             super.carryForward= true;
 
-            expecetedLeaveBalance = calculateLeaveBalance(employee.getDoj(), leaveCycleEndDate.minusYears(1).toString())-noOfLeaves;
-            Reporter("Expected CF Leave Balance is --" + expecetedLeaveBalance, "Info");
+            expecetedLeaveBalance = calculateLeaveBalance(employee.getDoj(), leaveCycleEndDate.minusYears(1).toString());
+            Reporter("Expected  CF Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 
             actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), carryForwardBalance.getLeave_Type()).getCarryForwardBalance();
-            Reporter("Actual CF Leave Balance is ---" + actualLeaveBalance, "Info");
+            Reporter("Actual CF  Leave Balance is ---" + actualLeaveBalance, "Info");
+
+            if (expecetedLeaveBalance == actualLeaveBalance)
+                Reporter("Passed |||| actual and expected are same", "Pass");
+            else
+                Reporter("Failed |||| actual and expected are not same", "Fail");
 
 
-            Assert.assertTrue(expecetedLeaveBalance == actualLeaveBalance,"Failed |||| actual and expected are not same");
+        //(leaveCycleStartDate.minusYears(1))
+        changeServerDate(leaveCycleStartDate.plusDays(10));
+        leavePage.setFromAndToDatesWithoutProperty(noOfLeaves, serverDateInFormat);
+        applyLeave(employee,carryForwardBalance,leavePage.workingDays);
+        Reporter("No of Leaves applied -->" +noOfLeaves+";From Date -->"+leavePage.workingDays[0]+"     ;To Date is  --> "+ leavePage.workingDays[leavePage.workingDays.length-1],"Info");
 
 
-        }
+
+
+        Reporter("Leave Cycle Start Date is --> " + leaveCycleStartDate.toString(), "Info");
+        Reporter("Leave Cycle End Date is --> " + leaveCycleEndDate.toString(), "Info");
+        changeServerDate(leaveCycleStartDate.plusYears(1));
+        Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
+        leavesAction.runCarryFrowardCronByEndPointURL();
+
+
+
+
+        super.carryForward= true;
+
+        expecetedLeaveBalance = expecetedLeaveBalance+calculateLeaveBalance(leaveCycleStartDate.toString(), leaveCycleEndDate.toString())-noOfLeaves;
+        Reporter("Expected CF Leave Balance is --" + expecetedLeaveBalance, "Info");
+
+
+        actualLeaveBalance = new LeaveBalanceAPI(employee.getEmployeeID(), carryForwardBalance.getLeave_Type()).getCarryForwardBalance();
+        Reporter("Actual CF Leave Balance is ---" + actualLeaveBalance, "Info");
+
+        Assert.assertTrue(expecetedLeaveBalance == actualLeaveBalance,"Failed |||| actual and expected are not same");
+
+    }
 
     }
 

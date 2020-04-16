@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.LeaveAdjustments.InActiveEmployee;
+package com.darwinbox.leaves.Accural.LeaveAdjustments.InActiveEmployee;
 
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
+public class CarryForwardScenario extends LeaveAccuralBase {
 
 
     Employee employee = null;
@@ -61,7 +61,7 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
 
         LocalDate leaveAdjustedDate = LocalDate.now();
 
-        leaveAdjustmentPolicies=getLeaveAdjustmentPoliciesForCarryForward();
+        leaveAdjustmentPolicies=getLeaveAdjustmentPolicies();
 
         leaveAdjustmentPolicy=leaveAdjustmentPolicies.stream().filter(x->x.getLeave_Type().contains(testData.get("Leave_Type"))).findFirst().get();
 
@@ -71,21 +71,15 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
         serverChangedDate = LocalDate.now().toString();
         serverDateInFormat = LocalDate.parse(serverChangedDate);
 
-        Assert.assertTrue(setEmployeeId("U1585296830996"), "Employee ID is set Mnually");
-
-        leavesAction.setEmployeeID("U1585296830996");
-        String userId="242092";
-        Assert.assertTrue(leavesAction.removeEmployeeLeaveLogs(), "Employees Leave logs removed successfully") ;
-
-        super.setEmployee(employee);
-
         leaveCycleStartDate=LocalDate.parse("2019-04-01");
         leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
 
-        //just making employee doj = leave cycle start date
-        DateOfJoining = leaveCycleStartDate.toString();
-        changeEmployeeDOJ(leaveCycleStartDate);
+        employee= new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no");
+        leavesAction.setEmployeeID(employee.getEmployeeID());
+
+        super.setEmployee(employee);
+
 
         new LeaveSettings().showLeaveAdjustments(leaveAdjustmentPolicy.getLeave_Type());
 
@@ -97,28 +91,62 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
 
         carryForward = true;
 
+        //making default to begin of month for calculation
+        if(leaveAdjustmentPolicy.getCredit_on_accural_basis().getIndicator()){
+            Credit_On_Accural_Basis credit_on_accural_basis=leaveAdjustmentPolicy.getCredit_on_accural_basis();
+            credit_on_accural_basis.setMonthlyAccuralSetting(true,true,false);
+            credit_on_accural_basis.setQuarterlyAccural(false,false,false);
+            credit_on_accural_basis.setBiAnnual(false);
+            leaveAdjustmentPolicy.setCredit_on_accural_basis(credit_on_accural_basis);
+        }
+
         //leave validity also needs to be set to zero for carry forward
         if(leaveAdjustmentPolicy.getProbation_period_before_leave_validity().custom &&
                 !leaveAdjustmentPolicy.getCredit_on_pro_rata_basis().calculateAfterProbationPeriod)
             leaveAdjustmentPolicy.getProbation_period_before_leave_validity().customMonths=0;
 
+        //if(carryForwardBalance.getProbation_period_before_leave_validity().probation)
+        ///carryForwardBalance.getProbation_period_before_leave_validity()
 
-        super.setLeavePolicyObject(leaveAdjustmentPolicy);
-        //carry forward balance
-       long expecetedCarrytForwardBalance = Math.round(calculateLeaveBalanceAsPerEmployeeWorkingDays(DateOfJoining, leaveCycleEndDate.toString()));
+        Double expecetedCarrytForwardBalance=calculateLeaveBalance(leaveCycleStartDate.toString(),getServerOrLocalDate().toString());
+        //call carry forward if accural is "NO"
+        //Double carrytForwardBalance=calculateLeaveBalance(leaveAdjustedDate.toString(),getServerOrLocalDate().toString());
+        if(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().indicator==false)
+            expecetedCarrytForwardBalance =0.0;
+        else
+        {
+            if (leaveAdjustmentPolicy.getCarryForwardUnusedLeave().indicator==true)
+            {
+                if(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
+                    expecetedCarrytForwardBalance = expecetedCarrytForwardBalance;
+                } else if (leaveAdjustmentPolicy.getCarryForwardUnusedLeave().fixed) {
+                    double fixedValue = Double.valueOf(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().fixedValue);
+                    if (fixedValue > expecetedCarrytForwardBalance) {
+                        expecetedCarrytForwardBalance = expecetedCarrytForwardBalance;
+                    } else if (fixedValue <= expecetedCarrytForwardBalance) {
+                        expecetedCarrytForwardBalance = fixedValue;
+                    }
+                } else if (leaveAdjustmentPolicy.getCarryForwardUnusedLeave().percentage) {
+                    double percentageValue = Double.valueOf(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().percentageValue);
+                    expecetedCarrytForwardBalance = ((expecetedCarrytForwardBalance * percentageValue) / 100);
+                } else {
+                    throw new RuntimeException("Parameters provided to calculate carry forward balance are not proper.");
+                }
+            }
+        }
+
 
 
         leavesAction.runCarryFrowardCronByEndPointURL();
 
 
-        Double actualCarryForwardBalance = new LeaveBalanceAPI(EmployeeId,leaveAdjustmentPolicy.getLeave_Type()).getCarryForwardBalance();
-
+        Double actualCarryForwardBalance = new LeaveBalanceAPI(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type()).getCarryForwardBalance();
 
 
 
         Reporter("Expected CarryForward_one_zero Balance........"+expecetedCarrytForwardBalance+".....Actual CarryForward_one_zero Balance"+actualCarryForwardBalance,"Info");
 
-        Assert.assertTrue(new BigDecimal(Math.round(actualCarryForwardBalance)).setScale(2).equals(new BigDecimal(expecetedCarrytForwardBalance).setScale(2))
+        Assert.assertTrue(new BigDecimal(actualCarryForwardBalance).setScale(2).equals(new BigDecimal(expecetedCarrytForwardBalance).setScale(2))
                 ,"Expected Adjusted Balance = " + actualCarryForwardBalance + "Actual Adjusted Carry Forward Balance = "+ actualCarryForwardBalance+" .. Expected Adjusted Carry Forward Balance ="+expecetedCarrytForwardBalance);
 
         carryForward = false;
@@ -126,34 +154,31 @@ public class CarryForwardWorkingDaysScenario extends LeaveAccuralBase {
         leaveCycleStartDate= leaveCycleStartDate.plusYears(1);
         leaveCycleEndDate = leaveCycleEndDate.plusYears(1);
 
-        Double expectedTotalBalance=calculateLeaveBalanceAsPerEmployeeWorkingDays(leaveCycleStartDate.toString(),serverChangedDate)+expecetedCarrytForwardBalance;
+        Double expectedTotalBalance=calculateLeaveBalance(leaveCycleStartDate.toString(),serverChangedDate)+expecetedCarrytForwardBalance;
 
-        Reporter("Employee Working Days Balance as on "+serverChangedDate+"-->"    + expectedTotalBalance,"Info");
-
-
+        Reporter("Employee Balance as on "+serverChangedDate+"-->"    + expectedTotalBalance,"Info");
 
         Double adjustedBalance=Double.parseDouble(testData.get("LeaveAdjustment"));
 
-        new ImportServices().importLeaveAdjustmentBalance(EmployeeId,leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",leaveCycleStartDate.getYear()+"");
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",leaveCycleStartDate.getYear()+"");
 
         Reporter("Import is Performed for adjustment  of "+adjustedBalance +"On "+serverChangedDate ,"Info");
-
 
 
         adjustedBalance = (expectedTotalBalance - adjustedBalance);
 
 
 
-        new EmployeeServices().deActivateEmployee(userId,serverChangedDate,serverChangedDate);
+        new EmployeeServices().deActivateEmployee(employee.getUserID(),serverChangedDate,serverChangedDate);
 
         Reporter("Employee Deactivated Date is .."+serverChangedDate.toString(),"Info");
 
-        Double actualCurrentDeactivatedBalance = new LeaveBalanceAPI(EmployeeId,leaveAdjustmentPolicy.getLeave_Type()).getBalance();
+        Double actualCurrentDeactivatedBalance = new LeaveBalanceAPI(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type()).getBalance();
 
 
         Reporter("Expected Adjusted Balance  -->" +adjustedBalance+ " Actual Adjusted Balance -->"+actualCurrentDeactivatedBalance,"Info");
 
-        Assert.assertTrue(new BigDecimal(adjustedBalance).setScale(2, RoundingMode.HALF_EVEN).equals(new BigDecimal(Math.round(actualCurrentDeactivatedBalance)).setScale(2,RoundingMode.HALF_EVEN)),"Expected Adjusted Balance -->"+adjustedBalance+"...and Actual Adjusted Balance -->"+actualCurrentDeactivatedBalance);
+        Assert.assertTrue(new BigDecimal(adjustedBalance).setScale(2, RoundingMode.HALF_EVEN).equals(new BigDecimal(actualCurrentDeactivatedBalance).setScale(2,RoundingMode.HALF_EVEN)),"Expected Adjusted Balance and Actual Adjusted Balance are Not Same");
 
 
 

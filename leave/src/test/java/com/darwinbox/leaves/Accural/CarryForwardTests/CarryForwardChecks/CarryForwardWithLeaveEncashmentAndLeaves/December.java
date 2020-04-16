@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Sanity.Accural.CarryForwardChecks;
+package com.darwinbox.leaves.Accural.CarryForwardTests.CarryForwardChecks.CarryForwardWithLeaveEncashmentAndLeaves;
 
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class CarryForwardWithLeaveEncashment extends LeaveAccuralBase {
+public class December extends LeaveAccuralBase {
 
 
     Employee employee = new Employee();
@@ -63,14 +63,15 @@ public class CarryForwardWithLeaveEncashment extends LeaveAccuralBase {
 
 
     @Test(dataProvider = "TestRuns", dataProviderClass = TestDataProvider.class, groups = "Leave_Settings")
-    public void Create_Leaves_for_Multiple_Allotment_Leave_Transfer(Map<String, String> testData) throws  Exception{
+    public void VerifyCarryForwardWithLeaveEncashmentAndLeaves(Map<String, String> testData) throws  Exception{
 
 
         int noOfLeaves =2;
-        leaveCycleStartDate = LocalDate.parse("2019-04-01");
-        leaveCycleEndDate = LocalDate.parse("2020-03-31");
+        leaveCycleStartDate = LocalDate.parse("2020-12-01");
+        leaveCycleEndDate = LocalDate.parse("2021-11-30");
 
         LeavePolicyObject carryForwardBalance = new LeavePolicyObject();
+
         carryForwardBalance.setFields(testData);
         carryForwardBalance.setEncashmentData(testData);
         if(testData.get("Carry forward").equalsIgnoreCase("yes")){
@@ -118,37 +119,41 @@ public class CarryForwardWithLeaveEncashment extends LeaveAccuralBase {
 
             leavesAction.setEmployeeID(employee.getEmployeeID());
             super.employee = employee;
+           Reporter("Employee DOJ is --> "+employee.getDoj(),"INFO");
 
-            Reporter("Employee DOJ  is  --> " + employee.getDoj(),"Info");
+             changeServerDate(leaveCycleStartDate.minusYears(1));
+             leavePage.setFromAndToDatesWithoutProperty(noOfLeaves, LocalDate.parse(employee.getDoj()));
+             applyLeave(employee,carryForwardBalance,leavePage.workingDays);
+            Reporter("No of Leaves applied -->" +noOfLeaves+";From Date -->"+leavePage.workingDays[0]+"     ;To Date is  --> "+ leavePage.workingDays[leavePage.workingDays.length-1],"Info");
 
 
-            changeServerDate(leaveCycleStartDate.minusYears(1));
-
-
-                 logoutFromSession();
+            logoutFromSession();
                // Thread.sleep(5000);
                 loginpage.loginToApplication(employee.getEmailID(), employee.getPassword());
+
+                int forwardDateForEncashmnet=leavePage.workingDays.length;
+                changeServerDate(leaveCycleStartDate.minusYears(1).plusDays(forwardDateForEncashmnet));
+
                 new LeaveAdmin().applyEncashmentWithEmpSession(employee,serverChangedDate,noOfLeaves+"",new LeaveService().getLeaveID(carryForwardBalance.getLeave_Type(),carryForwardBalance.groupCompanyMongoId));
                 Reporter("No of Leaves Encashed   -->" +noOfLeaves+";Date -->"+serverChangedDate,"Info");
 
-
                 logoutFromSession();
                 loginpage.loginToApplication();
-                loginpage.switchToAdmin();
 
 
                 String messageId = new LeaveAdmin().getMessageId(employee);
                 new LeaveAdmin().encashmentAction(messageId, "accept");
 
 
-            Reporter("Leave Cycle Start Date is --> " + leaveCycleStartDate.toString(), "Info");
-            Reporter("Leave Cycle End Date is --> " + leaveCycleEndDate.toString(), "Info");
+
+
+
+            Reporter("Leave Cycle Start Date is --> " + leaveCycleStartDate.minusYears(1).toString(), "Info");
+            Reporter("Leave Cycle End Date is --> " + leaveCycleEndDate.minusYears(1).toString(), "Info");
             changeServerDate(leaveCycleStartDate);
             Reporter("Carry Forward Cron Run Date is --> " + serverChangedDate, "Info");
 
-
-
-            super.carryForward = true;
+        super.carryForward = true;
         //making default to begin of month for calculation
         if (carryForwardBalance.getCredit_on_accural_basis().getIndicator()) {
             Credit_On_Accural_Basis credit_on_accural_basis = carryForwardBalance.getCredit_on_accural_basis();
@@ -177,7 +182,8 @@ public class CarryForwardWithLeaveEncashment extends LeaveAccuralBase {
 
            // super.carryForward= true;
 
-            expecetedLeaveBalance = calculateLeaveBalance(employee.getDoj(), leaveCycleEndDate.minusYears(1).toString())-noOfLeaves;
+        //deducting leacves = noofleaves*2 -> one for leaves, one for encashment
+            expecetedLeaveBalance = calculateLeaveBalance(employee.getDoj(), leaveCycleEndDate.minusYears(1).toString())-noOfLeaves*2;
             Reporter("Expected CF Leave Balance is --" + expecetedLeaveBalance, "Info");
 
 

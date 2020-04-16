@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.LeaveAdjustments.InActiveEmployee;
+package com.darwinbox.leaves.Accural.LeaveAdjustments.ActiveEmployee;
 
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
@@ -21,12 +21,11 @@ import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class CarryForwardScenario extends LeaveAccuralBase {
+public class VerifyCFWithLeaveAdjustment extends LeaveAccuralBase {
 
 
     Employee employee = null;
@@ -60,6 +59,8 @@ public class CarryForwardScenario extends LeaveAccuralBase {
     public void verifyLeaveBalance(Map<String,String> testData) {
 
 
+
+        Double adjustedBalance=Double.parseDouble(testData.get("LeaveAdjustment"));
         LocalDate leaveAdjustedDate = LocalDate.now();
 
         leaveAdjustmentPolicies=getLeaveAdjustmentPolicies();
@@ -72,18 +73,29 @@ public class CarryForwardScenario extends LeaveAccuralBase {
         serverChangedDate = LocalDate.now().toString();
         serverDateInFormat = LocalDate.parse(serverChangedDate);
 
-        leaveCycleStartDate=LocalDate.parse("2019-04-01");
-        leaveCycleEndDate = LocalDate.parse("2020-03-31");
-
-
-        employee= new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", leaveCycleStartDate.toString(), "no");
+        employee= new EmployeeServices().generateAnEmployee("no", "Working Days (DO NOT TOUCH)", "random", "no");
         leavesAction.setEmployeeID(employee.getEmployeeID());
 
         super.setEmployee(employee);
 
+        leaveCycleStartDate=LocalDate.parse("2019-04-01");
+        leaveCycleEndDate = LocalDate.parse("2020-03-31");
 
         new LeaveSettings().showLeaveAdjustments(leaveAdjustmentPolicy.getLeave_Type());
+        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",leaveCycleStartDate.getYear()+"");
 
+        Reporter("Import is Performed for adjustment  of "+adjustedBalance +"On "+serverChangedDate ,"Info");
+
+
+        adjustedBalance = (calculateLeaveBalance(employee.getDoj(),getServerOrLocalDate().toString()) - adjustedBalance);
+
+        double actualAdjustedBalance=new LeaveBalanceAPI(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type()).getBalance();
+
+
+        Assert.assertTrue(new BigDecimal(adjustedBalance).setScale(2,RoundingMode.HALF_EVEN).equals(new BigDecimal(actualAdjustedBalance).setScale(2,RoundingMode.HALF_EVEN)),"Expected Adjusted Balance = " + adjustedBalance + "Actual Adjusted Balance = "+ actualAdjustedBalance);
+
+
+        Reporter("Expected Adjusted Balance = " + adjustedBalance + "Actual Adjusted Balance = "+ actualAdjustedBalance,"Info");
 
 
         new DateTimeHelper().changeServerDate(driver, leaveCycleEndDate.plusDays(1).toString());
@@ -109,27 +121,27 @@ public class CarryForwardScenario extends LeaveAccuralBase {
         //if(carryForwardBalance.getProbation_period_before_leave_validity().probation)
         ///carryForwardBalance.getProbation_period_before_leave_validity()
 
-        Double expecetedCarrytForwardBalance=calculateLeaveBalance(leaveCycleStartDate.toString(),getServerOrLocalDate().toString());
+        Double expecetedCarrytForwardBalance=0.0;
         //call carry forward if accural is "NO"
         //Double carrytForwardBalance=calculateLeaveBalance(leaveAdjustedDate.toString(),getServerOrLocalDate().toString());
-        if(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().indicator==false)
-            expecetedCarrytForwardBalance =0.0;
+        if(leaveAdjustmentPolicy.getCredit_on_accural_basis().getIndicator())
+            expecetedCarrytForwardBalance =calculateLeaveBalance(leaveAdjustedDate.toString(),getServerOrLocalDate().toString());
         else
         {
-            if (leaveAdjustmentPolicy.getCarryForwardUnusedLeave().indicator==true)
+            if (leaveAdjustmentPolicy.getCarryForwardUnusedLeave().indicator)
             {
                 if(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().carryForwardAllUnusedLeave) {
-                    expecetedCarrytForwardBalance = expecetedCarrytForwardBalance;
+                    expecetedCarrytForwardBalance = adjustedBalance;
                 } else if (leaveAdjustmentPolicy.getCarryForwardUnusedLeave().fixed) {
                     double fixedValue = Double.valueOf(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().fixedValue);
-                    if (fixedValue > expecetedCarrytForwardBalance) {
-                        expecetedCarrytForwardBalance = expecetedCarrytForwardBalance;
-                    } else if (fixedValue <= expecetedCarrytForwardBalance) {
+                    if (fixedValue > adjustedBalance) {
+                        expecetedCarrytForwardBalance = adjustedBalance;
+                    } else if (fixedValue <= adjustedBalance) {
                         expecetedCarrytForwardBalance = fixedValue;
                     }
                 } else if (leaveAdjustmentPolicy.getCarryForwardUnusedLeave().percentage) {
                     double percentageValue = Double.valueOf(leaveAdjustmentPolicy.getCarryForwardUnusedLeave().percentageValue);
-                    expecetedCarrytForwardBalance = ((expecetedCarrytForwardBalance * percentageValue) / 100);
+                    expecetedCarrytForwardBalance = ((adjustedBalance * percentageValue) / 100);
                 } else {
                     throw new RuntimeException("Parameters provided to calculate carry forward balance are not proper.");
                 }
@@ -147,41 +159,7 @@ public class CarryForwardScenario extends LeaveAccuralBase {
 
         Reporter("Expected CarryForward_one_zero Balance........"+expecetedCarrytForwardBalance+".....Actual CarryForward_one_zero Balance"+actualCarryForwardBalance,"Info");
 
-        Assert.assertTrue(new BigDecimal(actualCarryForwardBalance).setScale(2).equals(new BigDecimal(expecetedCarrytForwardBalance).setScale(2))
-                ,"Expected Adjusted Balance = " + actualCarryForwardBalance + "Actual Adjusted Carry Forward Balance = "+ actualCarryForwardBalance+" .. Expected Adjusted Carry Forward Balance ="+expecetedCarrytForwardBalance);
-
-        carryForward = false;
-
-        leaveCycleStartDate= leaveCycleStartDate.plusYears(1);
-        leaveCycleEndDate = leaveCycleEndDate.plusYears(1);
-
-        Double expectedTotalBalance=calculateLeaveBalance(leaveCycleStartDate.toString(),serverChangedDate)+expecetedCarrytForwardBalance;
-
-        Reporter("Employee Balance as on "+serverChangedDate+"-->"    + expectedTotalBalance,"Info");
-
-        Double adjustedBalance=Double.parseDouble(testData.get("LeaveAdjustment"));
-
-        new ImportServices().importLeaveAdjustmentBalance(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type(),adjustedBalance+"",leaveCycleStartDate.getYear()+"");
-
-        Reporter("Import is Performed for adjustment  of "+adjustedBalance +"On "+serverChangedDate ,"Info");
-
-
-        adjustedBalance = (expectedTotalBalance - adjustedBalance);
-
-
-
-        new EmployeeServices().deActivateEmployee(employee.getUserID(),serverChangedDate,serverChangedDate);
-
-        Reporter("Employee Deactivated Date is .."+serverChangedDate.toString(),"Info");
-
-        Double actualCurrentDeactivatedBalance = new LeaveBalanceAPI(employee.getEmployeeID(),leaveAdjustmentPolicy.getLeave_Type()).getBalance();
-
-
-        Reporter("Expected Adjusted Balance  -->" +adjustedBalance+ " Actual Adjusted Balance -->"+actualCurrentDeactivatedBalance,"Info");
-
-        Assert.assertTrue(new BigDecimal(adjustedBalance).setScale(2, RoundingMode.HALF_EVEN).equals(new BigDecimal(actualCurrentDeactivatedBalance).setScale(2,RoundingMode.HALF_EVEN)),"Expected Adjusted Balance and Actual Adjusted Balance are Not Same");
-
-
+        Assert.assertTrue(new BigDecimal(actualCarryForwardBalance).setScale(2, RoundingMode.HALF_EVEN).equals(new BigDecimal(expecetedCarrytForwardBalance).setScale(2, RoundingMode.HALF_EVEN)),"Expected Adjusted Balance = " + actualCarryForwardBalance + "Actual Adjusted Carry Forward Balance = "+ actualCarryForwardBalance+" .. Expected Adjusted Carry Forward Balance ="+expecetedCarrytForwardBalance);
 
     }
 }

@@ -1,4 +1,4 @@
-package com.darwinbox.leaves.Sanity.Accural.CarryForwardChecks.CarryForwardWithLeaveEncashmentAndLeaves;
+package com.darwinbox.leaves.Accural.CarryForwardTests.CarryForwardChecks.CarryForwardWithLeaveEncashmentAndLeaves;
 
 import com.darwinbox.attendance.objects.Employee;
 import com.darwinbox.dashboard.actionClasses.CommonAction;
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class May extends LeaveAccuralBase {
+public class CalenderCycle extends LeaveAccuralBase {
 
 
     Employee employee = new Employee();
@@ -67,8 +67,8 @@ public class May extends LeaveAccuralBase {
 
 
         int noOfLeaves =2;
-        leaveCycleStartDate = LocalDate.parse("2020-05-01");
-        leaveCycleEndDate = LocalDate.parse("2021-04-30");
+        leaveCycleStartDate = LocalDate.parse("2020-01-01");
+        leaveCycleEndDate = LocalDate.parse("2020-12-31");
 
         LeavePolicyObject carryForwardBalance = new LeavePolicyObject();
 
