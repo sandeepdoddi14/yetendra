@@ -51,7 +51,7 @@ public class TestBase implements IRetryAnalyzer {
 
 	public static ExtentReports extent = new ExtentReports();
 	public static ExtentTest xtReportLog = null;
-	ExtentTest parentLog = null;
+	ExtentTest 	parentLog = null;
 
 	public static Map<String, String> data = new HashMap<>();
 	public static List<Map<String, String>> dataItem = new ArrayList<>();

@@ -25,7 +25,7 @@ public class ChromeBrowser {
 
 		ChromeOptions option = new ChromeOptions();
 		option.addArguments("start-maximized");
-
+		
 		return option;
 	}
 

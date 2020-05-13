@@ -226,6 +226,35 @@ public class LeaveAccuralBase extends  LeaveBase {
            Reporter("Multiple Allotment is set to FALSE","INFO");
        }
 
+
+       try {
+           if(testData.get("Carry forward").equalsIgnoreCase("yes")) {
+           CarryForwardUnusedLeave carryForwardUnusedLeave = new CarryForwardUnusedLeave();
+           carryForwardUnusedLeave.indicator = testData.get("Carry forward").equalsIgnoreCase("yes") ? true : false;
+
+           if (testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("all")) {
+               carryForwardUnusedLeave.carryForwardAllUnusedLeave = true;
+           }
+           if (testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("fixed")) {
+               carryForwardUnusedLeave.carryForwardOnly = true;
+               carryForwardUnusedLeave.fixed = true;
+               carryForwardUnusedLeave.fixedValue = Integer.parseInt(testData.get("Fixed/Percentage value"));
+           }
+           if (testData.get("Carry forward All/Fixed/Percentage").equalsIgnoreCase("percentage")) {
+               carryForwardUnusedLeave.carryForwardOnly = true;
+               carryForwardUnusedLeave.percentage = true;
+               carryForwardUnusedLeave.percentageValue = Integer.parseInt(testData.get("Fixed/Percentage value"));
+           }
+
+           leaveBalancePolicy.setCarryForwardUnusedLeave(carryForwardUnusedLeave);
+       }
+
+       }
+
+       catch(Exception e)
+       {
+           Reporter("Carry Forward Is Set to false","info");
+       }
         List<NameValuePair> request=leaveBalancePolicy.createRequest();
 
         new LeaveService().createLeaveForPolicy(request,leaveBalancePolicy);
@@ -1912,6 +1941,8 @@ public class LeaveAccuralBase extends  LeaveBase {
      */
     public double calculateLeaveBalance(String DOJ,String toDate) {
         try {
+            LeavePolicyObject leavePolicyObject = new LeavePolicyObject();
+
             double midJoinigYesLeaves = 0;
             double perMonthLeaves = (leavePolicyObject.getMaximum_leave_allowed_per_year() / 12.0);
             double perMonthOrQuarterLeaves = 0;

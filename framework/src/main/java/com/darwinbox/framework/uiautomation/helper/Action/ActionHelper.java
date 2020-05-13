@@ -29,7 +29,7 @@ public class ActionHelper extends TestBase {
 	public boolean actionClick(WebDriver driver,WebElement element, String text) {
 		try {
 			Actions action = new Actions(driver);
-			
+
 			action.moveToElement(element).build().perform();
 			action.click(element).build().perform();
 			Reporter("Clicked on " + text + " successfully", "Pass");
@@ -118,6 +118,6 @@ public class ActionHelper extends TestBase {
 			throw new RuntimeException();
 		}
 	}
-	
-	
+
+
 }

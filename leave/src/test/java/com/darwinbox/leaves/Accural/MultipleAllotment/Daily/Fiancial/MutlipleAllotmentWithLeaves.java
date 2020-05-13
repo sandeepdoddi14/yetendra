@@ -109,7 +109,7 @@ public class MutlipleAllotmentWithLeaves extends LeaveAccuralBase {
 
 
         //BEFORE FIRST TRANSFER
-        changeServerDate(leaveCycleStartDate.plusMonths(5).minusDays(1).toString());
+        changeServerDate(leaveCycleStartDate.plusMonths(5).minusDays(5).toString());
 
         leavePage.setFromAndToDatesWithoutProperty(noOFEncashment, serverDateInFormat);
         applyLeave(employee,leavePolicyObject,leavePage.workingDays);
@@ -182,7 +182,8 @@ public class MutlipleAllotmentWithLeaves extends LeaveAccuralBase {
         Reporter("No of Leaves applied -->" +noOFEncashment+";From Date -->"+leavePage.workingDays[0]+"     ;To Date is  --> "+ leavePage.workingDays[leavePage.workingDays.length-1],"Info");
 
         double afterFirstTransferDate = calculateLeaveBalance(leaveCycleStartDate.toString(),leaveCycleEndDate.toString());
-        double secondDeactionValue = 24.0;
+        double beforeSecondTransferValue = 24.0;
+        double secondDeactionValue = 10-noOFEncashment;
        double actualAfterFirstTransfer= new LeaveBalanceAPI(employee.getEmployeeID(),leavePolicyObject.getLeave_Type()).getBalance();
 
 
@@ -229,39 +230,40 @@ public class MutlipleAllotmentWithLeaves extends LeaveAccuralBase {
         //   afterFirstTransferDatetemp1 = calculateLeaveBalance(leaveCycleStartDate.toString(),leaveCycleEndDate.toString());
         if(!leavePolicyObject.getCredit_on_accural_basis().getIndicator()){
 
-            secondDeactionValue=(secondDeactionValue/12.0)*7;
+            beforeSecondTransferValue=(beforeSecondTransferValue/12.0)*7;
 
         }
         if(leavePolicyObject.getCredit_on_accural_basis().getBeginOfQuarter())
         {
-            secondDeactionValue=(secondDeactionValue/12.0)*7;
+            beforeSecondTransferValue=(beforeSecondTransferValue/12.0)*7;
         }
         if(leavePolicyObject.getCredit_on_accural_basis().getEndOfQuarter())
         {
-            secondDeactionValue=(secondDeactionValue/12.0)*4;
+            beforeSecondTransferValue=(beforeSecondTransferValue/12.0)*4;
         }
 
         if(leavePolicyObject.getCredit_on_accural_basis().getBeginOfMonth()){
-            secondDeactionValue=(secondDeactionValue/12.0)*5.0;
+            beforeSecondTransferValue=(beforeSecondTransferValue/12.0)*5.0;
         }
 
 
         if(leavePolicyObject.getCredit_on_accural_basis().getEndOfMonth()){
-            secondDeactionValue=(secondDeactionValue/11.0)*4.0;
+            beforeSecondTransferValue=(beforeSecondTransferValue/11.0)*4.0;
         }
         if(leavePolicyObject.getCredit_on_accural_basis().getBiAnnual()){
-            secondDeactionValue = (24.0/12.0)*7.0;
+            beforeSecondTransferValue = (24.0/12.0)*7.0;
         }
 
 
-        secondDeactionValue = secondDeactionValue -noOFEncashment;
+        beforeSecondTransferValue = beforeSecondTransferValue -noOFEncashment;
 
         double actualBeforeSecondTrnsfer= new LeaveBalanceAPI(employee.getEmployeeID(),leavePolicyObject.getLeave_Type()).getBalance();
 
-        Reporter("before seccond transfer balnce"+(firstDeactivagtionBalanceValue+secondDeactionValue),"Info");
+        Reporter("before seccond transfer balnce"+(firstDeactivagtionBalanceValue+beforeSecondTransferValue),"Info");
 
         Reporter("actual before seccond transfer balnce"+(actualBeforeSecondTrnsfer),"Info");
-        Assert.assertTrue(firstDeactivagtionBalanceValue+secondDeactionValue==actualBeforeSecondTrnsfer,"Not Same Actal And Expectd");
+        Assert.assertTrue(firstDeactivagtionBalanceValue+beforeSecondTransferValue==actualBeforeSecondTrnsfer,"Not Same Actal And Expectd");
+
 
 
 

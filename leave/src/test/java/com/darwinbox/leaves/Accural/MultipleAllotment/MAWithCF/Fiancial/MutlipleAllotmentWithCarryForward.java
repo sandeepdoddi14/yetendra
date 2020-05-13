@@ -91,6 +91,8 @@ public class MutlipleAllotmentWithCarryForward extends LeaveAccuralBase {
 
             }
         }
+
+        Reporter("Employee DOJ is --> "+employee.getDoj(),"Info");
         super.setEmployee(employee);
 
         Boolean prorata_afterProbation=testData.get("Leave Probation Period according to Employee Probation Period").equalsIgnoreCase("yes")?true:false;

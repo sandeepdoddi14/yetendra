@@ -8,6 +8,8 @@ import com.darwinbox.dashboard.pageObjectRepo.generic.LoginPage;
 import com.darwinbox.framework.uiautomation.DataProvider.TestDataProvider;
 import com.darwinbox.leaves.Objects.LeavePolicyObject.LeavePolicyObject;
 import com.darwinbox.leaves.Utils.LeaveAccuralBase;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -50,6 +52,7 @@ public class LeaveBalance extends LeaveAccuralBase {
         LeavePolicyObject leaveBalancePolicy=getLeaveBalancePolicy(testData);
         super.setLeavePolicyObject(leaveBalancePolicy);
 
+        driver.findElement(By.xpath("")).sendKeys("");
         //if(leaveBalancePolicy.getProbation_period_before_leave_validity().probation)
        // employeeProbation=testData.get("Employee Probation Period");
 
