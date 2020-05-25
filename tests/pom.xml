@@ -4,14 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>darwinbox-hrms-automation</artifactId>
+        <artifactId>sample-hrms-automation</artifactId>
         <relativePath>..</relativePath>
-        <groupId>com.darwinbox.test.automation</groupId>
+        <groupId>com.sample.test.automation</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.darwinbox.test.automation</groupId>
+    <groupId>com.sample.test.automation</groupId>
     <artifactId>tests</artifactId>
     <packaging>pom</packaging>
     <name>Tests</name>
@@ -28,22 +28,16 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.darwinbox.test.automation</groupId>
+        <!--<dependency>
+            <groupId>com.sample.test.automation</groupId>
             <artifactId>services</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <modules>
-        <module>../dashboard</module>
-        <module>../attendance</module>
-        <module>../mobile</module>
-        <module>../leave</module>
-        <module>../recruitment</module>
-        <module>../customflows</module>
-        <module>../reimbursement</module>
-        <module>../core</module>
+
+        <module>../goodreads/</module>
     </modules>
 
     <build>
@@ -80,7 +74,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <mainClass>com.darwinbox.framework.runner.TestNGSuiteCreator</mainClass>
+                        <mainClass>com.sample.framework.runner.TestNGSuiteCreator</mainClass>
                         <systemProperties>
                             <systemProperty>
                                 <key>testdata</key>

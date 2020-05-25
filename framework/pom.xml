@@ -3,14 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>darwinbox-hrms-automation</artifactId>
-        <groupId>com.darwinbox.test.automation</groupId>
+        <artifactId>sample-hrms-automation</artifactId>
+        <groupId>com.sample.test.automation</groupId>
         <relativePath>..</relativePath>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
 
-    <groupId>com.darwinbox.test.automation</groupId>
+    <groupId>com.sample.test.automation</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>framework</artifactId>
     <packaging>jar</packaging>
